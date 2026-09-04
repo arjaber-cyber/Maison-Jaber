@@ -281,6 +281,17 @@
           <div class="divider">or</div>
           <input type="email" id="auth-email" placeholder="you@email.com" />
           <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;">Email Me a Sign-In Link</button>
+          <div style="text-align: center; margin-top: 16px;">
+            <button type="button" id="guest-toggle-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;">Prefer not to sign in? Continue as guest</button>
+          </div>
+        </div>
+
+        <div class="account-gate" id="guest-gate" style="display:none;">
+          <p class="note">Continuing as a guest &mdash; you won't be able to track this order later, so we recommend creating an account instead.</p>
+          <input type="email" id="guest-email" placeholder="you@email.com (for order updates)" />
+          <div style="text-align: center; margin-top: 12px;">
+            <button type="button" id="back-to-account-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;">&larr; Actually, I'll create an account</button>
+          </div>
         </div>
 
         <div class="signed-in-bar" id="signed-in-bar" style="display:none;">
@@ -376,27 +387,49 @@
   }
 
   // --- Auth ---
+  let isGuest = false;
+
   async function refreshAuthUI() {
     const { data: { session } } = await supabase.auth.getSession();
     const gate = document.getElementById('account-gate');
+    const guestGate = document.getElementById('guest-gate');
     const signedInBar = document.getElementById('signed-in-bar');
     const sendBtn = document.getElementById('send-btn');
     if (session) {
       isSignedIn = true;
+      isGuest = false;
       gate.style.display = 'none';
+      guestGate.style.display = 'none';
       signedInBar.style.display = 'flex';
       document.getElementById('signed-in-email').textContent = session.user.email;
       sendBtn.disabled = false;
       sendBtn.textContent = 'Send Request';
+    } else if (isGuest) {
+      isSignedIn = false;
+      gate.style.display = 'none';
+      guestGate.style.display = 'block';
+      signedInBar.style.display = 'none';
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Request as Guest';
     } else {
       isSignedIn = false;
       gate.style.display = 'block';
+      guestGate.style.display = 'none';
       signedInBar.style.display = 'none';
       sendBtn.disabled = true;
       sendBtn.textContent = 'Sign in to Send Request';
     }
   }
   refreshAuthUI();
+
+  document.getElementById('guest-toggle-btn').addEventListener('click', () => {
+    isGuest = true;
+    refreshAuthUI();
+  });
+  document.getElementById('back-to-account-btn').addEventListener('click', () => {
+    isGuest = false;
+    refreshAuthUI();
+  });
 
   document.getElementById('google-btn').addEventListener('click', async () => {
     await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
@@ -424,7 +457,8 @@
     const status = document.getElementById('form-status');
     status.style.color = '#e31c5f';
 
-    if (!isSignedIn) { status.textContent = 'Please sign in first.'; return; }
+    const guestEmail = document.getElementById('guest-email').value.trim();
+    if (!isSignedIn && !(isGuest && guestEmail)) { status.textContent = isGuest ? 'Please add your email so we can reach you.' : 'Please sign in or continue as guest.'; return; }
     if (!document.getElementById('story-input').value) { status.textContent = 'Please choose a story.'; return; }
     if (!nameInput.value.trim()) { status.textContent = "Please add the child's name."; return; }
     if (photoFiles.length === 0) { status.textContent = 'Please add at least one photo.'; return; }
@@ -437,7 +471,8 @@
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const formData = new FormData(document.getElementById('request-form'));
-      formData.append('account_email', session.user.email);
+      formData.append('account_email', session ? session.user.email : guestEmail);
+      formData.append('guest_checkout', session ? 'no' : 'yes');
       photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
 
       const res = await fetch('/', { method: 'POST', body: formData });

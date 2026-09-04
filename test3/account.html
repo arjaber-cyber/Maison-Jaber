@@ -148,13 +148,10 @@
 </section>
 
 <section class="page-hero">
-  <div class="wrap" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-    <div>
-      <div class="eyebrow">Your Account</div>
-      <h1>Welcome back</h1>
-      <p>This is a preview of your account area — order tracking activates once checkout is connected.</p>
-    </div>
-    <button class="btn-secondary" id="sign-out-btn-top" style="flex-shrink: 0;">Sign out</button>
+  <div class="wrap">
+    <div class="eyebrow">Your Account</div>
+    <h1>Welcome back</h1>
+    <p>This is a preview of your account area — order tracking activates once checkout is connected.</p>
   </div>
 </section>
 
@@ -211,11 +208,12 @@
       <p style="color: var(--text-on-light-soft); font-size: 14px; margin-bottom: 20px;">Have a question about an order, a photo, or delivery? We're happy to help.</p>
       <a class="btn-secondary" href="mailto:hello@maison-jaber.com">Email hello@maison-jaber.com</a>
       <p style="color: var(--text-on-light-soft); font-size: 13px; margin-top: 20px;">You can also visit our <a href="help.html" style="text-decoration: underline;">Help &amp; FAQ</a> for quick answers.</p>
-      <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(184,149,75,0.2);">
-        <button class="btn-secondary" id="sign-out-btn">Sign out</button>
-      </div>
     </div>
   </div>
+</div>
+
+<div class="wrap" style="padding: 32px 0 48px; margin-top: 20px; border-top: 1px solid var(--line-soft); text-align: center;">
+  <button class="btn-secondary" id="sign-out-btn-top">Sign out</button>
 </div>
 
 <script type="module">
@@ -237,12 +235,10 @@
     document.querySelector('.page-hero p').textContent = 'Your orders, saved projects, and details, all in one place.';
   }
 
-  async function handleSignOut() {
+  document.getElementById('sign-out-btn-top').addEventListener('click', async () => {
     await supabase.auth.signOut();
     window.location.href = 'index.html';
-  }
-  document.getElementById('sign-out-btn').addEventListener('click', handleSignOut);
-  document.getElementById('sign-out-btn-top').addEventListener('click', handleSignOut);
+  });
 </script>
 
 <footer class="site">
