@@ -176,6 +176,7 @@
   }
   .footer-bottom .right { display: flex; gap: 16px; }
 </style>
+<script src="/i18n.js" defer></script>
 </head>
 <body>
 
@@ -183,12 +184,12 @@
   <div class="wrap inner">
     <a href="index.html" class="wordmark">Hikaya</a>
     <nav class="center">
-      <a href="stories.html">Stories</a>
-      <a href="about.html">About</a>
-      <a href="help.html">Help</a>
+      <a href="stories.html" data-i18n="common.nav_stories">Stories</a>
+      <a href="about.html" data-i18n="common.nav_about">About</a>
+      <a href="help.html" data-i18n="common.nav_help">Help</a>
     </nav>
     <div class="nav-right">
-      <a class="lang-pill" href="#">EN</a>
+      <a class="lang-pill" href="#" data-i18n-skip>EN</a>
       <a class="profile-pill" id="account-link" href="login.html">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         <span class="avatar">&#128100;</span>
@@ -201,26 +202,26 @@
   <div class="carousel-track" id="carousel-track">
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">Personalized Storybooks</div>
-        <h2>A story where your child is the hero</h2>
-        <p>Their name, their face, their courage &mdash; woven into a book made just for them.</p>
-        <a class="btn-primary" href="personalize.html">Create Their Story</a>
+        <div class="eyebrow" data-i18n="home.slide1_eyebrow">Personalized Storybooks</div>
+        <h2 data-i18n="home.slide1_title">A story where your child is the hero</h2>
+        <p data-i18n="home.slide1_body">Their name, their face, their courage &mdash; woven into a book made just for them.</p>
+        <a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a>
       </div></div>
     </div>
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1596464716127-f2a82984de30?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">The Perfect Gift</div>
-        <h2>A keepsake they'll want read every night</h2>
-        <p>Beautifully illustrated, delivered to your door, and starring someone very special.</p>
-        <a class="btn-primary" href="stories.html">Browse Stories</a>
+        <div class="eyebrow" data-i18n="home.slide2_eyebrow">The Perfect Gift</div>
+        <h2 data-i18n="home.slide2_title">A keepsake they'll want read every night</h2>
+        <p data-i18n="home.slide2_body">Beautifully illustrated, delivered to your door, and starring someone very special.</p>
+        <a class="btn-primary" href="stories.html" data-i18n="home.slide2_cta">Browse Stories</a>
       </div></div>
     </div>
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1566004100631-35d015d6a491?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">Bedtime, Reimagined</div>
-        <h2>Turn tonight's story into their favorite story</h2>
-        <p>From courage to adventure to sleepy-time tales &mdash; there's a hero waiting for them.</p>
-        <a class="btn-primary" href="personalize.html">Get Started</a>
+        <div class="eyebrow" data-i18n="home.slide3_eyebrow">Bedtime, Reimagined</div>
+        <h2 data-i18n="home.slide3_title">Turn tonight's story into their favorite story</h2>
+        <p data-i18n="home.slide3_body">From courage to adventure to sleepy-time tales &mdash; there's a hero waiting for them.</p>
+        <a class="btn-primary" href="personalize.html" data-i18n="home.slide3_cta">Get Started</a>
       </div></div>
     </div>
   </div>
@@ -233,23 +234,23 @@
 
 <section class="hero">
   <div class="wrap">
-    <h1>A story where your child is the hero</h1>
-    <p class="lede">Choose a story, add their name and photo, and we'll turn them into the star of their own book.</p>
+    <h1 data-i18n="home.slide1_title">A story where your child is the hero</h1>
+    <p class="lede" data-i18n="home.hero_lede">Choose a story, add their name and photo, and we'll turn them into the star of their own book.</p>
 
     <a class="search-bar" href="personalize.html">
       <div class="search-seg">
-        <div class="lbl">Story</div>
-        <div class="val">Choose an adventure</div>
+        <div class="lbl" data-i18n="home.search_story_lbl">Story</div>
+        <div class="val" data-i18n="home.search_story_val">Choose an adventure</div>
       </div>
       <div class="search-divider"></div>
       <div class="search-seg">
-        <div class="lbl">Age</div>
-        <div class="val">Add child's age</div>
+        <div class="lbl" data-i18n="home.search_age_lbl">Age</div>
+        <div class="val" data-i18n="home.search_age_val">Add child's age</div>
       </div>
       <div class="search-divider"></div>
       <div class="search-seg">
-        <div class="lbl">Their name</div>
-        <div class="val">Who's the hero?</div>
+        <div class="lbl" data-i18n="home.search_name_lbl">Their name</div>
+        <div class="val" data-i18n="home.search_name_val">Who's the hero?</div>
       </div>
       <div class="search-go">
         <div class="circle">&#8594;</div>
@@ -260,37 +261,37 @@
 
 <section class="wrap">
   <div class="pills-row" id="pills-row">
-    <div class="pill active" data-filter="all">All stories</div>
-    <div class="pill" data-filter="courage">Courage</div>
-    <div class="pill" data-filter="adventure">Adventure</div>
-    <div class="pill" data-filter="lullaby">Bedtime</div>
+    <div class="pill active" data-filter="all" data-i18n="home.pill_all">All stories</div>
+    <div class="pill" data-filter="courage" data-i18n="common.theme_courage">Courage</div>
+    <div class="pill" data-filter="adventure" data-i18n="common.theme_adventure">Adventure</div>
+    <div class="pill" data-filter="lullaby" data-i18n="common.theme_bedtime">Bedtime</div>
   </div>
 </section>
 
 <section class="section" id="stories">
   <div class="wrap">
-    <div class="section-title">Pick their story</div>
-    <div class="section-sub">Every story can be personalized with their name, age, and photo &middot; from &euro;35</div>
+    <div class="section-title" data-i18n="home.section_pick_title">Pick their story</div>
+    <div class="section-sub" data-i18n="home.section_pick_sub">Every story can be personalized with their name, age, and photo &middot; from &euro;35</div>
     <div class="stories-grid" id="stories-grid">
       <a class="story-card" data-theme="courage" href="story-bravest-little-one.html">
         <div class="story-photo courage"><div class="t">The Bravest<br/>Little One</div></div>
-        <div class="row1"><h3>The Bravest Little One</h3></div>
-        <div class="theme-tag">Courage</div>
-        <p class="blurb">For the child facing something new and a little scary.</p>
+        <div class="row1"><h3 data-i18n="home.story1_title">The Bravest Little One</h3></div>
+        <div class="theme-tag" data-i18n="common.theme_courage">Courage</div>
+        <p class="blurb" data-i18n="home.story1_blurb">For the child facing something new and a little scary.</p>
         <div class="price">&euro;35 <span>per book</span></div>
       </a>
       <a class="story-card" data-theme="adventure" href="story-cloud-ship.html">
         <div class="story-photo adventure"><div class="t">The Cloud<br/>Ship</div></div>
-        <div class="row1"><h3>The Cloud Ship</h3></div>
-        <div class="theme-tag">Adventure</div>
-        <p class="blurb">For the dreamer who wants to sail among the stars.</p>
+        <div class="row1"><h3 data-i18n="home.story2_title">The Cloud Ship</h3></div>
+        <div class="theme-tag" data-i18n="common.theme_adventure">Adventure</div>
+        <p class="blurb" data-i18n="home.story2_blurb">For the dreamer who wants to sail among the stars.</p>
         <div class="price">&euro;35 <span>per book</span></div>
       </a>
       <a class="story-card" data-theme="lullaby" href="story-star-who-couldnt-sleep.html">
         <div class="story-photo lullaby"><div class="t">The Star Who<br/>Couldn't Sleep</div></div>
-        <div class="row1"><h3>The Star Who Couldn't Sleep</h3></div>
-        <div class="theme-tag">Bedtime</div>
-        <p class="blurb">A gentle wind-down story for the very end of the day.</p>
+        <div class="row1"><h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3></div>
+        <div class="theme-tag" data-i18n="common.theme_bedtime">Bedtime</div>
+        <p class="blurb" data-i18n="home.story3_blurb">A gentle wind-down story for the very end of the day.</p>
         <div class="price">&euro;35 <span>per book</span></div>
       </a>
     </div>
@@ -300,15 +301,15 @@
 <section class="section" style="padding-top: 0;">
   <div class="wrap">
     <div class="trust-row">
-      <div class="trust-item"><div class="ic">&#127480;&#127486;</div><div><h3>Printed in Syria</h3><p>Cash on delivery</p></div></div>
-      <div class="trust-item"><div class="ic">&#127465;&#127466;</div><div><h3>Printed in Germany</h3><p>Card payment</p></div></div>
-      <div class="trust-item"><div class="ic">&#127462;&#127466;</div><div><h3>Made in the UAE</h3><p>Trusted quality</p></div></div>
+      <div class="trust-item"><div class="ic">&#127480;&#127486;</div><div><h3 data-i18n="home.trust1_title">Printed in Syria</h3><p data-i18n="home.trust1_sub">Cash on delivery</p></div></div>
+      <div class="trust-item"><div class="ic">&#127465;&#127466;</div><div><h3 data-i18n="home.trust2_title">Printed in Germany</h3><p data-i18n="home.trust2_sub">Card payment</p></div></div>
+      <div class="trust-item"><div class="ic">&#127462;&#127466;</div><div><h3 data-i18n="home.trust3_title">Made in the UAE</h3><p data-i18n="home.trust3_sub">Trusted quality</p></div></div>
     </div>
 
     <div class="cta-banner">
-      <h2>Ready to meet their hero?</h2>
-      <p>It only takes a few minutes to get started.</p>
-      <div class="actions"><a class="btn-primary" href="personalize.html">Create Their Story</a></div>
+      <h2 data-i18n="home.cta_title">Ready to meet their hero?</h2>
+      <p data-i18n="home.cta_sub">It only takes a few minutes to get started.</p>
+      <div class="actions"><a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a></div>
     </div>
   </div>
 </section>
@@ -317,20 +318,20 @@
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <h4>Explore</h4>
-        <a href="stories.html">Stories</a>
-        <a href="about.html">About</a>
-        <a href="help.html">Help</a>
+        <h4 data-i18n="common.footer_explore">Explore</h4>
+        <a href="stories.html" data-i18n="common.nav_stories">Stories</a>
+        <a href="about.html" data-i18n="common.nav_about">About</a>
+        <a href="help.html" data-i18n="common.nav_help">Help</a>
       </div>
       <div>
-        <h4>Account</h4>
-        <a href="login.html">Sign in</a>
-        <a href="account.html">My account</a>
+        <h4 data-i18n="common.footer_account">Account</h4>
+        <a href="login.html" data-i18n="common.footer_signin">Sign in</a>
+        <a href="account.html" data-i18n="common.footer_myaccount">My account</a>
       </div>
       <div>
-        <h4>Support</h4>
-        <a href="help.html">FAQ</a>
-        <a href="mailto:hello@maison-jaber.com">Contact</a>
+        <h4 data-i18n="common.footer_support">Support</h4>
+        <a href="help.html" data-i18n="common.footer_faq">FAQ</a>
+        <a href="mailto:hello@maison-jaber.com" data-i18n="common.footer_contact">Contact</a>
       </div>
       <div>
         <h4>Hikaya</h4>
@@ -338,8 +339,8 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div>&copy; 2026 Maison Jaber. All rights reserved.</div>
-      <div class="right"><span>EN</span><span>&euro; EUR</span></div>
+      <div data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</div>
+      <div class="right"><span data-i18n-skip>&euro; EUR</span></div>
     </div>
   </div>
 </footer>
