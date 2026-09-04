@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Help &amp; FAQ — Hikaya by Maison Jaber</title>
+<meta name="description" content="Answers about personalization, delivery, privacy, gifts, and more for Maison Jaber's personalized storybooks." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  :root {
+    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
+    --indigo: #252640; --parchment: #ede2d2;
+    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
+    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  a { color: inherit; text-decoration: underline; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+
+  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; color: var(--text-on-dark); }
+  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); margin-left: 24px; text-decoration: none; }
+  header.site nav a:hover { color: var(--gold); }
+  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); text-decoration: none; }
+  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+
+
+  .page-hero { background: var(--charcoal); color: var(--text-on-dark); padding: 64px 0 48px; text-align: center; }
+  .page-hero h1 { font-size: clamp(28px, 4vw, 40px); margin-top: 12px; }
+
+  .toc { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 28px 0; background: var(--parchment); }
+  .toc a { font-size: 12px; text-decoration: none; border: 1px solid rgba(184,149,75,0.35); border-radius: 20px; padding: 7px 14px; color: var(--text-on-light-soft); }
+  .toc a:hover { border-color: var(--gold); color: var(--text-on-light); }
+
+  .faq-section { padding: 56px 0 20px; }
+  .faq-section h2 { font-size: 20px; margin-bottom: 4px; scroll-margin-top: 90px; }
+  .faq-group { margin-bottom: 44px; }
+
+  .faq-item { border-bottom: 1px solid rgba(184,149,75,0.2); }
+  .faq-item summary {
+    padding: 18px 0; font-size: 15px; font-weight: 600; cursor: pointer; list-style: none;
+    display: flex; justify-content: space-between; gap: 16px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; color: var(--gold); font-size: 18px; flex-shrink: 0; }
+  .faq-item[open] summary::after { content: '\2212'; }
+  .faq-item p { padding: 0 0 18px; font-size: 14px; color: var(--text-on-light-soft); margin: 0; max-width: 68ch; text-decoration: none; }
+  .faq-item p a { text-decoration: underline; }
+
+  .contact-block { text-align: center; padding: 40px 0 70px; }
+  .contact-block p { color: var(--text-on-light-soft); font-size: 14px; }
+
+  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); }
+  footer.site p { font-size: 13px; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <a href="index.html" class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></a>
+    <nav>
+      <a href="stories.html">Stories</a>
+      <a href="about.html">About</a>
+      <a href="personalize.html">Create Their Story</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Help &amp; FAQ</div>
+    <h1>Good to know</h1>
+  </div>
+</section>
+
+<div class="toc">
+  <a href="#personalization">Personalization</a>
+  <a href="#delivery">Delivery &amp; Format</a>
+  <a href="#gifts">Gifts &amp; Orders</a>
+  <a href="#privacy">Privacy &amp; Photos</a>
+  <a href="#language">Language</a>
+  <a href="#support">Contact</a>
+</div>
+
+<section class="wrap faq-section">
+
+  <div class="faq-group" id="personalization">
+    <h2>Personalization</h2>
+    <details class="faq-item" open>
+      <summary>How does personalization work?</summary>
+      <p>You choose a story and age edition, tell us about your child, and upload a clear photo. We use these to prepare a story featuring your child by name, illustrated in our storybook style.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Which photograph works best?</summary>
+      <p>A clear, front-facing photo in good natural lighting, without filters or anything covering the face, works best for a recognizable result.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How closely will the illustration resemble my child?</summary>
+      <p>The illustration is a tasteful storybook interpretation &mdash; recognizable in likeness, but reimagined in Maison Jaber's illustration style rather than a photo pasted into the page.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I preview the book before it's printed?</summary>
+      <p>We'll send a preview by email once your child's story is prepared, before it goes to print.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I order for more than one child, or siblings?</summary>
+      <p>Yes &mdash; submit a separate request for each child so each book can be personalized correctly.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I make changes after I submit my request?</summary>
+      <p>Reach out to us before production begins and we'll do our best to accommodate changes to the name, dedication, or photo.</p>
+    </details>
+  </div>
+
+  <div class="faq-group" id="delivery">
+    <h2>Delivery &amp; Format</h2>
+    <details class="faq-item" open>
+      <summary>What age editions are available?</summary>
+      <p>Every story is available in three editions &mdash; Ages 2&ndash;4, 5&ndash;7, and 8&ndash;10 &mdash; each adapted in language and pacing, not just length.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How long does production take?</summary>
+      <p>Production and delivery timing depends on your region, and will be confirmed with your order.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Which countries do you deliver to?</summary>
+      <p>We currently fulfill orders for Germany and the wider Europe region (printed and shipped locally, card payment) and Syria (printed and shipped locally, cash on delivery). Contact us to check other regions.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Is a digital version available?</summary>
+      <p>Digital availability depends on your region, and will be shown clearly when it's ready.</p>
+    </details>
+  </div>
+
+  <div class="faq-group" id="gifts">
+    <h2>Gifts &amp; Orders</h2>
+    <details class="faq-item" open>
+      <summary>Can I send this as a gift?</summary>
+      <p>Yes &mdash; let us know it's a gift, and add a dedication message during personalization.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I return or cancel a personalized book?</summary>
+      <p>Because each book is made specifically for one child, personalized orders may have special cancellation and return conditions. We'll always confirm details before production begins.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What if my book arrives damaged or incorrect?</summary>
+      <p>Contact us with your order details and photos of the issue, and we'll make it right.</p>
+    </details>
+  </div>
+
+  <div class="faq-group" id="privacy">
+    <h2>Privacy &amp; Photos</h2>
+    <details class="faq-item" open>
+      <summary>How are uploaded photos used?</summary>
+      <p>Photos are used only to create the book you ordered. They are never used for advertising, public galleries, or shared beyond what's needed to produce your order.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Are photos stored, and can I request deletion?</summary>
+      <p>Photos are retained only as long as needed to complete and support your order. You can request deletion at any time by contacting us.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Who can submit a child's photo?</summary>
+      <p>Only a parent or legal guardian should submit a child's photo, and only a photo they have the right to use.</p>
+    </details>
+  </div>
+
+  <div class="faq-group" id="language">
+    <h2>Language</h2>
+    <details class="faq-item" open>
+      <summary>What languages are available?</summary>
+      <p>Maison Jaber stories are available in English, German, and Arabic, with a dedicated right-to-left layout for Arabic.</p>
+    </details>
+  </div>
+
+</section>
+
+<div class="wrap contact-block" id="support">
+  <p>Can't find what you're looking for?<br/><a href="mailto:hello@maison-jaber.com">hello@maison-jaber.com</a></p>
+</div>
+
+<footer class="site">
+  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+</body>
+</html>

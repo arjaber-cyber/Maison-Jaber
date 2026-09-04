@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — Hikaya by Maison Jaber</title>
+<meta name="description" content="Maison Jaber creates original, age-appropriate stories in which your child becomes the hero — combining timeless storytelling with thoughtful personalization." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  :root {
+    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
+    --indigo: #252640; --parchment: #ede2d2;
+    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
+    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.65; }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--charcoal);
+    padding: 15px 30px; border-radius: var(--radius); font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+  }
+
+  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; color: var(--text-on-dark); }
+  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); margin-left: 24px; }
+  header.site nav a:hover { color: var(--gold); }
+  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); }
+  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+
+
+  .page-hero { background: var(--charcoal); color: var(--text-on-dark); padding: 72px 0 60px; text-align: center; }
+  .page-hero h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 12px; max-width: 16ch; margin-left: auto; margin-right: auto; }
+
+  .section { padding: 64px 0; }
+  .section p { font-size: 16px; color: var(--text-on-light-soft); margin: 0 0 18px; }
+  .section h2 { font-size: 24px; margin-bottom: 16px; }
+
+  .belief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
+  @media (max-width: 640px) { .belief-grid { grid-template-columns: 1fr; } }
+  .belief-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 22px; }
+  .belief-item h3 { font-size: 15px; margin-bottom: 8px; }
+  .belief-item p { font-size: 13px; margin: 0; }
+
+  .golden-note {
+    background: var(--charcoal); color: var(--text-on-dark); border-radius: var(--radius); padding: 40px 36px;
+    text-align: center; margin: 20px 0;
+  }
+  .golden-note .gold-line { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 18px; }
+  .golden-note p { color: var(--text-on-dark-soft); font-style: italic; font-family: 'Playfair Display', serif; font-size: 18px; }
+
+  .cta-block { text-align: center; padding: 20px 0 10px; }
+
+  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); margin-top: 40px; }
+  footer.site p { font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <a href="index.html" class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></a>
+    <nav>
+      <a href="stories.html">Stories</a>
+      <a href="help.html">Help</a>
+      <a href="personalize.html">Create Their Story</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">About Maison Jaber</div>
+    <h1>We create the stories children carry with them.</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <p>Maison Jaber began with a simple belief: every child deserves to find themselves in a beautiful story &mdash; not as a name printed on a sticker, but as the true hero of the telling.</p>
+    <p>We write original stories first, and personalize them second. A Maison Jaber book isn't a template with a blank left for a name; it's a story built to hold a child's name, likeness, and one meaningful detail from their world, adapted carefully to how they read and understand at their age.</p>
+
+    <div class="belief-grid">
+      <div class="belief-item">
+        <h3>Original story worlds</h3>
+        <p>Every Maison Jaber story is written for this purpose, not adapted from something else.</p>
+      </div>
+      <div class="belief-item">
+        <h3>Age-appropriate, always</h3>
+        <p>Language, pacing, and emotional depth are adapted per edition, not just page count.</p>
+      </div>
+      <div class="belief-item">
+        <h3>Personalization with purpose</h3>
+        <p>Their name and likeness are woven into the story itself, not layered on top of it.</p>
+      </div>
+      <div class="belief-item">
+        <h3>Made to be kept</h3>
+        <p>A printed keepsake, meant to sit on a shelf and be read again for years.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--parchment); padding-top: 60px; padding-bottom: 60px;">
+  <div class="wrap">
+    <div class="golden-note">
+      <div class="gold-line"></div>
+      <p>"Find the Golden Line" &mdash; a fine gold thread that runs through every Maison Jaber story, marking the courage, kindness, or wonder each child discovers along the way.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <h2>Where we work from</h2>
+    <p>Maison Jaber is based in the UAE, where the platform, story content, and support are run. Books are printed and fulfilled close to where they're delivered &mdash; keeping quality high and delivery times shorter than shipping printed books across borders.</p>
+  </div>
+  <div class="wrap cta-block">
+    <a class="btn-primary" href="personalize.html">Create Their Story</a>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+</body>
+</html>
