@@ -102,58 +102,58 @@
   </div>
 </header>
 
-<div class="preview-banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
+<div class="preview-banner" data-i18n="checkout.preview_banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
 
 <div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 32px;">
   <div style="background: #fff; border: 1px solid rgba(184,149,75,0.25); border-radius: 12px; padding: 24px 26px;">
-    <h2 style="font-size: 16px; margin-bottom: 4px;">Sign in for faster checkout</h2>
-    <p style="font-size: 13px; color: var(--text-on-light-soft); margin: 0 0 16px;">Track this order and save your details for next time &mdash; or continue without an account.</p>
+    <h2 style="font-size: 16px; margin-bottom: 4px;" data-i18n="checkout.signin_title">Sign in for faster checkout</h2>
+    <p style="font-size: 13px; color: var(--text-on-light-soft); margin: 0 0 16px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</p>
     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 11px 18px;">Continue with Google</button>
-      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 11px 18px;">Continue with Facebook</button>
-      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 11px 18px; margin-left: auto;">Continue as Guest</button>
+      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 11px 18px;" data-i18n="checkout.google">Continue with Google</button>
+      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 11px 18px;" data-i18n="checkout.facebook">Continue with Facebook</button>
+      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 11px 18px; margin-left: auto;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
 </div>
 
 <div id="signed-in-bar" class="wrap" style="max-width: 1080px; margin: 0 auto; padding-top: 24px; display: none;">
   <div style="background: var(--parchment); border-radius: 12px; padding: 14px 20px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
-    <span>Signed in as <strong id="signed-in-email"></strong></span>
-    <button id="sign-out-checkout" style="background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--text-on-light-soft); font-family: 'Inter', sans-serif;">Sign out</button>
+    <span data-i18n-skip>Signed in as <strong id="signed-in-email"></strong></span>
+    <button id="sign-out-checkout" style="background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--text-on-light-soft); font-family: 'Inter', sans-serif;" data-i18n="account.sign_out">Sign out</button>
   </div>
 </div>
 
 <div class="checkout-layout">
   <div class="checkout-col">
     <div class="form-block">
-      <h2>Delivery details</h2>
+      <h2 data-i18n="checkout.delivery_title">Delivery details</h2>
       <div class="form-grid">
-        <div class="field"><label class="field-label" for="full-name">Full name</label><input type="text" id="full-name" placeholder="e.g. Sara Al Habtoor" /></div>
-        <div class="field"><label class="field-label" for="email">Email</label><input type="text" id="email" placeholder="you@email.com" /></div>
-        <div class="field full"><label class="field-label" for="address">Address</label><input type="text" id="address" placeholder="Street, building, apartment" /></div>
-        <div class="field"><label class="field-label" for="city">City</label><input type="text" id="city" placeholder="City" /></div>
+        <div class="field"><label class="field-label" for="full-name" data-i18n="checkout.full_name">Full name</label><input type="text" id="full-name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
+        <div class="field"><label class="field-label" for="email" data-i18n="checkout.email">Email</label><input type="text" id="email" placeholder="you@email.com" /></div>
+        <div class="field full"><label class="field-label" for="address" data-i18n="checkout.address">Address</label><input type="text" id="address" placeholder="Street, building, apartment" data-i18n-placeholder="checkout.address_ph" /></div>
+        <div class="field"><label class="field-label" for="city" data-i18n="checkout.city">City</label><input type="text" id="city" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
         <div class="field">
-          <label class="field-label" for="country">Country</label>
-          <select id="country"><option>Germany</option><option>Syria</option><option>Other</option></select>
+          <label class="field-label" for="country" data-i18n="checkout.country">Country</label>
+          <select id="country"><option data-i18n="checkout.germany">Germany</option><option data-i18n="checkout.syria">Syria</option><option data-i18n="checkout.other">Other</option></select>
         </div>
-        <div class="field"><label class="field-label" for="phone">Phone</label><input type="text" id="phone" placeholder="For delivery updates" /></div>
-        <div class="field"><label class="field-label" for="gift">Is this a gift?</label><select id="gift"><option>No</option><option>Yes</option></select></div>
+        <div class="field"><label class="field-label" for="phone" data-i18n="checkout.phone">Phone</label><input type="text" id="phone" placeholder="For delivery updates" data-i18n-placeholder="checkout.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option data-i18n="checkout.no">No</option><option data-i18n="checkout.yes">Yes</option></select></div>
       </div>
     </div>
 
     <div class="form-block">
-      <h2>Payment</h2>
+      <h2 data-i18n="checkout.payment_title">Payment</h2>
       <div class="payment-placeholder">
-        Payment isn't connected yet &mdash; this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.
+        <span data-i18n="checkout.payment_placeholder">Payment isn't connected yet &mdash; this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.</span>
       </div>
     </div>
 
     <div class="approval">
       <input type="checkbox" id="final-approval" />
-      <label for="final-approval">I have checked the child's name, story, age edition, dedication, and preview.</label>
+      <label for="final-approval" data-i18n="checkout.approval">I have checked the child's name, story, age edition, dedication, and preview.</label>
     </div>
 
-    <button class="btn-primary" id="place-order" disabled>Payment not yet available</button>
+    <button class="btn-primary" id="place-order" disabled data-i18n="checkout.place_order">Payment not yet available</button>
   </div>
 
   <div>
@@ -161,20 +161,20 @@
       <div class="summary-book">
         <div class="cover-mini"></div>
         <div>
-          <h3>The Bravest Little One</h3>
-          <p>For Layla &middot; Ages 5&ndash;7 &middot; Hardcover</p>
-          <a class="edit" href="personalize.html">Edit</a>
+          <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+          <p data-i18n-skip>For Layla &middot; Ages 5&ndash;7 &middot; Hardcover</p>
+          <a class="edit" href="personalize.html" data-i18n="checkout.edit">Edit</a>
         </div>
       </div>
-      <div class="price-row"><span>Book</span><span class="note">Shown at checkout</span></div>
-      <div class="price-row"><span>Delivery</span><span class="note">Confirmed by region</span></div>
-      <div class="price-row total"><span>Estimated total</span><span class="note">Confirmed at checkout</span></div>
+      <div class="price-row"><span data-i18n="checkout.book">Book</span><span class="note" data-i18n="checkout.shown_at_checkout">Shown at checkout</span></div>
+      <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" data-i18n="checkout.confirmed_region">Confirmed by region</span></div>
+      <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" data-i18n="checkout.confirmed_checkout">Confirmed at checkout</span></div>
     </div>
   </div>
 </div>
 
 <footer class="site">
-  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+  <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
 </footer>
 
 <script type="module">
