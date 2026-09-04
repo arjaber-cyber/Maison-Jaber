@@ -141,10 +141,10 @@
   <div class="carousel-track" id="carousel-track">
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">My Account</div>
-        <h2>Every story, saved and ready</h2>
-        <p>Track orders, revisit past stories, and start a new one anytime.</p>
-        <a class="btn-primary" href="personalize.html">Create a New Story</a>
+        <div class="eyebrow" data-i18n="account.slide1_eyebrow">My Account</div>
+        <h2 data-i18n="account.slide1_title">Every story, saved and ready</h2>
+        <p data-i18n="account.slide1_body">Track orders, revisit past stories, and start a new one anytime.</p>
+        <a class="btn-primary" href="personalize.html" data-i18n="account.slide1_cta">Create a New Story</a>
       </div></div>
     </div>
   </div>
@@ -157,27 +157,27 @@
 
 <section class="page-hero">
   <div class="wrap">
-    <div class="eyebrow">Your Account</div>
-    <h1>Welcome back</h1>
-    <p>This is a preview of your account area — order tracking activates once checkout is connected.</p>
+    <div class="eyebrow" data-i18n="account.hero_eyebrow">Your Account</div>
+    <h1 data-i18n="account.hero_title">Welcome back</h1>
+    <p data-i18n="account.hero_body">This is a preview of your account area — order tracking activates once checkout is connected.</p>
   </div>
 </section>
 
 <div class="wrap account-layout">
   <nav class="account-nav">
-    <a href="#" class="active" data-panel="orders">Orders</a>
-    <a href="#" data-panel="projects">Saved Projects</a>
-    <a href="#" data-panel="addresses">Addresses</a>
-    <a href="#" data-panel="support">Support</a>
+    <a href="#" class="active" data-panel="orders" data-i18n="account.tab_orders">Orders</a>
+    <a href="#" data-panel="projects" data-i18n="account.tab_projects">Saved Projects</a>
+    <a href="#" data-panel="addresses" data-i18n="account.tab_addresses">Addresses</a>
+    <a href="#" data-panel="support" data-i18n="account.tab_support">Support</a>
   </nav>
 
   <div>
     <div class="panel active" data-panel="orders">
-      <h2>Your orders</h2>
+      <h2 data-i18n="account.orders_title">Your orders</h2>
       <div class="empty-state">
         <div class="mark">&#10022;</div>
-        <p>No orders yet. Once you send a request or complete an order, it will appear here with its stage &mdash; from Order Received through to Delivered.</p>
-        <div style="margin-top: 18px;"><a class="btn-primary" href="personalize.html">Create Their Story</a></div>
+        <p data-i18n="account.orders_empty">No orders yet. Once you send a request or complete an order, it will appear here with its stage &mdash; from Order Received through to Delivered.</p>
+        <div style="margin-top: 18px;"><a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a></div>
       </div>
 
       <!-- Example order card (for reference once orders exist) -->
@@ -196,32 +196,32 @@
     </div>
 
     <div class="panel" data-panel="projects">
-      <h2>Saved personalization projects</h2>
+      <h2 data-i18n="account.projects_title">Saved personalization projects</h2>
       <div class="empty-state">
         <div class="mark">&#10022;</div>
-        <p>If you start personalizing a story and don't finish, it will be saved here so you can pick up right where you left off.</p>
+        <p data-i18n="account.projects_empty">If you start personalizing a story and don't finish, it will be saved here so you can pick up right where you left off.</p>
       </div>
     </div>
 
     <div class="panel" data-panel="addresses">
-      <h2>Delivery addresses</h2>
+      <h2 data-i18n="account.addresses_title">Delivery addresses</h2>
       <div class="empty-state">
         <div class="mark">&#10022;</div>
-        <p>No saved addresses yet. You'll be able to save one at checkout for faster future orders.</p>
+        <p data-i18n="account.addresses_empty">No saved addresses yet. You'll be able to save one at checkout for faster future orders.</p>
       </div>
     </div>
 
     <div class="panel" data-panel="support">
-      <h2>Support</h2>
-      <p style="color: var(--text-on-light-soft); font-size: 14px; margin-bottom: 20px;">Have a question about an order, a photo, or delivery? We're happy to help.</p>
-      <a class="btn-secondary" href="mailto:hello@maison-jaber.com">Email hello@maison-jaber.com</a>
-      <p style="color: var(--text-on-light-soft); font-size: 13px; margin-top: 20px;">You can also visit our <a href="help.html" style="text-decoration: underline;">Help &amp; FAQ</a> for quick answers.</p>
+      <h2 data-i18n="common.footer_support">Support</h2>
+      <p style="color: var(--text-on-light-soft); font-size: 14px; margin-bottom: 20px;" data-i18n="account.support_body">Have a question about an order, a photo, or delivery? We're happy to help.</p>
+      <a class="btn-secondary" href="mailto:hello@maison-jaber.com" data-i18n="account.support_email">Email hello@maison-jaber.com</a>
+      <p style="color: var(--text-on-light-soft); font-size: 13px; margin-top: 20px;" data-i18n-html="account.support_visit">You can also visit our <a href="help.html" style="text-decoration: underline;">Help &amp; FAQ</a> for quick answers.</p>
     </div>
   </div>
 </div>
 
 <div class="wrap" style="padding: 32px 0 48px; margin-top: 20px; border-top: 1px solid var(--line-soft); text-align: center;">
-  <button class="btn-secondary" id="sign-out-btn-top">Sign out</button>
+  <button class="btn-secondary" id="sign-out-btn-top" data-i18n="account.sign_out">Sign out</button>
 </div>
 
 <script type="module">
