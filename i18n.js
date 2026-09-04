@@ -112,7 +112,6 @@ window.HIKAYA_TRANSLATIONS = {
       if (val !== null) el.setAttribute('placeholder', val);
     });
 
-    document.querySelectorAll('.lang-pill').forEach(el => { el.textContent = LANG_NAMES[lang]; });
     document.querySelectorAll('.lang-current-label').forEach(el => { el.textContent = LANG_NAMES[lang]; });
   }
 
@@ -127,6 +126,14 @@ window.HIKAYA_TRANSLATIONS = {
       if (pill.dataset.switcherBound) return;
       pill.dataset.switcherBound = '1';
       pill.style.position = 'relative';
+
+      // Wrap the visible label in its own span so re-translating it never
+      // touches (and wipes out) the dropdown menu appended below.
+      const label = document.createElement('span');
+      label.className = 'lang-current-label';
+      label.textContent = LANG_NAMES[getLang()];
+      pill.textContent = '';
+      pill.appendChild(label);
 
       const menu = document.createElement('div');
       menu.className = 'lang-menu';
