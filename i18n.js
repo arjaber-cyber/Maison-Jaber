@@ -221,6 +221,13 @@ window.HIKAYA_TRANSLATIONS = {
     confirmed_region: { en: 'Confirmed by region', de: 'Je nach Region bestätigt', ar: 'يُؤكَّد حسب المنطقة' },
     est_total: { en: 'Estimated total', de: 'Geschätzte Gesamtsumme', ar: 'الإجمالي التقديري' },
     confirmed_checkout: { en: 'Confirmed at checkout', de: 'Beim Checkout bestätigt', ar: 'يُؤكَّد عند الدفع' },
+  },
+  login: {
+    title: { en: 'Sign in to your account', de: 'Bei Ihrem Konto anmelden', ar: 'سجّل الدخول إلى حسابك' },
+    subtitle: { en: "Track orders, save projects, and revisit your child's stories.", de: 'Verfolgen Sie Bestellungen, speichern Sie Projekte und sehen Sie sich die Geschichten Ihres Kindes erneut an.', ar: 'تتبع الطلبات، واحفظ المشاريع، وراجع قصص طفلك مرة أخرى.' },
+    or: { en: 'or', de: 'oder', ar: 'أو' },
+    send_link: { en: 'Send me a sign-in link', de: 'Mir einen Anmeldelink senden', ar: 'أرسل لي رابط تسجيل الدخول' },
+    back_link: { en: '← Back to Maison Jaber', de: '← Zurück zu Maison Jaber', ar: '← العودة إلى ميزون جابر' },
   }
 };
 
