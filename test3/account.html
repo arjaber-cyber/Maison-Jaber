@@ -5,16 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Your Account — Hikaya by Maison Jaber</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
-    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
-    --parchment: #ede2d2; --sage: #8d998d;
-    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
-    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+    --ink: #222222; --ink-soft: #717171; --line: #dddddd; --line-soft: #ebebeb;
+    --coral: #ff385c; --coral-deep: #e31c5f; --bg: #ffffff; --bg-soft: #f7f7f7;
+    --radius: 14px; --radius-lg: 20px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: var(--coral); --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1eee8;
+    --sunshine: var(--coral); --sky: var(--ink-soft); --terracotta: var(--coral-deep); --brown: var(--ink);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; }
-  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 500; margin: 0; }
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
@@ -28,17 +34,17 @@
     padding: 12px 20px; border-radius: var(--radius); border: 1px solid rgba(184,149,75,0.4); font-size: 13px; font-weight: 600; cursor: pointer;
   }
 
-  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
-  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; color: var(--text-on-dark); }
-  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); margin-left: 24px; }
-  header.site nav a:hover { color: var(--gold); }
-  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); }
-  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: #fff; z-index: 50; }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  header.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-left: 24px; }
+  header.site nav a:hover { color: var(--coral); }
+  .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; font-size: 21px; color: var(--ink); }
+  .wordmark .sub-brand { display: block; font-family: 'Inter', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
 
 
-  .page-hero { background: var(--charcoal); color: var(--text-on-dark); padding: 48px 0; }
+  .page-hero { background: var(--bg-soft); color: var(--ink); padding: 48px 0; }
   .page-hero h1 { font-size: clamp(24px, 3vw, 34px); }
-  .page-hero p { color: var(--text-on-dark-soft); margin-top: 8px; font-size: 14px; }
+  .page-hero p { color: var(--ink-soft); margin-top: 8px; font-size: 14px; }
 
   .account-layout { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 48px 0 90px; }
   @media (max-width: 800px) { .account-layout { grid-template-columns: 1fr; } }
@@ -58,8 +64,8 @@
   }
   @media (max-width: 640px) { .order-card { flex-direction: column; align-items: flex-start; } }
   .order-card .cover-mini {
-    width: 46px; height: 60px; border-radius: 3px; flex-shrink: 0;
-    background: linear-gradient(165deg, #3a4a3d 0%, #1c241d 100%);
+    width: 46px; height: 60px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(165deg, #222222 0%, #111111 100%);
   }
   .order-info { display: flex; gap: 14px; align-items: center; flex: 1; }
   .order-info h3 { font-size: 15px; margin-bottom: 4px; }
@@ -79,7 +85,7 @@
   }
   .address-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 8px; }
 
-  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); }
+  footer.site { background: var(--bg-soft); color: var(--ink-soft); padding: 34px 0; text-align: center; border-top: 1px solid var(--line-soft); }
   footer.site p { font-size: 13px; }
   /* Rotating banner carousel (LoveBook-style) */
   .carousel { position: relative; overflow: hidden; height: 480px; }
@@ -142,10 +148,13 @@
 </section>
 
 <section class="page-hero">
-  <div class="wrap">
-    <div class="eyebrow">Your Account</div>
-    <h1>Welcome back</h1>
-    <p>This is a preview of your account area — order tracking activates once checkout is connected.</p>
+  <div class="wrap" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+    <div>
+      <div class="eyebrow">Your Account</div>
+      <h1>Welcome back</h1>
+      <p>This is a preview of your account area — order tracking activates once checkout is connected.</p>
+    </div>
+    <button class="btn-secondary" id="sign-out-btn-top" style="flex-shrink: 0;">Sign out</button>
   </div>
 </section>
 
@@ -228,10 +237,12 @@
     document.querySelector('.page-hero p').textContent = 'Your orders, saved projects, and details, all in one place.';
   }
 
-  document.getElementById('sign-out-btn').addEventListener('click', async () => {
+  async function handleSignOut() {
     await supabase.auth.signOut();
     window.location.href = 'index.html';
-  });
+  }
+  document.getElementById('sign-out-btn').addEventListener('click', handleSignOut);
+  document.getElementById('sign-out-btn-top').addEventListener('click', handleSignOut);
 </script>
 
 <footer class="site">

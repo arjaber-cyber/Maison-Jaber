@@ -6,16 +6,22 @@
 <title>About — Hikaya by Maison Jaber</title>
 <meta name="description" content="Maison Jaber creates original, age-appropriate stories in which your child becomes the hero — combining timeless storytelling with thoughtful personalization." />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
-    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
-    --indigo: #252640; --parchment: #ede2d2;
-    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
-    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+    --ink: #222222; --ink-soft: #717171; --line: #dddddd; --line-soft: #ebebeb;
+    --coral: #ff385c; --coral-deep: #e31c5f; --bg: #ffffff; --bg-soft: #f7f7f7;
+    --radius: 14px; --radius-lg: 20px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: var(--coral); --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1eee8;
+    --sunshine: var(--coral); --sky: var(--ink-soft); --terracotta: var(--coral-deep); --brown: var(--ink);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.65; }
-  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.65; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 500; margin: 0; }
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 780px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
@@ -25,15 +31,15 @@
     padding: 15px 30px; border-radius: var(--radius); font-size: 14px; font-weight: 700; border: none; cursor: pointer;
   }
 
-  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
-  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; color: var(--text-on-dark); }
-  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); margin-left: 24px; }
-  header.site nav a:hover { color: var(--gold); }
-  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); }
-  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: #fff; z-index: 50; }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  header.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-left: 24px; }
+  header.site nav a:hover { color: var(--coral); }
+  .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; font-size: 21px; color: var(--ink); }
+  .wordmark .sub-brand { display: block; font-family: 'Inter', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
 
 
-  .page-hero { background: var(--charcoal); color: var(--text-on-dark); padding: 72px 0 60px; text-align: center; }
+  .page-hero { background: var(--bg-soft); color: var(--ink); padding: 72px 0 60px; text-align: center; }
   .page-hero h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 12px; max-width: 16ch; margin-left: auto; margin-right: auto; }
 
   .section { padding: 64px 0; }
@@ -51,11 +57,11 @@
     text-align: center; margin: 20px 0;
   }
   .golden-note .gold-line { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 18px; }
-  .golden-note p { color: var(--text-on-dark-soft); font-style: italic; font-family: 'Playfair Display', serif; font-size: 18px; }
+  .golden-note p { color: var(--text-on-dark-soft); font-style: italic; font-family: 'Inter', sans-serif; font-size: 18px; }
 
   .cta-block { text-align: center; padding: 20px 0 10px; }
 
-  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); margin-top: 40px; }
+  footer.site { background: var(--bg-soft); color: var(--ink-soft); padding: 34px 0; text-align: center; border-top: 1px solid var(--line-soft); margin-top: 40px; }
   footer.site p { font-size: 13px; }
   /* Rotating banner carousel (LoveBook-style) */
   .carousel { position: relative; overflow: hidden; height: 480px; }

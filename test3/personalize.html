@@ -6,16 +6,23 @@
 <title>Create Their Story — Hikaya by Maison Jaber</title>
 <meta name="description" content="Choose their age, pick a story, add their details, and send us your request." />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
   :root {
-    --cream: #fbf6ee; --paper: #ffffff; --ink: #322c24; --ink-soft: #6f6559;
-    --coral: #e8805f; --coral-deep: #d1633f; --sage: #7fa583; --gold: #eeb84f; --sky: #6f9bc7;
-    --line: #efe4d3; --radius: 20px; --radius-sm: 12px;
+    --ink: #222222; --ink-soft: #717171; --line: #dddddd; --line-soft: #ebebeb;
+    --coral: #ff385c; --coral-deep: #e31c5f; --bg: #ffffff; --bg-soft: #f7f7f7;
+    --radius: 14px; --radius-lg: 20px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: var(--coral); --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1eee8;
+    --sunshine: var(--coral); --sky: var(--ink-soft); --terracotta: var(--coral-deep); --brown: var(--ink);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Nunito', sans-serif; font-size: 16px; line-height: 1.6; }
-  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 600; margin: 0; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 600; margin: 0; }
   a { color: inherit; text-decoration: none; }
   img { display: block; max-width: 100%; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
@@ -23,11 +30,11 @@
 
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
-    padding: 15px 28px; border-radius: 100px; font-family: 'Nunito', sans-serif; font-size: 15px;
+    padding: 15px 28px; border-radius: 100px; font-family: 'Inter', sans-serif; font-size: 15px;
     font-weight: 800; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(232,128,95,0.3);
   }
   .btn-primary:hover { filter: brightness(1.03); }
-  .btn-primary:disabled { background: #e4dbc9; color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+  .btn-primary:disabled { background: #ebebeb; color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
   .btn-oauth {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
     background: #fff; border: 2px solid var(--line); padding: 13px; border-radius: 100px;
@@ -35,10 +42,10 @@
   }
   .btn-oauth:hover { border-color: var(--coral); }
 
-  header.site { padding: 18px 0; }
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: #fff; z-index: 50; padding: 18px 0; }
   header.site .inner { display: flex; align-items: center; justify-content: space-between; }
-  .wordmark { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
-  .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
+  .wordmark { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
+  .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
   header.site a.exit { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
   header.site a.exit:hover { color: var(--coral); }
 
@@ -61,7 +68,7 @@
   }
   .age-card:hover { border-color: var(--line); }
   .age-card.selected { border-color: var(--coral); }
-  .age-card .range { font-family: 'Fraunces', serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
+  .age-card .range { font-family: 'Inter', sans-serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
   .age-card p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
 
   /* Story list (revealed after age chosen) */
@@ -78,10 +85,10 @@
   .story-pick .cover {
     aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
   }
-  .story-pick .cover.courage { background: linear-gradient(160deg, #a9cbab, #7fa583); }
-  .story-pick .cover.adventure { background: linear-gradient(160deg, #9db6da, #6f9bc7); }
-  .story-pick .cover.lullaby { background: linear-gradient(160deg, #f1c199, #e8a066); }
-  .story-pick .cover .t { font-family: 'Fraunces', serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .story-pick .cover.courage { background: linear-gradient(160deg, #ffd9a0, #ff385c); }
+  .story-pick .cover.adventure { background: linear-gradient(160deg, #f1eee8, #717171); }
+  .story-pick .cover.lullaby { background: linear-gradient(160deg, #ffd9a0, #e31c5f); }
+  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
   .story-pick .body { padding: 16px 18px 18px; }
   .story-pick .theme { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 4px; }
   .story-pick h3 { font-size: 16px; margin-bottom: 6px; }
@@ -97,7 +104,7 @@
   .field.full { grid-column: 1 / -1; }
   label.field-label { font-size: 13px; font-weight: 800; }
   input[type="text"], textarea {
-    width: 100%; padding: 12px 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
     border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
   }
   input:focus, textarea:focus { outline: none; border-color: var(--coral); background: #fff; }
@@ -133,14 +140,14 @@
   .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
   input[type="email"] {
-    width: 100%; padding: 12px 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
     border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); margin-bottom: 10px;
   }
 
   .signed-in-bar { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
   .signed-in-bar button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
 
-  .form-status { font-size: 13px; margin-top: 12px; color: #b0453c; font-weight: 700; min-height: 16px; }
+  .form-status { font-size: 13px; margin-top: 12px; color: #e31c5f; font-weight: 700; min-height: 16px; }
 
   .success-panel { text-align: center; display: none; }
   .success-panel.visible { display: block; }
@@ -401,7 +408,7 @@
     const email = document.getElementById('auth-email').value.trim();
     const status = document.getElementById('form-status');
     if (!email) { status.textContent = 'Please enter your email.'; return; }
-    status.style.color = '#6f6559';
+    status.style.color = '#717171';
     status.textContent = 'Sending your sign-in link…';
     const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
     status.textContent = error ? error.message : 'Check your email for a sign-in link.';
@@ -415,7 +422,7 @@
   document.getElementById('request-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const status = document.getElementById('form-status');
-    status.style.color = '#b0453c';
+    status.style.color = '#e31c5f';
 
     if (!isSignedIn) { status.textContent = 'Please sign in first.'; return; }
     if (!document.getElementById('story-input').value) { status.textContent = 'Please choose a story.'; return; }
@@ -424,7 +431,7 @@
 
     const btn = document.getElementById('send-btn');
     btn.disabled = true;
-    status.style.color = '#6f6559';
+    status.style.color = '#717171';
     status.textContent = 'Sending your request…';
 
     try {

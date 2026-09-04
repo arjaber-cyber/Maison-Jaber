@@ -6,30 +6,36 @@
 <title>Help &amp; FAQ — Hikaya by Maison Jaber</title>
 <meta name="description" content="Answers about personalization, delivery, privacy, gifts, and more for Maison Jaber's personalized storybooks." />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
-    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
-    --indigo: #252640; --parchment: #ede2d2;
-    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
-    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+    --ink: #222222; --ink-soft: #717171; --line: #dddddd; --line-soft: #ebebeb;
+    --coral: #ff385c; --coral-deep: #e31c5f; --bg: #ffffff; --bg-soft: #f7f7f7;
+    --radius: 14px; --radius-lg: 20px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: var(--coral); --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1eee8;
+    --sunshine: var(--coral); --sky: var(--ink-soft); --terracotta: var(--coral-deep); --brown: var(--ink);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; }
-  h1, h2 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2 { font-family: 'Inter', sans-serif; font-weight: 500; margin: 0; }
   a { color: inherit; text-decoration: underline; }
   .wrap { max-width: 780px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
 
-  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
-  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; color: var(--text-on-dark); }
-  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); margin-left: 24px; text-decoration: none; }
-  header.site nav a:hover { color: var(--gold); }
-  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); text-decoration: none; }
-  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: #fff; z-index: 50; }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  header.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-left: 24px; text-decoration: none; }
+  header.site nav a:hover { color: var(--coral); }
+  .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; font-size: 21px; color: var(--ink); text-decoration: none; }
+  .wordmark .sub-brand { display: block; font-family: 'Inter', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
 
 
-  .page-hero { background: var(--charcoal); color: var(--text-on-dark); padding: 64px 0 48px; text-align: center; }
+  .page-hero { background: var(--bg-soft); color: var(--ink); padding: 64px 0 48px; text-align: center; }
   .page-hero h1 { font-size: clamp(28px, 4vw, 40px); margin-top: 12px; }
 
   .toc { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding: 28px 0; background: var(--parchment); }
@@ -54,7 +60,7 @@
   .contact-block { text-align: center; padding: 40px 0 70px; }
   .contact-block p { color: var(--text-on-light-soft); font-size: 14px; }
 
-  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); }
+  footer.site { background: var(--bg-soft); color: var(--ink-soft); padding: 34px 0; text-align: center; border-top: 1px solid var(--line-soft); }
   footer.site p { font-size: 13px; text-decoration: none; }
   /* Rotating banner carousel (LoveBook-style) */
   .carousel { position: relative; overflow: hidden; height: 480px; }
