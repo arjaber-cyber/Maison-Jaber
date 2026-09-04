@@ -122,11 +122,12 @@
     content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 100%);
   }
   .carousel-copy { position: relative; z-index: 2; color: #fff; padding: 0 60px; max-width: 520px; }
-  @media (max-width: 640px) { .carousel-copy { padding: 0 28px; } }
+  @media (max-width: 640px) { .carousel-copy { padding: 0 64px; } .carousel-copy p { font-size: 14px; } }
   .carousel-copy .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #ffd9a0; margin-bottom: 12px; }
   .carousel-copy h2 { font-size: clamp(26px, 4vw, 42px); line-height: 1.1; color: #fff; font-weight: 800; }
   .carousel-copy p { margin: 14px 0 22px; font-size: 15.5px; color: #f1eee8; max-width: 40ch; }
-  .carousel-arrows { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 20px; transform: translateY(-50%); z-index: 3; }
+  .carousel-arrows { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 16px; transform: translateY(-50%); z-index: 3; }
+  @media (max-width: 640px) { .carousel-arrow { width: 32px; height: 32px; font-size: 13px; } .carousel-arrows { padding: 0 12px; } }
   .carousel-arrow {
     width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none;
     display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--ink);
