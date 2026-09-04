@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — Hikaya by Maison Jaber</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --cream: #fbf6ee; --paper: #ffffff; --ink: #322c24; --ink-soft: #6f6559;
+    --coral: #e8805f; --coral-deep: #d1633f; --sage: #7fa583; --line: #efe4d3; --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Nunito', sans-serif; font-size: 15px; }
+  h1, h2 { font-family: 'Fraunces', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  header.site { padding: 18px 0; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; color: var(--coral-deep); }
+  header.site a.exit { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+
+  .page-head { padding: 20px 0; }
+  .page-head h1 { font-size: 26px; }
+  .page-head p { color: var(--ink-soft); font-weight: 600; margin-top: 6px; }
+
+  .state-box { text-align: center; padding: 60px 20px; color: var(--ink-soft); font-weight: 700; }
+
+  .req-card {
+    background: #fff; border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px;
+  }
+  .req-top { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; margin-bottom: 14px; }
+  @media (max-width: 700px) { .req-top { grid-template-columns: 1fr; } }
+  .req-photos { display: flex; gap: 6px; }
+  .req-photos .ph { width: 48px; height: 48px; border-radius: 10px; background: var(--line); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--ink-soft); }
+  .req-info h3 { font-size: 16px; margin-bottom: 4px; }
+  .req-info .meta { font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .req-info .dedication { font-size: 12px; color: var(--ink-soft); font-style: italic; margin-top: 6px; }
+  .req-date { font-size: 12px; color: var(--ink-soft); font-weight: 700; white-space: nowrap; }
+
+  .pipeline { display: flex; gap: 4px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px; }
+  .stage-btn {
+    flex: 1; min-width: 90px; font-size: 10.5px; font-weight: 800; text-align: center; padding: 9px 6px;
+    border-radius: 10px; border: 2px solid var(--line); background: var(--cream); color: var(--ink-soft);
+    cursor: pointer; font-family: 'Nunito', sans-serif; line-height: 1.3;
+  }
+  .stage-btn.done { background: var(--sage); border-color: var(--sage); color: #fff; }
+  .stage-btn.current { border-color: var(--coral); color: var(--coral-deep); background: #fff; }
+  .stage-status-note { font-size: 11px; color: var(--ink-soft); margin-top: 8px; min-height: 14px; }
+
+
+  footer.site { padding: 30px 0; text-align: center; }
+  footer.site p { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <div class="wordmark">Hikaya Dashboard</div>
+    <a class="exit" href="index.html">&larr; Back to site</a>
+  </div>
+</header>
+
+<div class="wrap page-head">
+  <h1>Incoming requests</h1>
+  <p id="page-sub">Loading...</p>
+</div>
+
+<div class="wrap" id="content">
+  <div class="state-box" id="state-box">Checking your access…</div>
+</div>
+
+<footer class="site"><div class="wrap"><p>&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+
+  const stateBox = document.getElementById('state-box');
+  const pageSub = document.getElementById('page-sub');
+
+  const STAGES = [
+    { key: 'received', label: 'Order Received' },
+    { key: 'preparing', label: 'Creating the Order' },
+    { key: 'awaiting_approval', label: 'Final Approval' },
+    { key: 'sent_to_printing', label: 'Sent to Printing' },
+    { key: 'received_from_printing', label: 'Received from Printing' },
+    { key: 'shipped', label: 'Shipped' },
+    { key: 'delivered', label: 'Delivered' }
+  ];
+
+  let accessToken = null;
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+  } else {
+    accessToken = session.access_token;
+    loadSubmissions(accessToken);
+  }
+
+  async function loadSubmissions(token) {
+    try {
+      const res = await fetch('/.netlify/functions/get-submissions', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        pageSub.textContent = '';
+        stateBox.textContent = data.error || 'Could not load requests.';
+        return;
+      }
+
+      const submissions = data.submissions || [];
+      pageSub.textContent = `${submissions.length} request${submissions.length === 1 ? '' : 's'} received.`;
+
+      if (submissions.length === 0) {
+        stateBox.textContent = 'No requests yet — they\'ll show up here the moment someone sends one.';
+        return;
+      }
+
+      stateBox.remove();
+      const content = document.getElementById('content');
+      submissions
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .forEach(sub => {
+          const d = sub.data || {};
+          const photoKeys = Object.keys(d).filter(k => k.startsWith('photo_'));
+          const currentIndex = STAGES.findIndex(s => s.key === sub.status);
+
+          const card = document.createElement('div');
+          card.className = 'req-card';
+          card.innerHTML = `
+            <div class="req-top">
+              <div class="req-photos">
+                ${photoKeys.length ? photoKeys.map(() => `<div class="ph">Photo</div>`).join('') : '<div class="ph"></div>'}
+              </div>
+              <div class="req-info">
+                <h3>${d.child_name || 'Unnamed'} &middot; ${d.story || 'No story chosen'}</h3>
+                <div class="meta">Ages ${d.age_edition || '—'} &middot; ${d.account_email || d.parent_email || 'no email'}</div>
+                ${d.dedication ? `<div class="dedication">"${d.dedication}"</div>` : ''}
+              </div>
+              <div class="req-date">${new Date(sub.created_at).toLocaleDateString()}</div>
+            </div>
+            <div class="pipeline">
+              ${STAGES.map((stage, i) => `
+                <button type="button" class="stage-btn ${i < currentIndex ? 'done' : ''} ${i === currentIndex ? 'current' : ''}" data-key="${stage.key}">${stage.label}</button>
+              `).join('')}
+            </div>
+            <div class="stage-status-note"></div>
+          `;
+
+          card.querySelectorAll('.stage-btn').forEach(btn => {
+            btn.addEventListener('click', () => updateStage(sub.id, btn.dataset.key, card));
+          });
+
+          content.appendChild(card);
+        });
+    } catch (err) {
+      pageSub.textContent = '';
+      stateBox.textContent = 'Something went wrong loading requests.';
+    }
+  }
+
+  async function updateStage(submissionId, status, card) {
+    const note = card.querySelector('.stage-status-note');
+    note.textContent = 'Saving…';
+    try {
+      const res = await fetch('/.netlify/functions/update-order-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ submissionId: String(submissionId), status })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        note.textContent = data.error || 'Could not save. The status table may not be set up yet.';
+        return;
+      }
+      note.textContent = 'Saved.';
+      const currentIndex = STAGES.findIndex(s => s.key === status);
+      card.querySelectorAll('.stage-btn').forEach((btn, i) => {
+        btn.classList.toggle('done', i < currentIndex);
+        btn.classList.toggle('current', i === currentIndex);
+      });
+      setTimeout(() => { note.textContent = ''; }, 2000);
+    } catch {
+      note.textContent = 'Something went wrong saving this.';
+    }
+  }
+</script>
+
+</body>
+</html>

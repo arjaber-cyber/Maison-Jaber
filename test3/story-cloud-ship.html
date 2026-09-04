@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Cloud Ship — Hikaya by Maison Jaber</title>
+<meta name="description" content="An adventure story, personalized with your child's name, age, and photo. For the dreamer who wants to sail among the stars." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap');
+  :root {
+    --charcoal: #171719; --ivory: #f7f1e7; --gold: #b8954b; --champagne: #d8c18a;
+    --indigo: #252640; --sage: #8d998d; --taupe: #a8947e; --parchment: #ede2d2;
+    --text-on-light: #29262a; --text-on-light-soft: #6c6568;
+    --text-on-dark: #f7f1e7; --text-on-dark-soft: #c9c0b4; --radius: 3px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: var(--charcoal);
+    padding: 15px 30px; border-radius: var(--radius); font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+
+  header.site { position: sticky; top: 0; z-index: 50; background: rgba(23,23,25,0.92); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(184,149,75,0.18); }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; color: var(--text-on-dark); }
+  header.site nav a { font-size: 13px; color: var(--text-on-dark-soft); }
+  .wordmark { font-family: 'Playfair Display', serif; font-style: italic; font-size: 21px; color: var(--gold); }
+  .wordmark .sub-brand { display: block; font-family: 'Manrope', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--text-on-dark-soft); margin-top: 2px; text-transform: uppercase; }
+
+  .breadcrumb { font-size: 12px; color: var(--text-on-dark-soft); }
+  .breadcrumb a:hover { color: var(--gold); }
+
+  .story-hero { background: linear-gradient(165deg, var(--indigo) 0%, #14152a 100%); color: var(--text-on-dark); padding: 64px 0; }
+  .story-hero .inner { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 56px; align-items: center; }
+  @media (max-width: 860px) { .story-hero .inner { grid-template-columns: 1fr; } }
+  .cover-large {
+    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, var(--indigo) 0%, #0f1024 100%);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4); display: flex; align-items: flex-end; padding: 30px;
+  }
+  .cover-large .cover-line { width: 36px; height: 1px; background: var(--gold); margin-bottom: 14px; }
+  .cover-large .cover-title { font-family: 'Playfair Display', serif; color: var(--champagne); font-size: 30px; line-height: 1.25; }
+  .story-hero h1 { font-size: clamp(28px, 3.6vw, 42px); margin-top: 14px; }
+  .story-hero .promise { font-family: 'Playfair Display', serif; font-style: italic; font-size: 18px; color: var(--champagne); margin-top: 14px; }
+  .story-hero p.synopsis { margin-top: 18px; color: var(--text-on-dark-soft); max-width: 50ch; }
+  .story-hero .ages-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .story-hero .ages-row span { font-size: 12px; border: 1px solid rgba(184,149,75,0.4); border-radius: 20px; padding: 6px 14px; color: var(--text-on-dark-soft); }
+  .story-hero .actions { margin-top: 28px; }
+
+  .section { padding: 72px 0; }
+  .section-head { max-width: 60ch; margin: 0 auto 36px; text-align: center; }
+  .section-head h2 { font-size: clamp(24px, 3vw, 32px); }
+  .section-head p { margin-top: 10px; color: var(--text-on-light-soft); }
+
+  .discover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 780px) { .discover-grid { grid-template-columns: 1fr; } }
+  .discover-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .discover-item h3 { font-size: 16px; margin-bottom: 8px; }
+  .discover-item p { font-size: 13px; color: var(--text-on-light-soft); margin: 0; }
+
+  .angles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  @media (max-width: 780px) { .angles-grid { grid-template-columns: repeat(2, 1fr); } }
+  .angle-frame {
+    aspect-ratio: 3/4; border-radius: 3px; background: linear-gradient(160deg, var(--parchment), #e2d2b4);
+    display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
+    font-size: 12px; color: var(--taupe);
+  }
+
+  .spread-frame {
+    aspect-ratio: 16/8; border-radius: 4px; background: linear-gradient(160deg, #fdfaf3, var(--parchment));
+    box-shadow: 0 20px 44px rgba(23,23,25,0.1); display: flex; align-items: center; justify-content: center;
+    text-align: center; color: var(--text-on-light-soft); font-size: 14px; max-width: 780px; margin: 0 auto;
+  }
+
+  .example-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 700px; margin: 0 auto; }
+  @media (max-width: 640px) { .example-row { grid-template-columns: 1fr; } }
+  .example-card { background: var(--parchment); border-radius: var(--radius); padding: 22px; text-align: center; }
+  .example-card .name { font-family: 'Playfair Display', serif; font-style: italic; color: var(--gold); font-size: 18px; }
+  .example-card p { font-size: 14px; margin-top: 10px; }
+
+  .delivery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .delivery-grid { grid-template-columns: 1fr; } }
+  .delivery-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .delivery-item .flag { font-size: 22px; margin-bottom: 8px; }
+  .delivery-item h3 { font-size: 14px; margin-bottom: 4px; }
+  .delivery-item p { font-size: 12px; color: var(--text-on-light-soft); margin: 0; }
+
+  .faq-item { border-bottom: 1px solid rgba(184,149,75,0.2); }
+  .faq-item summary { padding: 18px 0; font-size: 15px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; color: var(--gold); font-size: 18px; }
+  .faq-item[open] summary::after { content: '\2212'; }
+  .faq-item p { padding: 0 0 18px; font-size: 14px; color: var(--text-on-light-soft); margin: 0; max-width: 68ch; }
+
+  .final-cta { background: var(--charcoal); text-align: center; padding: 76px 0; }
+  .final-cta h2 { color: var(--text-on-dark); font-size: clamp(24px, 3vw, 34px); }
+  .final-cta p { color: var(--text-on-dark-soft); margin-top: 12px; }
+  .final-cta .actions { margin-top: 28px; }
+
+  footer.site { background: var(--charcoal); color: var(--text-on-dark-soft); padding: 34px 0; text-align: center; border-top: 1px solid rgba(184,149,75,0.15); }
+  footer.site p { font-size: 13px; }
+  /* Rotating banner carousel (LoveBook-style) */
+  .carousel { position: relative; overflow: hidden; height: 480px; }
+  @media (max-width: 640px) { .carousel { height: 380px; } }
+  .carousel-track { display: flex; height: 100%; transition: transform 0.6s ease; }
+  .carousel-slide {
+    flex: 0 0 100%; height: 100%; position: relative; display: flex; align-items: center;
+    background-size: cover; background-position: center;
+  }
+  .carousel-slide::after {
+    content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 100%);
+  }
+  .carousel-copy { position: relative; z-index: 2; color: #fff; padding: 0 60px; max-width: 520px; }
+  @media (max-width: 640px) { .carousel-copy { padding: 0 28px; } }
+  .carousel-copy .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #ffd9a0; margin-bottom: 12px; }
+  .carousel-copy h2 { font-size: clamp(26px, 4vw, 42px); line-height: 1.1; color: #fff; font-weight: 800; }
+  .carousel-copy p { margin: 14px 0 22px; font-size: 15.5px; color: #f1eee8; max-width: 40ch; }
+  .carousel-arrows { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 20px; transform: translateY(-50%); z-index: 3; }
+  .carousel-arrow {
+    width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--ink);
+  }
+  .carousel-arrow:hover { background: #fff; }
+  .carousel-dots { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 3; }
+  .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .carousel-dot.active { background: #fff; width: 22px; border-radius: 4px; transition: width 0.25s ease; }
+
+
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <div class="breadcrumb"><a href="index.html">Maison Jaber</a> / <a href="stories.html">Stories</a> / The Cloud Ship</div>
+    <a href="index.html" class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></a>
+    <nav><a href="personalize.html">Create Their Story</a></nav>
+  </div>
+</header>
+
+<section class="carousel">
+  <div class="carousel-track" id="carousel-track">
+    <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1600&q=80')">
+      <div class="wrap"><div class="carousel-copy">
+        <div class="eyebrow">Adventure & Wonder</div>
+        <h2>The Cloud Ship</h2>
+        <p>A soaring adventure above the clouds, with your child at the helm.</p>
+        <a class="btn-primary" href="personalize.html?story=cloud-ship">Personalize This Story</a>
+      </div></div>
+    </div>
+  </div>
+  <div class="carousel-arrows">
+    <button class="carousel-arrow" id="car-prev">&#8592;</button>
+    <button class="carousel-arrow" id="car-next">&#8594;</button>
+  </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
+
+<section class="story-hero">
+  <div class="wrap inner">
+    <div class="cover-large">
+      <div><div class="cover-line"></div><div class="cover-title">The Cloud<br/>Ship</div></div>
+    </div>
+    <div>
+      <div class="eyebrow">Adventure &amp; Wonder</div>
+      <h1>The Cloud Ship</h1>
+      <div class="promise">"An adventure among the stars."</div>
+      <p class="synopsis">A ship made of soft grey cloud comes to rest outside a bedroom window, and carries its young captain across a sky full of wonders they never imagined were so close.</p>
+      <div class="ages-row">
+        <span>Ages 2&ndash;4</span><span>Ages 5&ndash;7</span><span>Ages 8&ndash;10</span>
+        <span>Personalized throughout</span>
+      </div>
+      <div class="actions">
+        <a class="btn-primary" href="personalize.html?story=The%20Cloud%20Ship">Personalize This Story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What They May Discover</div>
+      <h2>Perfect for the dreamer who asks "what if"</h2>
+    </div>
+    <div class="discover-grid">
+      <div class="discover-item"><h3>That imagination can carry you far</h3><p>A story that treats a child's wonder as something worth following.</p></div>
+      <div class="discover-item"><h3>That the sky is full of invitations</h3><p>A playful sense of curiosity about the world above.</p></div>
+      <div class="discover-item"><h3>A gentle taste of independence</h3><p>The hero leads the journey, and chooses when to come home.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--parchment);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The Book</div>
+      <h2>Seen from every angle</h2>
+    </div>
+    <div class="angles-grid">
+      <div class="angle-frame">Front cover</div>
+      <div class="angle-frame">Interior spread</div>
+      <div class="angle-frame">Spine</div>
+      <div class="angle-frame">Back cover</div>
+      <div class="angle-frame">Gift packaging</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">A Sample Spread</div>
+      <h2>A glimpse inside</h2>
+    </div>
+    <div class="spread-frame">Sample interior spread &mdash; shown in full once personalized</div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--parchment);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Personalized Throughout</div>
+      <h2>Made for one child in particular</h2>
+    </div>
+    <div class="example-row">
+      <div class="example-card"><div class="name">"...came to rest outside Noah's window."</div><p>Their name, woven into the story itself.</p></div>
+      <div class="example-card"><div class="name">Illustrated in their likeness</div><p>Their character appears on every page.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Delivery</div>
+      <h2>Printed close to you</h2>
+    </div>
+    <div class="delivery-grid">
+      <div class="delivery-item"><div class="flag">&#127465;&#127466;</div><h3>Germany &amp; Europe</h3><p>Printed and shipped locally. Card payment.</p></div>
+      <div class="delivery-item"><div class="flag">&#127480;&#127486;</div><h3>Syria</h3><p>Printed and shipped locally. Cash on delivery.</p></div>
+      <div class="delivery-item"><div class="flag">&#127462;&#127466;</div><h3>Elsewhere</h3><p>Contact us to check availability for your region.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="max-width: 720px; margin: 0 auto;">
+  <div class="section-head">
+    <div class="eyebrow">Frequently Asked</div>
+    <h2>Good to know</h2>
+  </div>
+  <details class="faq-item" open>
+    <summary>Which photo works best?</summary>
+    <p>A clear, front-facing photo in good natural lighting, without filters or anything covering the face.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Will the character really look like my child?</summary>
+    <p>The illustration is a tasteful storybook interpretation &mdash; recognizable, but reimagined in Maison Jaber's illustration style rather than a photo pasted into the page.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Can I make changes after I submit?</summary>
+    <p>Reach out to us before production begins and we'll do our best to accommodate changes to the name, dedication, or photo.</p>
+  </details>
+  <details class="faq-item">
+    <summary>Is a digital version available?</summary>
+    <p>Digital availability depends on your region &mdash; this will be shown clearly during personalization.</p>
+  </details>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Their voyage is ready to begin.</h2>
+    <p>Add their name, age, and a photo &mdash; the rest is ours to prepare.</p>
+    <div class="actions"><a class="btn-primary" href="personalize.html?story=The%20Cloud%20Ship">Personalize This Story</a></div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+<script>
+  // Rotating banner carousel
+  const track = document.getElementById('carousel-track');
+  const slides = track.children;
+  const dotsWrap = document.getElementById('carousel-dots');
+  let current = 0;
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  }
+  function goTo(i) {
+    current = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+  document.getElementById('car-prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('car-next').addEventListener('click', () => goTo(current + 1));
+  setInterval(() => goTo(current + 1), 5000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Their Story — Hikaya by Maison Jaber</title>
+<meta name="description" content="Choose their age, pick a story, add their details, and send us your request." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --cream: #fbf6ee; --paper: #ffffff; --ink: #322c24; --ink-soft: #6f6559;
+    --coral: #e8805f; --coral-deep: #d1633f; --sage: #7fa583; --gold: #eeb84f; --sky: #6f9bc7;
+    --line: #efe4d3; --radius: 20px; --radius-sm: 12px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Nunito', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 15px 28px; border-radius: 100px; font-family: 'Nunito', sans-serif; font-size: 15px;
+    font-weight: 800; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(232,128,95,0.3);
+  }
+  .btn-primary:hover { filter: brightness(1.03); }
+  .btn-primary:disabled { background: #e4dbc9; color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+  .btn-oauth {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    background: #fff; border: 2px solid var(--line); padding: 13px; border-radius: 100px;
+    font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-oauth:hover { border-color: var(--coral); }
+
+  header.site { padding: 18px 0; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
+  .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
+  header.site a.exit { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+  header.site a.exit:hover { color: var(--coral); }
+
+  .page-head { text-align: center; padding: 20px 0 8px; }
+  .page-head h1 { font-size: clamp(24px, 3.4vw, 34px); }
+  .page-head p { margin-top: 8px; color: var(--ink-soft); font-weight: 600; }
+
+  .block { padding: 30px 0; }
+  .block-inner { max-width: 900px; margin: 0 auto; }
+  .block-label { font-size: 13px; font-weight: 800; color: var(--coral-deep); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .block h2 { font-size: 22px; margin-bottom: 4px; }
+  .block-sub { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+
+  /* Age selector */
+  .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 640px) { .age-grid { grid-template-columns: 1fr; } }
+  .age-card {
+    background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 26px 20px;
+    text-align: center; cursor: pointer; box-shadow: 0 6px 18px rgba(50,44,36,0.06);
+  }
+  .age-card:hover { border-color: var(--line); }
+  .age-card.selected { border-color: var(--coral); }
+  .age-card .range { font-family: 'Fraunces', serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
+  .age-card p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Story list (revealed after age chosen) */
+  #story-block { display: none; }
+  #story-block.visible { display: block; }
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 780px) { .story-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+  .story-pick {
+    background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    border: 3px solid transparent; box-shadow: 0 8px 22px rgba(50,44,36,0.07);
+  }
+  .story-pick:hover { border-color: var(--line); }
+  .story-pick.selected { border-color: var(--coral); }
+  .story-pick .cover {
+    aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
+  }
+  .story-pick .cover.courage { background: linear-gradient(160deg, #a9cbab, #7fa583); }
+  .story-pick .cover.adventure { background: linear-gradient(160deg, #9db6da, #6f9bc7); }
+  .story-pick .cover.lullaby { background: linear-gradient(160deg, #f1c199, #e8a066); }
+  .story-pick .cover .t { font-family: 'Fraunces', serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .story-pick .body { padding: 16px 18px 18px; }
+  .story-pick .theme { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 4px; }
+  .story-pick h3 { font-size: 16px; margin-bottom: 6px; }
+  .story-pick p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Details (revealed after story chosen) */
+  #details-block { display: none; }
+  #details-block.visible { display: block; }
+  .details-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field.full { grid-column: 1 / -1; }
+  label.field-label { font-size: 13px; font-weight: 800; }
+  input[type="text"], textarea {
+    width: 100%; padding: 12px 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--coral); background: #fff; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .photo-upload {
+    border: 2px dashed var(--line); border-radius: var(--radius-sm); background: var(--cream);
+    padding: 18px; text-align: center; position: relative; cursor: pointer; margin-bottom: 10px;
+  }
+  .photo-guidance {
+    background: var(--cream); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
+    font-size: 12px; color: var(--ink-soft); font-weight: 700;
+  }
+  .photo-guidance ul { margin: 6px 0 0; padding-left: 18px; font-weight: 600; }
+  .photo-guidance li { margin-bottom: 3px; }
+  .photo-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .photo-thumb { position: relative; width: 56px; height: 56px; border-radius: 10px; overflow: hidden; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-thumb button {
+    position: absolute; top: 1px; right: 1px; width: 17px; height: 17px; border-radius: 50%;
+    background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1;
+  }
+
+  /* Account gate + send (revealed after details filled) */
+  #send-block { display: none; }
+  #send-block.visible { display: block; }
+  .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+
+  .account-gate { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .account-gate p.note { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  input[type="email"] {
+    width: 100%; padding: 12px 14px; font-family: 'Nunito', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); margin-bottom: 10px;
+  }
+
+  .signed-in-bar { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .signed-in-bar button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+
+  .form-status { font-size: 13px; margin-top: 12px; color: #b0453c; font-weight: 700; min-height: 16px; }
+
+  .success-panel { text-align: center; display: none; }
+  .success-panel.visible { display: block; }
+  .success-panel .mark { font-size: 30px; margin-bottom: 10px; }
+  .success-panel h3 { font-size: 20px; margin-bottom: 8px; }
+  .success-panel p { color: var(--ink-soft); font-weight: 600; }
+
+  footer.site { padding: 30px 0; text-align: center; }
+  footer.site p { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <div class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></div>
+    <a class="exit" href="index.html">Save &amp; exit</a>
+  </div>
+</header>
+
+<div class="page-head wrap">
+  <h1>Let's create their story</h1>
+  <p>Start with their age, and we'll show you the right stories.</p>
+</div>
+
+<form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
+  <input type="hidden" name="form-name" value="book-request" />
+  <input type="hidden" name="story" id="story-input" />
+  <input type="hidden" name="age_edition" id="age-input" />
+
+  <!-- BLOCK 1: AGE -->
+  <div class="block">
+    <div class="block-inner">
+      <div class="block-label">Step 1</div>
+      <h2>How old are they?</h2>
+      <div class="block-sub">This helps us show stories written the right way for them.</div>
+      <div class="age-grid" id="age-grid">
+        <div class="age-card" data-value="2-4"><div class="range">2&ndash;4</div><p>Simple, gentle, and visual</p></div>
+        <div class="age-card" data-value="5-7"><div class="range">5&ndash;7</div><p>A richer little adventure</p></div>
+        <div class="age-card" data-value="8-10"><div class="range">8&ndash;10</div><p>Deeper stories, more detail</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: STORY (revealed after age) -->
+  <div class="block" id="story-block">
+    <div class="block-inner">
+      <div class="block-label">Step 2</div>
+      <h2>Choose their story</h2>
+      <div class="block-sub">Every story below is available for this age.</div>
+      <div class="story-grid" id="story-grid">
+        <div class="story-pick" data-value="The Bravest Little One">
+          <div class="cover courage"><div class="t">The Bravest<br/>Little One</div></div>
+          <div class="body">
+            <div class="theme">Courage</div>
+            <h3>The Bravest Little One</h3>
+            <p>For the child facing something new and a little scary &mdash; and discovering they're braver than they knew.</p>
+          </div>
+        </div>
+        <div class="story-pick" data-value="The Cloud Ship">
+          <div class="cover adventure"><div class="t">The Cloud<br/>Ship</div></div>
+          <div class="body">
+            <div class="theme">Adventure</div>
+            <h3>The Cloud Ship</h3>
+            <p>For the dreamer who wants to sail among the stars on a ship made of soft cloud.</p>
+          </div>
+        </div>
+        <div class="story-pick" data-value="The Star Who Couldn't Sleep">
+          <div class="cover lullaby"><div class="t">The Star Who<br/>Couldn't Sleep</div></div>
+          <div class="body">
+            <div class="theme">Bedtime</div>
+            <h3>The Star Who Couldn't Sleep</h3>
+            <p>A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: DETAILS (revealed after story) -->
+  <div class="block" id="details-block">
+    <div class="block-inner">
+      <div class="block-label">Step 3</div>
+      <h2>Tell us about them</h2>
+      <div class="block-sub">Just the essentials.</div>
+      <div class="details-card">
+        <div class="form-grid">
+          <div class="field"><label class="field-label" for="child-name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required /></div>
+          <div class="field"><label class="field-label" for="child-age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" /></div>
+          <div class="field full"><label class="field-label" for="dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover"></textarea></div>
+        </div>
+        <label class="field-label" style="display:block; margin-bottom:8px;">Photo(s) of your child</label>
+        <div class="photo-guidance">
+          For the best result, please make sure the photo:
+          <ul>
+            <li>Shows their face clearly, looking toward the camera</li>
+            <li>Is well-lit, without harsh shadows</li>
+            <li>Isn't blurry or too far away</li>
+            <li>Has nothing covering their face (no sunglasses, masks, or hands)</li>
+            <li>Isn't a group photo &mdash; just your child</li>
+          </ul>
+        </div>
+        <div class="photo-upload" id="photo-upload">
+          <input type="file" id="child-photos" accept="image/*" multiple />
+          <div class="hint-main">Click to add photos</div>
+          <div class="hint-sub">You can add more than one for a better result</div>
+        </div>
+        <div class="photo-thumbs" id="photo-thumbs"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: ACCOUNT + SEND (revealed after details) -->
+  <div class="block" id="send-block">
+    <div class="block-inner">
+      <div class="block-label">Step 4</div>
+      <h2>Review &amp; send</h2>
+      <div class="block-sub">One quick account step, and their request is on its way.</div>
+
+      <div class="send-card">
+        <div class="summary-row"><span>Story</span><span id="summary-story">&mdash;</span></div>
+        <div class="summary-row"><span>Age edition</span><span id="summary-age">&mdash;</span></div>
+        <div class="summary-row"><span>Child's name</span><span id="summary-name">&mdash;</span></div>
+        <div class="summary-row"><span>Photos</span><span id="summary-photos">0</span></div>
+        <div class="summary-row" style="border-bottom: none; padding-top: 12px;"><span style="font-weight: 800; color: var(--ink);">Price</span><span style="color: var(--ink); font-weight: 800;">&euro;35</span></div>
+
+        <div class="account-gate" id="account-gate">
+          <p class="note">Create a free account to send your request and track your order.</p>
+          <button type="button" class="btn-oauth" id="google-btn">Continue with Google</button>
+          <button type="button" class="btn-oauth" id="facebook-btn">Continue with Facebook</button>
+          <div class="divider">or</div>
+          <input type="email" id="auth-email" placeholder="you@email.com" />
+          <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;">Email Me a Sign-In Link</button>
+        </div>
+
+        <div class="signed-in-bar" id="signed-in-bar" style="display:none;">
+          <span>Signed in as <span id="signed-in-email"></span></span>
+          <button type="button" id="sign-out-btn">Sign out</button>
+        </div>
+
+        <button type="submit" class="btn-primary" id="send-btn" style="width:100%; justify-content:center; margin-top: 6px;" disabled>Sign in to Send Request</button>
+        <div class="form-status" id="form-status"></div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="wrap">
+  <div class="success-panel" id="success-panel">
+    <div class="mark">&#127881;</div>
+    <h3>Your request has been sent!</h3>
+    <p>We're preparing their story now, and will email you a preview soon.</p>
+  </div>
+</div>
+
+<footer class="site"><div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div></footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+
+  let photoFiles = [];
+  let isSignedIn = false;
+
+  // --- Age selection reveals stories ---
+  document.querySelectorAll('.age-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('age-input').value = card.dataset.value;
+      document.getElementById('summary-age').textContent = 'Ages ' + card.dataset.value;
+      document.getElementById('story-block').classList.add('visible');
+      document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // --- Story selection reveals details ---
+  document.querySelectorAll('.story-pick').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('story-input').value = card.dataset.value;
+      document.getElementById('summary-story').textContent = card.dataset.value;
+      document.getElementById('details-block').classList.add('visible');
+      document.getElementById('details-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // --- Photo upload ---
+  const photoInput = document.getElementById('child-photos');
+  const photoThumbs = document.getElementById('photo-thumbs');
+  photoInput.addEventListener('change', () => {
+    Array.from(photoInput.files).forEach(file => photoFiles.push(file));
+    renderThumbs();
+    checkDetailsComplete();
+  });
+  function renderThumbs() {
+    photoThumbs.innerHTML = '';
+    photoFiles.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const div = document.createElement('div');
+        div.className = 'photo-thumb';
+        div.innerHTML = `<img src="${e.target.result}" /><button type="button" data-i="${i}">&times;</button>`;
+        div.querySelector('button').addEventListener('click', (ev) => { ev.preventDefault(); photoFiles.splice(i, 1); renderThumbs(); checkDetailsComplete(); });
+        photoThumbs.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById('summary-photos').textContent = photoFiles.length;
+  }
+
+  // --- Details completion reveals the send block ---
+  const nameInput = document.getElementById('child-name');
+  nameInput.addEventListener('input', () => {
+    document.getElementById('summary-name').textContent = nameInput.value || '—';
+    checkDetailsComplete();
+  });
+  function checkDetailsComplete() {
+    if (nameInput.value.trim() && photoFiles.length > 0) {
+      document.getElementById('send-block').classList.add('visible');
+    }
+  }
+
+  // --- Auth ---
+  async function refreshAuthUI() {
+    const { data: { session } } = await supabase.auth.getSession();
+    const gate = document.getElementById('account-gate');
+    const signedInBar = document.getElementById('signed-in-bar');
+    const sendBtn = document.getElementById('send-btn');
+    if (session) {
+      isSignedIn = true;
+      gate.style.display = 'none';
+      signedInBar.style.display = 'flex';
+      document.getElementById('signed-in-email').textContent = session.user.email;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Request';
+    } else {
+      isSignedIn = false;
+      gate.style.display = 'block';
+      signedInBar.style.display = 'none';
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sign in to Send Request';
+    }
+  }
+  refreshAuthUI();
+
+  document.getElementById('google-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+  });
+  document.getElementById('facebook-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
+  });
+  document.getElementById('email-link-btn').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const status = document.getElementById('form-status');
+    if (!email) { status.textContent = 'Please enter your email.'; return; }
+    status.style.color = '#6f6559';
+    status.textContent = 'Sending your sign-in link…';
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
+    status.textContent = error ? error.message : 'Check your email for a sign-in link.';
+  });
+  document.getElementById('sign-out-btn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    refreshAuthUI();
+  });
+
+  // --- Submit ---
+  document.getElementById('request-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('form-status');
+    status.style.color = '#b0453c';
+
+    if (!isSignedIn) { status.textContent = 'Please sign in first.'; return; }
+    if (!document.getElementById('story-input').value) { status.textContent = 'Please choose a story.'; return; }
+    if (!nameInput.value.trim()) { status.textContent = "Please add the child's name."; return; }
+    if (photoFiles.length === 0) { status.textContent = 'Please add at least one photo.'; return; }
+
+    const btn = document.getElementById('send-btn');
+    btn.disabled = true;
+    status.style.color = '#6f6559';
+    status.textContent = 'Sending your request…';
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const formData = new FormData(document.getElementById('request-form'));
+      formData.append('account_email', session.user.email);
+      photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
+
+      const res = await fetch('/', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error();
+
+      document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
+      document.getElementById('success-panel').classList.add('visible');
+    } catch {
+      status.textContent = 'Something went wrong — please try again.';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
