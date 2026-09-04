@@ -60,6 +60,34 @@ window.HIKAYA_TRANSLATIONS = {
     cta_title: { en: 'Ready to meet their hero?', de: 'Bereit, ihren Helden kennenzulernen?', ar: 'هل أنت مستعد للقاء بطله؟' },
     cta_sub: { en: 'It only takes a few minutes to get started.', de: 'Es dauert nur wenige Minuten, um loszulegen.', ar: 'لا يستغرق البدء سوى بضع دقائق.' },
     footer_hikaya_col: { en: 'Hikaya', de: 'Hikaya', ar: 'Hikaya' },
+  },
+  stories: {
+    nav_shop: { en: 'Shop Stories', de: 'Geschichten entdecken', ar: 'تسوق القصص' },
+    nav_how: { en: 'How It Works', de: 'So funktioniert es', ar: 'كيف يعمل' },
+    nav_collections: { en: 'Our Collections', de: 'Unsere Kollektionen', ar: 'مجموعاتنا' },
+    slide1_eyebrow: { en: 'The Story Library', de: 'Die Geschichtenbibliothek', ar: 'مكتبة القصص' },
+    slide1_title: { en: 'A curated shelf of stories, made to be personalized', de: 'Eine ausgewählte Sammlung von Geschichten, gemacht zum Personalisieren', ar: 'مجموعة مختارة من القصص، صُممت لتُخصَّص' },
+    slide1_body: { en: "Every story can be adapted to your child's age, and made theirs with their name and photo.", de: 'Jede Geschichte kann an das Alter Ihres Kindes angepasst und mit seinem Namen und Foto zu seiner eigenen gemacht werden.', ar: 'يمكن تكييف كل قصة مع عمر طفلك، وجعلها له باسمه وصورته.' },
+    slide2_eyebrow: { en: 'New This Season', de: 'Neu in dieser Saison', ar: 'جديد هذا الموسم' },
+    slide2_title: { en: 'Bedtime tales that feel like home', de: 'Gutenachtgeschichten, die sich wie Zuhause anfühlen', ar: 'حكايات ما قبل النوم التي تشعرك بالبيت' },
+    slide2_body: { en: 'Gentle, comforting stories designed to become part of the nightly routine.', de: 'Sanfte, tröstende Geschichten, die Teil des abendlichen Rituals werden.', ar: 'قصص هادئة ومريحة صُممت لتصبح جزءًا من روتين المساء.' },
+    slide2_cta: { en: 'Browse Bedtime Stories', de: 'Gutenachtgeschichten durchsuchen', ar: 'تصفح قصص ما قبل النوم' },
+    filter_collection: { en: 'Collection', de: 'Kollektion', ar: 'المجموعة' },
+    filter_all: { en: 'All', de: 'Alle', ar: 'الكل' },
+    filter_age: { en: 'Age', de: 'Alter', ar: 'العمر' },
+    filter_all_ages: { en: 'All ages', de: 'Alle Altersgruppen', ar: 'كل الأعمار' },
+    coll_courage: { en: 'Courage & Confidence', de: 'Mut & Selbstvertrauen', ar: 'الشجاعة والثقة' },
+    coll_adventure: { en: 'Adventure & Wonder', de: 'Abenteuer & Staunen', ar: 'المغامرة والعجب' },
+    coll_bedtime: { en: 'Bedtime & Comfort', de: 'Schlafenszeit & Geborgenheit', ar: 'وقت النوم والراحة' },
+    coll_family: { en: 'Family & Belonging', de: 'Familie & Zugehörigkeit', ar: 'العائلة والانتماء' },
+    coll_curiosity: { en: 'Curiosity & Discovery', de: 'Neugier & Entdeckung', ar: 'الفضول والاكتشاف' },
+    card1_covertitle: { en: 'The Bravest<br/>Little One', de: 'Der Tapferste<br/>Kleine', ar: 'الصغير<br/>الشجاع' },
+    card1_blurb: { en: 'For the child facing something new, and finding they are braver than they knew.', de: 'Für das Kind, das sich etwas Neuem stellt und entdeckt, dass es mutiger ist, als es dachte.', ar: 'لطفلك الذي يواجه شيئًا جديدًا، ويكتشف أنه أشجع مما كان يظن.' },
+    card2_covertitle: { en: 'The Cloud<br/>Ship', de: 'Das<br/>Wolkenschiff', ar: 'سفينة<br/>الغيوم' },
+    card3_covertitle: { en: "The Star Who<br/>Couldn't Sleep", de: 'Der Stern, der<br/>nicht schlafen konnte', ar: 'النجمة التي<br/>لم تستطع النوم' },
+    explore: { en: 'Explore This Story', de: 'Diese Geschichte entdecken', ar: 'اكتشف هذه القصة' },
+    empty_note: { en: 'No stories match that filter yet — more are on the way.', de: 'Noch keine Geschichten passen zu diesem Filter — weitere sind unterwegs.', ar: 'لا توجد قصص مطابقة لهذا الفلتر بعد — المزيد في الطريق.' },
+    footer_tagline: { en: 'Timeless stories, made just for them.', de: 'Zeitlose Geschichten, gemacht nur für sie.', ar: 'قصص خالدة، صُنعت خصيصًا له.' },
   }
 };
 
@@ -106,6 +134,10 @@ window.HIKAYA_TRANSLATIONS = {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const val = t(el.getAttribute('data-i18n'));
       if (val !== null) el.textContent = val;
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const val = t(el.getAttribute('data-i18n-html'));
+      if (val !== null) el.innerHTML = val;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const val = t(el.getAttribute('data-i18n-placeholder'));

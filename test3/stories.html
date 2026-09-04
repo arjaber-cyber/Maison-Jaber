@@ -119,15 +119,19 @@
 
 
   .site-logo { height: 38px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
+<script src="/i18n.js" defer></script>
 </head>
 <body>
 
 <header class="site">
   <div class="wrap inner">
-    <nav class="left"><a href="stories.html">Shop Stories</a><a href="index.html#how-it-works">How It Works</a><a href="index.html#collections">Our Collections</a></nav>
+    <nav class="left"><a href="stories.html" data-i18n="stories.nav_shop">Shop Stories</a><a href="index.html#how-it-works" data-i18n="stories.nav_how">How It Works</a><a href="index.html#collections" data-i18n="stories.nav_collections">Our Collections</a></nav>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="personalize.html">Create Their Story</a></nav>
+    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a></nav>
   </div>
 </header>
 
@@ -135,18 +139,18 @@
   <div class="carousel-track" id="carousel-track">
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">The Story Library</div>
-        <h2>A curated shelf of stories, made to be personalized</h2>
-        <p>Every story can be adapted to your child's age, and made theirs with their name and photo.</p>
-        <a class="btn-primary" href="personalize.html">Create Their Story</a>
+        <div class="eyebrow" data-i18n="stories.slide1_eyebrow">The Story Library</div>
+        <h2 data-i18n="stories.slide1_title">A curated shelf of stories, made to be personalized</h2>
+        <p data-i18n="stories.slide1_body">Every story can be adapted to your child's age, and made theirs with their name and photo.</p>
+        <a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a>
       </div></div>
     </div>
     <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('https://images.unsplash.com/photo-1566004100631-35d015d6a491?w=1600&q=80')">
       <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow">New This Season</div>
-        <h2>Bedtime tales that feel like home</h2>
-        <p>Gentle, comforting stories designed to become part of the nightly routine.</p>
-        <a class="btn-primary" href="story-star-who-couldnt-sleep.html">Browse Bedtime Stories</a>
+        <div class="eyebrow" data-i18n="stories.slide2_eyebrow">New This Season</div>
+        <h2 data-i18n="stories.slide2_title">Bedtime tales that feel like home</h2>
+        <p data-i18n="stories.slide2_body">Gentle, comforting stories designed to become part of the nightly routine.</p>
+        <a class="btn-primary" href="story-star-who-couldnt-sleep.html" data-i18n="stories.slide2_cta">Browse Bedtime Stories</a>
       </div></div>
     </div>
   </div>
@@ -159,26 +163,26 @@
 
 <section class="page-hero">
   <div class="wrap">
-    <div class="eyebrow">The Story Library</div>
-    <h1>A curated shelf of stories, made to be personalized</h1>
-    <p>Every story can be adapted to your child's age, and made theirs with their name and photo.</p>
+    <div class="eyebrow" data-i18n="stories.slide1_eyebrow">The Story Library</div>
+    <h1 data-i18n="stories.slide1_title">A curated shelf of stories, made to be personalized</h1>
+    <p data-i18n="stories.slide1_body">Every story can be adapted to your child's age, and made theirs with their name and photo.</p>
   </div>
 </section>
 
 <div class="filters">
   <div class="wrap">
     <div class="filter-group">
-      <div class="glabel">Collection</div>
-      <button class="chip active" data-filter="collection" data-value="all">All</button>
-      <button class="chip" data-filter="collection" data-value="Courage & Confidence">Courage &amp; Confidence</button>
-      <button class="chip" data-filter="collection" data-value="Adventure & Wonder">Adventure &amp; Wonder</button>
-      <button class="chip" data-filter="collection" data-value="Bedtime & Comfort">Bedtime &amp; Comfort</button>
-      <button class="chip disabled" title="Coming soon">Family &amp; Belonging</button>
-      <button class="chip disabled" title="Coming soon">Curiosity &amp; Discovery</button>
+      <div class="glabel" data-i18n="stories.filter_collection">Collection</div>
+      <button class="chip active" data-filter="collection" data-value="all" data-i18n="stories.filter_all">All</button>
+      <button class="chip" data-filter="collection" data-value="Courage & Confidence" data-i18n="stories.coll_courage">Courage &amp; Confidence</button>
+      <button class="chip" data-filter="collection" data-value="Adventure & Wonder" data-i18n="stories.coll_adventure">Adventure &amp; Wonder</button>
+      <button class="chip" data-filter="collection" data-value="Bedtime & Comfort" data-i18n="stories.coll_bedtime">Bedtime &amp; Comfort</button>
+      <button class="chip disabled" title="Coming soon" data-i18n="stories.coll_family">Family &amp; Belonging</button>
+      <button class="chip disabled" title="Coming soon" data-i18n="stories.coll_curiosity">Curiosity &amp; Discovery</button>
     </div>
     <div class="filter-group">
-      <div class="glabel">Age</div>
-      <button class="chip active" data-filter="age" data-value="all">All ages</button>
+      <div class="glabel" data-i18n="stories.filter_age">Age</div>
+      <button class="chip active" data-filter="age" data-value="all" data-i18n="stories.filter_all_ages">All ages</button>
       <button class="chip" data-filter="age" data-value="2-4">2&ndash;4</button>
       <button class="chip" data-filter="age" data-value="5-7">5&ndash;7</button>
       <button class="chip" data-filter="age" data-value="8-10">8&ndash;10</button>
@@ -193,57 +197,57 @@
       <div class="story-card" data-collection="Courage & Confidence" data-ages="2-4 5-7 8-10">
         <a href="story-bravest-little-one.html">
           <div class="story-cover courage">
-            <div><div class="cover-line"></div><div class="cover-title">The Bravest<br/>Little One</div></div>
+            <div><div class="cover-line"></div><div class="cover-title" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
           </div>
         </a>
         <div class="story-meta">
-          <div class="coll">Courage &amp; Confidence</div>
-          <h3>The Bravest Little One</h3>
-          <p>For the child facing something new, and finding they are braver than they knew.</p>
+          <div class="coll" data-i18n="stories.coll_courage">Courage &amp; Confidence</div>
+          <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+          <p data-i18n="stories.card1_blurb">For the child facing something new, and finding they are braver than they knew.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
-          <a class="explore" href="story-bravest-little-one.html">Explore This Story</a>
+          <a class="explore" href="story-bravest-little-one.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>
 
       <div class="story-card" data-collection="Adventure & Wonder" data-ages="2-4 5-7 8-10">
         <a href="story-cloud-ship.html">
           <div class="story-cover adventure">
-            <div><div class="cover-line"></div><div class="cover-title">The Cloud<br/>Ship</div></div>
+            <div><div class="cover-line"></div><div class="cover-title" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
           </div>
         </a>
         <div class="story-meta">
-          <div class="coll">Adventure &amp; Wonder</div>
-          <h3>The Cloud Ship</h3>
-          <p>For the dreamer who wants to sail among the stars.</p>
+          <div class="coll" data-i18n="stories.coll_adventure">Adventure &amp; Wonder</div>
+          <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
+          <p data-i18n="home.story2_blurb">For the dreamer who wants to sail among the stars.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
-          <a class="explore" href="story-cloud-ship.html">Explore This Story</a>
+          <a class="explore" href="story-cloud-ship.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>
 
       <div class="story-card" data-collection="Bedtime & Comfort" data-ages="2-4 5-7 8-10">
         <a href="story-star-who-couldnt-sleep.html">
           <div class="story-cover lullaby">
-            <div><div class="cover-line"></div><div class="cover-title">The Star Who<br/>Couldn't Sleep</div></div>
+            <div><div class="cover-line"></div><div class="cover-title" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
           </div>
         </a>
         <div class="story-meta">
-          <div class="coll">Bedtime &amp; Comfort</div>
-          <h3>The Star Who Couldn't Sleep</h3>
-          <p>A gentle wind-down story for the very end of the day.</p>
+          <div class="coll" data-i18n="stories.coll_bedtime">Bedtime &amp; Comfort</div>
+          <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
+          <p data-i18n="home.story3_blurb">A gentle wind-down story for the very end of the day.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
-          <a class="explore" href="story-star-who-couldnt-sleep.html">Explore This Story</a>
+          <a class="explore" href="story-star-who-couldnt-sleep.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>
 
     </div>
-    <p class="empty-note" id="empty-note">No stories match that filter yet &mdash; more are on the way.</p>
+    <p class="empty-note" id="empty-note" data-i18n="stories.empty_note">No stories match that filter yet &mdash; more are on the way.</p>
   </div>
 </section>
 
 <footer class="site">
   <div class="wrap">
     <span class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo" style="margin: 0 auto;"></span>
-    <p>Timeless stories, made just for them.</p>
+    <p data-i18n="stories.footer_tagline">Timeless stories, made just for them.</p>
   </div>
 </footer>
 

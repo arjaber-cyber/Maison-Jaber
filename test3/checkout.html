@@ -87,14 +87,18 @@
   footer.site p { font-size: 13px; }
 
   .site-logo { height: 38px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
+<script src="/i18n.js" defer></script>
 </head>
 <body>
 
 <header class="site">
   <div class="inner">
     <div class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></div>
-    <a class="exit" href="personalize.html">&larr; Edit personalization</a>
+    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="personalize.html">&larr; Edit personalization</a>
   </div>
 </header>
 

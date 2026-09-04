@@ -69,11 +69,16 @@
   .back-link:hover { color: var(--text-on-light); }
 
   .site-logo { height: 38px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
+<script src="/i18n.js" defer></script>
 </head>
 <body>
 
 <div class="shell">
+  <a class="lang-pill" href="#" data-i18n-skip style="position:fixed; top:20px; right:20px; background:#fff; border:1px solid var(--line-soft,#eee); z-index:10;">EN</a>
   <div class="card">
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
     <h1>Sign in to your account</h1>
