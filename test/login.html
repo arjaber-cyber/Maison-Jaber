@@ -113,14 +113,14 @@
   document.getElementById('google-btn').addEventListener('click', async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/account.html' }
+      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
     });
   });
 
   document.getElementById('facebook-btn').addEventListener('click', async () => {
     await supabase.auth.signInWithOAuth({
       provider: 'facebook',
-      options: { redirectTo: window.location.origin + '/account.html' }
+      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
     });
   });
 
@@ -134,7 +134,7 @@
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin + '/account.html' }
+      options: { emailRedirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
     });
 
     if (error) {
