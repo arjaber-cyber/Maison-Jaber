@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hikaya by Maison Jaber — A story where your child is the hero</title>
+<meta name="description" content="Turn your child into the hero of a beautifully illustrated story, personalized with their name, age, and photo. A printed keepsake, made just for them." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --cream: #fbf6ee;
+    --paper: #ffffff;
+    --ink: #322c24;
+    --ink-soft: #6f6559;
+    --coral: #e8805f;
+    --coral-deep: #d1633f;
+    --sage: #7fa583;
+    --gold: #eeb84f;
+    --sky: #6f9bc7;
+    --line: #efe4d3;
+    --radius: 20px;
+    --radius-sm: 12px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  html, body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font-family: 'Nunito', sans-serif; font-size: 16px; line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 16px 30px; border-radius: 100px; font-family: 'Nunito', sans-serif; font-size: 16px;
+    font-weight: 800; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(232,128,95,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(232,128,95,0.4); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--ink);
+    padding: 15px 26px; border-radius: 100px; border: 2px solid var(--line); font-size: 15px; font-weight: 700;
+  }
+  .btn-secondary:hover { border-color: var(--coral); color: var(--coral); }
+
+  /* Header */
+  header.site { background: var(--cream); padding: 20px 0; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--coral-deep); }
+  .wordmark .sub-brand { display: block; font-size: 10px; font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; margin-top: 1px; }
+  nav.main { display: flex; align-items: center; gap: 18px; }
+  nav.main a.link { font-size: 15px; font-weight: 700; color: var(--ink-soft); }
+  nav.main a.link:hover { color: var(--coral); }
+  @media (max-width: 640px) { nav.main a.link { display: none; } }
+
+  /* Hero */
+  .hero { padding: 36px 0 56px; text-align: center; }
+  .hero .eyebrow {
+    display: inline-block; background: #fff; border-radius: 100px; padding: 8px 18px; font-size: 13px;
+    font-weight: 800; color: var(--coral-deep); margin-bottom: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .hero h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.12; max-width: 16ch; margin: 0 auto; }
+  .hero h1 .accent { color: var(--coral); }
+  .hero p.lede { max-width: 44ch; margin: 18px auto 0; font-size: 18px; color: var(--ink-soft); font-weight: 600; }
+  .hero .actions { margin-top: 30px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  .hero-visual {
+    margin: 44px auto 0; max-width: 760px; border-radius: 28px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(50,44,36,0.12); position: relative;
+  }
+  .hero-visual img { width: 100%; display: block; }
+
+  /* How it works */
+  .section { padding: 56px 0; }
+  .section-head { text-align: center; max-width: 50ch; margin: 0 auto 34px; }
+  .section-head h2 { font-size: clamp(24px, 3vw, 32px); }
+  .section-head p { margin-top: 10px; color: var(--ink-soft); font-weight: 600; }
+
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .how-grid { grid-template-columns: 1fr; } }
+  .how-card {
+    background: #fff; border-radius: var(--radius); padding: 28px 24px; text-align: center;
+    box-shadow: 0 6px 20px rgba(50,44,36,0.06);
+  }
+  .how-card .badge {
+    width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;
+  }
+  .how-card:nth-child(1) .badge { background: var(--coral); }
+  .how-card:nth-child(2) .badge { background: var(--sage); }
+  .how-card:nth-child(3) .badge { background: var(--gold); }
+  .how-card h3 { font-size: 18px; margin-bottom: 8px; }
+  .how-card p { font-size: 14px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Stories */
+  .stories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 780px) { .stories-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+  .story-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 26px rgba(50,44,36,0.08); }
+  .story-cover {
+    aspect-ratio: 4/3.4; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px;
+  }
+  .story-cover.courage { background: linear-gradient(160deg, #a9cbab, #7fa583); }
+  .story-cover.adventure { background: linear-gradient(160deg, #9db6da, #6f9bc7); }
+  .story-cover.lullaby { background: linear-gradient(160deg, #f1c199, #e8a066); }
+  .story-cover .cover-title { font-family: 'Fraunces', serif; color: #fff; font-size: 22px; text-align: center; line-height: 1.25; text-shadow: 0 2px 10px rgba(0,0,0,0.12); }
+  .story-body { padding: 20px 22px 24px; }
+  .story-body .theme { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 6px; }
+  .story-body h3 { font-size: 19px; margin-bottom: 6px; }
+  .story-body p { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; font-weight: 600; }
+  .story-body a.pick {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--coral-deep);
+  }
+  .story-body a.pick:hover { color: var(--coral); }
+
+  .view-all { text-align: center; margin-top: 32px; }
+
+  /* Trust strip */
+  .trust-strip {
+    background: #fff; border-radius: var(--radius); padding: 30px 28px; display: grid;
+    grid-template-columns: repeat(3, 1fr); gap: 24px; box-shadow: 0 6px 20px rgba(50,44,36,0.06);
+  }
+  @media (max-width: 780px) { .trust-strip { grid-template-columns: 1fr; } }
+  .trust-item { text-align: center; }
+  .trust-item .flag { font-size: 26px; margin-bottom: 8px; }
+  .trust-item h3 { font-size: 15px; margin-bottom: 4px; }
+  .trust-item p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Final CTA */
+  .final-cta {
+    background: linear-gradient(150deg, #f1c199, var(--coral)); border-radius: 28px; padding: 56px 32px; text-align: center; color: #fff;
+  }
+  .final-cta h2 { font-size: clamp(26px, 3.4vw, 36px); color: #fff; }
+  .final-cta p { margin-top: 10px; font-size: 16px; font-weight: 700; opacity: 0.95; }
+  .final-cta .actions { margin-top: 26px; }
+  .final-cta .btn-primary { background: #fff; color: var(--coral-deep); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+  /* Footer */
+  footer.site { padding: 44px 0 30px; text-align: center; }
+  footer.site .wordmark { display: inline-block; margin-bottom: 6px; }
+  footer.site p { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  footer.site nav { margin-top: 14px; display: flex; gap: 18px; justify-content: center; }
+  footer.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+  footer.site nav a:hover { color: var(--coral); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <a href="index.html" class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></a>
+    <nav class="main">
+      <a class="link" href="stories.html">Stories</a>
+      <a class="link" href="about.html">About</a>
+      <a class="link" href="help.html">Help</a>
+      <a class="btn-primary" href="personalize.html" style="padding: 11px 22px; font-size: 14px;">Create Their Story</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">&#10024; A story just for them</div>
+    <h1>A story where your child is the <span class="accent">hero.</span></h1>
+    <p class="lede">Pick a story, add their name and a photo, and we'll turn them into the star of their very own book.</p>
+    <div class="actions">
+      <a class="btn-primary" href="personalize.html">Create Their Story</a>
+      <a class="btn-secondary" href="stories.html">Browse Stories</a>
+    </div>
+    <div class="hero-visual">
+      <img src="coming-soon.png" alt="A child's personalized storybook" />
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How it works</h2>
+      <p>Three simple steps, and their book is on its way.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="badge">1</div>
+        <h3>Choose a story</h3>
+        <p>Pick the adventure that feels right for them.</p>
+      </div>
+      <div class="how-card">
+        <div class="badge">2</div>
+        <h3>Add their details</h3>
+        <p>Their name, age, and a favorite photo.</p>
+      </div>
+      <div class="how-card">
+        <div class="badge">3</div>
+        <h3>We send it to you</h3>
+        <p>Printed close to home, ready to keep forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="stories">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Pick their story</h2>
+      <p>Every story can be personalized with their name, age, and photo.</p>
+    </div>
+    <div class="stories-grid">
+      <div class="story-card">
+        <a href="story-bravest-little-one.html"><div class="story-cover courage"><div class="cover-title">The Bravest<br/>Little One</div></div></a>
+        <div class="story-body">
+          <div class="theme">Courage</div>
+          <h3>The Bravest Little One</h3>
+          <p>For the child facing something new and a little scary.</p>
+          <a class="pick" href="story-bravest-little-one.html">See this story &rarr;</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <a href="story-cloud-ship.html"><div class="story-cover adventure"><div class="cover-title">The Cloud<br/>Ship</div></div></a>
+        <div class="story-body">
+          <div class="theme">Adventure</div>
+          <h3>The Cloud Ship</h3>
+          <p>For the dreamer who wants to sail among the stars.</p>
+          <a class="pick" href="story-cloud-ship.html">See this story &rarr;</a>
+        </div>
+      </div>
+      <div class="story-card">
+        <a href="story-star-who-couldnt-sleep.html"><div class="story-cover lullaby"><div class="cover-title">The Star Who<br/>Couldn't Sleep</div></div></a>
+        <div class="story-body">
+          <div class="theme">Bedtime</div>
+          <h3>The Star Who Couldn't Sleep</h3>
+          <p>A gentle wind-down story for the very end of the day.</p>
+          <a class="pick" href="story-star-who-couldnt-sleep.html">See this story &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="view-all"><a class="btn-secondary" href="stories.html">View All Stories</a></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="trust-strip">
+      <div class="trust-item"><div class="flag">&#127480;&#127486;</div><h3>Printed in Syria</h3><p>Cash on delivery</p></div>
+      <div class="trust-item"><div class="flag">&#127465;&#127466;</div><h3>Printed in Germany</h3><p>Card payment</p></div>
+      <div class="trust-item"><div class="flag">&#127462;&#127466;</div><h3>Made in the UAE</h3><p>Trusted quality</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="final-cta">
+      <h2>Ready to meet their hero?</h2>
+      <p>It only takes a few minutes to get started.</p>
+      <div class="actions"><a class="btn-primary" href="personalize.html">Create Their Story</a></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="wordmark">Hikaya<span class="sub-brand">by Maison Jaber</span></div>
+    <p>&copy; 2026 Maison Jaber. All rights reserved. &middot; Auto-deploy test v2 &#10003;</p>
+    <nav>
+      <a href="stories.html">Stories</a>
+      <a href="about.html">About</a>
+      <a href="help.html">Help</a>
+      <a href="account.html">Account</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
