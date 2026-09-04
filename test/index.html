@@ -114,6 +114,7 @@
   .story-body a.pick {
     display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--coral-deep);
   }
+  .story-body .price { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 10px; }
   .story-body a.pick:hover { color: var(--coral); }
 
   .view-all { text-align: center; margin-top: 32px; }
@@ -156,10 +157,28 @@
       <a class="link" href="stories.html">Stories</a>
       <a class="link" href="about.html">About</a>
       <a class="link" href="help.html">Help</a>
+      <a class="link" id="account-link" href="login.html">Sign In</a>
       <a class="btn-primary" href="personalize.html" style="padding: 11px 22px; font-size: 14px;">Create Their Story</a>
     </nav>
   </div>
 </header>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+  const { data: { session } } = await supabase.auth.getSession();
+  const accountLink = document.getElementById('account-link');
+  if (session) {
+    accountLink.textContent = 'My Account';
+    accountLink.href = 'account.html';
+  } else {
+    accountLink.textContent = 'Sign In';
+    accountLink.href = 'login.html';
+  }
+</script>
 
 <section class="hero">
   <div class="wrap">
@@ -215,6 +234,7 @@
           <div class="theme">Courage</div>
           <h3>The Bravest Little One</h3>
           <p>For the child facing something new and a little scary.</p>
+          <div class="price">&euro;35</div>
           <a class="pick" href="story-bravest-little-one.html">See this story &rarr;</a>
         </div>
       </div>
@@ -224,6 +244,7 @@
           <div class="theme">Adventure</div>
           <h3>The Cloud Ship</h3>
           <p>For the dreamer who wants to sail among the stars.</p>
+          <div class="price">&euro;35</div>
           <a class="pick" href="story-cloud-ship.html">See this story &rarr;</a>
         </div>
       </div>
@@ -233,6 +254,7 @@
           <div class="theme">Bedtime</div>
           <h3>The Star Who Couldn't Sleep</h3>
           <p>A gentle wind-down story for the very end of the day.</p>
+          <div class="price">&euro;35</div>
           <a class="pick" href="story-star-who-couldnt-sleep.html">See this story &rarr;</a>
         </div>
       </div>
