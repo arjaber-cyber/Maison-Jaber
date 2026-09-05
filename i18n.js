@@ -332,6 +332,21 @@ window.HIKAYA_TRANSLATIONS = {
     faq4_a: { en: 'Digital availability depends on your region — this will be shown clearly during personalization.', de: 'Die digitale Verfügbarkeit hängt von Ihrer Region ab — dies wird während der Personalisierung deutlich angezeigt.', ar: 'تتوقف إتاحة النسخة الرقمية على منطقتك — سيظهر ذلك بوضوح أثناء التخصيص.' },
     final_title: { en: 'Their story is ready when they are.', de: 'Ihre Geschichte ist bereit, wenn sie es sind.', ar: 'قصته جاهزة عندما يكون جاهزًا.' },
     final_body: { en: 'Add their name, age, and a photo — the rest is ours to prepare.', de: 'Fügen Sie Name, Alter und ein Foto hinzu — den Rest übernehmen wir.', ar: 'أضف اسمه وعمره وصورة — والباقي نتولاه نحن.' },
+  },
+  story2: {
+    slide_body: { en: 'A soaring adventure above the clouds, with your child at the helm.', de: 'Ein hoch fliegendes Abenteuer über den Wolken, mit Ihrem Kind am Steuer.', ar: 'مغامرة تحلّق فوق الغيوم، وطفلك يقود السفينة.' },
+    personalize_cta: { en: 'Personalize This Story', de: 'Diese Geschichte personalisieren', ar: 'خصّص هذه القصة' },
+    promise: { en: '"An adventure among the stars."', de: '„Ein Abenteuer unter den Sternen."', ar: '"مغامرة بين النجوم."' },
+    synopsis: { en: 'A ship made of soft grey cloud comes to rest outside a bedroom window, and carries its young captain across a sky full of wonders they never imagined were so close.', de: 'Ein Schiff aus weicher grauer Wolke kommt vor einem Schlafzimmerfenster zur Ruhe und trägt seinen jungen Kapitän über einen Himmel voller Wunder, die er sich nie so nah vorgestellt hätte.', ar: 'سفينة من غيوم رمادية ناعمة تحطّ خارج نافذة غرفة النوم، وتحمل قبطانها الصغير عبر سماء مليئة بعجائب لم يتخيل يومًا أنها قريبة جدًا.' },
+    discover_title: { en: 'Perfect for the dreamer who asks "what if"', de: 'Perfekt für den Träumer, der fragt „was wäre, wenn"', ar: 'مثالية للحالم الذي يسأل "ماذا لو"' },
+    disc1_title: { en: 'That imagination can carry you far', de: 'Dass die Fantasie einen weit tragen kann', ar: 'أن الخيال يمكن أن يأخذك بعيدًا' },
+    disc1_body: { en: "A story that treats a child's wonder as something worth following.", de: 'Eine Geschichte, die die Neugier eines Kindes als etwas Verfolgenswertes behandelt.', ar: 'قصة تُعامل فضول الطفل باعتباره أمرًا يستحق أن يُتبع.' },
+    disc2_title: { en: 'That the sky is full of invitations', de: 'Dass der Himmel voller Einladungen ist', ar: 'أن السماء مليئة بالدعوات' },
+    disc2_body: { en: 'A playful sense of curiosity about the world above.', de: 'Ein verspieltes Gefühl der Neugier auf die Welt darüber.', ar: 'شعور مرح بالفضول تجاه العالم في الأعلى.' },
+    disc3_title: { en: 'A gentle taste of independence', de: 'Ein sanfter Vorgeschmack auf Unabhängigkeit', ar: 'مذاق هادئ من الاستقلالية' },
+    disc3_body: { en: 'The hero leads the journey, and chooses when to come home.', de: 'Der Held führt die Reise an und entscheidet, wann er nach Hause kommt.', ar: 'البطل يقود الرحلة، ويختار متى يعود إلى المنزل.' },
+    example_name: { en: '"...came to rest outside Noah\'s window."', de: '„...kam vor Noahs Fenster zur Ruhe."', ar: '"...حطّت خارج نافذة نوح."' },
+    final_title: { en: 'Their voyage is ready to begin.', de: 'Ihre Reise kann beginnen.', ar: 'رحلته جاهزة لتبدأ.' },
   }
 };
 
