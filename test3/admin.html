@@ -73,21 +73,21 @@
 
 <header class="site">
   <div class="wrap inner">
-    <div class="wordmark" style="display:flex; align-items:center; gap:10px;"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo" style="height:30px;"><span style="font-size:13px; font-weight:700; color:var(--ink-soft); border-left:1px solid var(--line); padding-left:10px;">Dashboard</span></div>
-    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="index.html">&larr; Back to site</a>
+    <div class="wordmark" style="display:flex; align-items:center; gap:10px;"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo" style="height:30px;"><span style="font-size:13px; font-weight:700; color:var(--ink-soft); border-left:1px solid var(--line); padding-left:10px;" data-i18n="admin.dashboard_label">Dashboard</span></div>
+    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="index.html" data-i18n="admin.back_to_site">&larr; Back to site</a>
   </div>
 </header>
 
 <div class="wrap page-head">
-  <h1>Incoming requests</h1>
-  <p id="page-sub">Loading...</p>
+  <h1 data-i18n="admin.incoming_requests">Incoming requests</h1>
+  <p id="page-sub" data-i18n="admin.loading">Loading...</p>
 </div>
 
 <div class="wrap" id="content">
-  <div class="state-box" id="state-box">Checking your access…</div>
+  <div class="state-box" id="state-box" data-i18n="admin.checking_access">Checking your access…</div>
 </div>
 
-<footer class="site"><div class="wrap"><p>&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
+<footer class="site"><div class="wrap"><p data-i18n="admin.footer">&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -100,13 +100,13 @@
   const pageSub = document.getElementById('page-sub');
 
   const STAGES = [
-    { key: 'received', label: 'Order Received' },
-    { key: 'preparing', label: 'Creating the Order' },
-    { key: 'awaiting_approval', label: 'Final Approval' },
-    { key: 'sent_to_printing', label: 'Sent to Printing' },
-    { key: 'received_from_printing', label: 'Received from Printing' },
-    { key: 'shipped', label: 'Shipped' },
-    { key: 'delivered', label: 'Delivered' }
+    { key: 'received', label: window.hikayaT('admin.stage_received') },
+    { key: 'preparing', label: window.hikayaT('admin.stage_preparing') },
+    { key: 'awaiting_approval', label: window.hikayaT('admin.stage_approval') },
+    { key: 'sent_to_printing', label: window.hikayaT('admin.stage_printing') },
+    { key: 'received_from_printing', label: window.hikayaT('admin.stage_from_printing') },
+    { key: 'shipped', label: window.hikayaT('admin.stage_shipped') },
+    { key: 'delivered', label: window.hikayaT('admin.stage_delivered') }
   ];
 
   let accessToken = null;
@@ -128,15 +128,15 @@
 
       if (!res.ok) {
         pageSub.textContent = '';
-        stateBox.textContent = data.error || 'Could not load requests.';
+        stateBox.textContent = data.error || window.hikayaT('admin.err_load');
         return;
       }
 
       const submissions = data.submissions || [];
-      pageSub.textContent = `${submissions.length} request${submissions.length === 1 ? '' : 's'} received.`;
+      pageSub.textContent = `${submissions.length} ${window.hikayaT('admin.requests_received')}`;
 
       if (submissions.length === 0) {
-        stateBox.textContent = 'No requests yet — they\'ll show up here the moment someone sends one.';
+        stateBox.textContent = window.hikayaT('admin.no_requests');
         return;
       }
 
@@ -154,11 +154,11 @@
           card.innerHTML = `
             <div class="req-top">
               <div class="req-photos">
-                ${photoKeys.length ? photoKeys.map(() => `<div class="ph">Photo</div>`).join('') : '<div class="ph"></div>'}
+                ${photoKeys.length ? photoKeys.map(() => `<div class="ph">${window.hikayaT('admin.photo')}</div>`).join('') : '<div class="ph"></div>'}
               </div>
               <div class="req-info">
-                <h3>${d.child_name || 'Unnamed'} &middot; ${d.story || 'No story chosen'}</h3>
-                <div class="meta">Ages ${d.age_edition || '—'} &middot; ${d.account_email || d.parent_email || 'no email'}</div>
+                <h3>${d.child_name || window.hikayaT('admin.unnamed')} &middot; ${d.story || window.hikayaT('admin.no_story')}</h3>
+                <div class="meta">${window.hikayaT('admin.ages_label')} ${d.age_edition || '—'} &middot; ${d.account_email || d.parent_email || window.hikayaT('admin.no_email')}</div>
                 ${d.dedication ? `<div class="dedication">"${d.dedication}"</div>` : ''}
               </div>
               <div class="req-date">${new Date(sub.created_at).toLocaleDateString()}</div>
@@ -179,13 +179,13 @@
         });
     } catch (err) {
       pageSub.textContent = '';
-      stateBox.textContent = 'Something went wrong loading requests.';
+      stateBox.textContent = window.hikayaT('admin.err_generic');
     }
   }
 
   async function updateStage(submissionId, status, card) {
     const note = card.querySelector('.stage-status-note');
-    note.textContent = 'Saving…';
+    note.textContent = window.hikayaT('admin.saving');
     try {
       const res = await fetch('/.netlify/functions/update-order-status', {
         method: 'POST',
@@ -194,10 +194,10 @@
       });
       const data = await res.json();
       if (!res.ok) {
-        note.textContent = data.error || 'Could not save. The status table may not be set up yet.';
+        note.textContent = data.error || window.hikayaT('admin.err_save');
         return;
       }
-      note.textContent = 'Saved.';
+      note.textContent = window.hikayaT('admin.saved');
       const currentIndex = STAGES.findIndex(s => s.key === status);
       card.querySelectorAll('.stage-btn').forEach((btn, i) => {
         btn.classList.toggle('done', i < currentIndex);
@@ -205,7 +205,7 @@
       });
       setTimeout(() => { note.textContent = ''; }, 2000);
     } catch {
-      note.textContent = 'Something went wrong saving this.';
+      note.textContent = window.hikayaT('admin.err_save_generic');
     }
   }
 </script>

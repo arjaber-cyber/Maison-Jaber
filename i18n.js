@@ -347,6 +347,49 @@ window.HIKAYA_TRANSLATIONS = {
     disc3_body: { en: 'The hero leads the journey, and chooses when to come home.', de: 'Der Held führt die Reise an und entscheidet, wann er nach Hause kommt.', ar: 'البطل يقود الرحلة، ويختار متى يعود إلى المنزل.' },
     example_name: { en: '"...came to rest outside Noah\'s window."', de: '„...kam vor Noahs Fenster zur Ruhe."', ar: '"...حطّت خارج نافذة نوح."' },
     final_title: { en: 'Their voyage is ready to begin.', de: 'Ihre Reise kann beginnen.', ar: 'رحلته جاهزة لتبدأ.' },
+  },
+  story3: {
+    slide_body: { en: 'A gentle bedtime tale about a little star finding rest.', de: 'Eine sanfte Gutenachtgeschichte über einen kleinen Stern, der Ruhe findet.', ar: 'حكاية هادئة عن نجمة صغيرة تجد الراحة قبل النوم.' },
+    personalize_cta: { en: 'Personalize This Story', de: 'Diese Geschichte personalisieren', ar: 'خصّص هذه القصة' },
+    promise: { en: '"A gentle bedtime adventure."', de: '„Ein sanftes Gutenacht-Abenteuer."', ar: '"مغامرة هادئة قبل النوم."' },
+    synopsis: { en: "Far up in the quiet sky, one little star just can't fall asleep — until your child teaches it the very same trick that always works at home.", de: 'Hoch oben am stillen Himmel kann ein kleiner Stern einfach nicht einschlafen — bis Ihr Kind ihm genau den Trick beibringt, der zu Hause immer funktioniert.', ar: 'عاليًا في السماء الهادئة، ثمة نجمة صغيرة لا تستطيع النوم — حتى يعلّمها طفلك نفس الحيلة التي تنجح دائمًا في البيت.' },
+    discover_title: { en: 'A gentle wind-down for the very end of the day', de: 'Ein sanfter Ausklang für das Ende des Tages', ar: 'ختام هادئ لنهاية اليوم' },
+    disc1_title: { en: 'That they know something helpful', de: 'Dass sie etwas Hilfreiches wissen', ar: 'أنه يعرف شيئًا مفيدًا' },
+    disc1_body: { en: 'The child becomes the one who soothes, not just the one soothed.', de: 'Das Kind wird zu demjenigen, der tröstet, nicht nur zu dem, der getröstet wird.', ar: 'يصبح الطفل هو من يُهدّئ، لا من يُهدَّأ فقط.' },
+    disc2_title: { en: 'A calming bedtime rhythm', de: 'Ein beruhigender Gutenacht-Rhythmus', ar: 'إيقاع هادئ لوقت النوم' },
+    disc2_body: { en: 'Slow pacing and soft repetition, written to ease into sleep.', de: 'Langsames Tempo und sanfte Wiederholung, geschrieben, um sanft in den Schlaf zu gleiten.', ar: 'إيقاع بطيء وتكرار هادئ، كُتب لتسهيل الانزلاق نحو النوم.' },
+    disc3_title: { en: 'A comforting sense of closeness', de: 'Ein tröstliches Gefühl der Nähe', ar: 'شعور مريح بالقرب' },
+    disc3_body: { en: 'Even the sky, it turns out, needs a little help falling asleep.', de: 'Selbst der Himmel, so stellt sich heraus, braucht ein wenig Hilfe beim Einschlafen.', ar: 'حتى السماء، كما اتضح، تحتاج إلى مساعدة بسيطة لتنام.' },
+    example_name: { en: '"...until Sara taught it the same trick."', de: '„...bis Sara ihm denselben Trick beibrachte."', ar: '"...حتى علّمتها سارة نفس الحيلة."' },
+    final_title: { en: 'The sky is waiting for its helper.', de: 'Der Himmel wartet auf seinen kleinen Helfer.', ar: 'السماء تنتظر مساعدها الصغير.' },
+  },
+  admin: {
+    dashboard_label: { en: 'Dashboard', de: 'Dashboard', ar: 'لوحة التحكم' },
+    back_to_site: { en: '← Back to site', de: '← Zurück zur Website', ar: '← العودة إلى الموقع' },
+    incoming_requests: { en: 'Incoming requests', de: 'Eingehende Anfragen', ar: 'الطلبات الواردة' },
+    loading: { en: 'Loading...', de: 'Wird geladen...', ar: 'جارٍ التحميل...' },
+    checking_access: { en: 'Checking your access…', de: 'Zugriff wird überprüft…', ar: 'جارٍ التحقق من صلاحية الوصول…' },
+    footer: { en: '© 2026 Maison Jaber. Admin dashboard.', de: '© 2026 Maison Jaber. Admin-Dashboard.', ar: '© 2026 Maison Jaber. لوحة تحكم الإدارة.' },
+    stage_received: { en: 'Order Received', de: 'Bestellung eingegangen', ar: 'تم استلام الطلب' },
+    stage_preparing: { en: 'Creating the Order', de: 'Bestellung wird erstellt', ar: 'جارٍ إعداد الطلب' },
+    stage_approval: { en: 'Final Approval', de: 'Endgültige Freigabe', ar: 'الموافقة النهائية' },
+    stage_printing: { en: 'Sent to Printing', de: 'An Druckerei gesendet', ar: 'أُرسل للطباعة' },
+    stage_from_printing: { en: 'Received from Printing', de: 'Von der Druckerei erhalten', ar: 'وصل من الطباعة' },
+    stage_shipped: { en: 'Shipped', de: 'Versandt', ar: 'تم الشحن' },
+    stage_delivered: { en: 'Delivered', de: 'Geliefert', ar: 'تم التوصيل' },
+    err_load: { en: 'Could not load requests.', de: 'Anfragen konnten nicht geladen werden.', ar: 'تعذّر تحميل الطلبات.' },
+    requests_received: { en: 'requests received.', de: 'Anfragen erhalten.', ar: 'طلبات تم استلامها.' },
+    no_requests: { en: "No requests yet — they'll show up here the moment someone sends one.", de: 'Noch keine Anfragen — sie erscheinen hier, sobald jemand eine sendet.', ar: 'لا توجد طلبات بعد — ستظهر هنا فور إرسال أحدهم لطلب.' },
+    unnamed: { en: 'Unnamed', de: 'Unbenannt', ar: 'بدون اسم' },
+    no_story: { en: 'No story chosen', de: 'Keine Geschichte ausgewählt', ar: 'لم تُختر قصة' },
+    ages_label: { en: 'Ages', de: 'Alter', ar: 'الأعمار' },
+    no_email: { en: 'no email', de: 'keine E-Mail', ar: 'لا يوجد بريد إلكتروني' },
+    photo: { en: 'Photo', de: 'Foto', ar: 'صورة' },
+    err_generic: { en: 'Something went wrong loading requests.', de: 'Beim Laden der Anfragen ist ein Fehler aufgetreten.', ar: 'حدث خطأ أثناء تحميل الطلبات.' },
+    saving: { en: 'Saving…', de: 'Wird gespeichert…', ar: 'جارٍ الحفظ…' },
+    err_save: { en: 'Could not save. The status table may not be set up yet.', de: 'Konnte nicht gespeichert werden. Die Statustabelle ist möglicherweise noch nicht eingerichtet.', ar: 'تعذّر الحفظ. قد لا يكون جدول الحالة مُعدًّا بعد.' },
+    saved: { en: 'Saved.', de: 'Gespeichert.', ar: 'تم الحفظ.' },
+    err_save_generic: { en: 'Something went wrong saving this.', de: 'Beim Speichern ist ein Fehler aufgetreten.', ar: 'حدث خطأ أثناء الحفظ.' },
   }
 };
 
@@ -458,6 +501,8 @@ window.HIKAYA_TRANSLATIONS = {
     });
   }
 
+  window.hikayaT = t;
+  window.hikayaLang = getLang;
   document.addEventListener('DOMContentLoaded', () => {
     buildSwitcher();
     applyTranslations();
