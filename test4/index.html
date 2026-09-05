@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hikaya by Maison Jaber — A story where your child is the hero</title>
+<meta name="description" content="Personalized trilingual storybooks that put your child at the center of their own adventure." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap');
+  * { box-sizing: border-box; }
+  :root {
+    --ink: #222222; --ink-soft: #6b6b6b; --line: #e7ded0; --line-soft: #f0e9dc;
+    --coral: #ff385c; --coral-deep: #e31c5f; --gold: #c99a3f; --gold-light: #f7e2ab;
+    --cream: #fdf6ea; --cream-deep: #f7ecd8;
+    --courage: #e31c5f; --adventure: #1c6ba8; --bedtime: #5b4fb0;
+    --radius: 16px; --radius-lg: 24px;
+  }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 13px 26px; border-radius: 100px; font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(255,56,92,0.28); transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,56,92,0.36); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--ink);
+    padding: 12px 22px; border-radius: 100px; font-size: 13.5px; font-weight: 700; border: 1px solid var(--line); cursor: pointer;
+  }
+  .eyebrow-script { font-family: 'Caveat', cursive; font-size: 26px; color: var(--coral); font-weight: 700; }
+
+  /* Header */
+  header.site {
+    background: linear-gradient(180deg, var(--cream-deep), var(--cream) 70%);
+    border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; z-index: 50;
+  }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; gap: 20px; }
+  .wordmark img { height: 34px; width: auto; }
+  nav.main { display: flex; align-items: center; gap: 28px; }
+  nav.main a { font-size: 13.5px; font-weight: 600; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+  nav.main a:hover { color: var(--coral); }
+  nav.main a svg { width: 15px; height: 15px; stroke: currentColor; }
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+  .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--line); background: #fff; }
+  @media (max-width: 900px) { nav.main { display: none; } }
+
+  /* Hero */
+  .hero-section { padding: 46px 0 30px; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 34px; } }
+  .hero-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .hero-eyebrow svg { width: 20px; height: 20px; stroke: var(--coral); }
+  h1.hero-h1 { font-size: clamp(34px, 4.4vw, 52px); line-height: 1.08; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0 16px; }
+  .hero-copy p.lede { color: var(--ink-soft); font-size: 16px; max-width: 46ch; margin-bottom: 26px; }
+
+  .search-bar {
+    background: #fff; border-radius: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid var(--line-soft);
+    display: flex; align-items: stretch; padding: 6px; max-width: 560px;
+  }
+  .search-seg { flex: 1; padding: 10px 18px; display: flex; align-items: center; gap: 10px; }
+  .search-seg svg { width: 16px; height: 16px; stroke: var(--ink-soft); flex-shrink: 0; }
+  .search-seg .lbl { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); }
+  .search-seg .val { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .search-divider { width: 1px; background: var(--line-soft); margin: 8px 0; }
+  .search-go { background: var(--coral); color: #fff; border: none; border-radius: 100px; padding: 0 22px; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+  @media (max-width: 500px) {
+    .search-bar { flex-direction: column; border-radius: var(--radius-lg); }
+    .search-divider { display: none; }
+    .search-go { margin: 6px; padding: 12px; }
+  }
+
+  .feature-strip { display: flex; gap: 14px; margin-top: 30px; flex-wrap: wrap; }
+  .feature-chip { display: flex; align-items: center; gap: 10px; }
+  .feature-chip .ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .feature-chip .ic svg { width: 19px; height: 19px; }
+  .feature-chip .txt { font-size: 12.5px; }
+  .feature-chip .txt b { display: block; font-size: 13px; font-weight: 700; }
+  .feature-chip .txt span { color: var(--ink-soft); }
+
+  .hero-photo-wrap { position: relative; }
+  .hero-photo {
+    border-radius: 28px; overflow: hidden; aspect-ratio: 4/4.6;
+    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.25)), url('https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=1000&q=80') center/cover;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.18);
+  }
+  .floating-card {
+    position: absolute; top: 22px; right: -14px; background: #fff; border-radius: 18px; padding: 14px 18px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.14); max-width: 210px;
+  }
+  @media (max-width: 900px) { .floating-card { right: 8px; } }
+  .floating-card .row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .floating-card .star-badge { width: 26px; height: 26px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; }
+  .floating-card .star-badge svg { width: 13px; height: 13px; fill: #fff; }
+  .floating-card .row1 b { font-size: 12.5px; font-weight: 700; line-height: 1.25; }
+  .floating-card .avatars { display: flex; }
+  .floating-card .avatars .av { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; margin-left: -8px; background-size: cover; background-position: center; }
+  .floating-card .avatars .av:first-child { margin-left: 0; }
+  .floating-card .count { font-size: 11.5px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* Popular Stories */
+  .panel { background: #fff; border-radius: 28px; padding: 34px 30px 38px; margin: 40px 0; box-shadow: 0 2px 20px rgba(0,0,0,0.04); }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .panel-head h2 { font-size: 21px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px; }
+  .panel-head a.view-all { font-size: 13px; font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+  .panel-head a.view-all .circle { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 800px) { .story-grid { grid-template-columns: 1fr; } }
+  .story-card-v2 { border-radius: 18px; overflow: hidden; border: 1px solid var(--line-soft); }
+  .story-card-v2 .photo { aspect-ratio: 4/3; position: relative; background-size: cover; background-position: center; }
+  .story-card-v2 .rating-badge {
+    position: absolute; top: 10px; left: 10px; background: rgba(20,15,10,0.72); color: #fff; font-size: 11.5px; font-weight: 700;
+    padding: 5px 10px; border-radius: 100px; display: flex; align-items: center; gap: 4px;
+  }
+  .story-card-v2 .rating-badge svg { width: 11px; height: 11px; fill: var(--gold-light); }
+  .story-card-v2 .body { padding: 14px 16px 18px; }
+  .story-card-v2 h3 { font-size: 15.5px; font-weight: 700; margin: 0 0 3px; }
+  .story-card-v2 .row { display: flex; align-items: center; justify-content: space-between; }
+  .story-card-v2 .sub { font-size: 12.5px; color: var(--ink-soft); }
+  .story-card-v2 .price { font-size: 14px; font-weight: 800; color: var(--coral); }
+
+  /* Inspiration band */
+  .inspire-band { background: var(--cream-deep); border-radius: 24px; padding: 28px 30px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin: 40px 0; }
+  .inspire-left h3 { font-size: 19px; font-weight: 800; margin: 0 0 12px; max-width: 20ch; }
+  .inspire-mid { display: flex; gap: 16px; flex-wrap: wrap; }
+  .inspire-item { display: flex; align-items: center; gap: 12px; }
+  .inspire-item .thumb { width: 60px; height: 46px; border-radius: 10px; background-size: cover; background-position: center; flex-shrink: 0; }
+  .inspire-item .t { font-size: 13px; font-weight: 700; max-width: 16ch; }
+  .inspire-item .m { font-size: 11.5px; color: var(--ink-soft); }
+
+  /* Why us */
+  .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 800px) { .why-grid { grid-template-columns: 1fr 1fr; } }
+  .why-card { background: #fff; border: 1px solid var(--line-soft); border-radius: 18px; padding: 20px 18px; }
+  .why-card .ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .why-card .ic svg { width: 19px; height: 19px; }
+  .why-card h4 { font-size: 14.5px; font-weight: 700; margin: 0 0 4px; }
+  .why-card p { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+
+  /* Stats band */
+  .stats-band { background: linear-gradient(155deg, #2a0f18, #4a1220); border-radius: 26px; padding: 36px 34px; margin: 40px 0; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 30px; flex-wrap: wrap; }
+  .stats-row { display: flex; gap: 34px; flex-wrap: wrap; }
+  .stat-item { display: flex; align-items: center; gap: 10px; }
+  .stat-item svg { width: 18px; height: 18px; stroke: var(--gold-light); flex-shrink: 0; }
+  .stat-item b { font-size: 17px; font-weight: 800; display: block; }
+  .stat-item span { font-size: 11.5px; color: rgba(255,255,255,0.65); }
+  .stats-cta { display: flex; align-items: center; gap: 18px; }
+  .stats-cta p { font-size: 15px; font-weight: 700; margin: 0; max-width: 16ch; }
+
+  footer.site { border-top: 1px solid var(--line-soft); padding: 30px 0 100px; text-align: center; color: var(--ink-soft); font-size: 12.5px; }
+  @media (min-width: 641px) { footer.site { padding-bottom: 30px; } }
+
+  /* Bottom mobile tab bar */
+  .tab-bar {
+    position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--line-soft);
+    display: none; align-items: center; justify-content: space-around; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); z-index: 60;
+  }
+  @media (max-width: 640px) { .tab-bar { display: flex; } body { padding-bottom: 70px; } }
+  .tab-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: var(--ink-soft); }
+  .tab-item svg { width: 20px; height: 20px; stroke: var(--ink-soft); fill: none; }
+  .tab-item.active { color: var(--coral); }
+  .tab-item.active svg { stroke: var(--coral); }
+  .tab-item.raised { position: relative; top: -16px; background: var(--coral); width: 50px; height: 50px; border-radius: 50%; justify-content: center; box-shadow: 0 8px 20px rgba(255,56,92,0.4); }
+  .tab-item.raised svg { stroke: #fff; width: 22px; height: 22px; }
+  .tab-item.raised span { display: none; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
+    <nav class="main">
+      <a href="stories.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Stories</a>
+      <a href="personalize.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Personalize</a>
+      <a href="about.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>About</a>
+      <a href="help.html"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.9.4-1.5 1-1.5 2.2"/><path d="M12 17h.01"/></svg>Help</a>
+    </nav>
+    <div class="header-actions">
+      <a class="lang-pill" href="#">EN</a>
+      <a class="btn-primary" href="personalize.html" style="padding:11px 20px; font-size:13px;">Create Their Story</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero-section">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-script">Imagine</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M3 12c4-6 14-6 18 0"/><path d="M17 8l4 4-4 4"/></svg>
+      </div>
+      <h1 class="hero-h1">Their story.<br/>Their adventure.</h1>
+      <p class="lede">Choose a story, add their name and photo, and we'll turn your child into the hero of their very own book.</p>
+
+      <a class="search-bar" href="personalize.html">
+        <div class="search-seg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <div><div class="lbl">Story</div><div class="val">Choose an adventure</div></div>
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-seg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <div><div class="lbl">Age</div><div class="val">Add child's age</div></div>
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-seg">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+          <div><div class="lbl">Name</div><div class="val">Who's the hero?</div></div>
+        </div>
+        <button class="search-go" type="button">Start &rarr;</button>
+      </a>
+
+      <div class="feature-strip">
+        <div class="feature-chip">
+          <div class="ic" style="background:#ffe3e9;"><svg viewBox="0 0 24 24" fill="none" stroke="#e31c5f" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></div>
+          <div class="txt"><b>Personalized</b><span>Name &amp; photo, woven in</span></div>
+        </div>
+        <div class="feature-chip">
+          <div class="ic" style="background:#fff0d6;"><svg viewBox="0 0 24 24" fill="none" stroke="#c99a3f" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+          <div class="txt"><b>Premium Print</b><span>Made to be kept</span></div>
+        </div>
+        <div class="feature-chip">
+          <div class="ic" style="background:#dcedfa;"><svg viewBox="0 0 24 24" fill="none" stroke="#1c6ba8" stroke-width="2"><path d="M3 5h12M9 3v2M6 9c1 3 4 5 8 6M12 5c-1 5-5 8-9 9"/><circle cx="19" cy="17" r="3"/><path d="M22 22l-1.5-1.5"/></svg></div>
+          <div class="txt"><b>Trilingual</b><span>EN &middot; DE &middot; AR</span></div>
+        </div>
+        <div class="feature-chip">
+          <div class="ic" style="background:#eae5fa;"><svg viewBox="0 0 24 24" fill="none" stroke="#5b4fb0" stroke-width="2"><rect x="3" y="7" width="14" height="12" rx="2"/><path d="M17 10l4-2v9l-4-2"/></svg></div>
+          <div class="txt"><b>Fast Delivery</b><span>Printed close to you</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-photo-wrap">
+      <div class="hero-photo"></div>
+      <div class="floating-card">
+        <div class="row1">
+          <div class="star-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg></div>
+          <b>Loved by<br/>Parents</b>
+        </div>
+        <div class="avatars">
+          <div class="av" style="background-image:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80');"></div>
+          <div class="av" style="background-image:url('https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&q=80');"></div>
+          <div class="av" style="background-image:url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80');"></div>
+        </div>
+        <div class="count">500+ happy families</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Popular Stories &#127793;</h2>
+      <a class="view-all" href="stories.html">View all stories <span class="circle">&rarr;</span></a>
+    </div>
+    <div class="story-grid">
+      <a class="story-card-v2" href="story-bravest-little-one.html">
+        <div class="photo" style="background-image: linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05)), url('https://images.unsplash.com/photo-1541692641319-981cc79ee10a?w=700&q=80');">
+          <div class="rating-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg>4.9</div>
+        </div>
+        <div class="body">
+          <h3>The Bravest Little One</h3>
+          <div class="row"><span class="sub">Courage &amp; Confidence</span><span class="price">&euro;35</span></div>
+        </div>
+      </a>
+      <a class="story-card-v2" href="story-cloud-ship.html">
+        <div class="photo" style="background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=700&q=80');">
+          <div class="rating-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg>4.8</div>
+        </div>
+        <div class="body">
+          <h3>The Cloud Ship</h3>
+          <div class="row"><span class="sub">Adventure &amp; Wonder</span><span class="price">&euro;35</span></div>
+        </div>
+      </a>
+      <a class="story-card-v2" href="story-star-who-couldnt-sleep.html">
+        <div class="photo" style="background-image: url('https://images.unsplash.com/photo-1566004100631-35d015d6a491?w=700&q=80');">
+          <div class="rating-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg>4.9</div>
+        </div>
+        <div class="body">
+          <h3>The Star Who Couldn't Sleep</h3>
+          <div class="row"><span class="sub">Bedtime &amp; Comfort</span><span class="price">&euro;35</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="inspire-band">
+    <div class="inspire-left">
+      <h3>Not sure which story fits? Let us help.</h3>
+      <a class="btn-primary" href="stories.html" style="padding:11px 20px; font-size:13px;">Explore Stories &rarr;</a>
+    </div>
+    <div class="inspire-mid">
+      <a class="inspire-item" href="about.html">
+        <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1476703993599-0035a21b17a9?w=200&q=80');"></div>
+        <div><div class="t">Our Story</div><div class="m">2 min read</div></div>
+      </a>
+      <a class="inspire-item" href="help.html">
+        <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1522771930-78848d9293e8?w=200&q=80');"></div>
+        <div><div class="t">Help &amp; FAQ</div><div class="m">3 min read</div></div>
+      </a>
+    </div>
+  </div>
+
+  <div style="margin: 46px 0 28px;">
+    <h2 style="font-size:21px; font-weight:800; margin:0 0 20px;">Why Families Choose Hikaya &#10024;</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="ic" style="background:#ffe3e9;"><svg viewBox="0 0 24 24" fill="none" stroke="#e31c5f" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h4>Original Stories</h4>
+        <p>Written for this purpose, not adapted from something else.</p>
+      </div>
+      <div class="why-card">
+        <div class="ic" style="background:#fff0d6;"><svg viewBox="0 0 24 24" fill="none" stroke="#c99a3f" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></div>
+        <h4>Personalized Throughout</h4>
+        <p>Their name and likeness, woven into the story itself.</p>
+      </div>
+      <div class="why-card">
+        <div class="ic" style="background:#dcedfa;"><svg viewBox="0 0 24 24" fill="none" stroke="#1c6ba8" stroke-width="2"><path d="M12 2l9 4.5v6c0 5-3.5 8.5-9 9.5-5.5-1-9-4.5-9-9.5v-6z"/></svg></div>
+        <h4>Printed With Care</h4>
+        <p>A real keepsake, made to sit on a shelf for years.</p>
+      </div>
+      <div class="why-card">
+        <div class="ic" style="background:#eae5fa;"><svg viewBox="0 0 24 24" fill="none" stroke="#5b4fb0" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+        <h4>Worry-Free</h4>
+        <p>We handle production and delivery, start to finish.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-band">
+    <div class="stats-row">
+      <div class="stat-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div><b>3</b><span>Stories &amp; growing</span></div></div>
+      <div class="stat-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg><div><b>500+</b><span>Happy families</span></div></div>
+      <div class="stat-item"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg><div><b>4.9</b><span>Average rating</span></div></div>
+      <div class="stat-item"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 5h12M9 3v2M6 9c1 3 4 5 8 6M12 5c-1 5-5 8-9 9"/><circle cx="19" cy="17" r="3"/></svg><div><b>3</b><span>Languages: EN/DE/AR</span></div></div>
+    </div>
+    <div class="stats-cta">
+      <p>Their story starts here.</p>
+      <a class="btn-primary" href="personalize.html">Create Their Story &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">&copy; 2026 Maison Jaber. All rights reserved.</div>
+</footer>
+
+<div class="tab-bar">
+  <a class="tab-item active" href="index.html">
+    <svg viewBox="0 0 24 24" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    <span>Home</span>
+  </a>
+  <a class="tab-item" href="stories.html">
+    <svg viewBox="0 0 24 24" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>Stories</span>
+  </a>
+  <a class="tab-item raised" href="personalize.html">
+    <svg viewBox="0 0 24 24" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    <span>Create</span>
+  </a>
+  <a class="tab-item" href="account.html">
+    <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    <span>Saved</span>
+  </a>
+  <a class="tab-item" href="account.html">
+    <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+    <span>Profile</span>
+  </a>
+</div>
+
+</body>
+</html>
