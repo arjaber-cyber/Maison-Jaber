@@ -47,20 +47,20 @@
   .breadcrumb a:hover { color: var(--coral); }
 
   /* Hero */
-  .story-hero { background: linear-gradient(165deg, #ff385c 0%, #e31c5f 100%); color: var(--text-on-dark); padding: 64px 0; }
+  .story-hero { background: var(--bg); color: var(--ink); padding: 56px 0; }
   .story-hero .inner { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 56px; align-items: center; }
   @media (max-width: 860px) { .story-hero .inner { grid-template-columns: 1fr; } }
   .cover-large {
-    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, #ff385c 0%, #e31c5f 100%);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.4); display: flex; align-items: flex-end; padding: 30px;
+    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, #ffe0d6 0%, #ffc2c9 100%);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.10); display: flex; align-items: flex-end; padding: 30px;
   }
-  .cover-large .cover-line { width: 36px; height: 1px; background: var(--gold); margin-bottom: 14px; }
-  .cover-large .cover-title { font-family: 'Inter', sans-serif; color: var(--champagne); font-size: 30px; line-height: 1.25; }
+  .cover-large .cover-line { width: 36px; height: 1px; background: #e31c5f; margin-bottom: 14px; }
+  .cover-large .cover-title { font-family: 'Inter', sans-serif; color: #e31c5f; font-size: 30px; line-height: 1.25; font-weight: 700; }
   .story-hero h1 { font-size: clamp(28px, 3.6vw, 42px); margin-top: 14px; }
-  .story-hero .promise { font-family: 'Inter', sans-serif; font-style: italic; font-size: 18px; color: var(--champagne); margin-top: 14px; }
-  .story-hero p.synopsis { margin-top: 18px; color: var(--text-on-dark-soft); max-width: 50ch; }
+  .story-hero .promise { font-family: 'Inter', sans-serif; font-style: italic; font-size: 18px; color: #e31c5f; margin-top: 14px; }
+  .story-hero p.synopsis { margin-top: 18px; color: var(--ink-soft); max-width: 50ch; }
   .story-hero .ages-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-  .story-hero .ages-row span { font-size: 12px; border: 1px solid rgba(184,149,75,0.4); border-radius: 20px; padding: 6px 14px; color: var(--text-on-dark-soft); }
+  .story-hero .ages-row span { font-size: 12px; border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; color: var(--ink-soft); }
   .story-hero .actions { margin-top: 28px; }
 
   .section { padding: 72px 0; }
