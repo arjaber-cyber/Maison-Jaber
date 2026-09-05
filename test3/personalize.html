@@ -175,8 +175,8 @@
 </header>
 
 <div class="page-head wrap">
-  <h1>Let's create their story</h1>
-  <p>Start with their age, and we'll show you the right stories.</p>
+  <h1 data-i18n="personalize.page_title">Let's create their story</h1>
+  <p data-i18n="personalize.page_sub">Start with their age, and we'll show you the right stories.</p>
 </div>
 
 <form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
@@ -187,13 +187,13 @@
   <!-- BLOCK 1: AGE -->
   <div class="block">
     <div class="block-inner">
-      <div class="block-label">Step 1</div>
-      <h2>How old are they?</h2>
-      <div class="block-sub">This helps us show stories written the right way for them.</div>
+      <div class="block-label" data-i18n="personalize.step1_label">Step 1</div>
+      <h2 data-i18n="personalize.step1_title">How old are they?</h2>
+      <div class="block-sub" data-i18n="personalize.step1_sub">This helps us show stories written the right way for them.</div>
       <div class="age-grid" id="age-grid">
-        <div class="age-card" data-value="2-4"><div class="range">2&ndash;4</div><p>Simple, gentle, and visual</p></div>
-        <div class="age-card" data-value="5-7"><div class="range">5&ndash;7</div><p>A richer little adventure</p></div>
-        <div class="age-card" data-value="8-10"><div class="range">8&ndash;10</div><p>Deeper stories, more detail</p></div>
+        <div class="age-card" data-value="2-4"><div class="range">2&ndash;4</div><p data-i18n="personalize.age1">Simple, gentle, and visual</p></div>
+        <div class="age-card" data-value="5-7"><div class="range">5&ndash;7</div><p data-i18n="personalize.age2">A richer little adventure</p></div>
+        <div class="age-card" data-value="8-10"><div class="range">8&ndash;10</div><p data-i18n="personalize.age3">Deeper stories, more detail</p></div>
       </div>
     </div>
   </div>
@@ -201,32 +201,32 @@
   <!-- BLOCK 2: STORY (revealed after age) -->
   <div class="block" id="story-block">
     <div class="block-inner">
-      <div class="block-label">Step 2</div>
-      <h2>Choose their story</h2>
-      <div class="block-sub">Every story below is available for this age.</div>
+      <div class="block-label" data-i18n="personalize.step2_label">Step 2</div>
+      <h2 data-i18n="personalize.step2_title">Choose their story</h2>
+      <div class="block-sub" data-i18n="personalize.step2_sub">Every story below is available for this age.</div>
       <div class="story-grid" id="story-grid">
         <div class="story-pick" data-value="The Bravest Little One">
-          <div class="cover courage"><div class="t">The Bravest<br/>Little One</div></div>
+          <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
           <div class="body">
-            <div class="theme">Courage</div>
-            <h3>The Bravest Little One</h3>
-            <p>For the child facing something new and a little scary &mdash; and discovering they're braver than they knew.</p>
+            <div class="theme" data-i18n="common.theme_courage">Courage</div>
+            <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+            <p data-i18n="personalize.pick1_blurb">For the child facing something new and a little scary &mdash; and discovering they're braver than they knew.</p>
           </div>
         </div>
         <div class="story-pick" data-value="The Cloud Ship">
-          <div class="cover adventure"><div class="t">The Cloud<br/>Ship</div></div>
+          <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
           <div class="body">
-            <div class="theme">Adventure</div>
-            <h3>The Cloud Ship</h3>
-            <p>For the dreamer who wants to sail among the stars on a ship made of soft cloud.</p>
+            <div class="theme" data-i18n="common.theme_adventure">Adventure</div>
+            <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
+            <p data-i18n="personalize.pick2_blurb">For the dreamer who wants to sail among the stars on a ship made of soft cloud.</p>
           </div>
         </div>
         <div class="story-pick" data-value="The Star Who Couldn't Sleep">
-          <div class="cover lullaby"><div class="t">The Star Who<br/>Couldn't Sleep</div></div>
+          <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
           <div class="body">
-            <div class="theme">Bedtime</div>
-            <h3>The Star Who Couldn't Sleep</h3>
-            <p>A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.</p>
+            <div class="theme" data-i18n="common.theme_bedtime">Bedtime</div>
+            <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
+            <p data-i18n="personalize.pick3_blurb">A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.</p>
           </div>
         </div>
       </div>
@@ -236,30 +236,30 @@
   <!-- BLOCK 3: DETAILS (revealed after story) -->
   <div class="block" id="details-block">
     <div class="block-inner">
-      <div class="block-label">Step 3</div>
-      <h2>Tell us about them</h2>
-      <div class="block-sub">Just the essentials.</div>
+      <div class="block-label" data-i18n="personalize.step3_label">Step 3</div>
+      <h2 data-i18n="personalize.step3_title">Tell us about them</h2>
+      <div class="block-sub" data-i18n="personalize.step3_sub">Just the essentials.</div>
       <div class="details-card">
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="child-name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required /></div>
-          <div class="field"><label class="field-label" for="child-age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" /></div>
-          <div class="field full"><label class="field-label" for="dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover"></textarea></div>
+          <div class="field"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
+          <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
         </div>
-        <label class="field-label" style="display:block; margin-bottom:8px;">Photo(s) of your child</label>
+        <label class="field-label" style="display:block; margin-bottom:8px;" data-i18n="personalize.photos_label">Photo(s) of your child</label>
         <div class="photo-guidance">
-          For the best result, please make sure the photo:
+          <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
           <ul>
-            <li>Shows their face clearly, looking toward the camera</li>
-            <li>Is well-lit, without harsh shadows</li>
-            <li>Isn't blurry or too far away</li>
-            <li>Has nothing covering their face (no sunglasses, masks, or hands)</li>
-            <li>Isn't a group photo &mdash; just your child</li>
+            <li data-i18n="personalize.photo_g1">Shows their face clearly, looking toward the camera</li>
+            <li data-i18n="personalize.photo_g2">Is well-lit, without harsh shadows</li>
+            <li data-i18n="personalize.photo_g3">Isn't blurry or too far away</li>
+            <li data-i18n="personalize.photo_g4">Has nothing covering their face (no sunglasses, masks, or hands)</li>
+            <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
           </ul>
         </div>
         <div class="photo-upload" id="photo-upload">
           <input type="file" id="child-photos" accept="image/*" multiple />
-          <div class="hint-main">Click to add photos</div>
-          <div class="hint-sub">You can add more than one for a better result</div>
+          <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+          <div class="hint-sub" data-i18n="personalize.add_more_photos">You can add more than one for a better result</div>
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
       </div>
@@ -269,40 +269,40 @@
   <!-- BLOCK 4: ACCOUNT + SEND (revealed after details) -->
   <div class="block" id="send-block">
     <div class="block-inner">
-      <div class="block-label">Step 4</div>
-      <h2>Review &amp; send</h2>
-      <div class="block-sub">One quick account step, and their request is on its way.</div>
+      <div class="block-label" data-i18n="personalize.step4_label">Step 4</div>
+      <h2 data-i18n="personalize.step4_title">Review &amp; send</h2>
+      <div class="block-sub" data-i18n="personalize.step4_sub">One quick account step, and their request is on its way.</div>
 
       <div class="send-card">
-        <div class="summary-row"><span>Story</span><span id="summary-story">&mdash;</span></div>
-        <div class="summary-row"><span>Age edition</span><span id="summary-age">&mdash;</span></div>
-        <div class="summary-row"><span>Child's name</span><span id="summary-name">&mdash;</span></div>
-        <div class="summary-row"><span>Photos</span><span id="summary-photos">0</span></div>
-        <div class="summary-row" style="border-bottom: none; padding-top: 12px;"><span style="font-weight: 800; color: var(--ink);">Price</span><span style="color: var(--ink); font-weight: 800;">&euro;35</span></div>
+        <div class="summary-row"><span data-i18n="home.search_story_lbl">Story</span><span id="summary-story">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
+        <div class="summary-row" style="border-bottom: none; padding-top: 12px;"><span style="font-weight: 800; color: var(--ink);" data-i18n="personalize.price">Price</span><span style="color: var(--ink); font-weight: 800;">&euro;35</span></div>
 
         <div class="account-gate" id="account-gate">
-          <p class="note">Create a free account to send your request and track your order.</p>
-          <button type="button" class="btn-oauth" id="google-btn">Continue with Google</button>
-          <button type="button" class="btn-oauth" id="facebook-btn">Continue with Facebook</button>
-          <div class="divider">or</div>
+          <p class="note" data-i18n="personalize.gate_note">Create a free account to send your request and track your order.</p>
+          <button type="button" class="btn-oauth" id="google-btn" data-i18n="checkout.google">Continue with Google</button>
+          <button type="button" class="btn-oauth" id="facebook-btn" data-i18n="checkout.facebook">Continue with Facebook</button>
+          <div class="divider" data-i18n="login.or">or</div>
           <input type="email" id="auth-email" placeholder="you@email.com" />
-          <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;">Email Me a Sign-In Link</button>
+          <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;" data-i18n="personalize.email_link_btn">Email Me a Sign-In Link</button>
           <div style="text-align: center; margin-top: 16px;">
-            <button type="button" id="guest-toggle-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;">Prefer not to sign in? Continue as guest</button>
+            <button type="button" id="guest-toggle-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.guest_toggle">Prefer not to sign in? Continue as guest</button>
           </div>
         </div>
 
         <div class="account-gate" id="guest-gate" style="display:none;">
-          <p class="note">Continuing as a guest &mdash; you won't be able to track this order later, so we recommend creating an account instead.</p>
+          <p class="note" data-i18n="personalize.guest_note">Continuing as a guest &mdash; you won't be able to track this order later, so we recommend creating an account instead.</p>
           <input type="email" id="guest-email" placeholder="you@email.com (for order updates)" />
           <div style="text-align: center; margin-top: 12px;">
-            <button type="button" id="back-to-account-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;">&larr; Actually, I'll create an account</button>
+            <button type="button" id="back-to-account-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.back_to_account">&larr; Actually, I'll create an account</button>
           </div>
         </div>
 
         <div class="signed-in-bar" id="signed-in-bar" style="display:none;">
-          <span>Signed in as <span id="signed-in-email"></span></span>
-          <button type="button" id="sign-out-btn">Sign out</button>
+          <span data-i18n-skip>Signed in as <span id="signed-in-email"></span></span>
+          <button type="button" id="sign-out-btn" data-i18n="account.sign_out">Sign out</button>
         </div>
 
         <button type="submit" class="btn-primary" id="send-btn" style="width:100%; justify-content:center; margin-top: 6px;" disabled>Sign in to Send Request</button>
@@ -315,12 +315,12 @@
 <div class="wrap">
   <div class="success-panel" id="success-panel">
     <div class="mark">&#127881;</div>
-    <h3>Your request has been sent!</h3>
-    <p>We're preparing their story now, and will email you a preview soon.</p>
+    <h3 data-i18n="personalize.success_title">Your request has been sent!</h3>
+    <p data-i18n="personalize.success_body">We're preparing their story now, and will email you a preview soon.</p>
   </div>
 </div>
 
-<footer class="site"><div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div></footer>
+<footer class="site"><div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div></footer>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
