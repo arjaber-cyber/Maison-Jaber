@@ -5,29 +5,58 @@
    <script src="/golden-line.js" defer></script>
 */
 (function () {
-  function buildPath(totalHeight, centerX, maxAmplitude) {
+  function buildPath(totalHeight, centerX, maxAmplitude, vw) {
     let y = 0;
     let x = centerX;
     let d = `M${x.toFixed(1)},0 `;
-    const minAmp = maxAmplitude * 0.25;
+    const minAmp = maxAmplitude * 0.3;
+    const margin = 18;
+    const clampX = (v) => Math.max(margin, Math.min(vw - margin, v));
 
     while (y < totalHeight) {
-      const segH = 160 + Math.random() * 200; // organic, varying segment length
-      const nextY = Math.min(y + segH, totalHeight);
-      const amp = minAmp + Math.random() * (maxAmplitude - minAmp);
-      const dir = Math.random() < 0.5 ? -1 : 1;
-      // occasionally keep drifting the same direction for a longer sweep,
-      // occasionally reverse — avoids a too-regular left/right/left/right feel
-      const nextX = centerX + dir * amp;
+      const makeLoop = Math.random() < 0.35; // some segments curl into a loop, not just sway
 
-      const cp1x = x + (Math.random() - 0.5) * maxAmplitude * 0.7;
-      const cp1y = y + segH * (0.3 + Math.random() * 0.15);
-      const cp2x = nextX + (Math.random() - 0.5) * maxAmplitude * 0.7;
-      const cp2y = y + segH * (0.65 + Math.random() * 0.15);
+      if (makeLoop) {
+        // Swing out wide, then curl back — a hand-drawn loop-de-loop, not a simple wave
+        const segH = 220 + Math.random() * 200;
+        const nextY = Math.min(y + segH, totalHeight);
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const loopAmp = maxAmplitude * (0.7 + Math.random() * 0.5);
+        const loopX = clampX(x + dir * loopAmp);
+        const midY = y + segH * (0.45 + Math.random() * 0.1);
 
-      d += `C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${nextX.toFixed(1)},${nextY.toFixed(1)} `;
-      x = nextX;
-      y = nextY;
+        const cp1x = clampX(x + dir * loopAmp * 0.95);
+        const cp1y = y + segH * 0.1;
+        const cp2x = clampX(loopX + dir * loopAmp * 0.1);
+        const cp2y = y + segH * 0.3;
+        d += `C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${loopX.toFixed(1)},${midY.toFixed(1)} `;
+
+        const returnX = clampX(x + dir * minAmp * (0.2 + Math.random() * 0.3));
+        const cp3x = clampX(loopX - dir * loopAmp * 0.5);
+        const cp3y = y + segH * 0.68;
+        const cp4x = clampX(returnX + dir * minAmp * 0.5);
+        const cp4y = y + segH * 0.88;
+        d += `C${cp3x.toFixed(1)},${cp3y.toFixed(1)} ${cp4x.toFixed(1)},${cp4y.toFixed(1)} ${returnX.toFixed(1)},${nextY.toFixed(1)} `;
+
+        x = returnX;
+        y = nextY;
+      } else {
+        // A freer sweep — amplitude, steepness, and length all vary a lot
+        const segH = 130 + Math.random() * 260;
+        const nextY = Math.min(y + segH, totalHeight);
+        const amp = minAmp + Math.random() * (maxAmplitude - minAmp);
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const nextX = clampX(centerX + dir * amp);
+
+        const cp1x = clampX(x + (Math.random() - 0.5) * maxAmplitude * 0.9);
+        const cp1y = y + segH * (0.2 + Math.random() * 0.25);
+        const cp2x = clampX(nextX + (Math.random() - 0.5) * maxAmplitude * 0.9);
+        const cp2y = y + segH * (0.6 + Math.random() * 0.25);
+
+        d += `C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${nextX.toFixed(1)},${nextY.toFixed(1)} `;
+        x = nextX;
+        y = nextY;
+      }
     }
     return d;
   }
@@ -44,7 +73,7 @@
     const centerX = vw / 2;
     const maxAmplitude = Math.min(vw * 0.32, 380);
 
-    const d = buildPath(totalHeight, centerX, maxAmplitude);
+    const d = buildPath(totalHeight, centerX, maxAmplitude, vw);
     const uid = 'gl' + Math.random().toString(36).slice(2, 8);
 
     const wrap = document.createElement('div');
