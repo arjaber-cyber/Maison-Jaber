@@ -62,6 +62,19 @@
   /* Age selector */
   .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 640px) { .age-grid { grid-template-columns: 1fr; } }
+
+  .birthday-card {
+    background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 30px 28px;
+    box-shadow: 0 6px 18px rgba(50,44,36,0.06); max-width: 360px;
+  }
+  .birthday-card:focus-within { border-color: var(--coral); }
+  .birthday-card label { display: block; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; }
+  .birthday-field input[type="date"] {
+    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 17px;
+    border: 2px solid var(--line-soft); border-radius: 10px; background: var(--bg-soft); color: var(--ink);
+  }
+  .birthday-field input[type="date"]:focus { outline: none; border-color: var(--coral); background: #fff; }
+  .birthday-note { font-size: 13px; font-weight: 600; color: var(--coral-deep); margin-top: 12px; min-height: 18px; }
   .age-card {
     background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 26px 20px;
     text-align: center; cursor: pointer; box-shadow: 0 6px 18px rgba(50,44,36,0.06);
@@ -196,17 +209,20 @@
   <input type="hidden" name="form-name" value="book-request" />
   <input type="hidden" name="story" id="story-input" />
   <input type="hidden" name="age_edition" id="age-input" />
+  <input type="hidden" name="birthday" id="birthday-hidden" />
 
-  <!-- BLOCK 1: AGE -->
+  <!-- BLOCK 1: BIRTHDAY -->
   <div class="block">
     <div class="block-inner">
       <div class="block-label" data-i18n="personalize.step1_label">Step 1</div>
-      <h2 data-i18n="personalize.step1_title">How old are they?</h2>
+      <h2 data-i18n="personalize.step1_title_bday">When's their birthday?</h2>
       <div class="block-sub" data-i18n="personalize.step1_sub">This helps us show stories written the right way for them.</div>
-      <div class="age-grid" id="age-grid">
-        <div class="age-card" data-value="2-4"><div class="range">2&ndash;4</div><p data-i18n="personalize.age1">Simple, gentle, and visual</p></div>
-        <div class="age-card" data-value="5-7"><div class="range">5&ndash;7</div><p data-i18n="personalize.age2">A richer little adventure</p></div>
-        <div class="age-card" data-value="8-10"><div class="range">8&ndash;10</div><p data-i18n="personalize.age3">Deeper stories, more detail</p></div>
+      <div class="birthday-card">
+        <div class="birthday-field">
+          <label for="birthday-input" data-i18n="personalize.birthday_label">Their birthday</label>
+          <input type="date" id="birthday-input" />
+          <div class="birthday-note" id="birthday-note"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -254,8 +270,7 @@
       <div class="block-sub" data-i18n="personalize.step3_sub">Just the essentials.</div>
       <div class="details-card">
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
-          <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field full"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
           <div class="field full">
             <label class="field-label" data-i18n="personalize.gender_label">Who's the hero?</label>
             <div class="gender-toggle">
@@ -264,7 +279,7 @@
                 <span data-i18n="personalize.gender_boy">Boy</span>
               </button>
               <button type="button" class="gender-btn" data-value="girl">
-                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M12 12v9M8.5 17h7"/></svg>
+                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M9 12.5l-3.5 8.5h13l-3.5-8.5"/><path d="M12 12.5v3"/></svg>
                 <span data-i18n="personalize.gender_girl">Girl</span>
               </button>
             </div>
@@ -356,19 +371,120 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
   );
 
+  // ---------- Draft persistence (survives the OAuth redirect) ----------
+  // Signing in with Google/Facebook navigates away to the provider and back,
+  // which reloads the page and would otherwise wipe every field the parent
+  // already filled in. We snapshot the form right before redirecting, then
+  // restore it once the page comes back.
+  const DRAFT_KEY = 'hikaya_personalize_draft_v1';
+
+  function dataUrlToFile(dataUrl, filename, mimeType) {
+    const arr = dataUrl.split(',');
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mimeType });
+  }
+
+  async function saveDraftToStorage() {
+    const base = {
+      birthday: document.getElementById('birthday-input').value,
+      ageEdition: document.getElementById('age-input').value,
+      story: document.getElementById('story-input').value,
+      gender: document.getElementById('child-gender').value,
+      childName: document.getElementById('child-name').value,
+      dedication: document.getElementById('dedication').value,
+      photos: [],
+    };
+    try {
+      base.photos = await Promise.all(photoFiles.map(file => new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, type: file.type, dataUrl: reader.result });
+        reader.readAsDataURL(file);
+      })));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(base));
+    } catch {
+      // Photos may be too large for localStorage — save everything else anyway,
+      // rather than losing the whole draft over the photos.
+      try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...base, photos: [] })); } catch {}
+    }
+  }
+
+  function restoreDraftFromStorage() {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    try {
+      const draft = JSON.parse(raw);
+      if (draft.birthday) {
+        document.getElementById('birthday-input').value = draft.birthday;
+        document.getElementById('birthday-hidden').value = draft.birthday;
+      }
+      if (draft.ageEdition) {
+        document.getElementById('age-input').value = draft.ageEdition;
+        document.getElementById('summary-age').textContent = 'Ages ' + draft.ageEdition;
+        document.getElementById('story-block').classList.add('visible');
+      }
+      if (draft.story) {
+        document.getElementById('story-input').value = draft.story;
+        document.getElementById('summary-story').textContent = draft.story;
+        document.querySelectorAll('.story-pick').forEach(c => { if (c.dataset.value === draft.story) c.classList.add('selected'); });
+        document.getElementById('details-block').classList.add('visible');
+      }
+      if (draft.gender) {
+        document.getElementById('child-gender').value = draft.gender;
+        document.querySelectorAll('.gender-btn').forEach(b => { if (b.dataset.value === draft.gender) b.classList.add('selected'); });
+      }
+      if (draft.childName) {
+        document.getElementById('child-name').value = draft.childName;
+        document.getElementById('summary-name').textContent = draft.childName;
+      }
+      if (draft.dedication) document.getElementById('dedication').value = draft.dedication;
+      if (draft.photos && draft.photos.length) {
+        draft.photos.forEach(p => photoFiles.push(dataUrlToFile(p.dataUrl, p.name, p.type)));
+        renderThumbs();
+      }
+      checkDetailsComplete();
+    } catch {
+      // Corrupt draft — ignore rather than block the page.
+    } finally {
+      localStorage.removeItem(DRAFT_KEY);
+    }
+  }
+
   let photoFiles = [];
   let isSignedIn = false;
 
-  // --- Age selection reveals stories ---
-  document.querySelectorAll('.age-card').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      document.getElementById('age-input').value = card.dataset.value;
-      document.getElementById('summary-age').textContent = 'Ages ' + card.dataset.value;
-      document.getElementById('story-block').classList.add('visible');
-      document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  // --- Birthday entry computes age edition, reveals stories ---
+  const birthdayInput = document.getElementById('birthday-input');
+  const birthdayNote = document.getElementById('birthday-note');
+
+  function editionForAge(years) {
+    if (years <= 4) return '2-4';
+    if (years <= 7) return '5-7';
+    return '8-10';
+  }
+  const EDITION_NOTE_KEY = { '2-4': 'personalize.bday_note_2_4', '5-7': 'personalize.bday_note_5_7', '8-10': 'personalize.bday_note_8_10' };
+
+  birthdayInput.addEventListener('change', () => {
+    if (!birthdayInput.value) return;
+    const dob = new Date(birthdayInput.value);
+    const today = new Date();
+    let years = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) years--;
+    years = Math.max(0, years);
+
+    const edition = editionForAge(years);
+    document.getElementById('age-input').value = edition;
+    document.getElementById('birthday-hidden').value = birthdayInput.value;
+    document.getElementById('summary-age').textContent = 'Ages ' + edition;
+
+    const noteKey = EDITION_NOTE_KEY[edition];
+    birthdayNote.textContent = `${window.hikayaT ? window.hikayaT(noteKey) : ''}`.replace('{age}', years) || `That makes them ${years} — perfect for our ${edition} edition.`;
+
+    document.getElementById('story-block').classList.add('visible');
+    document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // --- Gender toggle ---
@@ -463,6 +579,7 @@
     }
   }
   refreshAuthUI();
+  restoreDraftFromStorage();
 
   document.getElementById('guest-toggle-btn').addEventListener('click', () => {
     isGuest = true;
@@ -474,9 +591,11 @@
   });
 
   document.getElementById('google-btn').addEventListener('click', async () => {
+    await saveDraftToStorage();
     await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
   });
   document.getElementById('facebook-btn').addEventListener('click', async () => {
+    await saveDraftToStorage();
     await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
   });
   document.getElementById('email-link-btn').addEventListener('click', async () => {
@@ -485,6 +604,7 @@
     if (!email) { status.textContent = 'Please enter your email.'; return; }
     status.style.color = '#717171';
     status.textContent = 'Sending your sign-in link…';
+    await saveDraftToStorage();
     const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
     status.textContent = error ? error.message : 'Check your email for a sign-in link.';
   });
@@ -522,6 +642,7 @@
 
       document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
       document.getElementById('success-panel').classList.add('visible');
+      localStorage.removeItem(DRAFT_KEY);
     } catch {
       status.textContent = 'Something went wrong — please try again.';
       btn.disabled = false;
