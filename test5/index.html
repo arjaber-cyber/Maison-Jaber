@@ -46,7 +46,22 @@
   nav.main a:hover { color: var(--caramel); }
   .header-actions { display: flex; align-items: center; gap: 18px; }
   .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
-  @media (max-width: 900px) { nav.main { display: none; } }
+  .hamburger, .mobile-cta-icon { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
+  .hamburger svg, .mobile-cta-icon svg { width: 22px; height: 22px; stroke: var(--brown); fill: none; }
+  .mobile-nav-panel { display: none; flex-direction: column; gap: 4px; background: var(--ivory); padding: 6px 28px 24px; }
+  .mobile-nav-panel.open { display: flex; }
+  .mobile-nav-panel a.nav-link { font-size: 15.5px; font-weight: 600; color: var(--brown); padding: 10px 0; border-bottom: 1px solid var(--beige); }
+  .mobile-nav-panel .btn-primary { margin-top: 16px; justify-content: center; }
+
+  @media (max-width: 900px) {
+    header.site { padding: 20px 0; }
+    header.site .inner { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; }
+    header.site .wordmark { grid-column: 2; justify-self: center; }
+    header.site .wordmark img { height: 32px; }
+    nav.main, .header-actions { display: none; }
+    .hamburger { grid-column: 1; display: flex; justify-self: start; }
+    .mobile-cta-icon { grid-column: 3; display: flex; justify-self: end; }
+  }
 
   /* Hero */
   .hero { position: relative; min-height: 760px; display: flex; align-items: center; overflow: hidden; }
@@ -68,13 +83,20 @@
   .hero-flourish .heart { font-size: 15px; color: var(--caramel); }
   @media (max-width: 1100px) { .hero-flourish { display: none; } }
 
+  .hero-flourish-mobile { display: none; }
+
   @media (max-width: 900px) {
     .hero { min-height: auto; padding-bottom: 40px; }
-    .hero-bg { position: relative; height: 60vh; min-height: 380px; }
+    .hero-bg { position: relative; height: 52vh; min-height: 340px; }
     .hero-bg::after { background: linear-gradient(0deg, var(--ivory) 0%, rgba(248,242,232,0.05) 30%); }
     .hero-inner { padding-top: 0; }
     .hero-copy { max-width: none; padding: 26px 0 0; }
     .hero-copy p.lede { max-width: none; }
+    .hero-copy h1 br { display: none; }
+    .hero-copy h1 { font-size: 34px; }
+    .hero-flourish-mobile { display: flex; align-items: center; gap: 10px; margin-top: 22px; }
+    .hero-flourish-mobile .script { font-size: 20px; line-height: 1.15; color: var(--brown); }
+    .hero-flourish-mobile .heart { font-size: 14px; color: var(--caramel); }
   }
 
   /* How it works */
@@ -133,6 +155,9 @@
 
 <header class="site">
   <div class="wrap inner">
+    <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
     <nav class="main">
       <a href="../test3/stories.html">Our Stories</a>
@@ -145,6 +170,16 @@
       <a class="icon-btn" href="../test3/login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
       <a class="btn-primary" href="../test3/personalize.html" style="padding:12px 22px; font-size:13px;">Create Their Book</a>
     </div>
+    <a class="mobile-cta-icon" href="../test3/personalize.html" aria-label="Create Their Book">
+      <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg>
+    </a>
+  </div>
+  <div class="mobile-nav-panel" id="mobile-nav-panel">
+    <a class="nav-link" href="../test3/stories.html">Our Stories</a>
+    <a class="nav-link" href="#how-it-works">How It Works</a>
+    <a class="nav-link" href="../test3/about.html">About</a>
+    <a class="nav-link" href="#gifts">Gifts</a>
+    <a class="btn-primary" href="../test3/personalize.html">Create Their Book &rarr;</a>
   </div>
 </header>
 
@@ -160,6 +195,10 @@
       <h1>More than<br/>a book,<br/><em>it's a memory<br/>for life.</em></h1>
       <p class="lede">Beautifully illustrated, personally crafted, and made to inspire a brighter tomorrow.</p>
       <a class="btn-primary" href="../test3/personalize.html">Create Their Book &rarr;</a>
+      <div class="hero-flourish-mobile">
+        <span class="script">Little Stories, Big Tomorrows</span>
+        <span class="heart">&#9825;</span>
+      </div>
       <div class="hero-trust">
         <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>A meaningful gift</div>
         <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Beautifully illustrated</div>
@@ -254,6 +293,12 @@
     <div class="footer-bottom">&copy; 2026 Maison Jaber. All rights reserved.</div>
   </div>
 </footer>
+
+<script>
+  document.getElementById('hamburger-btn').addEventListener('click', () => {
+    document.getElementById('mobile-nav-panel').classList.toggle('open');
+  });
+</script>
 
 </body>
 </html>
