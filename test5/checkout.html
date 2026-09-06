@@ -31,6 +31,14 @@
   }
   .btn-primary:disabled { background: var(--parchment); color: var(--text-on-light-soft); cursor: not-allowed; }
 
+  .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    background: #fff; color: var(--text-on-light); border: 1px solid rgba(184,149,75,0.35);
+    padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600;
+    font-family: 'Inter', sans-serif; cursor: pointer; transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .btn-secondary:hover { border-color: var(--coral); background: var(--bg-soft); }
+
   header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; }
   header.site .inner { max-width: 1180px; margin: 0 auto; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
   .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; font-size: 19px; color: var(--ink); }
@@ -38,30 +46,90 @@
 
   header.site a.exit { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
 
+  .mini-banner { position: relative; height: 190px; overflow: hidden; }
+  .mini-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.1s ease; }
+  .mini-slide.active { opacity: 1; }
+  .mini-banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(46,32,24,0.35), rgba(46,32,24,0.05)); pointer-events: none; }
+  .mini-banner-lang-wrap {
+    position: absolute; top: 14px; right: 20px; z-index: 2;
+  }
+  .mini-banner-lang-wrap .lang-pill {
+    background: rgba(255,255,255,0.92); font-size: 12.5px; font-weight: 700; padding: 8px 12px; border-radius: 100px; display: inline-block;
+  }
+  .mini-banner-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; gap: 6px; }
+  .mini-banner-dots button { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; transition: all 0.25s ease; }
+  .mini-banner-dots button.active { background: #fff; width: 16px; border-radius: 3px; }
+  @media (max-width: 640px) { .mini-banner { height: 130px; } }
+
   .preview-banner {
     background: var(--parchment); text-align: center; padding: 10px 16px; font-size: 12px; color: var(--text-on-light-soft);
   }
 
-  .checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: 48px; padding: 56px 0 90px; max-width: 1080px; margin: 0 auto; }
-  @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; padding: 40px 20px 70px; } }
+  .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; padding: 32px 0 70px; max-width: 1080px; margin: 0 auto; align-items: start; }
+  @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; padding: 24px 20px 50px; } }
 
-  .checkout-col h2 { font-size: 19px; margin-bottom: 18px; }
-  .form-block { margin-bottom: 36px; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
-  .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-  .field.full { grid-column: 1 / -1; }
-  label.field-label { font-size: 12px; font-weight: 600; }
-  input[type="text"], select {
-    width: 100%; padding: 12px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
-    border: 1px solid rgba(184,149,75,0.3); border-radius: var(--radius); background: #fff; color: var(--text-on-light);
+  .checkout-col h2 { font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .checkout-col h2 .step-num {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--coral); color: #fff; font-size: 12px;
+    font-family: 'Inter', sans-serif; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  input:focus, select:focus { outline: none; border-color: var(--gold); }
+  .form-block { margin-bottom: 26px; background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 22px 24px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0; }
+  .field.full { grid-column: 1 / -1; }
+  label.field-label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; }
+  input[type="text"], select {
+    width: 100%; padding: 11px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
+    border: 1px solid rgba(184,149,75,0.3); border-radius: 10px; background: var(--bg-soft); color: var(--text-on-light);
+  }
+  input:focus, select:focus { outline: none; border-color: var(--gold); background: #fff; }
+
+  .map-field { margin-top: 4px; }
+  .map-field-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .map-locate-btn {
+    display: inline-flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--coral-deep); padding: 0;
+  }
+  .map-locate-btn svg { width: 14px; height: 14px; stroke: var(--coral-deep); }
+  .map-locate-btn:hover { color: var(--coral); }
+  .map-frame { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line-soft); height: 220px; }
+  .map-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .map-hint { font-size: 11px; color: var(--ink-soft); margin-top: 8px; }
 
   .payment-placeholder {
-    border: 1.5px dashed rgba(184,149,75,0.4); border-radius: var(--radius); padding: 22px; text-align: center;
+    border: 1.5px dashed rgba(184,149,75,0.4); border-radius: var(--radius); padding: 18px; text-align: center;
+    color: var(--text-on-light-soft); font-size: 13px; background: var(--bg-soft);
+  }
+
+  .pay-methods { display: flex; gap: 10px; margin-bottom: 16px; }
+  .pay-method-btn {
+    flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--radius); background: #fff;
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink-soft); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s ease;
+  }
+  .pay-method-btn.active { border-color: var(--coral); background: var(--bg-soft); color: var(--coral-deep); }
+  .pay-method-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+
+  .card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 18px; }
+  .card-fields .full { grid-column: 1 / -1; }
+  .card-fields-note { font-size: 11.5px; color: var(--ink-soft); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+
+  .cod-box {
+    background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 20px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .cod-box svg { width: 26px; height: 26px; stroke: var(--coral); fill: none; flex-shrink: 0; margin-top: 2px; }
+  .cod-box h4 { font-size: 14.5px; margin-bottom: 4px; }
+  .cod-box p { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
+
+  .other-region-box {
+    border: 1.5px dashed rgba(184,149,75,0.4); border-radius: var(--radius); padding: 20px; text-align: center;
     color: var(--text-on-light-soft); font-size: 13px; background: #fff;
   }
+
+  .payment-error { background: #fbebe6; border: 1px solid #e0b3a0; color: #7a3320; border-radius: var(--radius); padding: 12px 16px; font-size: 12.5px; margin-top: 12px; display: none; }
+  .payment-success { background: #eef3e6; border: 1px solid #b9cf9d; color: #3d5a26; border-radius: var(--radius); padding: 16px; font-size: 13px; margin-top: 12px; display: none; }
 
   .approval { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text-on-light-soft); margin: 20px 0; }
 
@@ -92,31 +160,46 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
 
 <header class="site">
   <div class="inner">
     <div class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></div>
-    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="personalize.html">&larr; Edit personalization</a>
+    <a class="exit" href="personalize.html">&larr; Edit personalization</a>
   </div>
 </header>
 
+<div class="mini-banner" id="mini-banner">
+  <div class="mini-banner-track" id="mini-banner-track">
+    <div class="mini-slide active" style="background-image:url('images/hero-bedroom-wide.jpg')"></div>
+    <div class="mini-slide" style="background-image:url('images/fantasy-night-scene.jpg')"></div>
+    <div class="mini-slide" style="background-image:url('images/giftbox-open-pair.jpg')"></div>
+    <div class="mini-slide" style="background-image:url('images/bookshelf-scene.jpg')"></div>
+    <div class="mini-slide" style="background-image:url('images/book-flatlay.jpg')"></div>
+  </div>
+  <div class="mini-banner-lang-wrap"><a class="lang-pill" href="#" data-i18n-skip>EN</a></div>
+  <div class="mini-banner-dots" id="mini-banner-dots"></div>
+</div>
+
 <div class="preview-banner" data-i18n="checkout.preview_banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
 
-<div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 32px;">
-  <div style="background: #fff; border: 1px solid rgba(184,149,75,0.25); border-radius: 12px; padding: 24px 26px;">
-    <h2 style="font-size: 16px; margin-bottom: 4px;" data-i18n="checkout.signin_title">Sign in for faster checkout</h2>
-    <p style="font-size: 13px; color: var(--text-on-light-soft); margin: 0 0 16px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</p>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 11px 18px;" data-i18n="checkout.google">Continue with Google</button>
-      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 11px 18px;" data-i18n="checkout.facebook">Continue with Facebook</button>
-      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 11px 18px; margin-left: auto;" data-i18n="checkout.guest">Continue as Guest</button>
+<div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 20px;">
+  <div style="background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    <div>
+      <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.signin_title">Sign in for faster checkout</span>
+      <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
+    </div>
+    <div style="display: flex; gap: 8px; flex-shrink: 0;">
+      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
+      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
+      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
 </div>
 
-<div id="signed-in-bar" class="wrap" style="max-width: 1080px; margin: 0 auto; padding-top: 24px; display: none;">
+<div id="signed-in-bar" class="wrap" style="max-width: 1080px; margin: 0 auto; padding-top: 16px; display: none;">
   <div style="background: var(--parchment); border-radius: 12px; padding: 14px 20px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
     <span data-i18n-skip>Signed in as <strong id="signed-in-email"></strong></span>
     <button id="sign-out-checkout" style="background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--text-on-light-soft); font-family: 'Inter', sans-serif;" data-i18n="account.sign_out">Sign out</button>
@@ -126,7 +209,7 @@
 <div class="checkout-layout">
   <div class="checkout-col">
     <div class="form-block">
-      <h2 data-i18n="checkout.delivery_title">Delivery details</h2>
+      <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
       <div class="form-grid">
         <div class="field"><label class="field-label" for="full-name" data-i18n="checkout.full_name">Full name</label><input type="text" id="full-name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
         <div class="field"><label class="field-label" for="email" data-i18n="checkout.email">Email</label><input type="text" id="email" placeholder="you@email.com" /></div>
@@ -134,7 +217,31 @@
         <div class="field"><label class="field-label" for="city" data-i18n="checkout.city">City</label><input type="text" id="city" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
         <div class="field">
           <label class="field-label" for="country" data-i18n="checkout.country">Country</label>
-          <select id="country"><option data-i18n="checkout.germany">Germany</option><option data-i18n="checkout.syria">Syria</option><option data-i18n="checkout.other">Other</option></select>
+          <select id="country">
+            <option value="Germany" data-i18n="checkout.germany">Germany &amp; Europe</option>
+            <option value="Syria" data-i18n="checkout.syria">Syria</option>
+            <option value="UAE" data-i18n="checkout.uae">United Arab Emirates</option>
+            <option value="Saudi" data-i18n="checkout.saudi">Saudi Arabia</option>
+            <option value="Qatar" data-i18n="checkout.qatar">Qatar</option>
+            <option value="Kuwait" data-i18n="checkout.kuwait">Kuwait</option>
+            <option value="Bahrain" data-i18n="checkout.bahrain">Bahrain</option>
+            <option value="Oman" data-i18n="checkout.oman">Oman</option>
+            <option value="Other" data-i18n="checkout.other">Other</option>
+          </select>
+          <div id="location-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:6px; display:none;"></div>
+        </div>
+        <div class="field full map-field">
+          <div class="map-field-head">
+            <label class="field-label" data-i18n="checkout.confirm_location">Confirm your delivery location</label>
+            <button type="button" id="use-my-location" class="map-locate-btn">
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+              <span data-i18n="checkout.use_my_location">Use my current location</span>
+            </button>
+          </div>
+          <div class="map-frame">
+            <iframe id="address-map" src="https://maps.google.com/maps?q=Dubai,United%20Arab%20Emirates&z=12&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          <div class="map-hint" data-i18n="checkout.map_hint">The pin updates automatically as you type your address — check it lands in the right spot.</div>
         </div>
         <div class="field"><label class="field-label" for="phone" data-i18n="checkout.phone">Phone</label><input type="text" id="phone" placeholder="For delivery updates" data-i18n-placeholder="checkout.phone_ph" /></div>
         <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option data-i18n="checkout.no">No</option><option data-i18n="checkout.yes">Yes</option></select></div>
@@ -142,9 +249,9 @@
     </div>
 
     <div class="form-block">
-      <h2 data-i18n="checkout.payment_title">Payment</h2>
-      <div class="payment-placeholder">
-        <span data-i18n="checkout.payment_placeholder">Payment isn't connected yet &mdash; this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.</span>
+      <h2><span class="step-num">2</span> <span data-i18n="checkout.payment_title">Payment</span></h2>
+      <div id="payment-area">
+        <div class="payment-placeholder" data-i18n="checkout.payment_placeholder">Payment isn't connected yet &mdash; this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.</div>
       </div>
     </div>
 
@@ -153,7 +260,9 @@
       <label for="final-approval" data-i18n="checkout.approval">I have checked the child's name, story, age edition, dedication, and preview.</label>
     </div>
 
-    <button class="btn-primary" id="place-order" disabled data-i18n="checkout.place_order">Payment not yet available</button>
+    <button class="btn-primary" id="place-order" disabled>Payment not yet available</button>
+    <div class="payment-error" id="payment-error"></div>
+    <div class="payment-success" id="payment-success"></div>
   </div>
 
   <div>
@@ -166,9 +275,9 @@
           <a class="edit" href="personalize.html" data-i18n="checkout.edit">Edit</a>
         </div>
       </div>
-      <div class="price-row"><span data-i18n="checkout.book">Book</span><span class="note" data-i18n="checkout.shown_at_checkout">Shown at checkout</span></div>
-      <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" data-i18n="checkout.confirmed_region">Confirmed by region</span></div>
-      <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" data-i18n="checkout.confirmed_checkout">Confirmed at checkout</span></div>
+      <div class="price-row" id="price-book-row"><span data-i18n="checkout.book">Book</span><span class="note">&euro;35.00</span></div>
+      <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
+      <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
     </div>
   </div>
 </div>
@@ -218,6 +327,306 @@
   document.getElementById('sign-out-checkout').addEventListener('click', async () => {
     await supabase.auth.signOut();
     refreshAuthUI();
+  });
+
+  // ---------- Mini rotating banner ----------
+  (function () {
+    const track = document.getElementById('mini-banner-track');
+    const slides = track.querySelectorAll('.mini-slide');
+    const dotsWrap = document.getElementById('mini-banner-dots');
+    let current = 0;
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = i === 0 ? 'active' : '';
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+    function goTo(i) {
+      current = (i + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+      [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
+    }
+    setInterval(() => goTo(current + 1), 4000);
+  })();
+
+  // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
+  const t = (key, fallback) => {
+    try {
+      const val = window.hikayaT && window.hikayaT(key);
+      return val || fallback || key;
+    } catch { return fallback || key; }
+  };
+
+  // ---------- Region & currency configuration ----------
+  // Base pricing is "was / now" (a running discount). Update these every
+  // month or so — NOT a live FX feed, so your price never silently drifts.
+  // `methods` is an array because Syria offers a choice of three; every
+  // other region currently has just one, but the UI supports more per region.
+  const REGIONS = {
+    Germany:  { countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card'], label: 'Germany & Europe' },
+    Syria:    { countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria' },
+    UAE:      { countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'United Arab Emirates' },
+    Saudi:    { countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Saudi Arabia' },
+    Qatar:    { countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Qatar' },
+    Kuwait:   { countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 1.25, methods: ['card'], label: 'Kuwait' },
+    Bahrain:  { countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 1.5, methods: ['card'], label: 'Bahrain' },
+    Oman:     { countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 1.5, methods: ['card'], label: 'Oman' },
+    Other:    { countryCodes: [], currency: 'USD', symbol: '$', bookWas: 44, bookNow: 34, deliveryFee: null, methods: ['contact'], label: 'Other' }
+  };
+
+  function regionForCountryCode(code) {
+    code = (code || '').toUpperCase();
+    for (const key in REGIONS) {
+      if (REGIONS[key].countryCodes.includes(code)) return key;
+    }
+    return 'Other';
+  }
+
+  const countrySelect = document.getElementById('country');
+  const locationNote = document.getElementById('location-note');
+  let currentRegionKey = 'Germany';
+
+  async function detectLocation() {
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (!res.ok) return;
+      const data = await res.json();
+      const regionKey = regionForCountryCode(data.country_code);
+      currentRegionKey = regionKey;
+      countrySelect.value = regionKey;
+      locationNote.style.display = 'block';
+      locationNote.innerHTML = `&#128205; ${t('checkout.detected_as', 'Detected your location as')} <strong>${data.country_name || REGIONS[regionKey].label}</strong> — ${t('checkout.change_below', 'change below if needed')}.`;
+      renderPaymentSection();
+    } catch {
+      // Silent fail — defaults to Germany/EUR, visitor can still change manually.
+    }
+  }
+
+  // ---------- Pricing ----------
+  function updatePricing() {
+    const region = REGIONS[currentRegionKey];
+    const priceBookRow = document.getElementById('price-book-row');
+    const priceDelivery = document.getElementById('price-delivery');
+    const priceTotal = document.getElementById('price-total');
+
+    if (region.deliveryFee === null) {
+      priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">—</span>`;
+      priceDelivery.textContent = t('checkout.confirmed_region', 'Confirmed by region');
+      priceTotal.textContent = t('checkout.confirmed_checkout', 'Confirmed at checkout');
+      return;
+    }
+    const fmt = (n) => region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
+    const bookHtml = region.bookWas > region.bookNow
+      ? `<span style="text-decoration:line-through; opacity:0.55; margin-right:6px;">${fmt(region.bookWas)}</span><strong style="color:var(--coral-deep);">${fmt(region.bookNow)}</strong>`
+      : `<strong>${fmt(region.bookNow)}</strong>`;
+    priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">${bookHtml}</span>`;
+    priceDelivery.textContent = region.deliveryFee === 0 ? t('checkout.cod_fee_free', 'Free') : fmt(region.deliveryFee);
+    priceTotal.textContent = fmt(region.bookNow + region.deliveryFee);
+  }
+
+  // ---------- Payment section ----------
+  const paymentArea = document.getElementById('payment-area');
+  const placeOrderBtn = document.getElementById('place-order');
+  let selectedPaymentMethod = null;
+
+  const METHOD_META = {
+    card: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>', label: () => t('checkout.method_card', 'Card') },
+    shamcash: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>', label: () => t('checkout.method_shamcash', 'Sham Cash') },
+    cod: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>', label: () => t('checkout.method_cod', 'Cash on Delivery') },
+  };
+
+  function renderPaymentSection() {
+    currentRegionKey = countrySelect.value;
+    const region = REGIONS[currentRegionKey];
+    updatePricing();
+
+    if (region.methods[0] === 'contact') {
+      paymentArea.innerHTML = `<div class="other-region-box">${t('checkout.other_region_note', "We don't yet have automatic checkout for this region — please contact us and we'll arrange payment and delivery with you directly.")} <a href="help.html" style="text-decoration:underline;">${t('checkout.contact_us_link', 'contact us')}</a></div>`;
+      placeOrderBtn.disabled = true;
+      placeOrderBtn.textContent = t('checkout.contact_to_order_btn', 'Contact Us to Order');
+      return;
+    }
+
+    let selectorHtml = '';
+    if (region.methods.length > 1) {
+      if (!selectedPaymentMethod || !region.methods.includes(selectedPaymentMethod)) {
+        selectedPaymentMethod = region.methods[0];
+      }
+      selectorHtml = `<div class="pay-methods">${region.methods.map(m => `
+        <button type="button" class="pay-method-btn ${m === selectedPaymentMethod ? 'active' : ''}" data-method="${m}">
+          ${METHOD_META[m].icon} ${METHOD_META[m].label()}
+        </button>`).join('')}</div>`;
+    } else {
+      selectedPaymentMethod = region.methods[0];
+    }
+
+    let bodyHtml = '';
+    if (selectedPaymentMethod === 'card') {
+      bodyHtml = `
+        <div class="card-fields">
+          <div class="field full"><label class="field-label">${t('checkout.name_on_card', 'Name on card')}</label><input type="text" id="card-name" placeholder="e.g. Sara Al Habtoor" /></div>
+          <div class="field full"><label class="field-label">${t('checkout.card_number', 'Card number')}</label><input type="text" id="card-number" placeholder="1234 1234 1234 1234" maxlength="19" /></div>
+          <div class="field"><label class="field-label">${t('checkout.expiry', 'Expiry')}</label><input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" /></div>
+          <div class="field"><label class="field-label">CVC</label><input type="text" id="card-cvc" placeholder="123" maxlength="4" /></div>
+        </div>
+        <div class="card-fields-note">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ${t('checkout.secure_note', 'Secure payment via Telr/PayTabs (connects once the merchant account is live), charged in')} ${region.currency}
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('checkout.place_order_btn', 'Place Order');
+    } else if (selectedPaymentMethod === 'shamcash') {
+      bodyHtml = `
+        <div class="cod-box">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          <div>
+            <h4>${t('checkout.shamcash_title', 'Pay with Sham Cash')}</h4>
+            <p>${t('checkout.shamcash_body', 'Pay instantly from your Sham Cash wallet (connects once the merchant integration is live).')}</p>
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('checkout.pay_shamcash_btn', 'Pay with Sham Cash');
+    } else if (selectedPaymentMethod === 'cod') {
+      bodyHtml = `
+        <div class="cod-box">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>
+          <div>
+            <h4>${t('checkout.cod_title', 'Cash on Delivery')}</h4>
+            <p>${t('checkout.cod_body', 'Pay in cash when your order arrives. Printed and shipped locally — no card needed.')}</p>
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('checkout.confirm_cod_btn', 'Confirm Order (Pay on Delivery)');
+    }
+
+    paymentArea.innerHTML = selectorHtml + bodyHtml;
+
+    paymentArea.querySelectorAll('.pay-method-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        selectedPaymentMethod = btn.dataset.method;
+        renderPaymentSection();
+      });
+    });
+    if (selectedPaymentMethod === 'card') attachCardFormatting();
+  }
+
+  function attachCardFormatting() {
+    const numberEl = document.getElementById('card-number');
+    const expiryEl = document.getElementById('card-expiry');
+    numberEl?.addEventListener('input', () => {
+      numberEl.value = numberEl.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+    });
+    expiryEl?.addEventListener('input', () => {
+      let v = expiryEl.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+      expiryEl.value = v;
+    });
+  }
+
+  countrySelect.addEventListener('change', renderPaymentSection);
+  renderPaymentSection();
+  detectLocation();
+
+  // ---------- Live address map ----------
+  const mapFrame = document.getElementById('address-map');
+  const addressInput = document.getElementById('address');
+  const cityInput = document.getElementById('city');
+  let mapDebounce;
+
+  function updateMap() {
+    clearTimeout(mapDebounce);
+    mapDebounce = setTimeout(() => {
+      const region = REGIONS[currentRegionKey];
+      const parts = [addressInput.value, cityInput.value, region?.label].filter(Boolean);
+      if (parts.length === 0) return;
+      const query = encodeURIComponent(parts.join(', '));
+      mapFrame.src = `https://maps.google.com/maps?q=${query}&z=15&output=embed`;
+    }, 800);
+  }
+  addressInput.addEventListener('input', updateMap);
+  cityInput.addEventListener('input', updateMap);
+  countrySelect.addEventListener('change', updateMap);
+
+  document.getElementById('use-my-location').addEventListener('click', () => {
+    const btn = document.getElementById('use-my-location');
+    const originalHtml = btn.innerHTML;
+    if (!navigator.geolocation) return;
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        mapFrame.src = `https://maps.google.com/maps?q=${latitude},${longitude}&z=16&output=embed`;
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+      },
+      () => { btn.innerHTML = originalHtml; btn.disabled = false; },
+      { timeout: 8000 }
+    );
+  });
+
+  // ---------- Submit ----------
+  placeOrderBtn.addEventListener('click', async () => {
+    const errorBox = document.getElementById('payment-error');
+    const successBox = document.getElementById('payment-success');
+    errorBox.style.display = 'none';
+    successBox.style.display = 'none';
+
+    if (!document.getElementById('final-approval').checked) {
+      errorBox.textContent = t('checkout.err_approval', "Please confirm you've checked the story details before placing the order.");
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    const region = REGIONS[currentRegionKey];
+    const order = {
+      fullName: document.getElementById('full-name').value,
+      email: document.getElementById('email').value,
+      address: document.getElementById('address').value,
+      city: document.getElementById('city').value,
+      country: currentRegionKey,
+      phone: document.getElementById('phone').value,
+      paymentMethod: selectedPaymentMethod,
+      amount: region.bookNow + (region.deliveryFee || 0),
+      currency: region.currency
+    };
+
+    if (!order.fullName || !order.email || !order.address || !order.city) {
+      errorBox.textContent = t('checkout.err_required', 'Please fill in your name, email, address, and city.');
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    placeOrderBtn.disabled = true;
+    const originalText = placeOrderBtn.textContent;
+    placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = { 'Content-Type': 'application/json' };
+      if (session) headers.Authorization = `Bearer ${session.access_token}`;
+
+      const res = await fetch('/.netlify/functions/process-payment', {
+        method: 'POST', headers, body: JSON.stringify(order)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorBox.textContent = data.error || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+        errorBox.style.display = 'block';
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = originalText;
+        return;
+      }
+
+      successBox.textContent = data.message || t('checkout.order_success', 'Order placed successfully!');
+      successBox.style.display = 'block';
+      placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
+    } catch {
+      errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+      errorBox.style.display = 'block';
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = originalText;
+    }
   });
 </script>
 

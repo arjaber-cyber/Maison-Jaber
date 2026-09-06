@@ -36,6 +36,20 @@
 
   .state-box { text-align: center; padding: 60px 20px; color: var(--ink-soft); font-weight: 700; }
 
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 800px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
+  .stat-card { background: #fff; border-radius: var(--radius); padding: 18px 20px; }
+  .stat-card .num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: var(--coral-deep); line-height: 1; }
+  .stat-card .lbl { font-size: 12px; color: var(--ink-soft); font-weight: 700; margin-top: 6px; }
+  .stat-card.wide { grid-column: span 2; }
+  @media (max-width: 800px) { .stat-card.wide { grid-column: span 2; } }
+  .stage-breakdown { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .stage-breakdown .row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+  .stage-breakdown .row .name { width: 92px; flex-shrink: 0; color: var(--ink-soft); font-weight: 700; }
+  .stage-breakdown .bar-track { flex: 1; height: 6px; background: var(--line-soft); border-radius: 3px; overflow: hidden; }
+  .stage-breakdown .bar-fill { height: 100%; background: var(--coral); border-radius: 3px; }
+  .stage-breakdown .count { width: 18px; text-align: right; font-weight: 700; color: var(--ink); }
+
   .req-card {
     background: #fff; border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px;
   }
@@ -68,6 +82,7 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
 
@@ -82,6 +97,8 @@
   <h1 data-i18n="admin.incoming_requests">Incoming requests</h1>
   <p id="page-sub" data-i18n="admin.loading">Loading...</p>
 </div>
+
+<div class="wrap" id="stats-row" style="display:none; margin-bottom: 24px;"></div>
 
 <div class="wrap" id="content">
   <div class="state-box" id="state-box" data-i18n="admin.checking_access">Checking your access…</div>
@@ -109,7 +126,69 @@
     { key: 'delivered', label: window.hikayaT('admin.stage_delivered') }
   ];
 
-  let accessToken = null;
+  const BOOK_PRICE = 35;
+
+  function renderStats(submissions) {
+    const statsRow = document.getElementById('stats-row');
+    const now = new Date();
+    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+
+    const total = submissions.length;
+    const thisWeek = submissions.filter(s => new Date(s.created_at) >= weekAgo).length;
+    const estRevenue = total * BOOK_PRICE;
+
+    // Most-requested story
+    const storyCounts = {};
+    submissions.forEach(s => {
+      const story = (s.data || {}).story || 'Unknown';
+      storyCounts[story] = (storyCounts[story] || 0) + 1;
+    });
+    const topStory = Object.entries(storyCounts).sort((a, b) => b[1] - a[1])[0];
+
+    // Breakdown by stage
+    const stageCounts = {};
+    STAGES.forEach(s => { stageCounts[s.key] = 0; });
+    submissions.forEach(s => {
+      const key = STAGES.some(st => st.key === s.status) ? s.status : 'received';
+      stageCounts[key] = (stageCounts[key] || 0) + 1;
+    });
+    const maxStageCount = Math.max(...Object.values(stageCounts), 1);
+
+    statsRow.style.display = 'grid';
+    statsRow.className = 'stats-grid';
+    statsRow.innerHTML = `
+      <div class="stat-card">
+        <div class="num">${total}</div>
+        <div class="lbl">Total Requests</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">${thisWeek}</div>
+        <div class="lbl">This Week</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">€${estRevenue.toLocaleString()}</div>
+        <div class="lbl">Estimated Value</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" style="font-size:20px; line-height:1.3;">${topStory ? topStory[0] : '—'}</div>
+        <div class="lbl">Most Requested (${topStory ? topStory[1] : 0})</div>
+      </div>
+      <div class="stat-card wide">
+        <div class="lbl" style="margin-bottom:10px;">Orders by Stage</div>
+        <div class="stage-breakdown">
+          ${STAGES.map(s => `
+            <div class="row">
+              <div class="name">${s.label}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${(stageCounts[s.key] / maxStageCount) * 100}%"></div></div>
+              <div class="count">${stageCounts[s.key]}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+
 
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
@@ -139,6 +218,8 @@
         stateBox.textContent = window.hikayaT('admin.no_requests');
         return;
       }
+
+      renderStats(submissions);
 
       stateBox.remove();
       const content = document.getElementById('content');

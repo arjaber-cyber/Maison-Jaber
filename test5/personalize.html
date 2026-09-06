@@ -71,6 +71,18 @@
   .age-card .range { font-family: 'Inter', sans-serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
   .age-card p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
 
+  .gender-toggle { display: flex; gap: 12px; }
+  .gender-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: #fff; border: 2px solid var(--line-soft); border-radius: var(--radius); padding: 16px 12px;
+    cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink-soft);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .gender-btn svg { width: 26px; height: 26px; stroke: var(--ink-soft); transition: stroke 0.2s ease; }
+  .gender-btn:hover { border-color: var(--line); }
+  .gender-btn.selected { border-color: var(--coral); background: var(--bg-soft); color: var(--coral-deep); }
+  .gender-btn.selected svg { stroke: var(--coral-deep); }
+
   /* Story list (revealed after age chosen) */
   #story-block { display: none; }
   #story-block.visible { display: block; }
@@ -88,7 +100,7 @@
   .story-pick .cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
   .story-pick .cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
   .story-pick .cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
-  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
   .story-pick .body { padding: 16px 18px 18px; }
   .story-pick .theme { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 4px; }
   .story-pick h3 { font-size: 16px; margin-bottom: 6px; }
@@ -164,6 +176,7 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
 
@@ -243,6 +256,20 @@
         <div class="form-grid">
           <div class="field"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
           <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field full">
+            <label class="field-label" data-i18n="personalize.gender_label">Who's the hero?</label>
+            <div class="gender-toggle">
+              <button type="button" class="gender-btn" data-value="boy">
+                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="8" r="4.5"/><path d="M5 21c1.2-4.2 4-6.5 7-6.5s5.8 2.3 7 6.5"/></svg>
+                <span data-i18n="personalize.gender_boy">Boy</span>
+              </button>
+              <button type="button" class="gender-btn" data-value="girl">
+                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M12 12v9M8.5 17h7"/></svg>
+                <span data-i18n="personalize.gender_girl">Girl</span>
+              </button>
+            </div>
+            <input type="hidden" id="child-gender" name="child_gender" />
+          </div>
           <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
         </div>
         <label class="field-label" style="display:block; margin-bottom:8px;" data-i18n="personalize.photos_label">Photo(s) of your child</label>
@@ -341,6 +368,15 @@
       document.getElementById('summary-age').textContent = 'Ages ' + card.dataset.value;
       document.getElementById('story-block').classList.add('visible');
       document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // --- Gender toggle ---
+  document.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('child-gender').value = btn.dataset.value;
     });
   });
 
