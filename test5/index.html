@@ -46,6 +46,8 @@
   nav.main a:hover { color: var(--caramel); }
   .header-actions { display: flex; align-items: center; gap: 18px; }
   .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
+  .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--brown); }
+  .lang-pill:hover { background: var(--cream); }
   .hamburger, .mobile-cta-icon { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
   .hamburger svg, .mobile-cta-icon svg { width: 22px; height: 22px; stroke: var(--brown); fill: none; }
   .mobile-nav-panel { display: none; flex-direction: column; gap: 4px; background: var(--ivory); padding: 6px 28px 24px; }
@@ -156,6 +158,7 @@
   footer.site nav a:hover { color: #fff; }
   .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 12px; color: #a8998a; text-align: center; }
 </style>
+<script src="/i18n.js" defer></script>
 </head>
 <body>
 
@@ -166,26 +169,28 @@
     </button>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
     <nav class="main">
-      <a href="../test3/stories.html">Our Stories</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="../test3/about.html">About</a>
-      <a href="#gifts">Gifts</a>
+      <a href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
+      <a href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
+      <a href="./about.html" data-i18n="common.nav_about">About</a>
+      <a href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
     </nav>
     <div class="header-actions">
-      <a class="icon-btn" href="../test3/stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
-      <a class="icon-btn" href="../test3/login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
-      <a class="btn-primary" href="../test3/personalize.html" style="padding:12px 22px; font-size:13px;">Create Their Book</a>
+      <a class="icon-btn" href="./stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
+      <a class="icon-btn" href="./login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
+      <a class="lang-pill" href="#" data-i18n-skip style="margin-right:6px; padding:8px 10px;">EN</a>
+      <a class="btn-primary" href="./personalize.html" style="padding:12px 22px; font-size:13px;" data-i18n="home5.create_book">Create Their Book</a>
     </div>
-    <a class="mobile-cta-icon" href="../test3/personalize.html" aria-label="Create Their Book">
+    <a class="mobile-cta-icon" href="./personalize.html" aria-label="Create Their Book">
       <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg>
     </a>
   </div>
   <div class="mobile-nav-panel" id="mobile-nav-panel">
-    <a class="nav-link" href="../test3/stories.html">Our Stories</a>
-    <a class="nav-link" href="#how-it-works">How It Works</a>
-    <a class="nav-link" href="../test3/about.html">About</a>
-    <a class="nav-link" href="#gifts">Gifts</a>
-    <a class="btn-primary" href="../test3/personalize.html">Create Their Book &rarr;</a>
+    <a class="nav-link" href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
+    <a class="nav-link" href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
+    <a class="nav-link" href="./about.html" data-i18n="common.nav_about">About</a>
+    <a class="nav-link" href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
+    <a class="lang-pill" href="#" data-i18n-skip style="align-self:center; margin-bottom:8px;">EN</a>
+    <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
   </div>
 </header>
 
@@ -199,23 +204,23 @@
   </div>
   <div class="hero-dots" id="hero-dots"></div>
   <div class="hero-flourish">
-    <span class="script">Little<br/>Stories<br/>Big<br/>Tomorrows</span>
+    <span class="script" data-i18n-html="home5.flourish_html">Little<br/>Stories<br/>Big<br/>Tomorrows</span>
     <div class="heart">&#9825;</div>
   </div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
-      <span class="eyebrow">Personalized Children's Storybooks</span>
-      <h1>More than<br/> a book,<br/> <em>it's a memory<br/> for life.</em></h1>
-      <p class="lede">Beautifully illustrated, personally crafted, and made to inspire a brighter tomorrow.</p>
-      <a class="btn-primary" href="../test3/personalize.html">Create Their Book &rarr;</a>
+      <span class="eyebrow" data-i18n="home5.hero_eyebrow">Personalized Children's Storybooks</span>
+      <h1 data-i18n-html="home5.hero_h1">More than<br/> a book,<br/> <em>it's a memory<br/> for life.</em></h1>
+      <p class="lede" data-i18n="home5.hero_lede">Beautifully illustrated, personally crafted, and made to inspire a brighter tomorrow.</p>
+      <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
       <div class="hero-flourish-mobile">
-        <span class="script">Little Stories, Big Tomorrows</span>
+        <span class="script" data-i18n="home5.flourish_inline">Little Stories, Big Tomorrows</span>
         <span class="heart">&#9825;</span>
       </div>
       <div class="hero-trust">
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>A meaningful gift</div>
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Beautifully illustrated</div>
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg>Made just for them</div>
+        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span data-i18n="home5.trust1">A meaningful gift</span></div>
+        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="home5.trust2">Beautifully illustrated</span></div>
+        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg><span data-i18n="home5.trust3">Made just for them</span></div>
       </div>
     </div>
   </div>
@@ -224,34 +229,34 @@
 <section class="how-section" id="how-it-works">
   <div class="wrap">
     <div class="how-head">
-      <span class="eyebrow">A Simple Journey to a Truly Special Gift</span>
-      <h2>How It Works</h2>
+      <span class="eyebrow" data-i18n="home5.how_eyebrow">A Simple Journey to a Truly Special Gift</span>
+      <h2 data-i18n="home5.how_title">How It Works</h2>
     </div>
     <div class="how-grid">
       <div class="how-step">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
-        <h4>1. Personalize</h4>
-        <p>Add your child's name and a photo.</p>
+        <h4 data-i18n="home5.step1_title">1. Personalize</h4>
+        <p data-i18n="home5.step1_body">Add your child's name and a photo.</p>
       </div>
       <div class="how-step">
         <svg viewBox="0 0 24 24"><path d="M15 4l1.5 3L20 8.5 16.5 10 15 13l-1.5-3L10 8.5 13.5 7z"/><path d="M5 15l.9 1.9L8 18l-2.1.9L5 21l-.9-2.1L2 18l2.1-1.1z"/></svg>
-        <h4>2. We Create</h4>
-        <p>Our artists bring their story to life.</p>
+        <h4 data-i18n="home5.step2_title">2. We Create</h4>
+        <p data-i18n="home5.step2_body">Our artists bring their story to life.</p>
       </div>
       <div class="how-step">
         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <h4>3. We Print</h4>
-        <p>A beautifully crafted book, made with care.</p>
+        <h4 data-i18n="home5.step3_title">3. We Print</h4>
+        <p data-i18n="home5.step3_body">A beautifully crafted book, made with care.</p>
       </div>
       <div class="how-step">
         <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18"/><path d="M12 8v13"/><path d="M12 8c-1.5-4-6-4-6-1s3 1 6 1z"/><path d="M12 8c1.5-4 6-4 6-1s-3 1-6 1z"/></svg>
-        <h4>4. We Deliver</h4>
-        <p>Straight to your doorstep, ready to be treasured.</p>
+        <h4 data-i18n="home5.step4_title">4. We Deliver</h4>
+        <p data-i18n="home5.step4_body">Straight to your doorstep, ready to be treasured.</p>
       </div>
     </div>
     <div class="how-decor">
       <img src="images/bunny-card-books.jpg" alt="" style="border-radius:12px; object-fit:cover; height:70px; width:90px;">
-      <span class="script">Big imaginations<br/>start here &#9825;</span>
+      <span class="script" data-i18n-html="home5.decor_script">Big imaginations<br/>start here &#9825;</span>
     </div>
   </div>
 </section>
@@ -259,21 +264,21 @@
 <section class="editorial-section" id="gifts">
   <div class="wrap">
     <div class="editorial-grid">
-      <a class="ed-card" href="../test3/stories.html">
+      <a class="ed-card" href="./stories.html">
         <img src="images/fantasy-night-scene.jpg" alt="A child imagining herself inside her personalized storybook's magical world">
-        <div class="txt"><h3>Stories for Braver Tomorrows</h3><span class="btn-link">Explore Stories &rarr;</span></div>
+        <div class="txt"><h3 data-i18n="home5.card1_title">Stories for Braver Tomorrows</h3><span class="btn-link" data-i18n="home5.card1_cta">Explore Stories &rarr;</span></div>
       </a>
-      <a class="ed-card" href="../test3/personalize.html">
+      <a class="ed-card" href="./personalize.html">
         <img src="images/book-flatlay.jpg" alt="A personalized Hikaya storybook cover, illustrated just for one child">
-        <div class="txt"><h3>Beautifully Personalized</h3><span class="btn-link">See the Magic &rarr;</span></div>
+        <div class="txt"><h3 data-i18n="home5.card2_title">Beautifully Personalized</h3><span class="btn-link" data-i18n="home5.card2_cta">See the Magic &rarr;</span></div>
       </a>
       <a class="ed-card" href="images/giftbox-closeup.jpg">
         <img src="images/giftbox-closeup.jpg" alt="The Hikaya premium gift box, tied with a caramel satin ribbon">
-        <div class="txt"><h3>A Gift They'll Always Remember</h3><span class="btn-link">Our Packaging &rarr;</span></div>
+        <div class="txt"><h3 data-i18n="home5.card3_title">A Gift They'll Always Remember</h3><span class="btn-link" data-i18n="home5.card3_cta">Our Packaging &rarr;</span></div>
       </a>
-      <a class="ed-card" href="../test3/about.html">
+      <a class="ed-card" href="./about.html">
         <img src="images/bookshelf-scene.jpg" alt="A shelf of Hikaya storybooks alongside a keepsake plush and handwritten note">
-        <div class="txt"><h3>Made with Love and Purpose</h3><span class="btn-link">Our Story &rarr;</span></div>
+        <div class="txt"><h3 data-i18n="home5.card4_title">Made with Love and Purpose</h3><span class="btn-link" data-i18n="home5.card4_cta">Our Story &rarr;</span></div>
       </a>
     </div>
   </div>
@@ -283,10 +288,10 @@
   <div class="wrap purpose-grid">
     <div class="purpose-photo"><img src="images/giftbox-open-pair.jpg" alt="An open Hikaya gift box with gold-starred tissue paper, beside the wrapped closed box and a personalized message card"></div>
     <div class="purpose-copy">
-      <span class="eyebrow">Timeless Stories, Made Just for Them</span>
-      <h2>A keepsake, wrapped with care</h2>
-      <p>Every Hikaya book arrives in our signature gift box — cream, textured, tied with a satin ribbon, and finished with a handwritten note. Nothing about it feels ordinary, because the story inside isn't either.</p>
-      <a class="btn-primary" href="../test3/checkout.html">Explore Gifting &rarr;</a>
+      <span class="eyebrow" data-i18n="home5.purpose_eyebrow">Timeless Stories, Made Just for Them</span>
+      <h2 data-i18n="home5.purpose_title">A keepsake, wrapped with care</h2>
+      <p data-i18n="home5.purpose_body">Every Hikaya book arrives in our signature gift box — cream, textured, tied with a satin ribbon, and finished with a handwritten note. Nothing about it feels ordinary, because the story inside isn't either.</p>
+      <a class="btn-primary" href="./checkout.html" data-i18n="home5.purpose_cta">Explore Gifting &rarr;</a>
     </div>
   </div>
 </section>
@@ -296,14 +301,14 @@
     <div class="footer-grid">
       <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
       <nav>
-        <a href="../test3/stories.html">Our Stories</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="../test3/about.html">About</a>
-        <a href="../test3/help.html">Help</a>
-        <a href="../test3/account.html">Account</a>
+        <a href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
+        <a href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
+        <a href="./about.html" data-i18n="common.nav_about">About</a>
+        <a href="./help.html" data-i18n="common.nav_help">Help</a>
+        <a href="./account.html" data-i18n="home5.footer_account">Account</a>
       </nav>
     </div>
-    <div class="footer-bottom">&copy; 2026 Maison Jaber. All rights reserved.</div>
+    <div class="footer-bottom" data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</div>
   </div>
 </footer>
 

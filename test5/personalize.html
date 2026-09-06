@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Their Story — Hikaya by Maison Jaber</title>
+<meta name="description" content="Choose their age, pick a story, add their details, and send us your request." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 16px; --radius-lg: 24px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: #C8954D; --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1e9dc;
+    --sunshine: #C08A3E; --sky: #7d6a5a; --terracotta: #B5563B; --brown: var(--ink);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 15px 28px; border-radius: 100px; font-family: 'Inter', sans-serif; font-size: 15px;
+    font-weight: 800; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(232,128,95,0.3);
+  }
+  .btn-primary:hover { filter: brightness(1.03); }
+  .btn-primary:disabled { background: #ebebeb; color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+  .btn-oauth {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    background: #fff; border: 2px solid var(--line); padding: 13px; border-radius: 100px;
+    font-size: 14px; font-weight: 800; cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-oauth:hover { border-color: var(--coral); }
+
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; padding: 18px 0; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
+  .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
+  header.site a.exit { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+  header.site a.exit:hover { color: var(--coral); }
+
+  .page-head { text-align: center; padding: 20px 0 8px; }
+  .page-head h1 { font-size: clamp(24px, 3.4vw, 34px); }
+  .page-head p { margin-top: 8px; color: var(--ink-soft); font-weight: 600; }
+
+  .block { padding: 30px 0; }
+  .block-inner { max-width: 900px; margin: 0 auto; }
+  .block-label { font-size: 13px; font-weight: 800; color: var(--coral-deep); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .block h2 { font-size: 22px; margin-bottom: 4px; }
+  .block-sub { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+
+  /* Age selector */
+  .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 640px) { .age-grid { grid-template-columns: 1fr; } }
+  .age-card {
+    background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 26px 20px;
+    text-align: center; cursor: pointer; box-shadow: 0 6px 18px rgba(50,44,36,0.06);
+  }
+  .age-card:hover { border-color: var(--line); }
+  .age-card.selected { border-color: var(--coral); }
+  .age-card .range { font-family: 'Inter', sans-serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
+  .age-card p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Story list (revealed after age chosen) */
+  #story-block { display: none; }
+  #story-block.visible { display: block; }
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 780px) { .story-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
+  .story-pick {
+    background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    border: 3px solid transparent; box-shadow: 0 8px 22px rgba(50,44,36,0.07);
+  }
+  .story-pick:hover { border-color: var(--line); }
+  .story-pick.selected { border-color: var(--coral); }
+  .story-pick .cover {
+    aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
+  }
+  .story-pick .cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-pick .cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-pick .cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .story-pick .body { padding: 16px 18px 18px; }
+  .story-pick .theme { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 4px; }
+  .story-pick h3 { font-size: 16px; margin-bottom: 6px; }
+  .story-pick p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+
+  /* Details (revealed after story chosen) */
+  #details-block { display: none; }
+  #details-block.visible { display: block; }
+  .details-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field.full { grid-column: 1 / -1; }
+  label.field-label { font-size: 13px; font-weight: 800; }
+  input[type="text"], textarea {
+    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--coral); background: #fff; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .photo-upload {
+    border: 2px dashed var(--line); border-radius: var(--radius-sm); background: var(--cream);
+    padding: 18px; text-align: center; position: relative; cursor: pointer; margin-bottom: 10px;
+  }
+  .photo-guidance {
+    background: var(--cream); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
+    font-size: 12px; color: var(--ink-soft); font-weight: 700;
+  }
+  .photo-guidance ul { margin: 6px 0 0; padding-left: 18px; font-weight: 600; }
+  .photo-guidance li { margin-bottom: 3px; }
+  .photo-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .photo-thumb { position: relative; width: 56px; height: 56px; border-radius: 10px; overflow: hidden; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-thumb button {
+    position: absolute; top: 1px; right: 1px; width: 17px; height: 17px; border-radius: 50%;
+    background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1;
+  }
+
+  /* Account gate + send (revealed after details filled) */
+  #send-block { display: none; }
+  #send-block.visible { display: block; }
+  .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+
+  .account-gate { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .account-gate p.note { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  input[type="email"] {
+    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); margin-bottom: 10px;
+  }
+
+  .signed-in-bar { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .signed-in-bar button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+
+  .form-status { font-size: 13px; margin-top: 12px; color: #B5563B; font-weight: 700; min-height: 16px; }
+
+  .success-panel { text-align: center; display: none; }
+  .success-panel.visible { display: block; }
+  .success-panel .mark { font-size: 30px; margin-bottom: 10px; }
+  .success-panel h3 { font-size: 20px; margin-bottom: 8px; }
+  .success-panel p { color: var(--ink-soft); font-weight: 600; }
+
+  footer.site { padding: 30px 0; text-align: center; }
+  footer.site p { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+
+  .site-logo { height: 88px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+</style>
+<script src="/i18n.js" defer></script>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <div class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></div>
+    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="index.html">Save &amp; exit</a>
+  </div>
+</header>
+
+<div class="page-head wrap">
+  <h1 data-i18n="personalize.page_title">Let's create their story</h1>
+  <p data-i18n="personalize.page_sub">Start with their age, and we'll show you the right stories.</p>
+</div>
+
+<form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
+  <input type="hidden" name="form-name" value="book-request" />
+  <input type="hidden" name="story" id="story-input" />
+  <input type="hidden" name="age_edition" id="age-input" />
+
+  <!-- BLOCK 1: AGE -->
+  <div class="block">
+    <div class="block-inner">
+      <div class="block-label" data-i18n="personalize.step1_label">Step 1</div>
+      <h2 data-i18n="personalize.step1_title">How old are they?</h2>
+      <div class="block-sub" data-i18n="personalize.step1_sub">This helps us show stories written the right way for them.</div>
+      <div class="age-grid" id="age-grid">
+        <div class="age-card" data-value="2-4"><div class="range">2&ndash;4</div><p data-i18n="personalize.age1">Simple, gentle, and visual</p></div>
+        <div class="age-card" data-value="5-7"><div class="range">5&ndash;7</div><p data-i18n="personalize.age2">A richer little adventure</p></div>
+        <div class="age-card" data-value="8-10"><div class="range">8&ndash;10</div><p data-i18n="personalize.age3">Deeper stories, more detail</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: STORY (revealed after age) -->
+  <div class="block" id="story-block">
+    <div class="block-inner">
+      <div class="block-label" data-i18n="personalize.step2_label">Step 2</div>
+      <h2 data-i18n="personalize.step2_title">Choose their story</h2>
+      <div class="block-sub" data-i18n="personalize.step2_sub">Every story below is available for this age.</div>
+      <div class="story-grid" id="story-grid">
+        <div class="story-pick" data-value="The Bravest Little One">
+          <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
+          <div class="body">
+            <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
+            <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+            <p data-i18n="personalize.pick1_blurb">For the child facing something new and a little scary &mdash; and discovering they're braver than they knew.</p>
+          </div>
+        </div>
+        <div class="story-pick" data-value="The Cloud Ship">
+          <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
+          <div class="body">
+            <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
+            <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
+            <p data-i18n="personalize.pick2_blurb">For the dreamer who wants to sail among the stars on a ship made of soft cloud.</p>
+          </div>
+        </div>
+        <div class="story-pick" data-value="The Star Who Couldn't Sleep">
+          <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
+          <div class="body">
+            <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
+            <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
+            <p data-i18n="personalize.pick3_blurb">A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: DETAILS (revealed after story) -->
+  <div class="block" id="details-block">
+    <div class="block-inner">
+      <div class="block-label" data-i18n="personalize.step3_label">Step 3</div>
+      <h2 data-i18n="personalize.step3_title">Tell us about them</h2>
+      <div class="block-sub" data-i18n="personalize.step3_sub">Just the essentials.</div>
+      <div class="details-card">
+        <div class="form-grid">
+          <div class="field"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
+          <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="text" id="child-age" name="child_age" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
+        </div>
+        <label class="field-label" style="display:block; margin-bottom:8px;" data-i18n="personalize.photos_label">Photo(s) of your child</label>
+        <div class="photo-guidance">
+          <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
+          <ul>
+            <li data-i18n="personalize.photo_g1">Shows their face clearly, looking toward the camera</li>
+            <li data-i18n="personalize.photo_g2">Is well-lit, without harsh shadows</li>
+            <li data-i18n="personalize.photo_g3">Isn't blurry or too far away</li>
+            <li data-i18n="personalize.photo_g4">Has nothing covering their face (no sunglasses, masks, or hands)</li>
+            <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
+          </ul>
+        </div>
+        <div class="photo-upload" id="photo-upload">
+          <input type="file" id="child-photos" accept="image/*" multiple />
+          <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+          <div class="hint-sub" data-i18n="personalize.add_more_photos">You can add more than one for a better result</div>
+        </div>
+        <div class="photo-thumbs" id="photo-thumbs"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: ACCOUNT + SEND (revealed after details) -->
+  <div class="block" id="send-block">
+    <div class="block-inner">
+      <div class="block-label" data-i18n="personalize.step4_label">Step 4</div>
+      <h2 data-i18n="personalize.step4_title">Review &amp; send</h2>
+      <div class="block-sub" data-i18n="personalize.step4_sub">One quick account step, and their request is on its way.</div>
+
+      <div class="send-card">
+        <div class="summary-row"><span data-i18n="home.search_story_lbl">Story</span><span id="summary-story">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
+        <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
+        <div class="summary-row" style="border-bottom: none; padding-top: 12px;"><span style="font-weight: 800; color: var(--ink);" data-i18n="personalize.price">Price</span><span style="color: var(--ink); font-weight: 800;">&euro;35</span></div>
+
+        <div class="account-gate" id="account-gate">
+          <p class="note" data-i18n="personalize.gate_note">Create a free account to send your request and track your order.</p>
+          <button type="button" class="btn-oauth" id="google-btn" data-i18n="checkout.google">Continue with Google</button>
+          <button type="button" class="btn-oauth" id="facebook-btn" data-i18n="checkout.facebook">Continue with Facebook</button>
+          <div class="divider" data-i18n="login.or">or</div>
+          <input type="email" id="auth-email" placeholder="you@email.com" />
+          <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;" data-i18n="personalize.email_link_btn">Email Me a Sign-In Link</button>
+          <div style="text-align: center; margin-top: 16px;">
+            <button type="button" id="guest-toggle-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.guest_toggle">Prefer not to sign in? Continue as guest</button>
+          </div>
+        </div>
+
+        <div class="account-gate" id="guest-gate" style="display:none;">
+          <p class="note" data-i18n="personalize.guest_note">Continuing as a guest &mdash; you won't be able to track this order later, so we recommend creating an account instead.</p>
+          <input type="email" id="guest-email" placeholder="you@email.com (for order updates)" />
+          <div style="text-align: center; margin-top: 12px;">
+            <button type="button" id="back-to-account-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.back_to_account">&larr; Actually, I'll create an account</button>
+          </div>
+        </div>
+
+        <div class="signed-in-bar" id="signed-in-bar" style="display:none;">
+          <span data-i18n-skip>Signed in as <span id="signed-in-email"></span></span>
+          <button type="button" id="sign-out-btn" data-i18n="account.sign_out">Sign out</button>
+        </div>
+
+        <button type="submit" class="btn-primary" id="send-btn" style="width:100%; justify-content:center; margin-top: 6px;" disabled>Sign in to Send Request</button>
+        <div class="form-status" id="form-status"></div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="wrap">
+  <div class="success-panel" id="success-panel">
+    <div class="mark">&#127881;</div>
+    <h3 data-i18n="personalize.success_title">Your request has been sent!</h3>
+    <p data-i18n="personalize.success_body">We're preparing their story now, and will email you a preview soon.</p>
+  </div>
+</div>
+
+<footer class="site"><div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div></footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+
+  let photoFiles = [];
+  let isSignedIn = false;
+
+  // --- Age selection reveals stories ---
+  document.querySelectorAll('.age-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('age-input').value = card.dataset.value;
+      document.getElementById('summary-age').textContent = 'Ages ' + card.dataset.value;
+      document.getElementById('story-block').classList.add('visible');
+      document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // --- Story selection reveals details ---
+  document.querySelectorAll('.story-pick').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('story-input').value = card.dataset.value;
+      document.getElementById('summary-story').textContent = card.dataset.value;
+      document.getElementById('details-block').classList.add('visible');
+      document.getElementById('details-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // --- Photo upload ---
+  const photoInput = document.getElementById('child-photos');
+  const photoThumbs = document.getElementById('photo-thumbs');
+  photoInput.addEventListener('change', () => {
+    Array.from(photoInput.files).forEach(file => photoFiles.push(file));
+    renderThumbs();
+    checkDetailsComplete();
+  });
+  function renderThumbs() {
+    photoThumbs.innerHTML = '';
+    photoFiles.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const div = document.createElement('div');
+        div.className = 'photo-thumb';
+        div.innerHTML = `<img src="${e.target.result}" /><button type="button" data-i="${i}">&times;</button>`;
+        div.querySelector('button').addEventListener('click', (ev) => { ev.preventDefault(); photoFiles.splice(i, 1); renderThumbs(); checkDetailsComplete(); });
+        photoThumbs.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById('summary-photos').textContent = photoFiles.length;
+  }
+
+  // --- Details completion reveals the send block ---
+  const nameInput = document.getElementById('child-name');
+  nameInput.addEventListener('input', () => {
+    document.getElementById('summary-name').textContent = nameInput.value || '—';
+    checkDetailsComplete();
+  });
+  function checkDetailsComplete() {
+    if (nameInput.value.trim() && photoFiles.length > 0) {
+      document.getElementById('send-block').classList.add('visible');
+    }
+  }
+
+  // --- Auth ---
+  let isGuest = false;
+
+  async function refreshAuthUI() {
+    const { data: { session } } = await supabase.auth.getSession();
+    const gate = document.getElementById('account-gate');
+    const guestGate = document.getElementById('guest-gate');
+    const signedInBar = document.getElementById('signed-in-bar');
+    const sendBtn = document.getElementById('send-btn');
+    if (session) {
+      isSignedIn = true;
+      isGuest = false;
+      gate.style.display = 'none';
+      guestGate.style.display = 'none';
+      signedInBar.style.display = 'flex';
+      document.getElementById('signed-in-email').textContent = session.user.email;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Request';
+    } else if (isGuest) {
+      isSignedIn = false;
+      gate.style.display = 'none';
+      guestGate.style.display = 'block';
+      signedInBar.style.display = 'none';
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Request as Guest';
+    } else {
+      isSignedIn = false;
+      gate.style.display = 'block';
+      guestGate.style.display = 'none';
+      signedInBar.style.display = 'none';
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sign in to Send Request';
+    }
+  }
+  refreshAuthUI();
+
+  document.getElementById('guest-toggle-btn').addEventListener('click', () => {
+    isGuest = true;
+    refreshAuthUI();
+  });
+  document.getElementById('back-to-account-btn').addEventListener('click', () => {
+    isGuest = false;
+    refreshAuthUI();
+  });
+
+  document.getElementById('google-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+  });
+  document.getElementById('facebook-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
+  });
+  document.getElementById('email-link-btn').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const status = document.getElementById('form-status');
+    if (!email) { status.textContent = 'Please enter your email.'; return; }
+    status.style.color = '#717171';
+    status.textContent = 'Sending your sign-in link…';
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
+    status.textContent = error ? error.message : 'Check your email for a sign-in link.';
+  });
+  document.getElementById('sign-out-btn').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    refreshAuthUI();
+  });
+
+  // --- Submit ---
+  document.getElementById('request-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = document.getElementById('form-status');
+    status.style.color = '#B5563B';
+
+    const guestEmail = document.getElementById('guest-email').value.trim();
+    if (!isSignedIn && !(isGuest && guestEmail)) { status.textContent = isGuest ? 'Please add your email so we can reach you.' : 'Please sign in or continue as guest.'; return; }
+    if (!document.getElementById('story-input').value) { status.textContent = 'Please choose a story.'; return; }
+    if (!nameInput.value.trim()) { status.textContent = "Please add the child's name."; return; }
+    if (photoFiles.length === 0) { status.textContent = 'Please add at least one photo.'; return; }
+
+    const btn = document.getElementById('send-btn');
+    btn.disabled = true;
+    status.style.color = '#717171';
+    status.textContent = 'Sending your request…';
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const formData = new FormData(document.getElementById('request-form'));
+      formData.append('account_email', session ? session.user.email : guestEmail);
+      formData.append('guest_checkout', session ? 'no' : 'yes');
+      photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
+
+      const res = await fetch('/', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error();
+
+      document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
+      document.getElementById('success-panel').classList.add('visible');
+    } catch {
+      status.textContent = 'Something went wrong — please try again.';
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>

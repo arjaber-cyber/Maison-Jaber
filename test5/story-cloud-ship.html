@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Cloud Ship — Hikaya by Maison Jaber</title>
+<meta name="description" content="An adventure story, personalized with your child's name, age, and photo. For the dreamer who wants to sail among the stars." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 16px; --radius-lg: 24px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: #C8954D; --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1e9dc;
+    --sunshine: #C08A3E; --sky: #7d6a5a; --terracotta: #B5563B; --brown: var(--ink);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #C08A3E; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 600; border: none; cursor: pointer;
+    box-shadow: 0 10px 26px rgba(70,45,25,0.16); transition: background 0.25s ease, transform 0.2s ease;
+  }
+  .btn-primary:hover { background: var(--coral-deep); transform: translateY(-1px); }
+
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  header.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 21px; color: var(--ink); }
+  .wordmark .sub-brand { display: block; font-family: 'Inter', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
+
+  .breadcrumb { font-size: 12px; color: var(--ink-soft); }
+  .breadcrumb a:hover { color: var(--coral); }
+
+  .story-hero { background: var(--bg); color: var(--ink); padding: 56px 0; }
+  .story-hero .inner { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 56px; align-items: center; }
+  @media (max-width: 860px) { .story-hero .inner { grid-template-columns: 1fr; } }
+  .cover-large {
+    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, #f5e6c8 0%, #e8c98a 100%);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.10); display: flex; align-items: flex-end; padding: 30px;
+  }
+  .cover-large .cover-line { width: 36px; height: 1px; background: #C08A3E; margin-bottom: 14px; }
+  .cover-large .cover-title { font-family: 'Inter', sans-serif; color: #C08A3E; font-size: 30px; line-height: 1.25; font-weight: 700; }
+  .story-hero h1 { font-size: clamp(28px, 3.6vw, 42px); margin-top: 14px; }
+  .story-hero .promise { font-family: 'Inter', sans-serif; font-style: italic; font-size: 18px; color: #C08A3E; margin-top: 14px; }
+  .story-hero p.synopsis { margin-top: 18px; color: var(--ink-soft); max-width: 50ch; }
+  .story-hero .ages-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .story-hero .ages-row span { font-size: 12px; border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; color: var(--ink-soft); }
+  .story-hero .actions { margin-top: 28px; }
+
+  .section { padding: 72px 0; }
+  .section-head { max-width: 60ch; margin: 0 auto 36px; text-align: center; }
+  .section-head h2 { font-size: clamp(24px, 3vw, 32px); }
+  .section-head p { margin-top: 10px; color: var(--text-on-light-soft); }
+
+  .discover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 780px) { .discover-grid { grid-template-columns: 1fr; } }
+  .discover-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .discover-item h3 { font-size: 16px; margin-bottom: 8px; }
+  .discover-item p { font-size: 13px; color: var(--text-on-light-soft); margin: 0; }
+
+  .angles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  @media (max-width: 780px) { .angles-grid { grid-template-columns: repeat(2, 1fr); } }
+  .angle-frame {
+    aspect-ratio: 3/4; border-radius: 12px; background: linear-gradient(160deg, var(--parchment), #f7f7f7);
+    display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
+    font-size: 12px; color: var(--taupe);
+  }
+
+  .spread-frame {
+    aspect-ratio: 16/8; border-radius: 4px; background: linear-gradient(160deg, #ffffff, var(--parchment));
+    box-shadow: 0 20px 44px rgba(23,23,25,0.1); display: flex; align-items: center; justify-content: center;
+    text-align: center; color: var(--text-on-light-soft); font-size: 14px; max-width: 780px; margin: 0 auto;
+  }
+
+  .example-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 700px; margin: 0 auto; }
+  @media (max-width: 640px) { .example-row { grid-template-columns: 1fr; } }
+  .example-card { background: var(--parchment); border-radius: var(--radius); padding: 22px; text-align: center; }
+  .example-card .name { font-family: 'Inter', sans-serif; font-style: italic; color: var(--gold); font-size: 18px; }
+  .example-card p { font-size: 14px; margin-top: 10px; }
+
+  .delivery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 780px) { .delivery-grid { grid-template-columns: 1fr; } }
+  .delivery-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .delivery-item .flag { font-size: 22px; margin-bottom: 8px; }
+  .delivery-item h3 { font-size: 14px; margin-bottom: 4px; }
+  .delivery-item p { font-size: 12px; color: var(--text-on-light-soft); margin: 0; }
+
+  .faq-item { border-bottom: 1px solid rgba(184,149,75,0.2); }
+  .faq-item summary { padding: 18px 0; font-size: 15px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: '+'; color: var(--gold); font-size: 18px; }
+  .faq-item[open] summary::after { content: '\2212'; }
+  .faq-item p { padding: 0 0 18px; font-size: 14px; color: var(--text-on-light-soft); margin: 0; max-width: 68ch; }
+
+  .final-cta { background: var(--charcoal); text-align: center; padding: 76px 0; }
+  .final-cta h2 { color: var(--text-on-dark); font-size: clamp(24px, 3vw, 34px); }
+  .final-cta p { color: var(--text-on-dark-soft); margin-top: 12px; }
+  .final-cta .actions { margin-top: 28px; }
+
+  footer.site { background: var(--bg-soft); color: var(--ink-soft); padding: 34px 0; text-align: center; border-top: 1px solid var(--line-soft); }
+  footer.site p { font-size: 13px; }
+  /* Rotating banner carousel (LoveBook-style) */
+  .carousel { position: relative; overflow: hidden; height: 480px; }
+  @media (max-width: 640px) { .carousel { height: 380px; } }
+  .carousel-track { display: flex; height: 100%; transition: transform 0.6s ease; }
+  .carousel-slide {
+    flex: 0 0 100%; height: 100%; position: relative; display: flex; align-items: center;
+    background-size: cover; background-position: center;
+  }
+  .carousel-slide::after {
+    content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 100%);
+  }
+  .carousel-copy { position: relative; z-index: 2; color: #fff; padding: 0 60px; max-width: 520px; }
+  @media (max-width: 640px) { .carousel-copy { padding: 0 64px; } .carousel-copy p { font-size: 14px; } }
+  .carousel-copy .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #ffd9a0; margin-bottom: 12px; }
+  .carousel-copy h2 { font-size: clamp(26px, 4vw, 42px); line-height: 1.1; color: #fff; font-weight: 800; }
+  .carousel-copy p { margin: 14px 0 22px; font-size: 15.5px; color: #f1eee8; max-width: 40ch; }
+  .carousel-arrows { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 16px; transform: translateY(-50%); z-index: 3; }
+  @media (max-width: 640px) { .carousel-arrow { width: 32px; height: 32px; font-size: 13px; } .carousel-arrows { padding: 0 12px; } }
+  .carousel-arrow {
+    width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--ink);
+  }
+  .carousel-arrow:hover { background: #fff; }
+  .carousel-dots { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 3; }
+  .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .carousel-dot.active { background: #fff; width: 22px; border-radius: 4px; transition: width 0.25s ease; }
+
+
+
+  .site-logo { height: 88px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+</style>
+<script src="/i18n.js" defer></script>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <div class="breadcrumb"><a href="index.html" data-i18n-skip>Maison Jaber</a> / <a href="stories.html" data-i18n="common.nav_stories">Stories</a> / <span data-i18n="home.story2_title">The Cloud Ship</span></div>
+    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
+    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a></nav>
+  </div>
+</header>
+
+<section class="carousel">
+  <div class="carousel-track" id="carousel-track">
+    <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('images/fantasy-night-scene.jpg')">
+      <div class="wrap"><div class="carousel-copy">
+        <div class="eyebrow" data-i18n="stories.coll_adventure">Adventure & Wonder</div>
+        <h2 data-i18n="home.story2_title">The Cloud Ship</h2>
+        <p data-i18n="story2.slide_body">A soaring adventure above the clouds, with your child at the helm.</p>
+        <a class="btn-primary" href="personalize.html?story=cloud-ship" data-i18n="story2.personalize_cta">Personalize This Story</a>
+      </div></div>
+    </div>
+  </div>
+  <div class="carousel-arrows">
+    <button class="carousel-arrow" id="car-prev">&#8592;</button>
+    <button class="carousel-arrow" id="car-next">&#8594;</button>
+  </div>
+  <div class="carousel-dots" id="carousel-dots"></div>
+</section>
+
+<section class="story-hero">
+  <div class="wrap inner">
+    <div class="cover-large">
+      <div><div class="cover-line"></div><div class="cover-title" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
+    </div>
+    <div>
+      <div class="eyebrow" data-i18n="stories.coll_adventure">Adventure &amp; Wonder</div>
+      <h1 data-i18n="home.story2_title">The Cloud Ship</h1>
+      <div class="promise" data-i18n="story2.promise">"An adventure among the stars."</div>
+      <p class="synopsis" data-i18n="story2.synopsis">A ship made of soft grey cloud comes to rest outside a bedroom window, and carries its young captain across a sky full of wonders they never imagined were so close.</p>
+      <div class="ages-row">
+        <span data-i18n="story1.ages1">Ages 2&ndash;4</span><span data-i18n="story1.ages2">Ages 5&ndash;7</span><span data-i18n="story1.ages3">Ages 8&ndash;10</span>
+        <span data-i18n="story1.personalized_throughout">Personalized throughout</span>
+      </div>
+      <div class="actions">
+        <a class="btn-primary" href="personalize.html?story=The%20Cloud%20Ship" data-i18n="story2.personalize_cta">Personalize This Story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="story1.discover_eyebrow">What They May Discover</div>
+      <h2 data-i18n="story2.discover_title">Perfect for the dreamer who asks "what if"</h2>
+    </div>
+    <div class="discover-grid">
+      <div class="discover-item"><h3 data-i18n="story2.disc1_title">That imagination can carry you far</h3><p data-i18n="story2.disc1_body">A story that treats a child's wonder as something worth following.</p></div>
+      <div class="discover-item"><h3 data-i18n="story2.disc2_title">That the sky is full of invitations</h3><p data-i18n="story2.disc2_body">A playful sense of curiosity about the world above.</p></div>
+      <div class="discover-item"><h3 data-i18n="story2.disc3_title">A gentle taste of independence</h3><p data-i18n="story2.disc3_body">The hero leads the journey, and chooses when to come home.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--parchment);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="story_common.book_eyebrow">The Book</div>
+      <h2 data-i18n="story_common.book_title">Seen from every angle</h2>
+    </div>
+    <div class="angles-grid">
+      <div class="angle-frame" data-i18n="story_common.angle_front">Front cover</div>
+      <div class="angle-frame" data-i18n="story_common.angle_interior">Interior spread</div>
+      <div class="angle-frame" data-i18n="story_common.angle_spine">Spine</div>
+      <div class="angle-frame" data-i18n="story_common.angle_back">Back cover</div>
+      <div class="angle-frame" data-i18n="story_common.angle_gift">Gift packaging</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="story_common.sample_eyebrow">A Sample Spread</div>
+      <h2 data-i18n="story_common.sample_title">A glimpse inside</h2>
+    </div>
+    <div class="spread-frame" data-i18n="story_common.sample_frame">Sample interior spread &mdash; shown in full once personalized</div>
+  </div>
+</section>
+
+<section class="section" style="background: var(--parchment);">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="story_common.pers_eyebrow">Personalized Throughout</div>
+      <h2 data-i18n="story_common.pers_title">Made for one child in particular</h2>
+    </div>
+    <div class="example-row">
+      <div class="example-card"><div class="name" data-i18n="story2.example_name">"...came to rest outside Noah's window."</div><p data-i18n="story_common.example_name_sub">Their name, woven into the story itself.</p></div>
+      <div class="example-card"><div class="name" data-i18n="story_common.example_illustrated">Illustrated in their likeness</div><p data-i18n="story_common.example_illustrated_sub">Their character appears on every page.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="story_common.delivery_eyebrow">Delivery</div>
+      <h2 data-i18n="story_common.delivery_title">Printed close to you</h2>
+    </div>
+    <div class="delivery-grid">
+      <div class="delivery-item"><div class="flag">&#127465;&#127466;</div><h3 data-i18n="story_common.deliv_de_title">Germany &amp; Europe</h3><p data-i18n="story_common.deliv_de_body">Printed and shipped locally. Card payment.</p></div>
+      <div class="delivery-item"><div class="flag">&#127480;&#127486;</div><h3 data-i18n="story_common.deliv_sy_title">Syria</h3><p data-i18n="story_common.deliv_sy_body">Printed and shipped locally. Cash on delivery.</p></div>
+      <div class="delivery-item"><div class="flag">&#127462;&#127466;</div><h3 data-i18n="story_common.deliv_else_title">Elsewhere</h3><p data-i18n="story_common.deliv_else_body">Contact us to check availability for your region.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="max-width: 720px; margin: 0 auto;">
+  <div class="section-head">
+    <div class="eyebrow" data-i18n="story_common.faq_eyebrow">Frequently Asked</div>
+    <h2 data-i18n="story_common.faq_title">Good to know</h2>
+  </div>
+  <details class="faq-item" open>
+    <summary data-i18n="story_common.faq1_q">Which photo works best?</summary>
+    <p data-i18n="story_common.faq1_a">A clear, front-facing photo in good natural lighting, without filters or anything covering the face.</p>
+  </details>
+  <details class="faq-item">
+    <summary data-i18n="story_common.faq2_q">Will the character really look like my child?</summary>
+    <p data-i18n="story_common.faq2_a">The illustration is a tasteful storybook interpretation &mdash; recognizable, but reimagined in Maison Jaber's illustration style rather than a photo pasted into the page.</p>
+  </details>
+  <details class="faq-item">
+    <summary data-i18n="story_common.faq3_q">Can I make changes after I submit?</summary>
+    <p data-i18n="story_common.faq3_a">Reach out to us before production begins and we'll do our best to accommodate changes to the name, dedication, or photo.</p>
+  </details>
+  <details class="faq-item">
+    <summary data-i18n="story_common.faq4_q">Is a digital version available?</summary>
+    <p data-i18n="story_common.faq4_a">Digital availability depends on your region &mdash; this will be shown clearly during personalization.</p>
+  </details>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2 data-i18n="story2.final_title">Their voyage is ready to begin.</h2>
+    <p data-i18n="story_common.final_body">Add their name, age, and a photo &mdash; the rest is ours to prepare.</p>
+    <div class="actions"><a class="btn-primary" href="personalize.html?story=The%20Cloud%20Ship" data-i18n="story2.personalize_cta">Personalize This Story</a></div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+<script>
+  // Rotating banner carousel
+  const track = document.getElementById('carousel-track');
+  const slides = track.children;
+  const dotsWrap = document.getElementById('carousel-dots');
+  let current = 0;
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(dot);
+  }
+  function goTo(i) {
+    current = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
+  }
+  document.getElementById('car-prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('car-next').addEventListener('click', () => goTo(current + 1));
+  setInterval(() => goTo(current + 1), 5000);
+</script>
+
+</body>
+</html>

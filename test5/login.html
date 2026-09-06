@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign In — Hikaya by Maison Jaber</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 16px; --radius-lg: 24px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: #C8954D; --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1e9dc;
+    --sunshine: #C08A3E; --sky: #7d6a5a; --terracotta: #B5563B; --brown: var(--ink);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg-soft); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; }
+  h1, h2 { font-family: 'Inter', sans-serif; font-weight: 500; margin: 0; }
+  a { color: inherit; }
+  .shell {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px;
+  }
+  .card {
+    background: #fff; color: var(--ink); border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 44px 38px;
+    max-width: 400px; width: 100%; box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  }
+  .wordmark { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 22px; color: var(--ink); text-align: center; display: block; text-decoration: none; margin-bottom: 8px; }
+  .wordmark .sub-brand { display: block; font-family: 'Inter', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
+
+  .card h1 { font-size: 22px; text-align: center; margin-bottom: 6px; }
+  .card p.sub { text-align: center; font-size: 13px; color: var(--text-on-light-soft); margin-bottom: 28px; }
+
+  .oauth-btn {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 13px; border-radius: var(--radius); border: 1px solid rgba(184,149,75,0.35); background: #fff;
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 12px;
+    color: var(--text-on-light);
+  }
+  .oauth-btn:hover { border-color: var(--gold); background: #ffffff; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; font-size: 12px; color: var(--text-on-light-soft); }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(184,149,75,0.25); }
+
+  .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+  label.field-label { font-size: 12px; font-weight: 600; }
+  input[type="email"] {
+    width: 100%; padding: 12px 13px; font-family: 'Inter', sans-serif; font-size: 14px;
+    border: 1px solid rgba(184,149,75,0.3); border-radius: var(--radius); background: #fff;
+  }
+  input:focus { outline: none; border-color: var(--gold); }
+
+  .btn-primary {
+    width: 100%; background: var(--coral); color: #fff; padding: 13px; border-radius: 10px;
+    font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+  }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-primary:disabled { background: var(--parchment); color: var(--text-on-light-soft); cursor: not-allowed; }
+
+  .status { font-size: 13px; text-align: center; margin-top: 14px; min-height: 18px; }
+  .status.error { color: #B5563B; }
+  .status.success { color: #6b8f5e; }
+
+  .back-link { display: block; text-align: center; margin-top: 24px; font-size: 12px; color: var(--text-on-light-soft); text-decoration: none; }
+  .back-link:hover { color: var(--text-on-light); }
+
+  .site-logo { height: 88px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+</style>
+<script src="/i18n.js" defer></script>
+</head>
+<body>
+
+<div class="shell">
+  <a class="lang-pill" href="#" data-i18n-skip style="position:fixed; top:20px; right:20px; background:#fff; border:1px solid var(--line-soft,#eee); z-index:10;">EN</a>
+  <div class="card">
+    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
+    <h1 data-i18n="login.title">Sign in to your account</h1>
+    <p class="sub" data-i18n="login.subtitle">Track orders, save projects, and revisit your child's stories.</p>
+
+    <button class="oauth-btn" id="google-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.56 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.7V4.97H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.03l2.99-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.97l2.99 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+      <span data-i18n="checkout.google">Continue with Google</span>
+    </button>
+    <button class="oauth-btn" id="facebook-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#1877F2" d="M18 9a9 9 0 1 0-10.4 8.9v-6.3H5.3V9h2.3V7a3.2 3.2 0 0 1 3.4-3.5c1 0 2 .17 2 .17v2.2h-1.1c-1.1 0-1.45.7-1.45 1.4V9h2.47l-.4 2.6h-2.07v6.3A9 9 0 0 0 18 9z"/></svg>
+      <span data-i18n="checkout.facebook">Continue with Facebook</span>
+    </button>
+
+    <div class="divider" data-i18n="login.or">or</div>
+
+    <form id="email-form">
+      <div class="field">
+        <label class="field-label" for="email" data-i18n="checkout.email">Email</label>
+        <input type="email" id="email" placeholder="you@email.com" required />
+      </div>
+      <button type="submit" class="btn-primary" id="email-btn" data-i18n="login.send_link">Send me a sign-in link</button>
+    </form>
+
+    <div class="status" id="status"></div>
+    <a href="index.html" class="back-link" data-i18n="login.back_link">&larr; Back to Maison Jaber</a>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+
+  const statusEl = document.getElementById('status');
+
+  // If already signed in, go straight to the account page
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = 'account.html';
+  });
+
+  document.getElementById('google-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
+    });
+  });
+
+  document.getElementById('facebook-btn').addEventListener('click', async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
+    });
+  });
+
+  document.getElementById('email-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const btn = document.getElementById('email-btn');
+    btn.disabled = true;
+    statusEl.className = 'status';
+    statusEl.textContent = 'Sending your link…';
+
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin + window.location.pathname.replace('login.html', 'account.html') }
+    });
+
+    if (error) {
+      statusEl.className = 'status error';
+      statusEl.textContent = error.message;
+      btn.disabled = false;
+    } else {
+      statusEl.className = 'status success';
+      statusEl.textContent = 'Check your email for a sign-in link.';
+    }
+  });
+</script>
+
+</body>
+</html>
