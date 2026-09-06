@@ -38,9 +38,9 @@
   }
 
   /* Header */
-  header.site { position: absolute; top: 0; left: 0; right: 0; z-index: 20; padding: 30px 0; }
+  header.site { position: sticky; top: 0; z-index: 20; padding: 18px 0; background: var(--ivory); border-bottom: 1px solid var(--beige); }
   header.site .inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-  .wordmark img { height: 108px; width: auto; }
+  .wordmark img { height: 100px; width: auto; }
   nav.main { display: flex; align-items: center; gap: 34px; }
   nav.main a { font-size: 13.5px; font-weight: 600; color: var(--brown); }
   nav.main a:hover { color: var(--caramel); }
@@ -54,10 +54,10 @@
   .mobile-nav-panel .btn-primary { margin-top: 16px; justify-content: center; }
 
   @media (max-width: 900px) {
-    header.site { padding: 20px 0; }
+    header.site { padding: 16px 0; }
     header.site .inner { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; }
     header.site .wordmark { grid-column: 2; justify-self: center; }
-    header.site .wordmark img { height: 64px; }
+    header.site .wordmark img { height: 62px; }
     nav.main, .header-actions { display: none; }
     .hamburger { grid-column: 1; display: flex; justify-self: start; }
     .mobile-cta-icon { grid-column: 3; display: flex; justify-self: end; }
@@ -65,10 +65,16 @@
 
   /* Hero */
   .hero { position: relative; min-height: 760px; display: flex; align-items: center; overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; }
-  .hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
-  .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--ivory) 0%, rgba(248,242,232,0.85) 24%, rgba(248,242,232,0.15) 46%, rgba(0,0,0,0) 62%); }
-  .hero-inner { position: relative; z-index: 2; padding-top: 130px; padding-bottom: 60px; width: 100%; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+  .hero-bg .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+  .hero-bg .slide.active { opacity: 1; }
+  .hero-bg .slide img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
+  .hero-bg::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--ivory) 0%, rgba(248,242,232,0.85) 24%, rgba(248,242,232,0.15) 46%, rgba(0,0,0,0) 62%); }
+  .hero-dots { position: absolute; z-index: 3; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+  .hero-dots button { width: 7px; height: 7px; border-radius: 50%; background: rgba(86,54,34,0.3); border: none; cursor: pointer; padding: 0; transition: all 0.25s ease; }
+  .hero-dots button.active { background: var(--caramel); width: 20px; border-radius: 4px; }
+  @media (max-width: 900px) { .hero-dots { bottom: 14px; } }
+  .hero-inner { position: relative; z-index: 2; padding-top: 64px; padding-bottom: 60px; width: 100%; }
   .hero-copy { max-width: 480px; }
   .hero-copy .eyebrow { display: block; margin-bottom: 14px; }
   .hero-copy h1 { font-size: clamp(40px, 4.6vw, 60px); line-height: 1.08; margin-bottom: 20px; }
@@ -78,7 +84,7 @@
   .hero-trust .item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--brown); }
   .hero-trust svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; flex-shrink: 0; }
 
-  .hero-flourish { position: absolute; top: 130px; right: 64px; z-index: 3; text-align: right; }
+  .hero-flourish { position: absolute; top: 40px; right: 64px; z-index: 3; text-align: right; }
   .hero-flourish .script { font-size: 26px; line-height: 1.15; color: var(--brown); display: block; }
   .hero-flourish .heart { font-size: 15px; color: var(--caramel); }
   @media (max-width: 1100px) { .hero-flourish { display: none; } }
@@ -184,7 +190,14 @@
 </header>
 
 <section class="hero">
-  <div class="hero-bg"><img src="images/hero-bedroom-wide.jpg" alt="Child reading a personalized Hikaya storybook in a cozy bedroom, with the Hikaya gift box beside her"></div>
+  <div class="hero-bg" id="hero-carousel">
+    <div class="slide active"><img src="images/hero-bedroom-wide.jpg" alt="Child reading a personalized Hikaya storybook in a cozy bedroom, with the Hikaya gift box beside her"></div>
+    <div class="slide"><img src="images/fantasy-night-scene.jpg" alt="A child imagining herself inside her personalized storybook's magical world"></div>
+    <div class="slide"><img src="images/giftbox-open-pair.jpg" alt="An open Hikaya gift box with gold-starred tissue paper"></div>
+    <div class="slide"><img src="images/bookshelf-scene.jpg" alt="A shelf of Hikaya storybooks alongside a keepsake plush and handwritten note"></div>
+    <div class="slide"><img src="images/book-flatlay.jpg" alt="A personalized Hikaya storybook cover, illustrated just for one child"></div>
+  </div>
+  <div class="hero-dots" id="hero-dots"></div>
   <div class="hero-flourish">
     <span class="script">Little<br/>Stories<br/>Big<br/>Tomorrows</span>
     <div class="heart">&#9825;</div>
@@ -298,6 +311,28 @@
   document.getElementById('hamburger-btn').addEventListener('click', () => {
     document.getElementById('mobile-nav-panel').classList.toggle('open');
   });
+
+  (function () {
+    const track = document.getElementById('hero-carousel');
+    const slides = track.querySelectorAll('.slide');
+    const dotsWrap = document.getElementById('hero-dots');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = i === 0 ? 'active' : '';
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+
+    function goTo(i) {
+      current = (i + slides.length) % slides.length;
+      slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
+      [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
+    }
+
+    setInterval(() => goTo(current + 1), 4500);
+  })();
 </script>
 
 </body>
