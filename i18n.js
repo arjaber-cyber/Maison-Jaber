@@ -439,6 +439,7 @@ window.HIKAYA_TRANSLATIONS = {
     nav_gifts: { en: 'Gifts', de: 'Geschenke', ar: 'الهدايا' },
     create_book: { en: 'Create Their Book', de: 'Ihr Buch erstellen', ar: 'أنشئ كتابه' },
     create_book_arrow: { en: 'Create Their Book →', de: 'Ihr Buch erstellen →', ar: 'أنشئ كتابه ←' },
+    price_from: { en: 'From', de: 'Ab', ar: 'ابتداءً من' },
     footer_account: { en: 'Account', de: 'Konto', ar: 'الحساب' },
     flourish_html: { en: 'Little<br/>Stories<br/>Big<br/>Tomorrows', de: 'Kleine<br/>Geschichten<br/>Große<br/>Zukunft', ar: 'حكايات<br/>صغيرة<br/>لغدٍ<br/>عظيم' },
     flourish_inline: { en: 'Little Stories, Big Tomorrows', de: 'Kleine Geschichten, große Zukunft', ar: 'حكايات صغيرة لغدٍ عظيم' },

@@ -48,6 +48,8 @@
   .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
   .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--brown); }
   .lang-pill:hover { background: var(--cream); }
+  .zone-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--coral-deep); cursor: pointer; }
+  .zone-pill:hover { background: var(--cream); }
   .hamburger, .mobile-cta-icon { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
   .hamburger svg, .mobile-cta-icon svg { width: 22px; height: 22px; stroke: var(--brown); fill: none; }
   .mobile-nav-panel { display: none; flex-direction: column; gap: 4px; background: var(--ivory); padding: 6px 28px 24px; }
@@ -83,6 +85,8 @@
   .hero-copy h1 em { font-style: italic; color: var(--caramel); }
   .hero-copy p.lede { font-size: 16.5px; color: #5b4a3d; max-width: 40ch; margin-bottom: 30px; }
   .hero-trust { display: flex; gap: 26px; margin-top: 34px; flex-wrap: wrap; }
+  .hero-price { margin-top: 14px; font-size: 14px; font-weight: 600; color: var(--brown); }
+  .hero-price [data-hikaya-price] { color: var(--coral-deep); }
   .hero-trust .item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--brown); }
   .hero-trust svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; flex-shrink: 0; }
 
@@ -159,6 +163,7 @@
   .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 12px; color: #a8998a; text-align: center; }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -179,6 +184,7 @@
       <a class="icon-btn" href="./stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
       <a class="icon-btn" href="./login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
       <a class="lang-pill" href="#" data-i18n-skip style="margin-right:6px; padding:8px 10px;">EN</a>
+      <a class="zone-pill" href="#" style="margin-right:6px;">GCC</a>
       <a class="btn-primary" href="./personalize.html" style="padding:12px 22px; font-size:13px;" data-i18n="home5.create_book">Create Their Book</a>
     </div>
     <a class="mobile-cta-icon" href="./personalize.html" aria-label="Create Their Book">
@@ -191,6 +197,7 @@
     <a class="nav-link" href="./about.html" data-i18n="common.nav_about">About</a>
     <a class="nav-link" href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
     <a class="lang-pill" href="#" data-i18n-skip style="align-self:center; margin-bottom:8px;">EN</a>
+    <a class="zone-pill" href="#" style="align-self:center; margin-bottom:8px;">GCC</a>
     <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
   </div>
 </header>
@@ -214,6 +221,9 @@
       <h1 data-i18n-html="home5.hero_h1">More than<br/> a book,<br/> <em>it's a memory<br/> for life.</em></h1>
       <p class="lede" data-i18n="home5.hero_lede">Beautifully illustrated, personally crafted, and made to inspire a brighter tomorrow.</p>
       <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
+      <div class="hero-price">
+        <span data-i18n="home5.price_from">From</span> <span data-hikaya-price>€34.90</span>
+      </div>
       <div class="hero-flourish-mobile">
         <span class="script" data-i18n="home5.flourish_inline">Little Stories, Big Tomorrows</span>
         <span class="heart">&#9825;</span>
