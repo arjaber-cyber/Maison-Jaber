@@ -120,6 +120,8 @@
   .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .field.full { grid-column: 1 / -1; }
   label.field-label { font-size: 13px; font-weight: 800; }
+  .req-mark { color: var(--coral-deep); margin-left: 2px; }
+  .req-note { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin: -8px 0 16px; }
   input[type="text"], input[type="number"], textarea {
     width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
     border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
@@ -258,9 +260,10 @@
       </div>
 
       <div class="details-card">
+        <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
-          <div class="field full"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
-          <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
+          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
           <div class="field">
             <label class="field-label" data-i18n="personalize.gender_label">Who's the hero?</label>
             <div class="gender-toggle">
@@ -277,7 +280,7 @@
           </div>
           <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
         </div>
-        <label class="field-label" style="display:block; margin-bottom:8px;" data-i18n="personalize.photos_label">Photo(s) of your child</label>
+        <label class="field-label" style="display:block; margin-bottom:8px;"><span data-i18n="personalize.photos_label">Photo(s) of your child</span><span class="req-mark">*</span></label>
         <div class="photo-guidance">
           <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
           <ul>
