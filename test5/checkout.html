@@ -88,6 +88,16 @@
   input:focus, select:focus { outline: none; border-color: var(--gold); background: #fff; }
 
   .map-field { margin-top: 4px; }
+  #gift-message-field textarea { resize: vertical; min-height: 64px; }
+  .gift-message-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+  .gift-word-count { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; }
+  .gift-word-count.over { color: var(--coral-deep); }
+  .gift-inspire-btn {
+    display: inline-flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 700; color: var(--coral-deep); padding: 0;
+  }
+  .gift-inspire-btn svg { width: 14px; height: 14px; stroke: var(--coral-deep); }
+  .gift-inspire-btn:hover { text-decoration: underline; }
   .map-field-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
   .map-locate-btn {
     display: inline-flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer;
@@ -104,7 +114,8 @@
     color: var(--text-on-light-soft); font-size: 13px; background: var(--bg-soft);
   }
 
-  .pay-methods { display: flex; gap: 10px; margin-bottom: 16px; }
+  .pay-methods { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pay-method-btn { flex: 1 1 100px; }
   .pay-method-btn {
     flex: 1; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: var(--radius); background: #fff;
     font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink-soft); cursor: pointer;
@@ -246,8 +257,19 @@
           </div>
           <div class="map-hint" data-i18n="checkout.map_hint">The pin updates automatically as you type your address — check it lands in the right spot.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone" data-i18n="checkout.phone">Phone</label><input type="text" id="phone" placeholder="For delivery updates" data-i18n-placeholder="checkout.phone_ph" /></div>
-        <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option data-i18n="checkout.no">No</option><option data-i18n="checkout.yes">Yes</option></select></div>
+        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="text" id="phone" placeholder="For delivery updates" data-i18n-placeholder="checkout.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option value="no" data-i18n="checkout.no">No</option><option value="yes" data-i18n="checkout.yes">Yes</option></select></div>
+        <div class="field full" id="gift-message-field" style="display:none;">
+          <label class="field-label" for="gift-message"><span data-i18n="checkout.gift_message_label">Gift message</span> <span class="req-mark">*</span></label>
+          <textarea id="gift-message" maxlength="160" placeholder="A short note for the gift card..." data-i18n-placeholder="checkout.gift_message_ph" rows="3"></textarea>
+          <div class="gift-message-row">
+            <span id="gift-word-count" class="gift-word-count">0/20 <span data-i18n="checkout.words">words</span></span>
+            <button type="button" id="gift-inspire-btn" class="gift-inspire-btn">
+              <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+              <span data-i18n="checkout.inspire_me">Inspire me</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -435,6 +457,10 @@
     card: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>', label: () => t('checkout.method_card', 'Card') },
     shamcash: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>', label: () => t('checkout.method_shamcash', 'Sham Cash') },
     cod: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>', label: () => t('checkout.method_cod', 'Cash on Delivery') },
+    applepay: { icon: '<svg viewBox="0 0 24 24"><path d="M16.5 8.5c-.3-2-2-3.3-3.8-3-.2-1.4-1.2-2.5-2.6-2.5-1.6 0-2.4 1.3-2.4 2.6 0 1.6 1.2 2.7 2.6 2.7"/><rect x="3" y="9" width="18" height="12" rx="2.5"/></svg>', label: () => t('checkout.method_applepay', 'Apple Pay') },
+    googlepay: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>', label: () => t('checkout.method_googlepay', 'Google Pay') },
+    tabby: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tabby', 'Tabby') },
+    tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tamara', 'Tamara') },
   };
 
   function renderPaymentSection() {
@@ -500,6 +526,30 @@
         </div>`;
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = t('checkout.confirm_cod_btn', 'Confirm Order (Pay on Delivery)');
+    } else if (selectedPaymentMethod === 'applepay' || selectedPaymentMethod === 'googlepay') {
+      const walletName = METHOD_META[selectedPaymentMethod].label();
+      bodyHtml = `
+        <div class="cod-box">
+          ${METHOD_META[selectedPaymentMethod].icon}
+          <div>
+            <h4>${t('checkout.wallet_title', 'Pay with')} ${walletName}</h4>
+            <p>${t('checkout.wallet_body', 'One-tap payment from your device wallet (connects once the merchant account is live), charged in')} ${region.currency}</p>
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = `${t('checkout.pay_with', 'Pay with')} ${walletName}`;
+    } else if (selectedPaymentMethod === 'tabby' || selectedPaymentMethod === 'tamara') {
+      const bnplName = METHOD_META[selectedPaymentMethod].label();
+      bodyHtml = `
+        <div class="cod-box">
+          ${METHOD_META[selectedPaymentMethod].icon}
+          <div>
+            <h4>${t('checkout.bnpl_title', 'Split with')} ${bnplName}</h4>
+            <p>${t('checkout.bnpl_body', 'Pay in installments over a few weeks, interest-free (connects once the merchant account is live).')}</p>
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = `${t('checkout.pay_with', 'Pay with')} ${bnplName}`;
     }
 
     paymentArea.innerHTML = selectorHtml + bodyHtml;
@@ -567,6 +617,37 @@
     );
   });
 
+  // ---------- Gift message ----------
+  const giftSelect = document.getElementById('gift');
+  const giftMessageField = document.getElementById('gift-message-field');
+  const giftMessage = document.getElementById('gift-message');
+  const giftWordCount = document.getElementById('gift-word-count');
+  const GIFT_MESSAGE_SUGGESTIONS = [
+    "Wishing you a story as wonderful as you are. With love, always.",
+    "A little adventure made just for you — enjoy every page!",
+    "Because every hero needs their own story. Love you so much.",
+    "Hope this brings a smile as big as the one you give us.",
+    "Made with love, just for you. Enjoy your special story!",
+  ];
+
+  giftSelect.addEventListener('change', () => {
+    giftMessageField.style.display = giftSelect.value === 'yes' ? 'flex' : 'none';
+  });
+
+  giftMessage.addEventListener('input', () => {
+    const words = giftMessage.value.trim().split(/\s+/).filter(Boolean);
+    const count = giftMessage.value.trim() ? words.length : 0;
+    const wordsLabel = t('checkout.words', 'words');
+    giftWordCount.textContent = `${count}/20 ${wordsLabel}`;
+    giftWordCount.classList.toggle('over', count > 20);
+  });
+
+  document.getElementById('gift-inspire-btn').addEventListener('click', () => {
+    const pick = GIFT_MESSAGE_SUGGESTIONS[Math.floor(Math.random() * GIFT_MESSAGE_SUGGESTIONS.length)];
+    giftMessage.value = pick;
+    giftMessage.dispatchEvent(new Event('input'));
+  });
+
   // ---------- Submit ----------
   placeOrderBtn.addEventListener('click', async () => {
     const errorBox = document.getElementById('payment-error');
@@ -588,13 +669,21 @@
       city: document.getElementById('city').value,
       country: currentRegionKey,
       phone: document.getElementById('phone').value,
+      isGift: giftSelect.value === 'yes',
+      giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
       amount: region.bookNow + (region.deliveryFee || 0),
       currency: region.currency
     };
 
-    if (!order.fullName || !order.email || !order.address || !order.city) {
-      errorBox.textContent = t('checkout.err_required', 'Please fill in your name, email, address, and city.');
+    if (!order.fullName || !order.email || !order.address || !order.city || !order.phone) {
+      errorBox.textContent = t('checkout.err_required', 'Please fill in your name, email, phone, address, and city.');
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    if (order.isGift && !order.giftMessage) {
+      errorBox.textContent = t('checkout.err_gift_message', 'Please add a short gift message, or use "Inspire me" for one.');
       errorBox.style.display = 'block';
       return;
     }

@@ -33,8 +33,8 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body.' }) };
   }
 
-  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency } = order;
-  if (!fullName || !email || !address || !city || !country || !paymentMethod) {
+  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency, isGift, giftMessage } = order;
+  if (!fullName || !email || !address || !city || !country || !phone || !paymentMethod) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in all required delivery details.' }) };
   }
 
@@ -67,6 +67,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           full_name: fullName, email: userEmail || email, address, city, country, phone,
           payment_method: 'cod', amount, currency: currency || 'EUR',
+          is_gift: !!isGift, gift_message: giftMessage || null,
           payment_status: 'pending_cod', order_status: 'received',
           created_at: new Date().toISOString()
         })
@@ -109,6 +110,58 @@ exports.handler = async (event) => {
     return {
       statusCode: 501,
       body: JSON.stringify({ error: 'Sham Cash is configured but not yet implemented in code. See the comment in process-payment.js.' })
+    };
+  }
+
+  // --- Apple Pay / Google Pay: work through the SAME card gateway (Telr/ ---
+  // --- PayTabs both support them) -- no separate merchant account needed. ---
+  if (paymentMethod === 'applepay' || paymentMethod === 'googlepay') {
+    const provider = process.env.PAYMENT_PROVIDER;
+    const apiKey = process.env.PAYMENT_API_KEY;
+    const storeId = process.env.PAYMENT_STORE_ID;
+    if (!provider || !apiKey || !storeId) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: `${paymentMethod === 'applepay' ? 'Apple Pay' : 'Google Pay'} isn't connected yet. It uses the same PAYMENT_PROVIDER/PAYMENT_API_KEY/PAYMENT_STORE_ID variables as card payments -- add those once you have a Telr or PayTabs merchant account, then redeploy.`
+        })
+      };
+    }
+    // -----------------------------------------------------------------
+    // Both Telr and PayTabs support Apple Pay / Google Pay as payment
+    // methods within their standard hosted checkout -- check their docs
+    // for the exact request flag (e.g. Telr's "wallet" parameter) once
+    // you're ready to wire this branch up alongside the card branch below.
+    // -----------------------------------------------------------------
+    return {
+      statusCode: 501,
+      body: JSON.stringify({ error: `${paymentMethod === 'applepay' ? 'Apple Pay' : 'Google Pay'} is configured but not yet implemented in code. See the comment in process-payment.js.` })
+    };
+  }
+
+  // --- Tabby / Tamara: GCC buy-now-pay-later services. Each needs its ---
+  // --- own separate merchant account and API integration.             ---
+  if (paymentMethod === 'tabby' || paymentMethod === 'tamara') {
+    const envPrefix = paymentMethod.toUpperCase();
+    const apiKey = process.env[`${envPrefix}_API_KEY`];
+    const merchantCode = process.env[`${envPrefix}_MERCHANT_CODE`];
+    if (!apiKey || !merchantCode) {
+      const name = paymentMethod === 'tabby' ? 'Tabby' : 'Tamara';
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: `${name} isn't connected yet. Add ${envPrefix}_API_KEY and ${envPrefix}_MERCHANT_CODE in Netlify environment variables once you have a ${name} merchant account, then redeploy.`
+        })
+      };
+    }
+    // -----------------------------------------------------------------
+    // REAL TABBY/TAMARA API CALL GOES HERE once merchant credentials exist.
+    // Both have a "create checkout session" REST endpoint that returns a
+    // redirect URL, similar in shape to the Telr example below.
+    // -----------------------------------------------------------------
+    return {
+      statusCode: 501,
+      body: JSON.stringify({ error: `${paymentMethod === 'tabby' ? 'Tabby' : 'Tamara'} is configured but not yet implemented in code. See the comment in process-payment.js.` })
     };
   }
 
