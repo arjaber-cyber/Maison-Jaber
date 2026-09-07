@@ -53,36 +53,53 @@
   .page-head h1 { font-size: clamp(24px, 3.4vw, 34px); }
   .page-head p { margin-top: 8px; color: var(--ink-soft); font-weight: 600; }
 
-  .block { padding: 30px 0; }
-  .block-inner { max-width: 900px; margin: 0 auto; }
-  .block-label { font-size: 13px; font-weight: 800; color: var(--coral-deep); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-  .block h2 { font-size: 22px; margin-bottom: 4px; }
-  .block-sub { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-bottom: 20px; }
+  .order-layout { display: grid; grid-template-columns: 340px 1fr; gap: 32px; padding: 28px 0 60px; max-width: 1080px; margin: 0 auto; align-items: start; }
+  @media (max-width: 900px) { .order-layout { grid-template-columns: 1fr; padding: 20px 20px 40px; } }
 
-  /* Age selector */
-  .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  @media (max-width: 640px) { .age-grid { grid-template-columns: 1fr; } }
+  .order-summary { background: #fff; border-radius: var(--radius); padding: 24px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); position: sticky; top: 90px; }
+  @media (max-width: 900px) { .order-summary { position: static; } }
+  .summary-cover { aspect-ratio: 4/3; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 14px; margin-bottom: 16px; }
+  .summary-cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .summary-cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .summary-cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .summary-cover.empty { background: var(--bg-soft); color: var(--ink-soft); font-weight: 700; font-size: 13px; }
+  .summary-cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
+  .order-summary h3 { font-size: 17px; margin-bottom: 14px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+  .summary-row.total { border-bottom: none; padding-top: 12px; }
+  .summary-row.total span:first-child { font-weight: 800; color: var(--ink); }
+  .summary-row.total span:last-child { color: var(--coral-deep); font-weight: 800; font-size: 15px; }
 
-  .birthday-card {
-    background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 30px 28px;
-    box-shadow: 0 6px 18px rgba(50,44,36,0.06); max-width: 360px;
+  .order-form-col h2 { font-size: 19px; margin-bottom: 4px; }
+  .order-form-col .sub { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-bottom: 18px; }
+
+  .story-chip { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; box-shadow: 0 6px 16px rgba(50,44,36,0.06); }
+  .story-chip .swatch { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; }
+  .story-chip .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-chip .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-chip .swatch.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-chip .name { font-weight: 800; flex: 1; }
+  .story-chip button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 640px) { .story-grid { grid-template-columns: 1fr; } }
+  .story-pick {
+    background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    border: 3px solid transparent; box-shadow: 0 8px 22px rgba(50,44,36,0.07);
   }
-  .birthday-card:focus-within { border-color: var(--coral); }
-  .birthday-card label { display: block; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 10px; }
-  .birthday-field input[type="date"] {
-    width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 17px;
-    border: 2px solid var(--line-soft); border-radius: 10px; background: var(--bg-soft); color: var(--ink);
+  .story-pick:hover { border-color: var(--line); }
+  .story-pick.selected { border-color: var(--coral); }
+  .story-pick .cover {
+    aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
   }
-  .birthday-field input[type="date"]:focus { outline: none; border-color: var(--coral); background: #fff; }
-  .birthday-note { font-size: 13px; font-weight: 600; color: var(--coral-deep); margin-top: 12px; min-height: 18px; }
-  .age-card {
-    background: #fff; border: 3px solid transparent; border-radius: var(--radius); padding: 26px 20px;
-    text-align: center; cursor: pointer; box-shadow: 0 6px 18px rgba(50,44,36,0.06);
-  }
-  .age-card:hover { border-color: var(--line); }
-  .age-card.selected { border-color: var(--coral); }
-  .age-card .range { font-family: 'Inter', sans-serif; font-size: 22px; color: var(--coral-deep); margin-bottom: 8px; }
-  .age-card p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
+  .story-pick .cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-pick .cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-pick .cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 16px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
+  .story-pick .body { padding: 12px 14px 14px; }
+  .story-pick .theme { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 3px; }
+  .story-pick h3 { font-size: 14.5px; margin-bottom: 0; }
 
   .gender-toggle { display: flex; gap: 12px; }
   .gender-btn {
@@ -96,39 +113,13 @@
   .gender-btn.selected { border-color: var(--coral); background: var(--bg-soft); color: var(--coral-deep); }
   .gender-btn.selected svg { stroke: var(--coral-deep); }
 
-  /* Story list (revealed after age chosen) */
-  #story-block { display: none; }
-  #story-block.visible { display: block; }
-  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  @media (max-width: 780px) { .story-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; } }
-  .story-pick {
-    background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer;
-    border: 3px solid transparent; box-shadow: 0 8px 22px rgba(50,44,36,0.07);
-  }
-  .story-pick:hover { border-color: var(--line); }
-  .story-pick.selected { border-color: var(--coral); }
-  .story-pick .cover {
-    aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
-  }
-  .story-pick .cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
-  .story-pick .cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
-  .story-pick .cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
-  .story-pick .cover .t { font-family: 'Inter', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
-  .story-pick .body { padding: 16px 18px 18px; }
-  .story-pick .theme { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 4px; }
-  .story-pick h3 { font-size: 16px; margin-bottom: 6px; }
-  .story-pick p { font-size: 13px; color: var(--ink-soft); margin: 0; font-weight: 600; }
-
-  /* Details (revealed after story chosen) */
-  #details-block { display: none; }
-  #details-block.visible { display: block; }
-  .details-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); }
+  .details-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); margin-bottom: 18px; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
   .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .field.full { grid-column: 1 / -1; }
   label.field-label { font-size: 13px; font-weight: 800; }
-  input[type="text"], textarea {
+  input[type="text"], input[type="number"], textarea {
     width: 100%; padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
     border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
   }
@@ -153,10 +144,11 @@
     background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1;
   }
 
-  /* Account gate + send (revealed after details filled) */
+  /* Account gate + send (revealed once order form is complete) */
   #send-block { display: none; }
   #send-block.visible { display: block; }
   .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
+
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
   .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
 
@@ -187,8 +179,11 @@
 
   .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); }
+  .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -196,82 +191,69 @@
 <header class="site">
   <div class="wrap inner">
     <div class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></div>
-    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="exit" href="index.html">Save &amp; exit</a>
+    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="zone-pill" href="#" style="margin-right:8px;">Europe</a><a class="exit" href="index.html">Save &amp; exit</a>
   </div>
 </header>
 
 <div class="page-head wrap">
   <h1 data-i18n="personalize.page_title">Let's create their story</h1>
-  <p data-i18n="personalize.page_sub">Start with their age, and we'll show you the right stories.</p>
+  <p data-i18n="personalize.page_sub_v2">Add their name, age, and photo &mdash; we'll take it from there.</p>
 </div>
 
 <form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
   <input type="hidden" name="form-name" value="book-request" />
   <input type="hidden" name="story" id="story-input" />
   <input type="hidden" name="age_edition" id="age-input" />
-  <input type="hidden" name="birthday" id="birthday-hidden" />
 
-  <!-- BLOCK 1: BIRTHDAY -->
-  <div class="block">
-    <div class="block-inner">
-      <div class="block-label" data-i18n="personalize.step1_label">Step 1</div>
-      <h2 data-i18n="personalize.step1_title_bday">When's their birthday?</h2>
-      <div class="block-sub" data-i18n="personalize.step1_sub">This helps us show stories written the right way for them.</div>
-      <div class="birthday-card">
-        <div class="birthday-field">
-          <label for="birthday-input" data-i18n="personalize.birthday_label">Their birthday</label>
-          <input type="date" id="birthday-input" />
-          <div class="birthday-note" id="birthday-note"></div>
-        </div>
-      </div>
+  <div class="order-layout">
+    <div class="order-summary">
+      <div class="summary-cover empty" id="summary-cover">Pick a story to begin</div>
+      <h3 id="summary-story-title">No story chosen yet</h3>
+      <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
+      <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
+      <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
+      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price>€34.90</span></div>
     </div>
-  </div>
 
-  <!-- BLOCK 2: STORY (revealed after age) -->
-  <div class="block" id="story-block">
-    <div class="block-inner">
-      <div class="block-label" data-i18n="personalize.step2_label">Step 2</div>
-      <h2 data-i18n="personalize.step2_title">Choose their story</h2>
-      <div class="block-sub" data-i18n="personalize.step2_sub">Every story below is available for this age.</div>
+    <div class="order-form-col">
+      <h2 data-i18n="personalize.order_title">Tell us about them</h2>
+      <div class="sub" data-i18n="personalize.order_sub">Just the essentials &mdash; you can always add more later.</div>
+
+      <div class="story-chip" id="story-chip" style="display:none;">
+        <div class="swatch" id="story-chip-swatch"></div>
+        <div class="name" id="story-chip-name"></div>
+        <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
+      </div>
+
       <div class="story-grid" id="story-grid">
-        <div class="story-pick" data-value="The Bravest Little One">
+        <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
           <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
           <div class="body">
             <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
             <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
-            <p data-i18n="personalize.pick1_blurb">For the child facing something new and a little scary &mdash; and discovering they're braver than they knew.</p>
           </div>
         </div>
-        <div class="story-pick" data-value="The Cloud Ship">
+        <div class="story-pick" data-value="The Cloud Ship" data-theme="adventure">
           <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
           <div class="body">
             <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
             <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
-            <p data-i18n="personalize.pick2_blurb">For the dreamer who wants to sail among the stars on a ship made of soft cloud.</p>
           </div>
         </div>
-        <div class="story-pick" data-value="The Star Who Couldn't Sleep">
+        <div class="story-pick" data-value="The Star Who Couldn't Sleep" data-theme="lullaby">
           <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
           <div class="body">
             <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
             <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
-            <p data-i18n="personalize.pick3_blurb">A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.</p>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- BLOCK 3: DETAILS (revealed after story) -->
-  <div class="block" id="details-block">
-    <div class="block-inner">
-      <div class="block-label" data-i18n="personalize.step3_label">Step 3</div>
-      <h2 data-i18n="personalize.step3_title">Tell us about them</h2>
-      <div class="block-sub" data-i18n="personalize.step3_sub">Just the essentials.</div>
       <div class="details-card">
         <div class="form-grid">
           <div class="field full"><label class="field-label" for="child-name" data-i18n="personalize.child_name">Child's first name</label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
-          <div class="field full">
+          <div class="field"><label class="field-label" for="child-age" data-i18n="personalize.child_age">Child's age</label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field">
             <label class="field-label" data-i18n="personalize.gender_label">Who's the hero?</label>
             <div class="gender-toggle">
               <button type="button" class="gender-btn" data-value="boy">
@@ -305,23 +287,15 @@
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
       </div>
+
+      <button type="button" class="btn-primary" id="continue-order-btn" style="width:100%; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
     </div>
   </div>
 
-  <!-- BLOCK 4: ACCOUNT + SEND (revealed after details) -->
-  <div class="block" id="send-block">
-    <div class="block-inner">
-      <div class="block-label" data-i18n="personalize.step4_label">Step 4</div>
-      <h2 data-i18n="personalize.step4_title">Review &amp; send</h2>
-      <div class="block-sub" data-i18n="personalize.step4_sub">One quick account step, and their request is on its way.</div>
-
+  <!-- ACCOUNT + SEND (revealed once the order form above is complete) -->
+  <div class="wrap" id="send-block">
+    <div class="block-inner" style="max-width:900px; margin:0 auto;">
       <div class="send-card">
-        <div class="summary-row"><span data-i18n="home.search_story_lbl">Story</span><span id="summary-story">&mdash;</span></div>
-        <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
-        <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
-        <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
-        <div class="summary-row" style="border-bottom: none; padding-top: 12px;"><span style="font-weight: 800; color: var(--ink);" data-i18n="personalize.price">Price</span><span style="color: var(--ink); font-weight: 800;">&euro;35</span></div>
-
         <div class="account-gate" id="account-gate">
           <p class="note" data-i18n="personalize.gate_note">Create a free account to send your request and track your order.</p>
           <button type="button" class="btn-oauth" id="google-btn" data-i18n="checkout.google">Continue with Google</button>
@@ -389,7 +363,7 @@
 
   async function saveDraftToStorage() {
     const base = {
-      birthday: document.getElementById('birthday-input').value,
+      childAge: document.getElementById('child-age').value,
       ageEdition: document.getElementById('age-input').value,
       story: document.getElementById('story-input').value,
       gender: document.getElementById('child-gender').value,
@@ -416,20 +390,11 @@
     if (!raw) return;
     try {
       const draft = JSON.parse(raw);
-      if (draft.birthday) {
-        document.getElementById('birthday-input').value = draft.birthday;
-        document.getElementById('birthday-hidden').value = draft.birthday;
-      }
-      if (draft.ageEdition) {
-        document.getElementById('age-input').value = draft.ageEdition;
-        document.getElementById('summary-age').textContent = 'Ages ' + draft.ageEdition;
-        document.getElementById('story-block').classList.add('visible');
+      if (draft.childAge) {
+        document.getElementById('child-age').value = draft.childAge;
       }
       if (draft.story) {
-        document.getElementById('story-input').value = draft.story;
-        document.getElementById('summary-story').textContent = draft.story;
-        document.querySelectorAll('.story-pick').forEach(c => { if (c.dataset.value === draft.story) c.classList.add('selected'); });
-        document.getElementById('details-block').classList.add('visible');
+        selectStory(draft.story);
       }
       if (draft.gender) {
         document.getElementById('child-gender').value = draft.gender;
@@ -456,35 +421,60 @@
   let isSignedIn = false;
 
   // --- Birthday entry computes age edition, reveals stories ---
-  const birthdayInput = document.getElementById('birthday-input');
-  const birthdayNote = document.getElementById('birthday-note');
-
   function editionForAge(years) {
     if (years <= 4) return '2-4';
     if (years <= 7) return '5-7';
     return '8-10';
   }
-  const EDITION_NOTE_KEY = { '2-4': 'personalize.bday_note_2_4', '5-7': 'personalize.bday_note_5_7', '8-10': 'personalize.bday_note_8_10' };
 
-  birthdayInput.addEventListener('change', () => {
-    if (!birthdayInput.value) return;
-    const dob = new Date(birthdayInput.value);
-    const today = new Date();
-    let years = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) years--;
-    years = Math.max(0, years);
+  // --- Story selection (either pre-picked via ?story= URL param, or chosen here) ---
+  const STORY_THEMES = {
+    'The Bravest Little One': 'courage',
+    'The Cloud Ship': 'adventure',
+    "The Star Who Couldn't Sleep": 'lullaby',
+  };
 
-    const edition = editionForAge(years);
-    document.getElementById('age-input').value = edition;
-    document.getElementById('birthday-hidden').value = birthdayInput.value;
-    document.getElementById('summary-age').textContent = 'Ages ' + edition;
+  function selectStory(storyName) {
+    const theme = STORY_THEMES[storyName] || 'courage';
+    document.getElementById('story-input').value = storyName;
 
-    const noteKey = EDITION_NOTE_KEY[edition];
-    birthdayNote.textContent = `${window.hikayaT ? window.hikayaT(noteKey) : ''}`.replace('{age}', years) || `That makes them ${years} — perfect for our ${edition} edition.`;
+    // Summary sidebar
+    document.getElementById('summary-cover').className = 'summary-cover ' + theme;
+    document.getElementById('summary-cover').innerHTML = `<div class="t">${storyName}</div>`;
+    document.getElementById('summary-story-title').textContent = storyName;
 
-    document.getElementById('story-block').classList.add('visible');
-    document.getElementById('story-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Compact chip replaces the picker grid
+    document.getElementById('story-chip-swatch').className = 'swatch ' + theme;
+    document.getElementById('story-chip-name').textContent = storyName;
+    document.getElementById('story-chip').style.display = 'flex';
+    document.getElementById('story-grid').style.display = 'none';
+
+    document.querySelectorAll('.story-pick').forEach(c => c.classList.toggle('selected', c.dataset.value === storyName));
+    checkDetailsComplete();
+  }
+
+  document.querySelectorAll('.story-pick').forEach(card => {
+    card.addEventListener('click', () => selectStory(card.dataset.value));
+  });
+
+  document.getElementById('change-story-btn').addEventListener('click', () => {
+    document.getElementById('story-chip').style.display = 'none';
+    document.getElementById('story-grid').style.display = 'grid';
+  });
+
+  // --- Age (plain number, quietly maps to an edition behind the scenes) ---
+  const ageInputEl = document.getElementById('child-age');
+  ageInputEl.addEventListener('input', () => {
+    const years = parseInt(ageInputEl.value, 10);
+    if (years && years > 0) {
+      const edition = editionForAge(years);
+      document.getElementById('age-input').value = edition;
+      document.getElementById('summary-age').textContent = 'Ages ' + edition;
+    } else {
+      document.getElementById('age-input').value = '';
+      document.getElementById('summary-age').textContent = '—';
+    }
+    checkDetailsComplete();
   });
 
   // --- Gender toggle ---
@@ -493,18 +483,6 @@
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
       document.getElementById('child-gender').value = btn.dataset.value;
-    });
-  });
-
-  // --- Story selection reveals details ---
-  document.querySelectorAll('.story-pick').forEach(card => {
-    card.addEventListener('click', () => {
-      document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      document.getElementById('story-input').value = card.dataset.value;
-      document.getElementById('summary-story').textContent = card.dataset.value;
-      document.getElementById('details-block').classList.add('visible');
-      document.getElementById('details-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
@@ -532,17 +510,35 @@
     document.getElementById('summary-photos').textContent = photoFiles.length;
   }
 
-  // --- Details completion reveals the send block ---
+  // --- Order form completion enables the Continue button ---
   const nameInput = document.getElementById('child-name');
   nameInput.addEventListener('input', () => {
     document.getElementById('summary-name').textContent = nameInput.value || '—';
     checkDetailsComplete();
   });
+
+  const continueBtn = document.getElementById('continue-order-btn');
   function checkDetailsComplete() {
-    if (nameInput.value.trim() && photoFiles.length > 0) {
-      document.getElementById('send-block').classList.add('visible');
-    }
+    const ready = document.getElementById('story-input').value
+      && nameInput.value.trim()
+      && ageInputEl.value.trim()
+      && photoFiles.length > 0;
+    continueBtn.disabled = !ready;
+    continueBtn.textContent = ready
+      ? (window.hikayaT ? window.hikayaT('personalize.continue_ready') : 'Continue') || 'Continue'
+      : (window.hikayaT ? window.hikayaT('personalize.continue_btn') : 'Fill in the details above to continue') || 'Fill in the details above to continue';
   }
+  checkDetailsComplete();
+
+  continueBtn.addEventListener('click', () => {
+    document.getElementById('send-block').classList.add('visible');
+    document.getElementById('send-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Pre-select story if the visitor arrived from a story page (?story=...)
+  // Placed last, after every element/function above it depends on already exists.
+  const urlStory = new URLSearchParams(window.location.search).get('story');
+  if (urlStory && STORY_THEMES[urlStory]) selectStory(urlStory);
 
   // --- Auth ---
   let isGuest = false;
