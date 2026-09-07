@@ -320,6 +320,8 @@ window.HIKAYA_TRANSLATIONS = {
     summary_name: { en: "Child's name", de: 'Name des Kindes', ar: 'اسم الطفل' },
     summary_photos: { en: 'Photos', de: 'Fotos', ar: 'الصور' },
     price: { en: 'Price', de: 'Preis', ar: 'السعر' },
+    send_block_title: { en: 'One last step', de: 'Ein letzter Schritt', ar: 'خطوة أخيرة' },
+    send_block_sub: { en: 'Sign in or continue as a guest to send your request.', de: 'Melden Sie sich an oder fahren Sie als Gast fort, um Ihre Anfrage zu senden.', ar: 'سجّل الدخول أو تابع كضيف لإرسال طلبك.' },
     gate_note: { en: 'Create a free account to send your request and track your order.', de: 'Erstellen Sie ein kostenloses Konto, um Ihre Anfrage zu senden und Ihre Bestellung zu verfolgen.', ar: 'أنشئ حسابًا مجانيًا لإرسال طلبك وتتبع طلبك.' },
     email_link_btn: { en: 'Email Me a Sign-In Link', de: 'Mir einen Anmeldelink senden', ar: 'أرسل لي رابط تسجيل الدخول' },
     guest_toggle: { en: 'Prefer not to sign in? Continue as guest', de: 'Möchten Sie sich nicht anmelden? Als Gast fortfahren', ar: 'تفضل عدم تسجيل الدخول؟ تابع كضيف' },
