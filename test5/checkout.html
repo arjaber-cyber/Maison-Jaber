@@ -160,6 +160,7 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -358,21 +359,9 @@
   };
 
   // ---------- Region & currency configuration ----------
-  // Base pricing is "was / now" (a running discount). Update these every
-  // month or so — NOT a live FX feed, so your price never silently drifts.
-  // `methods` is an array because Syria offers a choice of three; every
-  // other region currently has just one, but the UI supports more per region.
-  const REGIONS = {
-    Germany:  { countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card'], label: 'Germany & Europe' },
-    Syria:    { countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria' },
-    UAE:      { countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'United Arab Emirates' },
-    Saudi:    { countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Saudi Arabia' },
-    Qatar:    { countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Qatar' },
-    Kuwait:   { countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 1.25, methods: ['card'], label: 'Kuwait' },
-    Bahrain:  { countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 1.5, methods: ['card'], label: 'Bahrain' },
-    Oman:     { countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 1.5, methods: ['card'], label: 'Oman' },
-    Other:    { countryCodes: [], currency: 'USD', symbol: '$', bookWas: 44, bookNow: 34, deliveryFee: null, methods: ['contact'], label: 'Other' }
-  };
+  // Pricing now lives in one place: /region.js (shared with the rest of the
+  // site). This avoids the two copies drifting out of sync with each other.
+  const REGIONS = window.HIKAYA_REGIONS;
 
   function regionForCountryCode(code) {
     code = (code || '').toUpperCase();
@@ -387,6 +376,16 @@
   let currentRegionKey = 'Germany';
 
   async function detectLocation() {
+    // If the visitor already picked a region elsewhere on the site (the
+    // pill next to the language switcher), respect that instead of
+    // re-detecting independently — keeps the whole site in sync.
+    const stored = localStorage.getItem('hikaya_region');
+    if (stored && REGIONS[stored]) {
+      currentRegionKey = stored;
+      countrySelect.value = stored;
+      renderPaymentSection();
+      return;
+    }
     try {
       const res = await fetch('https://ipapi.co/json/');
       if (!res.ok) return;
@@ -394,6 +393,7 @@
       const regionKey = regionForCountryCode(data.country_code);
       currentRegionKey = regionKey;
       countrySelect.value = regionKey;
+      localStorage.setItem('hikaya_region', regionKey);
       locationNote.style.display = 'block';
       locationNote.innerHTML = `&#128205; ${t('checkout.detected_as', 'Detected your location as')} <strong>${data.country_name || REGIONS[regionKey].label}</strong> — ${t('checkout.change_below', 'change below if needed')}.`;
       renderPaymentSection();
@@ -437,6 +437,7 @@
 
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
+    localStorage.setItem('hikaya_region', currentRegionKey);
     const region = REGIONS[currentRegionKey];
     updatePricing();
 

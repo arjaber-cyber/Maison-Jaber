@@ -123,8 +123,12 @@
 
   .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); margin-left: 8px; }
+  .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .card-price { font-size: 13.5px; font-weight: 700; color: var(--coral-deep); margin-top: 6px; }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -133,7 +137,7 @@
   <div class="wrap inner">
     <nav class="left"><a href="stories.html" data-i18n="stories.nav_shop">Shop Stories</a><a href="index.html#how-it-works" data-i18n="stories.nav_how">How It Works</a><a href="index.html#collections" data-i18n="stories.nav_collections">Our Collections</a></nav>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a></nav>
+    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a><a class="zone-pill" href="#">Europe</a></nav>
   </div>
 </header>
 
@@ -207,6 +211,7 @@
           <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
           <p data-i18n="stories.card1_blurb">For the child facing something new, and finding they are braver than they knew.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
+          <div class="card-price">From <span data-hikaya-price>€34.90</span></div>
           <a class="explore" href="story-bravest-little-one.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>
@@ -222,6 +227,7 @@
           <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
           <p data-i18n="home.story2_blurb">For the dreamer who wants to sail among the stars.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
+          <div class="card-price">From <span data-hikaya-price>€34.90</span></div>
           <a class="explore" href="story-cloud-ship.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>
@@ -237,6 +243,7 @@
           <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
           <p data-i18n="home.story3_blurb">A gentle wind-down story for the very end of the day.</p>
           <div class="ages">Ages 2&ndash;4 &middot; 5&ndash;7 &middot; 8&ndash;10</div>
+          <div class="card-price">From <span data-hikaya-price>€34.90</span></div>
           <a class="explore" href="story-star-who-couldnt-sleep.html" data-i18n="stories.explore">Explore This Story</a>
         </div>
       </div>

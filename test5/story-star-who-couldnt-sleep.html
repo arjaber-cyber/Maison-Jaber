@@ -144,8 +144,12 @@
 
   .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); margin-left: 8px; }
+  .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .story-price { font-size: 14px; font-weight: 700; color: var(--coral-deep, #B5563B); margin-top: 12px; }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -154,7 +158,7 @@
   <div class="wrap inner">
     <div class="breadcrumb"><a href="index.html" data-i18n-skip>Maison Jaber</a> / <a href="stories.html" data-i18n="common.nav_stories">Stories</a> / <span data-i18n="home.story3_title">The Star Who Couldn't Sleep</span></div>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a></nav>
+    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a><a class="zone-pill" href="#">Europe</a></nav>
   </div>
 </header>
 
@@ -192,6 +196,7 @@
       </div>
       <div class="actions">
         <a class="btn-primary" href="personalize.html?story=The%20Star%20Who%20Couldn%27t%20Sleep" data-i18n="story3.personalize_cta">Personalize This Story</a>
+      <div class="story-price">From <span data-hikaya-price>€34.90</span></div>
       </div>
     </div>
   </div>
