@@ -145,14 +145,17 @@
   }
 
   /* Account gate + send (revealed once order form is complete) */
-  #send-block { display: none; }
+  #send-block { display: none; padding: 36px 0 20px; }
   #send-block.visible { display: block; }
   .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
 
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
   .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
 
-  .account-gate { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .account-gate { margin-top: 0; padding-top: 0; border-top: none; }
+  .send-block-head { text-align: center; max-width: 440px; margin: 0 auto 18px; }
+  .send-block-head h2 { font-size: 19px; margin-bottom: 4px; }
+  .send-block-head p { color: var(--ink-soft); font-weight: 600; font-size: 14px; }
   .account-gate p.note { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 14px; }
   .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
@@ -295,6 +298,10 @@
   <!-- ACCOUNT + SEND (revealed once the order form above is complete) -->
   <div class="wrap" id="send-block">
     <div class="block-inner" style="max-width:900px; margin:0 auto;">
+      <div class="send-block-head">
+        <h2 data-i18n="personalize.send_block_title">One last step</h2>
+        <p data-i18n="personalize.send_block_sub">Sign in or continue as a guest to send your request.</p>
+      </div>
       <div class="send-card">
         <div class="account-gate" id="account-gate">
           <p class="note" data-i18n="personalize.gate_note">Create a free account to send your request and track your order.</p>
