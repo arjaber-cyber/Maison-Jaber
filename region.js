@@ -10,14 +10,14 @@
 */
 
 window.HIKAYA_REGIONS = {
-  Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card'], label: 'Germany & Europe', shortLabel: 'Europe' },
+  Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card', 'applepay', 'googlepay'], label: 'Germany & Europe', shortLabel: 'Europe' },
   Syria:    { zone: 'SY',  countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria', shortLabel: 'Syria' },
-  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'United Arab Emirates', shortLabel: 'UAE' },
-  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'Saudi Arabia', shortLabel: 'KSA' },
-  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'Qatar', shortLabel: 'Qatar' },
-  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.1, methods: ['card'], label: 'Kuwait', shortLabel: 'Kuwait' },
-  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 2.6, methods: ['card'], label: 'Bahrain', shortLabel: 'Bahrain' },
-  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card'], label: 'Oman', shortLabel: 'Oman' }
+  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'United Arab Emirates', shortLabel: 'UAE' },
+  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Saudi Arabia', shortLabel: 'KSA' },
+  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Qatar', shortLabel: 'Qatar' },
+  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.1, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Kuwait', shortLabel: 'Kuwait' },
+  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 2.6, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Bahrain', shortLabel: 'Bahrain' },
+  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Oman', shortLabel: 'Oman' }
 };
 // Every visitor falls into one of exactly three markets: Europe, GCC, or
 // Syria. Anyone whose IP doesn't match a GCC country or Syria defaults to
