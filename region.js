@@ -10,25 +10,28 @@
 */
 
 window.HIKAYA_REGIONS = {
-  Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card'], label: 'Germany & Europe' },
-  Syria:    { zone: 'SY',  countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria' },
-  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'United Arab Emirates' },
-  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Saudi Arabia' },
-  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 15, methods: ['card'], label: 'Qatar' },
-  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 1.25, methods: ['card'], label: 'Kuwait' },
-  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 1.5, methods: ['card'], label: 'Bahrain' },
-  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 1.5, methods: ['card'], label: 'Oman' },
-  Other:    { zone: 'OTHER', countryCodes: [], currency: 'USD', symbol: '$', bookWas: 44, bookNow: 34, deliveryFee: null, methods: ['contact'], label: 'Other' }
+  Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card'], label: 'Germany & Europe', shortLabel: 'Europe' },
+  Syria:    { zone: 'SY',  countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria', shortLabel: 'Syria' },
+  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'United Arab Emirates', shortLabel: 'UAE' },
+  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'Saudi Arabia', shortLabel: 'KSA' },
+  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'Qatar', shortLabel: 'Qatar' },
+  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.1, methods: ['card'], label: 'Kuwait', shortLabel: 'Kuwait' },
+  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 2.6, methods: ['card'], label: 'Bahrain', shortLabel: 'Bahrain' },
+  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card'], label: 'Oman', shortLabel: 'Oman' },
+  Other:    { zone: 'OTHER', countryCodes: [], currency: 'USD', symbol: '$', bookWas: 44, bookNow: 34, deliveryFee: null, methods: ['contact'], label: 'Other', shortLabel: 'Other' }
 };
 
 // Default region shown for each zone when we haven't (or can't) resolve a
 // specific country — e.g. visitor picks "GCC" manually with no IP match.
-const ZONE_DEFAULT_REGION = { EU: 'Germany', GCC: 'UAE', SY: 'Syria', OTHER: 'Other' };
-const ZONE_LABELS = { EU: 'Europe', GCC: 'GCC', SY: 'Syria', OTHER: 'Other' };
 
 (function () {
   const REGION_KEY = 'hikaya_region';
-  const ZONE_OVERRIDE_KEY = 'hikaya_zone_override';
+  function getStoredRegionKey() {
+    return localStorage.getItem(REGION_KEY);
+  }
+  function setStoredRegionKey(key) {
+    localStorage.setItem(REGION_KEY, key);
+  }
 
   function regionKeyForCountryCode(code) {
     code = (code || '').toUpperCase();
@@ -36,19 +39,6 @@ const ZONE_LABELS = { EU: 'Europe', GCC: 'GCC', SY: 'Syria', OTHER: 'Other' };
       if (window.HIKAYA_REGIONS[key].countryCodes.includes(code)) return key;
     }
     return 'Other';
-  }
-
-  function getStoredRegionKey() {
-    return localStorage.getItem(REGION_KEY);
-  }
-  function setStoredRegionKey(key) {
-    localStorage.setItem(REGION_KEY, key);
-  }
-  function getZoneOverride() {
-    return localStorage.getItem(ZONE_OVERRIDE_KEY);
-  }
-  function setZoneOverride(zone) {
-    localStorage.setItem(ZONE_OVERRIDE_KEY, zone);
   }
 
   function currentRegionKey() {
@@ -91,9 +81,8 @@ const ZONE_LABELS = { EU: 'Europe', GCC: 'GCC', SY: 'Syria', OTHER: 'Other' };
     }
   }
 
-  function pickZone(zone) {
-    setZoneOverride(zone);
-    setStoredRegionKey(ZONE_DEFAULT_REGION[zone]);
+  function pickRegion(regionKey) {
+    setStoredRegionKey(regionKey);
     applyToPage();
   }
 
@@ -104,10 +93,19 @@ const ZONE_LABELS = { EU: 'Europe', GCC: 'GCC', SY: 'Syria', OTHER: 'Other' };
       el.innerHTML = priceHtml(region);
     });
     document.querySelectorAll('.zone-pill-label').forEach(el => {
-      el.textContent = ZONE_LABELS[currentZone()];
+      el.textContent = region.shortLabel || region.label;
     });
     document.dispatchEvent(new CustomEvent('hikaya:regionchange', { detail: { regionKey: currentRegionKey(), region } }));
   }
+
+  // Grouped so the list reads like "Europe: Germany" / "GCC: UAE, Saudi..."
+  // rather than one flat alphabetical list.
+  const ZONE_GROUPS = [
+    { zone: 'EU', label: 'Europe', regions: ['Germany'] },
+    { zone: 'GCC', label: 'GCC', regions: ['UAE', 'Saudi', 'Qatar', 'Kuwait', 'Bahrain', 'Oman'] },
+    { zone: 'SY', label: 'Syria', regions: ['Syria'] },
+    { zone: 'OTHER', label: 'Other', regions: ['Other'] },
+  ];
 
   function buildSwitcher() {
     document.querySelectorAll('.zone-pill').forEach(pill => {
@@ -117,27 +115,36 @@ const ZONE_LABELS = { EU: 'Europe', GCC: 'GCC', SY: 'Syria', OTHER: 'Other' };
 
       const label = document.createElement('span');
       label.className = 'zone-pill-label';
-      label.textContent = ZONE_LABELS[currentZone()];
+      label.textContent = currentRegion().shortLabel || currentRegion().label;
       pill.textContent = '';
       pill.appendChild(label);
 
       const menu = document.createElement('div');
       menu.className = 'zone-menu';
-      menu.style.cssText = 'display:none; position:absolute; top:calc(100% + 8px); right:0; background:#fff; border:1px solid var(--line, #ddd); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); overflow:hidden; z-index:100; min-width:150px;';
-      ['EU', 'GCC', 'SY'].forEach(zone => {
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.textContent = ZONE_LABELS[zone];
-        item.style.cssText = 'display:block; width:100%; text-align:left; padding:10px 16px; border:none; background:#fff; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink,#222);';
-        item.addEventListener('mouseenter', () => item.style.background = 'var(--bg-soft,#f7f7f7)');
-        item.addEventListener('mouseleave', () => item.style.background = '#fff');
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          pickZone(zone);
-          menu.style.display = 'none';
+      menu.style.cssText = 'display:none; position:absolute; top:calc(100% + 8px); right:0; background:#fff; border:1px solid var(--line, #ddd); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); overflow:hidden; z-index:100; min-width:200px; max-height:340px; overflow-y:auto;';
+
+      ZONE_GROUPS.forEach(group => {
+        const heading = document.createElement('div');
+        heading.textContent = group.label;
+        heading.style.cssText = 'padding:10px 16px 4px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#999;';
+        menu.appendChild(heading);
+
+        group.regions.forEach(regionKey => {
+          const region = window.HIKAYA_REGIONS[regionKey];
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.textContent = region.label;
+          item.style.cssText = 'display:block; width:100%; text-align:left; padding:9px 16px; border:none; background:#fff; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink,#222);';
+          item.addEventListener('mouseenter', () => item.style.background = 'var(--bg-soft,#f7f7f7)');
+          item.addEventListener('mouseleave', () => item.style.background = '#fff');
+          item.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            pickRegion(regionKey);
+            menu.style.display = 'none';
+          });
+          menu.appendChild(item);
         });
-        menu.appendChild(item);
       });
       pill.appendChild(menu);
 
