@@ -44,6 +44,7 @@
 
   header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; padding: 18px 0; }
   header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
   .wordmark { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
   .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
   header.site a.exit { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
@@ -194,7 +195,11 @@
 <header class="site">
   <div class="wrap inner">
     <div class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></div>
-    <a class="lang-pill" href="#" data-i18n-skip style="margin-right:8px;">EN</a><a class="zone-pill" href="#" style="margin-right:8px;">Europe</a><a class="exit" href="index.html">Save &amp; exit</a>
+    <div class="header-right">
+      <a class="lang-pill" href="#" data-i18n-skip>EN</a>
+      <a class="zone-pill" href="#">Europe</a>
+      <a class="exit" href="index.html">Save &amp; exit</a>
+    </div>
   </div>
 </header>
 
