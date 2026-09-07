@@ -17,10 +17,11 @@ window.HIKAYA_REGIONS = {
   Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card'], label: 'Qatar', shortLabel: 'Qatar' },
   Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.1, methods: ['card'], label: 'Kuwait', shortLabel: 'Kuwait' },
   Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 2.6, methods: ['card'], label: 'Bahrain', shortLabel: 'Bahrain' },
-  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card'], label: 'Oman', shortLabel: 'Oman' },
-  Other:    { zone: 'OTHER', countryCodes: [], currency: 'USD', symbol: '$', bookWas: 44, bookNow: 34, deliveryFee: null, methods: ['contact'], label: 'Other', shortLabel: 'Other' }
+  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card'], label: 'Oman', shortLabel: 'Oman' }
 };
-
+// Every visitor falls into one of exactly three markets: Europe, GCC, or
+// Syria. Anyone whose IP doesn't match a GCC country or Syria defaults to
+// Europe/EUR pricing — there is no separate "Other" bucket.
 // Default region shown for each zone when we haven't (or can't) resolve a
 // specific country — e.g. visitor picks "GCC" manually with no IP match.
 
@@ -38,7 +39,7 @@ window.HIKAYA_REGIONS = {
     for (const key in window.HIKAYA_REGIONS) {
       if (window.HIKAYA_REGIONS[key].countryCodes.includes(code)) return key;
     }
-    return 'Other';
+    return 'Germany';
   }
 
   function currentRegionKey() {
@@ -104,7 +105,6 @@ window.HIKAYA_REGIONS = {
     { zone: 'EU', label: 'Europe', regions: ['Germany'] },
     { zone: 'GCC', label: 'GCC', regions: ['UAE', 'Saudi', 'Qatar', 'Kuwait', 'Bahrain', 'Oman'] },
     { zone: 'SY', label: 'Syria', regions: ['Syria'] },
-    { zone: 'OTHER', label: 'Other', regions: ['Other'] },
   ];
 
   function buildSwitcher() {
