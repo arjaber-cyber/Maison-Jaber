@@ -160,6 +160,21 @@
   .summary-book .cover-mini.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
   .summary-book .cover-mini.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
   .summary-book .remove-item { font-size: 11px; color: var(--ink-soft); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; margin-left: 8px; }
+
+  .promo-box { display: flex; gap: 8px; margin: 4px 0 6px; }
+  .promo-box input {
+    flex: 1; padding: 10px 12px; font-size: 13px; border: 1.5px solid var(--line-soft); border-radius: 10px;
+    font-family: 'Inter', sans-serif; background: var(--bg-soft);
+  }
+  .promo-box input:focus { outline: none; border-color: var(--gold); background: #fff; }
+  .promo-box button {
+    padding: 10px 16px; border-radius: 10px; border: none; background: var(--coral-deep); color: #fff;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .promo-box button:hover { background: var(--coral); }
+  .promo-message { font-size: 12px; font-weight: 600; margin-bottom: 10px; min-height: 16px; }
+  .promo-message.success { color: #3d5a26; }
+  .promo-message.error { color: var(--coral-deep); }
   .summary-book h3 { font-size: 15px; margin-bottom: 4px; }
   .summary-book p { font-size: 12px; color: var(--text-on-light-soft); margin: 0; }
   .summary-book a.edit { font-size: 12px; color: var(--gold); text-decoration: underline; }
@@ -299,7 +314,15 @@
   <div>
     <div class="summary-card">
       <div id="summary-cart-items"><!-- populated from cart.js --></div>
+
+      <div class="promo-box">
+        <input type="text" id="promo-code-input" placeholder="Discount code" data-i18n-placeholder="checkout.promo_placeholder" />
+        <button type="button" id="promo-apply-btn" data-i18n="checkout.apply">Apply</button>
+      </div>
+      <div class="promo-message" id="promo-message"></div>
+
       <div class="price-row" id="bundle-discount-row" style="display:none;"><span data-i18n="checkout.bundle_discount">Bundle discount</span><span class="note" id="bundle-discount-note"></span></div>
+      <div class="price-row" id="promo-discount-row" style="display:none;"><span data-i18n="checkout.promo_discount">Discount code</span><span class="note" id="promo-discount-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
     </div>
@@ -427,6 +450,62 @@
 
   // ---------- Pricing ----------
   const THEME_ITEM_LABEL = { courage: 'story1_title', adventure: 'story2_title', lullaby: 'story3_title' };
+  let appliedPromo = null;
+
+  document.getElementById('promo-apply-btn').addEventListener('click', async () => {
+    const input = document.getElementById('promo-code-input');
+    const msg = document.getElementById('promo-message');
+    const code = input.value.trim();
+    if (!code) return;
+
+    msg.className = 'promo-message';
+    msg.textContent = t('checkout.promo_checking', 'Checking…');
+
+    try {
+      const res = await fetch('/.netlify/functions/validate-discount-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        appliedPromo = null;
+        msg.className = 'promo-message error';
+        msg.textContent = data.error || t('checkout.promo_invalid', "That code isn't valid.");
+      } else {
+        appliedPromo = { code: code.toUpperCase(), type: data.type, value: data.value };
+        msg.className = 'promo-message success';
+        msg.textContent = t('checkout.promo_applied', 'Code applied!');
+        input.disabled = true;
+        document.getElementById('promo-apply-btn').disabled = true;
+      }
+    } catch {
+      appliedPromo = null;
+      msg.className = 'promo-message error';
+      msg.textContent = t('checkout.err_generic', 'Something went wrong. Please try again.');
+    }
+    renderCartSummary();
+  });
+
+  function computeFinalPricing(region) {
+    const pricing = window.hikayaCart.computeCartPricing(region);
+    let deliveryFee = pricing.tier.freeDelivery ? 0 : pricing.deliveryFee;
+    let booksTotal = pricing.booksTotal;
+    let promoApplied = null;
+    if (appliedPromo) {
+      if (appliedPromo.type === 'free_shipping') {
+        deliveryFee = 0;
+        promoApplied = { code: appliedPromo.code, label: t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase() };
+      } else if (appliedPromo.type === 'percent') {
+        booksTotal -= booksTotal * (appliedPromo.value / 100);
+        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}%` };
+      } else if (appliedPromo.type === 'fixed') {
+        booksTotal = Math.max(0, booksTotal - appliedPromo.value);
+        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}` };
+      }
+    }
+    return { ...pricing, deliveryFee, booksTotal, total: booksTotal + deliveryFee, promoApplied };
+  }
 
   function renderCartSummary() {
     const region = REGIONS[currentRegionKey];
@@ -437,6 +516,7 @@
     if (cart.length === 0) {
       itemsWrap.innerHTML = `<p style="font-size:13px; color:var(--text-on-light-soft); text-align:center; padding:10px 0;">${t('checkout.cart_empty', 'Your cart is empty.')} <a href="personalize.html" style="text-decoration:underline;">${t('checkout.cart_empty_cta', 'Create a book')}</a></p>`;
       document.getElementById('bundle-discount-row').style.display = 'none';
+      document.getElementById('promo-discount-row').style.display = 'none';
       document.getElementById('price-delivery').textContent = '—';
       document.getElementById('price-total').textContent = '—';
       if (placeOrderBtnEl) placeOrderBtnEl.disabled = true;
@@ -462,18 +542,26 @@
     });
 
     const fmt = (n) => region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
-    const pricing = window.hikayaCart.computeCartPricing(region);
+    const final = computeFinalPricing(region);
+
     const discountRow = document.getElementById('bundle-discount-row');
-    if (pricing.tier.discountPct > 0) {
+    if (final.tier.discountPct > 0) {
       discountRow.style.display = 'flex';
-      document.getElementById('bundle-discount-note').textContent = `-${pricing.tier.discountPct}%`;
+      document.getElementById('bundle-discount-note').textContent = `-${final.tier.discountPct}%`;
     } else {
       discountRow.style.display = 'none';
     }
-    document.getElementById('price-delivery').textContent = pricing.tier.freeDelivery
-      ? t('checkout.free', 'Free')
-      : fmt(pricing.deliveryFee);
-    document.getElementById('price-total').textContent = fmt(pricing.total);
+
+    const promoRow = document.getElementById('promo-discount-row');
+    if (final.promoApplied) {
+      promoRow.style.display = 'flex';
+      document.getElementById('promo-discount-note').textContent = final.promoApplied.label;
+    } else {
+      promoRow.style.display = 'none';
+    }
+
+    document.getElementById('price-delivery').textContent = final.deliveryFee === 0 ? t('checkout.free', 'Free') : fmt(final.deliveryFee);
+    document.getElementById('price-total').textContent = fmt(final.total);
     if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
   }
 
@@ -716,13 +804,14 @@
 
     const region = REGIONS[currentRegionKey];
     const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
-    const pricing = window.hikayaCart ? window.hikayaCart.computeCartPricing(region) : null;
 
     if (cart.length === 0) {
       errorBox.textContent = t('checkout.cart_empty', 'Your cart is empty.');
       errorBox.style.display = 'block';
       return;
     }
+
+    const finalPricing = computeFinalPricing(region);
 
     const order = {
       fullName: document.getElementById('full-name').value,
@@ -735,8 +824,9 @@
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
       items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication })),
-      bundleDiscountPct: pricing.tier.discountPct,
-      amount: pricing.total,
+      bundleDiscountPct: finalPricing.tier.discountPct,
+      promoCode: appliedPromo ? appliedPromo.code : null,
+      amount: finalPricing.total,
       currency: region.currency
     };
 
