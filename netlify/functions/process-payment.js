@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body.' }) };
   }
 
-  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency, isGift, giftMessage, items, bundleDiscountPct } = order;
+  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency, isGift, giftMessage, items, bundleDiscountPct, promoCode } = order;
   if (!fullName || !email || !address || !city || !country || !phone || !paymentMethod) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in all required delivery details.' }) };
   }
@@ -74,7 +74,7 @@ exports.handler = async (event) => {
           full_name: fullName, email: userEmail || email, address, city, country, phone,
           payment_method: 'cod', amount, currency: currency || 'EUR',
           is_gift: !!isGift, gift_message: giftMessage || null,
-          items: JSON.stringify(items), bundle_discount_pct: bundleDiscountPct || 0,
+          items: JSON.stringify(items), bundle_discount_pct: bundleDiscountPct || 0, promo_code: promoCode || null,
           payment_status: 'pending_cod', order_status: 'received',
           created_at: new Date().toISOString()
         })
