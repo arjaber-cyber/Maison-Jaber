@@ -842,6 +842,33 @@
       return;
     }
 
+    if (selectedPaymentMethod === 'card') {
+      const cardName = document.getElementById('card-name')?.value.trim();
+      const cardNumber = (document.getElementById('card-number')?.value || '').replace(/\s/g, '');
+      const cardExpiry = document.getElementById('card-expiry')?.value.trim();
+      const cardCvc = document.getElementById('card-cvc')?.value.trim();
+      if (!cardName || !cardNumber || !cardExpiry || !cardCvc) {
+        errorBox.textContent = t('checkout.err_card_required', 'Please fill in all card details.');
+        errorBox.style.display = 'block';
+        return;
+      }
+      if (cardNumber.length < 13 || cardNumber.length > 16 || !/^\d+$/.test(cardNumber)) {
+        errorBox.textContent = t('checkout.err_card_number', 'Please enter a valid card number.');
+        errorBox.style.display = 'block';
+        return;
+      }
+      if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) {
+        errorBox.textContent = t('checkout.err_card_expiry', 'Please enter expiry as MM/YY.');
+        errorBox.style.display = 'block';
+        return;
+      }
+      if (!/^\d{3,4}$/.test(cardCvc)) {
+        errorBox.textContent = t('checkout.err_card_cvc', 'Please enter a valid CVC.');
+        errorBox.style.display = 'block';
+        return;
+      }
+    }
+
     placeOrderBtn.disabled = true;
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
