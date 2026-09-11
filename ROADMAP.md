@@ -4,41 +4,41 @@ Living backlog of what's left to build. Update this file as items get done or ne
 
 ---
 
-## Requested (2026-09-07)
+## ✅ Done (2026-09-11)
+
+- **Order confirmation emails** — `_email.js` (Resend), fires on successful COD orders, lists every book in the order
+- **Abandoned-order recovery** — `track-abandoned-cart.js` + scheduled `send-abandoned-reminders.js` (runs every 6h), tracks from Checkout's email field
+- **Analytics** — GA4 + Meta Pixel (`analytics.js`) on all 12 pages; `add_to_cart`, `begin_checkout`, `purchase` events wired up. **Still needs your real GA Measurement ID and Pixel ID swapped into the placeholders in analytics.js**
+- **Shopping cart + bundle pricing** — Personalize adds books to a cart (`cart.js`); Checkout shows every item with remove buttons and auto-applies the bundle discount (1 book = full price, 2 = 10% off + free delivery, 3+ = 20% off + free delivery — **placeholder percentages, confirm real numbers**)
+
+## Still open
 
 ### 1. Discount codes at checkout
-- Input field + "Apply" button on checkout, shows discount applied in the price summary
-- Needs a small backend: a Supabase table of codes (code, type: %/fixed/free-shipping, usage limit, expiry, region restriction) + a Netlify function to validate a code and return the discount
-- Decide: single-use per customer, or unlimited? Stackable with bundle pricing (#4) or not?
+- Input field + "Apply" button, needs a Supabase table of codes (type, usage limit, expiry, region) + a validation function
+- Decide: stackable with bundle pricing, or does a promo code override the bundle discount?
 
-### 2. Audit payment linkage end-to-end
-- Trace the full path once more for every method (Card, Apple Pay, Google Pay, Tabby, Tamara, Sham Cash, COD) across every region, confirming: order data reaches `process-payment.js` correctly, error states are honest, and nothing silently fails
-- Should happen again after any checkout changes, not just once
+### 2. Payment linkage audit
+- Re-verify each method (Card, Apple Pay, Google Pay, Tabby, Tamara, Sham Cash, COD) across every region now that the cart sends `items[]` instead of one book — process-payment.js was updated for this but deserves a full re-check once real gateway credentials exist
 
-### 3. "My Dashboard"
-- Need to confirm scope: the **admin dashboard** (owner-facing, stats + order pipeline — already built) vs. a **customer-facing** "track my order" dashboard (doesn't exist yet)
-- If customer-facing: needs order lookup by email/account, status display reusing the same pipeline stages as admin
+### 3. "My Dashboard" — scope still unconfirmed
+- Admin dashboard (owner) already exists, but now reads Netlify Forms submissions that only capture the *last* book added to a cart, not the full multi-item order — needs reconnecting to read from Supabase `orders` (where the real cart/items data now lands) instead
+- Customer-facing "track my order" dashboard doesn't exist at all yet
 
-### 4. Bundle pricing (buy 2 = cheaper + free shipping, buy 3 = cheaper still)
-- **Architectural note:** the site currently only supports ordering ONE book per checkout. Bundle pricing needs a real multi-item cart — this is a bigger change than a pricing tweak, touching Personalize, the order summary, and Checkout
-- Worth deciding the exact tiers/logic before building (e.g., 1 book = full price, 2 = X% off + free shipping, 3+ = Y% off + free shipping)
+### 4. Real payment + BNPL merchant credentials
+- Nothing charges real money yet: Telr/PayTabs (cards + wallets), Tabby, Tamara, and Sham Cash each need their own separate merchant account + API keys in Netlify env vars
 
 ---
 
-## Also worth having (Claude's additions)
+## Also worth having
 
 **High-value:**
-- Order confirmation email to the customer after purchase (currently nothing is sent)
-- Abandoned-order recovery — if someone starts Personalize but never finishes, a follow-up email
-- Real payment credentials — nothing above works for real money until Telr/PayTabs (+ Tabby/Tamara/Sham Cash separately) merchant accounts exist
-- Analytics — Google Analytics / Meta Pixel, so you can see where visitors drop off and measure ad spend
+- SEO basics: sitemap.xml, robots.txt, meta descriptions, social share previews
 
 **Medium-value:**
-- Referral / "gift a friend" program — natural fit for a gifting product
-- Real customer reviews with photos, once you have real orders
-- SEO basics: sitemap.xml, robots.txt, meta descriptions, social share previews
+- Referral / "gift a friend" program
+- Real customer reviews with photos, once real orders exist
 
 **Lower priority, good to know about:**
 - Real story illustrations (still placeholder color gradients)
 - Legal pages: privacy policy, terms, refund policy
-- Supabase `order_status` table still blocked by an old migration approval issue — needed for the admin dashboard to persist pipeline stage changes
+- Supabase `order_status` table still blocked by an old migration approval issue — needed for admin dashboard pipeline persistence
