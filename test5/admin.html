@@ -53,6 +53,20 @@
   .req-card {
     background: #fff; border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px;
   }
+
+  .order-card { background: #fff; border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px; }
+  .order-top { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+  .order-customer { font-weight: 800; font-size: 15px; }
+  .order-method { font-size: 10.5px; font-weight: 800; color: var(--coral-deep); background: var(--bg-soft); padding: 2px 8px; border-radius: 100px; margin-left: 6px; }
+  .order-meta { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+  .order-amount { text-align: right; }
+  .order-total { font-weight: 800; font-size: 16px; }
+  .order-date { font-size: 11.5px; color: var(--ink-soft); }
+  .order-items { border-top: 1px solid var(--line-soft); padding-top: 10px; margin-top: 4px; }
+  .order-item-row { font-size: 13px; padding: 3px 0; }
+  .order-tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--coral-deep); background: var(--bg-soft); padding: 3px 9px; border-radius: 100px; margin: 8px 6px 0 0; }
+  .order-gift { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin-top: 8px; }
+  .order-status { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
   .req-top { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; margin-bottom: 14px; }
   @media (max-width: 700px) { .req-top { grid-template-columns: 1fr; } }
   .req-photos { display: flex; gap: 6px; }
@@ -95,7 +109,18 @@
 </header>
 
 <div class="wrap page-head">
-  <h1 data-i18n="admin.incoming_requests">Incoming requests</h1>
+  <h1 data-i18n="admin.orders_title">Orders</h1>
+  <p id="orders-sub" data-i18n="admin.loading">Loading...</p>
+</div>
+
+<div class="wrap" id="orders-stats-row" style="display:none; margin-bottom: 24px;"></div>
+
+<div class="wrap" id="orders-content" style="margin-bottom: 48px;">
+  <div class="state-box" id="orders-state-box" data-i18n="admin.checking_access">Checking your access…</div>
+</div>
+
+<div class="wrap page-head">
+  <h1 data-i18n="admin.incoming_requests">Personalize Activity</h1>
   <p id="page-sub" data-i18n="admin.loading">Loading...</p>
 </div>
 
@@ -116,6 +141,7 @@
 
   const stateBox = document.getElementById('state-box');
   const pageSub = document.getElementById('page-sub');
+  let accessToken = null;
 
   const STAGES = [
     { key: 'received', label: window.hikayaT('admin.stage_received') },
@@ -196,7 +222,93 @@
     window.location.href = 'login.html';
   } else {
     accessToken = session.access_token;
+    loadOrders(accessToken);
     loadSubmissions(accessToken);
+  }
+
+  async function loadOrders(token) {
+    const ordersStateBox = document.getElementById('orders-state-box');
+    const ordersSub = document.getElementById('orders-sub');
+    try {
+      const res = await fetch('/.netlify/functions/get-orders', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        ordersStateBox.textContent = data.error || window.hikayaT('admin.orders_err_generic');
+        ordersSub.textContent = '';
+        return;
+      }
+
+      const orders = data.orders || [];
+      ordersSub.textContent = `${orders.length} ${window.hikayaT('admin.orders_received')}`;
+
+      if (!data.tableReady) {
+        ordersStateBox.textContent = window.hikayaT('admin.orders_table_not_ready');
+        return;
+      }
+      if (orders.length === 0) {
+        ordersStateBox.textContent = window.hikayaT('admin.no_orders');
+        return;
+      }
+
+      renderOrderStats(orders);
+      ordersStateBox.remove();
+
+      const ordersContent = document.getElementById('orders-content');
+      orders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = 'order-card';
+        const itemsHtml = (order.items || []).map(item => `
+          <div class="order-item-row">
+            <strong>${item.story || '—'}</strong>
+            ${item.childName ? ' · ' + item.childName : ''}
+            ${item.ageEdition ? ' · Ages ' + item.ageEdition : ''}
+          </div>
+        `).join('');
+        card.innerHTML = `
+          <div class="order-top">
+            <div>
+              <div class="order-customer">${order.full_name || '—'} <span class="order-method">${(order.payment_method || '').toUpperCase()}</span></div>
+              <div class="order-meta">${order.email || ''} ${order.phone ? '· ' + order.phone : ''}</div>
+              <div class="order-meta">${order.address || ''}, ${order.city || ''}, ${order.country || ''}</div>
+            </div>
+            <div class="order-amount">
+              <div class="order-total">${order.amount} ${order.currency || ''}</div>
+              <div class="order-date">${order.created_at ? new Date(order.created_at).toLocaleDateString() : ''}</div>
+            </div>
+          </div>
+          <div class="order-items">${itemsHtml}</div>
+          ${order.bundle_discount_pct ? `<div class="order-tag">${window.hikayaT('admin.bundle_tag')}: -${order.bundle_discount_pct}%</div>` : ''}
+          ${order.promo_code ? `<div class="order-tag">${window.hikayaT('admin.promo_tag')}: ${order.promo_code}</div>` : ''}
+          ${order.is_gift ? `<div class="order-gift">🎁 ${order.gift_message || ''}</div>` : ''}
+          <div class="order-status">${window.hikayaT('admin.order_status')}: <strong>${order.order_status || 'received'}</strong></div>
+        `;
+        ordersContent.appendChild(card);
+      });
+    } catch (err) {
+      console.error('loadOrders error:', err);
+      ordersStateBox.textContent = window.hikayaT('admin.orders_err_generic');
+    }
+  }
+
+  function renderOrderStats(orders) {
+    const statsRow = document.getElementById('orders-stats-row');
+    const now = new Date();
+    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+    const total = orders.length;
+    const thisWeek = orders.filter(o => o.created_at && new Date(o.created_at) >= weekAgo).length;
+    const revenue = orders.reduce((sum, o) => sum + (parseFloat(o.amount) || 0), 0);
+    const giftCount = orders.filter(o => o.is_gift).length;
+
+    statsRow.style.display = 'grid';
+    statsRow.className = 'stats-grid';
+    statsRow.innerHTML = `
+      <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total Orders</div></div>
+      <div class="stat-card"><div class="num">${thisWeek}</div><div class="lbl">This Week</div></div>
+      <div class="stat-card"><div class="num">${revenue.toFixed(0)}</div><div class="lbl">Revenue (mixed currencies)</div></div>
+      <div class="stat-card"><div class="num">${giftCount}</div><div class="lbl">Marked as Gift</div></div>
+    `;
   }
 
   async function loadSubmissions(token) {
