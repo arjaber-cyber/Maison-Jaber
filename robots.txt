@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /test5/admin.html
+Disallow: /test5/account.html
+Disallow: /test5/checkout.html
+Disallow: /test5/personalize.html
+Disallow: /test5/login.html
+Disallow: /test/
+Disallow: /test2/
+Disallow: /test3/
+Disallow: /test4/
+
+Sitemap: https://maison-jaber.com/sitemap.xml
