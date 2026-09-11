@@ -1,4 +1,7 @@
 // netlify/functions/process-payment.js
+
+const { sendEmail, emailShell } = require('./_email');
+
 //
 // Handles order submission at checkout. Behavior depends on payment method:
 //
@@ -33,9 +36,12 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request body.' }) };
   }
 
-  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency, isGift, giftMessage } = order;
+  const { fullName, email, address, city, country, phone, paymentMethod, amount, currency, isGift, giftMessage, items, bundleDiscountPct } = order;
   if (!fullName || !email || !address || !city || !country || !phone || !paymentMethod) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in all required delivery details.' }) };
+  }
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Your cart is empty.' }) };
   }
 
   // Optional auth (guest checkout is allowed, so this is best-effort only)
@@ -68,6 +74,7 @@ exports.handler = async (event) => {
           full_name: fullName, email: userEmail || email, address, city, country, phone,
           payment_method: 'cod', amount, currency: currency || 'EUR',
           is_gift: !!isGift, gift_message: giftMessage || null,
+          items: JSON.stringify(items), bundle_discount_pct: bundleDiscountPct || 0,
           payment_status: 'pending_cod', order_status: 'received',
           created_at: new Date().toISOString()
         })
@@ -78,9 +85,31 @@ exports.handler = async (event) => {
       if (!saveRes.ok) {
         console.warn('orders table insert failed (may not exist yet):', await saveRes.text());
       }
+
+      const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
+      const itemsListHtml = items.map(i => `<li>${i.story}${i.childName ? ' for ' + i.childName : ''}${i.ageEdition ? ' (Ages ' + i.ageEdition + ')' : ''}</li>`).join('');
+      await sendEmail({
+        to: userEmail || email,
+        subject: `Your Hikaya order is confirmed — ${orderNumber}`,
+        html: emailShell(`
+          <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">Thank you, ${fullName.split(' ')[0]}!</h2>
+          <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Your Hikaya storybook order is confirmed:</p>
+          <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">
+            ${itemsListHtml}
+          </ul>
+          <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">
+            It ships to <strong>${address}, ${city}</strong>. You pay <strong>${amount} ${currency || 'EUR'}</strong> in cash when it arrives.
+          </p>
+          <div style="background:#F3E8D8; border-radius:10px; padding:14px 16px; margin:18px 0; font-size:13px;">
+            <strong>Order reference:</strong> ${orderNumber}
+          </div>
+          <p style="font-size:13px; color:#7d6a5a;">Questions? Just reply to this email.</p>
+        `)
+      });
+
       return {
         statusCode: 200,
-        body: JSON.stringify({ success: true, paymentStatus: 'cash_on_delivery', message: 'Order confirmed — pay by cash when it arrives.' })
+        body: JSON.stringify({ success: true, paymentStatus: 'cash_on_delivery', message: 'Order confirmed — pay by cash when it arrives.', orderNumber })
       };
     } catch (err) {
       console.error('process-payment (COD) error:', err);

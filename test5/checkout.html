@@ -151,11 +151,15 @@
     background: #fff; border: 1px solid rgba(184,149,75,0.25); border-radius: var(--radius); padding: 24px;
     position: sticky; top: 24px;
   }
-  .summary-book { display: flex; gap: 14px; margin-bottom: 20px; }
+  .summary-book { display: flex; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line-soft); }
+  .summary-book:last-child { border-bottom: none; }
   .summary-book .cover-mini {
     width: 54px; height: 72px; border-radius: 12px; flex-shrink: 0;
     background: linear-gradient(165deg, #D98868 0%, #B5563B 100%);
   }
+  .summary-book .cover-mini.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
+  .summary-book .cover-mini.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
+  .summary-book .remove-item { font-size: 11px; color: var(--ink-soft); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; margin-left: 8px; }
   .summary-book h3 { font-size: 15px; margin-bottom: 4px; }
   .summary-book p { font-size: 12px; color: var(--text-on-light-soft); margin: 0; }
   .summary-book a.edit { font-size: 12px; color: var(--gold); text-decoration: underline; }
@@ -173,7 +177,9 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -292,15 +298,8 @@
 
   <div>
     <div class="summary-card">
-      <div class="summary-book">
-        <div class="cover-mini"></div>
-        <div>
-          <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
-          <p data-i18n-skip>For Layla &middot; Ages 5&ndash;7 &middot; Hardcover</p>
-          <a class="edit" href="personalize.html" data-i18n="checkout.edit">Edit</a>
-        </div>
-      </div>
-      <div class="price-row" id="price-book-row"><span data-i18n="checkout.book">Book</span><span class="note">&euro;35.00</span></div>
+      <div id="summary-cart-items"><!-- populated from cart.js --></div>
+      <div class="price-row" id="bundle-discount-row" style="display:none;"><span data-i18n="checkout.bundle_discount">Bundle discount</span><span class="note" id="bundle-discount-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
     </div>
@@ -427,25 +426,59 @@
   }
 
   // ---------- Pricing ----------
-  function updatePricing() {
-    const region = REGIONS[currentRegionKey];
-    const priceBookRow = document.getElementById('price-book-row');
-    const priceDelivery = document.getElementById('price-delivery');
-    const priceTotal = document.getElementById('price-total');
+  const THEME_ITEM_LABEL = { courage: 'story1_title', adventure: 'story2_title', lullaby: 'story3_title' };
 
-    if (region.deliveryFee === null) {
-      priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">—</span>`;
-      priceDelivery.textContent = t('checkout.confirmed_region', 'Confirmed by region');
-      priceTotal.textContent = t('checkout.confirmed_checkout', 'Confirmed at checkout');
+  function renderCartSummary() {
+    const region = REGIONS[currentRegionKey];
+    const itemsWrap = document.getElementById('summary-cart-items');
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    const placeOrderBtnEl = document.getElementById('place-order');
+
+    if (cart.length === 0) {
+      itemsWrap.innerHTML = `<p style="font-size:13px; color:var(--text-on-light-soft); text-align:center; padding:10px 0;">${t('checkout.cart_empty', 'Your cart is empty.')} <a href="personalize.html" style="text-decoration:underline;">${t('checkout.cart_empty_cta', 'Create a book')}</a></p>`;
+      document.getElementById('bundle-discount-row').style.display = 'none';
+      document.getElementById('price-delivery').textContent = '—';
+      document.getElementById('price-total').textContent = '—';
+      if (placeOrderBtnEl) placeOrderBtnEl.disabled = true;
       return;
     }
+
+    itemsWrap.innerHTML = cart.map(item => `
+      <div class="summary-book">
+        <div class="cover-mini ${item.theme}"></div>
+        <div>
+          <h3>${item.story}</h3>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</p>
+          <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
+        </div>
+      </div>
+    `).join('');
+
+    itemsWrap.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.hikayaCart.removeFromCart(btn.dataset.id);
+        renderCartSummary();
+      });
+    });
+
     const fmt = (n) => region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
-    const bookHtml = region.bookWas > region.bookNow
-      ? `<span style="text-decoration:line-through; opacity:0.55; margin-right:6px;">${fmt(region.bookWas)}</span><strong style="color:var(--coral-deep);">${fmt(region.bookNow)}</strong>`
-      : `<strong>${fmt(region.bookNow)}</strong>`;
-    priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">${bookHtml}</span>`;
-    priceDelivery.textContent = region.deliveryFee === 0 ? t('checkout.cod_fee_free', 'Free') : fmt(region.deliveryFee);
-    priceTotal.textContent = fmt(region.bookNow + region.deliveryFee);
+    const pricing = window.hikayaCart.computeCartPricing(region);
+    const discountRow = document.getElementById('bundle-discount-row');
+    if (pricing.tier.discountPct > 0) {
+      discountRow.style.display = 'flex';
+      document.getElementById('bundle-discount-note').textContent = `-${pricing.tier.discountPct}%`;
+    } else {
+      discountRow.style.display = 'none';
+    }
+    document.getElementById('price-delivery').textContent = pricing.tier.freeDelivery
+      ? t('checkout.free', 'Free')
+      : fmt(pricing.deliveryFee);
+    document.getElementById('price-total').textContent = fmt(pricing.total);
+    if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
+  }
+
+  function updatePricing() {
+    renderCartSummary();
   }
 
   // ---------- Payment section ----------
@@ -580,6 +613,26 @@
   renderPaymentSection();
   detectLocation();
 
+  // ---------- Abandoned cart tracking ----------
+  // Fires once someone types a plausible email at checkout but doesn't
+  // complete the order, so we can follow up later. Never blocks the page.
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  document.getElementById('email').addEventListener('blur', (e) => {
+    const email = e.target.value.trim();
+    if (!EMAIL_RE.test(email)) return;
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    fetch('/.netlify/functions/track-abandoned-cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        childName: cart[0]?.childName || null,
+        story: cart[0]?.story || null,
+        ageEdition: cart[0]?.ageEdition || null,
+      }),
+    }).catch(() => { /* best-effort only */ });
+  });
+
   // ---------- Live address map ----------
   const mapFrame = document.getElementById('address-map');
   const addressInput = document.getElementById('address');
@@ -662,6 +715,15 @@
     }
 
     const region = REGIONS[currentRegionKey];
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    const pricing = window.hikayaCart ? window.hikayaCart.computeCartPricing(region) : null;
+
+    if (cart.length === 0) {
+      errorBox.textContent = t('checkout.cart_empty', 'Your cart is empty.');
+      errorBox.style.display = 'block';
+      return;
+    }
+
     const order = {
       fullName: document.getElementById('full-name').value,
       email: document.getElementById('email').value,
@@ -672,7 +734,9 @@
       isGift: giftSelect.value === 'yes',
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      amount: region.bookNow + (region.deliveryFee || 0),
+      items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication })),
+      bundleDiscountPct: pricing.tier.discountPct,
+      amount: pricing.total,
       currency: region.currency
     };
 
@@ -713,6 +777,20 @@
       successBox.textContent = data.message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
+
+      if (window.hikayaTrackEvent) {
+        window.hikayaTrackEvent('purchase', {
+          value: order.amount, currency: order.currency, payment_method: order.paymentMethod,
+        });
+      }
+
+      fetch('/.netlify/functions/complete-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: order.email }),
+      }).catch(() => { /* best-effort only */ });
+
+      if (window.hikayaCart) window.hikayaCart.clearCart();
     } catch {
       errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
       errorBox.style.display = 'block';

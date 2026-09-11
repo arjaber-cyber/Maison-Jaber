@@ -148,8 +148,12 @@
   }
 
   /* Account gate + send (revealed once order form is complete) */
-  #send-block { display: none; padding: 36px 0 20px; }
-  #send-block.visible { display: block; }
+  #cart-added-block { display: none; padding: 36px 0 20px; }
+  #cart-added-block.visible { display: block; }
+  .cart-added-check {
+    width: 52px; height: 52px; border-radius: 50%; background: var(--coral); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px;
+  }
   .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
 
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
@@ -191,6 +195,8 @@
   .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/cart.js" defer></script>
 <script src="/region.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
@@ -305,42 +311,18 @@
     </div>
   </div>
 
-  <!-- ACCOUNT + SEND (revealed once the order form above is complete) -->
-  <div class="wrap" id="send-block">
-    <div class="block-inner" style="max-width:900px; margin:0 auto;">
+  <!-- ADDED TO CART (revealed once the order form above is complete and submitted) -->
+  <div class="wrap" id="cart-added-block">
+    <div class="block-inner" style="max-width:520px; margin:0 auto;">
       <div class="send-block-head">
         <button type="button" id="back-to-order-btn" class="back-link">&larr; <span data-i18n="personalize.back_to_order">Back to edit details</span></button>
-        <h2 data-i18n="personalize.send_block_title">One last step</h2>
-        <p data-i18n="personalize.send_block_sub">Sign in or continue as a guest to send your request.</p>
       </div>
-      <div class="send-card">
-        <div class="account-gate" id="account-gate">
-          <p class="note" data-i18n="personalize.gate_note">Create a free account to send your request and track your order.</p>
-          <button type="button" class="btn-oauth" id="google-btn" data-i18n="checkout.google">Continue with Google</button>
-          <button type="button" class="btn-oauth" id="facebook-btn" data-i18n="checkout.facebook">Continue with Facebook</button>
-          <div class="divider" data-i18n="login.or">or</div>
-          <input type="email" id="auth-email" placeholder="you@email.com" />
-          <button type="button" class="btn-primary" id="email-link-btn" style="width:100%; justify-content:center;" data-i18n="personalize.email_link_btn">Email Me a Sign-In Link</button>
-          <div style="text-align: center; margin-top: 16px;">
-            <button type="button" id="guest-toggle-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.guest_toggle">Prefer not to sign in? Continue as guest</button>
-          </div>
-        </div>
-
-        <div class="account-gate" id="guest-gate" style="display:none;">
-          <p class="note" data-i18n="personalize.guest_note">Continuing as a guest &mdash; you won't be able to track this order later, so we recommend creating an account instead.</p>
-          <input type="email" id="guest-email" placeholder="you@email.com (for order updates)" />
-          <div style="text-align: center; margin-top: 12px;">
-            <button type="button" id="back-to-account-btn" style="background:none; border:none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--ink-soft); font-weight: 600;" data-i18n="personalize.back_to_account">&larr; Actually, I'll create an account</button>
-          </div>
-        </div>
-
-        <div class="signed-in-bar" id="signed-in-bar" style="display:none;">
-          <span data-i18n-skip>Signed in as <span id="signed-in-email"></span></span>
-          <button type="button" id="sign-out-btn" data-i18n="account.sign_out">Sign out</button>
-        </div>
-
-        <button type="submit" class="btn-primary" id="send-btn" style="width:100%; justify-content:center; margin-top: 6px;" disabled>Sign in to Send Request</button>
-        <div class="form-status" id="form-status"></div>
+      <div class="send-card" style="text-align:center;">
+        <div class="cart-added-check">&#10003;</div>
+        <h2 data-i18n="personalize.added_to_cart_title">Added to your cart</h2>
+        <p class="note" id="cart-added-summary" data-i18n="personalize.added_to_cart_sub">This book is saved. Add another child's story, or head to checkout whenever you're ready.</p>
+        <button type="button" class="btn-secondary" id="add-another-btn" style="width:100%; justify-content:center; margin-bottom:10px;" data-i18n="personalize.add_another_btn">+ Add Another Book</button>
+        <a class="btn-primary" id="go-to-checkout-btn" href="checkout.html" style="width:100%; justify-content:center; display:flex;" data-i18n="personalize.go_to_checkout_btn">Continue to Checkout &rarr;</a>
       </div>
     </div>
   </div>
@@ -548,124 +530,111 @@
   }
   checkDetailsComplete();
 
-  continueBtn.addEventListener('click', () => {
-    document.getElementById('send-block').classList.add('visible');
-    document.getElementById('send-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  document.getElementById('back-to-order-btn').addEventListener('click', () => {
-    document.getElementById('send-block').classList.remove('visible');
-    continueBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-
   // Pre-select story if the visitor arrived from a story page (?story=...)
   // Placed last, after every element/function above it depends on already exists.
   const urlStory = new URLSearchParams(window.location.search).get('story');
   if (urlStory && STORY_THEMES[urlStory]) selectStory(urlStory);
 
-  // --- Auth ---
-  let isGuest = false;
+  // ---------- Cart flow ----------
+  function buildCartItemFromForm() {
+    return {
+      story: document.getElementById('story-input').value,
+      theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
+      childName: nameInput.value.trim(),
+      ageEdition: document.getElementById('age-input').value,
+      childAge: ageInputEl.value,
+      gender: document.getElementById('child-gender').value,
+      dedication: document.getElementById('dedication').value.trim(),
+      photoCount: photoFiles.length,
+    };
+  }
 
-  async function refreshAuthUI() {
-    const { data: { session } } = await supabase.auth.getSession();
-    const gate = document.getElementById('account-gate');
-    const guestGate = document.getElementById('guest-gate');
-    const signedInBar = document.getElementById('signed-in-bar');
-    const sendBtn = document.getElementById('send-btn');
-    if (session) {
-      isSignedIn = true;
-      isGuest = false;
-      gate.style.display = 'none';
-      guestGate.style.display = 'none';
-      signedInBar.style.display = 'flex';
-      document.getElementById('signed-in-email').textContent = session.user.email;
-      sendBtn.disabled = false;
-      sendBtn.textContent = 'Send Request';
-    } else if (isGuest) {
-      isSignedIn = false;
-      gate.style.display = 'none';
-      guestGate.style.display = 'block';
-      signedInBar.style.display = 'none';
-      sendBtn.disabled = false;
-      sendBtn.textContent = 'Send Request as Guest';
+  function resetOrderForm() {
+    document.getElementById('story-input').value = '';
+    document.getElementById('age-input').value = '';
+    document.getElementById('story-chip').style.display = 'none';
+    document.getElementById('story-grid').style.display = 'grid';
+    document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
+    document.getElementById('summary-cover').className = 'summary-cover empty';
+    document.getElementById('summary-cover').textContent = window.hikayaT ? window.hikayaT('personalize.summary_pick_story') : 'Pick a story to begin';
+    document.getElementById('summary-story-title').textContent = window.hikayaT ? window.hikayaT('personalize.summary_no_story') : 'No story chosen yet';
+    document.getElementById('summary-age').textContent = '—';
+    document.getElementById('summary-name').textContent = '—';
+    document.getElementById('summary-photos').textContent = '0';
+    nameInput.value = '';
+    ageInputEl.value = '';
+    document.getElementById('dedication').value = '';
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('child-gender').value = '';
+    photoFiles = [];
+    renderThumbs();
+    checkDetailsComplete();
+  }
+
+  function updateCartAddedSummary() {
+    const count = window.hikayaCart ? window.hikayaCart.getCart().length : 0;
+    const summary = document.getElementById('cart-added-summary');
+    const checkoutBtn = document.getElementById('go-to-checkout-btn');
+    if (count === 1) {
+      summary.textContent = window.hikayaT ? window.hikayaT('personalize.added_to_cart_sub') : "This book is saved. Add another child's story, or head to checkout whenever you're ready.";
+      checkoutBtn.innerHTML = (window.hikayaT ? window.hikayaT('checkout.go_to_checkout_1') : 'Continue to Checkout') + ' &rarr;';
     } else {
-      isSignedIn = false;
-      gate.style.display = 'block';
-      guestGate.style.display = 'none';
-      signedInBar.style.display = 'none';
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Sign in to Send Request';
+      const label = window.hikayaT ? window.hikayaT('personalize.cart_count_label') : 'You have {count} books in your cart.';
+      summary.textContent = label.replace('{count}', count);
+      const label2 = window.hikayaT ? window.hikayaT('personalize.go_to_checkout_n') : 'Continue to Checkout ({count})';
+      checkoutBtn.innerHTML = label2.replace('{count}', count) + ' &rarr;';
     }
   }
-  refreshAuthUI();
-  restoreDraftFromStorage();
 
-  document.getElementById('guest-toggle-btn').addEventListener('click', () => {
-    isGuest = true;
-    refreshAuthUI();
-  });
-  document.getElementById('back-to-account-btn').addEventListener('click', () => {
-    isGuest = false;
-    refreshAuthUI();
-  });
-
-  document.getElementById('google-btn').addEventListener('click', async () => {
-    await saveDraftToStorage();
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
-  });
-  document.getElementById('facebook-btn').addEventListener('click', async () => {
-    await saveDraftToStorage();
-    await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
-  });
-  document.getElementById('email-link-btn').addEventListener('click', async () => {
-    const email = document.getElementById('auth-email').value.trim();
-    const status = document.getElementById('form-status');
-    if (!email) { status.textContent = 'Please enter your email.'; return; }
-    status.style.color = '#717171';
-    status.textContent = 'Sending your sign-in link…';
-    await saveDraftToStorage();
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.href } });
-    status.textContent = error ? error.message : 'Check your email for a sign-in link.';
-  });
-  document.getElementById('sign-out-btn').addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    refreshAuthUI();
-  });
-
-  // --- Submit ---
-  document.getElementById('request-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const status = document.getElementById('form-status');
-    status.style.color = '#B5563B';
-
-    const guestEmail = document.getElementById('guest-email').value.trim();
-    if (!isSignedIn && !(isGuest && guestEmail)) { status.textContent = isGuest ? 'Please add your email so we can reach you.' : 'Please sign in or continue as guest.'; return; }
-    if (!document.getElementById('story-input').value) { status.textContent = 'Please choose a story.'; return; }
-    if (!nameInput.value.trim()) { status.textContent = "Please add the child's name."; return; }
-    if (photoFiles.length === 0) { status.textContent = 'Please add at least one photo.'; return; }
-
-    const btn = document.getElementById('send-btn');
-    btn.disabled = true;
-    status.style.color = '#717171';
-    status.textContent = 'Sending your request…';
-
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const formData = new FormData(document.getElementById('request-form'));
-      formData.append('account_email', session ? session.user.email : guestEmail);
-      formData.append('guest_checkout', session ? 'no' : 'yes');
-      photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
-
-      const res = await fetch('/', { method: 'POST', body: formData });
-      if (!res.ok) throw new Error();
-
-      document.querySelectorAll('.block').forEach(b => b.style.display = 'none');
-      document.getElementById('success-panel').classList.add('visible');
-      localStorage.removeItem(DRAFT_KEY);
-    } catch {
-      status.textContent = 'Something went wrong — please try again.';
-      btn.disabled = false;
+  continueBtn.addEventListener('click', async () => {
+    if (window.hikayaCart) {
+      const item = buildCartItemFromForm();
+      // Photos are converted to base64 so they survive a full page navigation
+      // to checkout.html (the cart lives in localStorage, not memory).
+      try {
+        item.photos = await Promise.all(photoFiles.map(file => new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({ name: file.name, type: file.type, dataUrl: reader.result });
+          reader.readAsDataURL(file);
+        })));
+      } catch { item.photos = []; }
+      window.hikayaCart.addToCart(item);
     }
+
+    // Fire the underlying Netlify Forms submission in the background so the
+    // admin dashboard still sees this request come in (best-effort; never
+    // blocks the cart flow even if it fails).
+    try {
+      const formData = new FormData(document.getElementById('request-form'));
+      photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
+      fetch('/', { method: 'POST', body: formData }).catch(() => {});
+    } catch { /* best-effort only */ }
+
+    if (window.hikayaTrackEvent) {
+      window.hikayaTrackEvent('add_to_cart', {
+        story: document.getElementById('story-input').value,
+        age_edition: document.getElementById('age-input').value,
+      });
+      window.hikayaTrackEvent('begin_checkout', {
+        story: document.getElementById('story-input').value,
+        age_edition: document.getElementById('age-input').value,
+      });
+    }
+
+    updateCartAddedSummary();
+    document.getElementById('cart-added-block').classList.add('visible');
+    document.getElementById('cart-added-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  document.getElementById('back-to-order-btn').addEventListener('click', () => {
+    document.getElementById('cart-added-block').classList.remove('visible');
+    continueBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  document.getElementById('add-another-btn').addEventListener('click', () => {
+    resetOrderForm();
+    document.getElementById('cart-added-block').classList.remove('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 </script>
 
