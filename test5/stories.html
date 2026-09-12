@@ -135,11 +135,13 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
   .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); margin-left: 8px; }
   .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .cart-badge { display: none; background: var(--coral, #A67443); color: #fff; font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; padding: 0 3px; margin-left: 4px; }
   .card-price { font-size: 13.5px; font-weight: 700; color: var(--coral-deep); margin-top: 6px; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -148,7 +150,7 @@
   <div class="wrap inner">
     <nav class="left"><a href="stories.html" data-i18n="stories.nav_shop">Shop Stories</a><a href="index.html#how-it-works" data-i18n="stories.nav_how">How It Works</a><a href="index.html#collections" data-i18n="stories.nav_collections">Our Collections</a></nav>
     <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a><a class="zone-pill" href="#">Europe</a></nav>
+    <nav><a href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a><a class="lang-pill" href="#" data-i18n-skip style="margin-left:8px;">EN</a><a class="zone-pill" href="#">Europe</a><a href="checkout.html" data-i18n-skip style="margin-left:8px;">Cart<span class="cart-badge">0</span></a></nav>
   </div>
 </header>
 
