@@ -24,6 +24,13 @@
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+  .signin-box { background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .signin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  @media (max-width: 560px) {
+    .signin-buttons { flex-direction: column; width: 100%; }
+    .signin-buttons button { width: 100%; }
+  }
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
@@ -226,15 +233,15 @@
 <div class="preview-banner" data-i18n="checkout.preview_banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
 
 <div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 20px;">
-  <div style="background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+  <div class="signin-box">
     <div>
       <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.signin_title">Sign in for faster checkout</span>
       <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
     </div>
-    <div style="display: flex; gap: 8px; flex-shrink: 0;">
-      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
-      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
-      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
+    <div class="signin-buttons">
+      <button class="btn-secondary" id="google-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
+      <button class="btn-secondary" id="facebook-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
+      <button class="btn-secondary" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
 </div>
