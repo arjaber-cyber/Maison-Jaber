@@ -292,6 +292,8 @@ window.HIKAYA_TRANSLATIONS = {
   login: {
     title: { en: 'Sign in to your account', de: 'Bei Ihrem Konto anmelden', ar: 'سجّل الدخول إلى حسابك' },
     subtitle: { en: "Track orders, save projects, and revisit your child's stories.", de: 'Verfolgen Sie Bestellungen, speichern Sie Projekte und sehen Sie sich die Geschichten Ihres Kindes erneut an.', ar: 'تتبع الطلبات، واحفظ المشاريع، وراجع قصص طفلك مرة أخرى.' },
+    admin_title: { en: 'Dashboard sign in', de: 'Dashboard-Anmeldung', ar: 'تسجيل الدخول للوحة التحكم' },
+    admin_subtitle: { en: 'Owner access only — sign in with the account authorized for the admin dashboard.', de: 'Nur für den Inhaber — melden Sie sich mit dem für das Admin-Dashboard autorisierten Konto an.', ar: 'للمالك فقط — سجّل الدخول بالحساب المصرّح له بالوصول إلى لوحة التحكم.' },
     or: { en: 'or', de: 'oder', ar: 'أو' },
     send_link: { en: 'Send me a sign-in link', de: 'Mir einen Anmeldelink senden', ar: 'أرسل لي رابط تسجيل الدخول' },
     back_link: { en: '← Back to Maison Jaber', de: '← Zurück zu Maison Jaber', ar: '← العودة إلى ميزون جابر' },
