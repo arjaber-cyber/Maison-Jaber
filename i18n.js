@@ -190,6 +190,7 @@ window.HIKAYA_TRANSLATIONS = {
     preview_banner: { en: "This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.", de: 'Dies ist eine Checkout-Vorschau. Die Zahlung ist noch nicht verbunden, daher können hier noch keine Bestellungen aufgegeben werden.', ar: 'هذه معاينة لصفحة الدفع. لم يتم ربط الدفع بعد، لذا لا يمكن إتمام الطلبات هنا بعد.' },
     signin_title: { en: 'Sign in for faster checkout', de: 'Anmelden für schnelleren Checkout', ar: 'سجّل الدخول لدفع أسرع' },
     signin_sub: { en: 'Track this order and save your details for next time — or continue without an account.', de: 'Verfolgen Sie diese Bestellung und speichern Sie Ihre Daten für nächstes Mal — oder fahren Sie ohne Konto fort.', ar: 'تتبع هذا الطلب واحفظ بياناتك للمرة القادمة — أو تابع بدون حساب.' },
+    locked_note: { en: 'Sign in or continue as a guest above to enter your delivery details.', de: 'Melden Sie sich oben an oder fahren Sie als Gast fort, um Ihre Lieferdetails einzugeben.', ar: 'سجّل الدخول أو تابع كضيف أعلاه لإدخال تفاصيل التوصيل.' },
     google: { en: 'Continue with Google', de: 'Mit Google fortfahren', ar: 'المتابعة باستخدام جوجل' },
     facebook: { en: 'Continue with Facebook', de: 'Mit Facebook fortfahren', ar: 'المتابعة باستخدام فيسبوك' },
     guest: { en: 'Continue as Guest', de: 'Als Gast fortfahren', ar: 'المتابعة كضيف' },

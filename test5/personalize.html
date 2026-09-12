@@ -147,24 +147,9 @@
     background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1;
   }
 
-  /* Account gate + send (revealed once order form is complete) */
-  #cart-added-block { display: none; padding: 36px 0 20px; }
-  #cart-added-block.visible { display: block; }
-  .cart-added-check {
-    width: 52px; height: 52px; border-radius: 50%; background: var(--coral); color: #fff;
-    display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px;
-  }
-  .send-card { background: #fff; border-radius: var(--radius); padding: 28px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); max-width: 440px; margin: 0 auto; text-align: center; }
-
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
   .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
 
-  .account-gate { margin-top: 0; padding-top: 0; border-top: none; }
-  .send-block-head { text-align: center; max-width: 440px; margin: 0 auto 18px; }
-  .send-block-head h2 { font-size: 19px; margin-bottom: 4px; }
-  .send-block-head p { color: var(--ink-soft); font-weight: 600; font-size: 14px; }
-  .back-link { display: inline-flex; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 14px; }
-  .back-link:hover { color: var(--coral-deep); }
   .account-gate p.note { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 14px; }
   .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
@@ -193,6 +178,7 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
   .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); }
   .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .cart-badge { display: none; background: var(--coral, #A67443); color: #fff; font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; padding: 0 3px; margin-left: 4px; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/analytics.js" defer></script>
@@ -208,6 +194,7 @@
     <div class="header-right">
       <a class="lang-pill" href="#" data-i18n-skip>EN</a>
       <a class="zone-pill" href="#">Europe</a>
+      <a href="checkout.html" data-i18n-skip style="font-size:13px; font-weight:700; color:var(--ink); display:inline-flex; align-items:center;">Cart<span class="cart-badge">0</span></a>
       <a class="exit" href="index.html">Save &amp; exit</a>
     </div>
   </div>
@@ -311,21 +298,6 @@
     </div>
   </div>
 
-  <!-- ADDED TO CART (revealed once the order form above is complete and submitted) -->
-  <div class="wrap" id="cart-added-block">
-    <div class="block-inner" style="max-width:520px; margin:0 auto;">
-      <div class="send-block-head">
-        <button type="button" id="back-to-order-btn" class="back-link">&larr; <span data-i18n="personalize.back_to_order">Back to edit details</span></button>
-      </div>
-      <div class="send-card" style="text-align:center;">
-        <div class="cart-added-check">&#10003;</div>
-        <h2 data-i18n="personalize.added_to_cart_title">Added to your cart</h2>
-        <p class="note" id="cart-added-summary" data-i18n="personalize.added_to_cart_sub">This book is saved. Add another child's story, or head to checkout whenever you're ready.</p>
-        <button type="button" class="btn-secondary" id="add-another-btn" style="width:100%; justify-content:center; margin-bottom:10px;" data-i18n="personalize.add_another_btn">+ Add Another Book</button>
-        <a class="btn-primary" id="go-to-checkout-btn" href="checkout.html" style="width:100%; justify-content:center; display:flex;" data-i18n="personalize.go_to_checkout_btn">Continue to Checkout &rarr;</a>
-      </div>
-    </div>
-  </div>
 </form>
 
 <div class="wrap">
@@ -571,21 +543,6 @@
     checkDetailsComplete();
   }
 
-  function updateCartAddedSummary() {
-    const count = window.hikayaCart ? window.hikayaCart.getCart().length : 0;
-    const summary = document.getElementById('cart-added-summary');
-    const checkoutBtn = document.getElementById('go-to-checkout-btn');
-    if (count === 1) {
-      summary.textContent = window.hikayaT ? window.hikayaT('personalize.added_to_cart_sub') : "This book is saved. Add another child's story, or head to checkout whenever you're ready.";
-      checkoutBtn.innerHTML = (window.hikayaT ? window.hikayaT('checkout.go_to_checkout_1') : 'Continue to Checkout') + ' &rarr;';
-    } else {
-      const label = window.hikayaT ? window.hikayaT('personalize.cart_count_label') : 'You have {count} books in your cart.';
-      summary.textContent = label.replace('{count}', count);
-      const label2 = window.hikayaT ? window.hikayaT('personalize.go_to_checkout_n') : 'Continue to Checkout ({count})';
-      checkoutBtn.innerHTML = label2.replace('{count}', count) + ' &rarr;';
-    }
-  }
-
   continueBtn.addEventListener('click', async () => {
     if (window.hikayaCart) {
       const item = buildCartItemFromForm();
@@ -621,20 +578,7 @@
       });
     }
 
-    updateCartAddedSummary();
-    document.getElementById('cart-added-block').classList.add('visible');
-    document.getElementById('cart-added-block').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  document.getElementById('back-to-order-btn').addEventListener('click', () => {
-    document.getElementById('cart-added-block').classList.remove('visible');
-    continueBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-
-  document.getElementById('add-another-btn').addEventListener('click', () => {
-    resetOrderForm();
-    document.getElementById('cart-added-block').classList.remove('visible');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.location.href = 'book-added.html';
   });
 </script>
 

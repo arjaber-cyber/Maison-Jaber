@@ -65,8 +65,13 @@
     background: var(--parchment); text-align: center; padding: 10px 16px; font-size: 12px; color: var(--text-on-light-soft);
   }
 
-  .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; padding: 32px 0 70px; max-width: 1080px; margin: 0 auto; align-items: start; }
-  @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; padding: 24px 20px 50px; } }
+  .checkout-layout { display: none; grid-template-columns: 1fr 360px; gap: 40px; padding: 32px 0 70px; max-width: 1080px; margin: 0 auto; align-items: start; }
+  .checkout-layout.unlocked { display: grid; }
+  @media (max-width: 900px) { .checkout-layout.unlocked { grid-template-columns: 1fr; padding: 24px 20px 50px; } }
+  .checkout-locked-note {
+    max-width: 1080px; margin: 0 auto; padding: 8px 32px 40px; text-align: center;
+    font-size: 13.5px; color: var(--ink-soft); font-weight: 600;
+  }
 
   .checkout-col h2 { font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
   .checkout-col h2 .step-num {
@@ -241,7 +246,9 @@
   </div>
 </div>
 
-<div class="checkout-layout">
+<div class="checkout-locked-note" id="checkout-locked-note" data-i18n="checkout.locked_note">Sign in or continue as a guest above to enter your delivery details.</div>
+
+<div class="checkout-layout" id="checkout-layout">
   <div class="checkout-col">
     <div class="form-block">
       <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
@@ -351,6 +358,14 @@
   const accountStep = document.getElementById('account-step');
   const signedInBar = document.getElementById('signed-in-bar');
   const signedInEmail = document.getElementById('signed-in-email');
+  const checkoutLayout = document.getElementById('checkout-layout');
+  const checkoutLockedNote = document.getElementById('checkout-locked-note');
+  let continuedAsGuest = false;
+
+  function unlockCheckoutLayout() {
+    checkoutLayout.classList.add('unlocked');
+    checkoutLockedNote.style.display = 'none';
+  }
 
   async function refreshAuthUI() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -362,9 +377,16 @@
       const fullName = session.user.user_metadata?.full_name;
       if (fullName) document.getElementById('full-name').value = fullName;
       document.getElementById('email').value = session.user.email;
+      unlockCheckoutLayout();
+    } else if (continuedAsGuest) {
+      accountStep.style.display = 'none';
+      signedInBar.style.display = 'none';
+      unlockCheckoutLayout();
     } else {
       accountStep.style.display = 'block';
       signedInBar.style.display = 'none';
+      checkoutLayout.classList.remove('unlocked');
+      checkoutLockedNote.style.display = 'block';
     }
   }
   refreshAuthUI();
@@ -376,10 +398,14 @@
     await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
+    continuedAsGuest = true;
     accountStep.style.display = 'none';
+    unlockCheckoutLayout();
+    checkoutLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   document.getElementById('sign-out-checkout').addEventListener('click', async () => {
     await supabase.auth.signOut();
+    continuedAsGuest = false;
     refreshAuthUI();
   });
 
@@ -593,7 +619,6 @@
 
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
-    localStorage.setItem('hikaya_region', currentRegionKey);
     const region = REGIONS[currentRegionKey];
     updatePricing();
 
@@ -704,7 +729,10 @@
     });
   }
 
-  countrySelect.addEventListener('change', renderPaymentSection);
+  countrySelect.addEventListener('change', () => {
+    localStorage.setItem('hikaya_region', countrySelect.value);
+    renderPaymentSection();
+  });
   renderPaymentSection();
   detectLocation();
 

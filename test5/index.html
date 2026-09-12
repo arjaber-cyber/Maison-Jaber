@@ -56,6 +56,12 @@
   nav.main a:hover { color: var(--caramel); }
   .header-actions { display: flex; align-items: center; gap: 18px; }
   .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
+  .icon-btn { position: relative; display: inline-flex; }
+  .cart-badge {
+    display: none; position: absolute; top: -7px; right: -8px; background: var(--coral); color: #fff;
+    font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%;
+    align-items: center; justify-content: center; padding: 0 3px; font-family: 'Inter', sans-serif;
+  }
   .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--brown); }
   .lang-pill:hover { background: var(--cream); }
   .zone-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--coral-deep); cursor: pointer; }
@@ -175,6 +181,7 @@
 <script src="/i18n.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -193,6 +200,10 @@
     </nav>
     <div class="header-actions">
       <a class="icon-btn" href="./stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
+      <a class="icon-btn" href="./checkout.html" aria-label="Cart">
+        <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 4h2l2.2 11a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6.5"/><circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+        <span class="cart-badge">0</span>
+      </a>
       <a class="icon-btn" href="./login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
       <a class="lang-pill" href="#" data-i18n-skip style="margin-right:6px; padding:8px 10px;">EN</a>
       <a class="zone-pill" href="#" style="margin-right:6px;">GCC</a>
@@ -204,6 +215,7 @@
   </div>
   <div class="mobile-nav-panel" id="mobile-nav-panel">
     <a class="nav-link" href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
+    <a class="nav-link" href="./checkout.html" data-i18n-skip>Cart <span class="cart-badge" style="position:static; margin-left:4px;">0</span></a>
     <a class="nav-link" href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
     <a class="nav-link" href="./about.html" data-i18n="common.nav_about">About</a>
     <a class="nav-link" href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>

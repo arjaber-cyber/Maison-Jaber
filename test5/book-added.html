@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Added to Your Cart — Hikaya by Maison Jaber</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/png" href="images/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 20px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; }
+  h1, h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+
+  .page {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 20px; position: relative; overflow: hidden;
+  }
+  .page-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0.16; }
+  .page-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, var(--bg) 0%, rgba(248,242,232,0.85) 60%, var(--bg) 100%); }
+
+  .wordmark { position: relative; z-index: 2; margin-bottom: 32px; }
+  .wordmark img { height: 64px; }
+
+  .card {
+    position: relative; z-index: 2; background: #fff; border-radius: var(--radius); padding: 44px 40px;
+    max-width: 480px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(70,45,25,0.12);
+  }
+
+  .check-ring {
+    width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(160deg, #D98868, var(--coral-deep));
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
+    box-shadow: 0 10px 26px rgba(86,54,34,0.25);
+  }
+  .check-ring svg { width: 30px; height: 30px; stroke: #fff; fill: none; stroke-width: 2.5; }
+
+  .script-note { font-family: 'Caveat', cursive; font-size: 22px; color: var(--coral-deep); margin-bottom: 4px; display: block; }
+  h1 { font-size: 30px; margin-bottom: 10px; }
+  .sub { font-size: 15px; color: var(--ink-soft); margin-bottom: 28px; max-width: 36ch; margin-left: auto; margin-right: auto; }
+
+  .item-chip {
+    display: flex; align-items: center; gap: 14px; background: var(--bg-soft); border-radius: 14px;
+    padding: 14px 18px; margin-bottom: 28px; text-align: left;
+  }
+  .item-chip .swatch { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; }
+  .item-chip .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .item-chip .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .item-chip .swatch.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .item-chip .name { font-weight: 800; font-size: 15px; }
+  .item-chip .meta { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+
+  .cart-count { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 22px; }
+  .cart-count strong { color: var(--coral-deep); }
+
+  .btn-secondary {
+    display: block; width: 100%; padding: 15px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: #fff; color: var(--ink); font-size: 14.5px; font-weight: 700; cursor: pointer; margin-bottom: 12px;
+  }
+  .btn-secondary:hover { border-color: var(--coral); background: var(--bg-soft); }
+  .btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px;
+    border-radius: 999px; border: none; background: var(--coral); color: #fff; font-size: 15px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 12px 28px rgba(70,45,25,0.18);
+  }
+  .btn-primary:hover { background: var(--coral-deep); }
+
+  .back-link { position: relative; z-index: 2; margin-top: 24px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .back-link:hover { color: var(--coral-deep); }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="page-bg" id="page-bg" style="background-image:url('images/giftbox-open-pair.jpg');"></div>
+
+  <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
+
+  <div class="card">
+    <div class="check-ring">
+      <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
+    </div>
+    <span class="script-note">Lovely choice ♡</span>
+    <h1>Added to your cart</h1>
+    <p class="sub">This book is saved and ready. Add another child's story, or head to checkout whenever you're ready.</p>
+
+    <div class="item-chip" id="item-chip">
+      <div class="swatch" id="item-swatch"></div>
+      <div>
+        <div class="name" id="item-name">—</div>
+        <div class="meta" id="item-meta"></div>
+      </div>
+    </div>
+
+    <div class="cart-count" id="cart-count-note"></div>
+
+    <button type="button" class="btn-secondary" id="add-another-btn">+ Add Another Book</button>
+    <a class="btn-primary" href="checkout.html" id="checkout-link">Continue to Checkout &rarr;</a>
+  </div>
+
+  <a href="personalize.html" class="back-link">&larr; Back to edit details</a>
+</div>
+
+<script src="/cart.js" defer></script>
+<script defer>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    if (cart.length === 0) {
+      window.location.href = 'personalize.html';
+      return;
+    }
+    const last = cart[cart.length - 1];
+
+    document.getElementById('item-swatch').className = 'swatch ' + (last.theme || 'courage');
+    document.getElementById('item-name').textContent = last.story || 'Your story';
+    document.getElementById('item-meta').textContent = [last.childName, last.ageEdition ? 'Ages ' + last.ageEdition : null].filter(Boolean).join(' · ');
+
+    const count = cart.length;
+    const countNote = document.getElementById('cart-count-note');
+    const checkoutLink = document.getElementById('checkout-link');
+    if (count > 1) {
+      countNote.innerHTML = `You now have <strong>${count} books</strong> in your cart.`;
+      checkoutLink.innerHTML = `Continue to Checkout (${count}) &rarr;`;
+    } else {
+      countNote.textContent = '';
+    }
+
+    document.getElementById('add-another-btn').addEventListener('click', () => {
+      window.location.href = 'personalize.html?new=1';
+    });
+  });
+</script>
+
+</body>
+</html>
