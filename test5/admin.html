@@ -124,6 +124,16 @@
   </div>
 </header>
 
+<div class="wrap" id="password-gate" style="max-width: 380px; margin: 80px auto; text-align: center;">
+  <h1 style="font-size: 22px; margin-bottom: 6px;" data-i18n="admin.password_title">Dashboard sign in</h1>
+  <p style="color: var(--ink-soft); font-weight: 600; font-size: 13.5px; margin-bottom: 20px;" data-i18n="admin.password_sub">Enter the dashboard password to continue.</p>
+  <input type="password" id="admin-password-input" placeholder="Password" style="width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid var(--line, #ddd); font-size:14px; margin-bottom:10px; box-sizing:border-box;" />
+  <button type="button" id="admin-password-submit" style="width:100%; padding:12px; border-radius:100px; border:none; background:var(--near-black, #2E2018); color:#fff; font-weight:700; cursor:pointer;" data-i18n="admin.password_submit">Sign In</button>
+  <div id="admin-password-error" style="color:#b5563b; font-size:12.5px; font-weight:600; margin-top:10px; min-height:16px;"></div>
+</div>
+
+<div id="dashboard-body" style="display:none;">
+
 <div class="wrap page-head">
   <h1 data-i18n="admin.orders_title">Orders</h1>
   <p id="orders-sub" data-i18n="admin.loading">Loading...</p>
@@ -152,19 +162,14 @@
 </div>
 
 <div class="wrap" id="photos-grid" style="margin-bottom: 48px;"></div>
+</div>
 
 <footer class="site"><div class="wrap"><p data-i18n="admin.footer">&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
 
 <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-  const supabase = createClient(
-    'https://zxzlarlpoctpnnnvzced.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
-  );
-
   const stateBox = document.getElementById('state-box');
   const pageSub = document.getElementById('page-sub');
-  let accessToken = null;
+  let adminPassword = sessionStorage.getItem('hikaya_admin_password') || null;
 
   const STAGES = [
     { key: 'received', label: window.hikayaT('admin.stage_received') },
@@ -240,14 +245,47 @@
 
 
 
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html?redirect=admin.html';
-  } else {
-    accessToken = session.access_token;
-    loadOrders(accessToken);
-    loadSubmissions(accessToken);
-    loadSitePhotos(accessToken);
+  async function checkPassword(pw) {
+    const res = await fetch('/.netlify/functions/admin-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw }),
+    });
+    return res.ok;
+  }
+
+  function showDashboard() {
+    document.getElementById('password-gate').style.display = 'none';
+    document.getElementById('dashboard-body').style.display = 'block';
+    loadOrders(adminPassword);
+    loadSubmissions(adminPassword);
+    loadSitePhotos(adminPassword);
+  }
+
+  document.getElementById('admin-password-submit').addEventListener('click', async () => {
+    const input = document.getElementById('admin-password-input');
+    const errorEl = document.getElementById('admin-password-error');
+    const pw = input.value;
+    if (!pw) return;
+    errorEl.textContent = '';
+    const ok = await checkPassword(pw);
+    if (ok) {
+      adminPassword = pw;
+      sessionStorage.setItem('hikaya_admin_password', pw);
+      showDashboard();
+    } else {
+      errorEl.textContent = 'Incorrect password.';
+    }
+  });
+  document.getElementById('admin-password-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('admin-password-submit').click();
+  });
+
+  if (adminPassword) {
+    checkPassword(adminPassword).then(ok => {
+      if (ok) showDashboard();
+      else { sessionStorage.removeItem('hikaya_admin_password'); adminPassword = null; }
+    });
   }
 
   async function loadOrders(token) {
@@ -255,7 +293,7 @@
     const ordersSub = document.getElementById('orders-sub');
     try {
       const res = await fetch('/.netlify/functions/get-orders', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 'x-admin-password': token }
       });
       const data = await res.json();
       if (!res.ok) {
@@ -401,7 +439,7 @@
 
           const res = await fetch('/.netlify/functions/upload-site-photo', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            headers: { 'Content-Type': 'application/json', 'x-admin-password': token },
             body: JSON.stringify({ filename, base64Data, mimeType: file.type }),
           });
           const data = await res.json();
@@ -425,7 +463,7 @@
   async function loadSubmissions(token) {
     try {
       const res = await fetch('/.netlify/functions/get-submissions', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 'x-admin-password': token }
       });
       const data = await res.json();
 
@@ -494,7 +532,7 @@
     try {
       const res = await fetch('/.netlify/functions/update-order-status', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
         body: JSON.stringify({ submissionId: String(submissionId), status })
       });
       const data = await res.json();

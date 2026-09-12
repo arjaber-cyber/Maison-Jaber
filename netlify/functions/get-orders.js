@@ -8,30 +8,16 @@
 // dashboard should treat THIS as the source of truth for what customers
 // actually bought.
 //
-// Same admin-gating as get-submissions.js: requires a signed-in Supabase
-// session whose email is in ADMIN_EMAILS.
+// Admin-gated via a single shared password (see admin-auth.js / ADMIN_PASSWORD).
+
+const { isAdminRequest } = require('./_admin-check');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
 
 exports.handler = async (event) => {
-  const authHeader = event.headers.authorization || event.headers.Authorization;
-  if (!authHeader) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Not signed in.' }) };
-  }
-  const token = authHeader.replace('Bearer ', '');
-
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY }
-  });
-  if (!userRes.ok) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Your session has expired. Please sign in again.' }) };
-  }
-  const user = await userRes.json();
-
-  const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  if (!adminEmails.includes((user.email || '').toLowerCase())) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'This account is not authorized to view the dashboard.' }) };
+  if (!isAdminRequest(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Not authorized.' }) };
   }
 
   try {

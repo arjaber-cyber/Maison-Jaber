@@ -4,32 +4,18 @@
 //
 // SETUP (one-time, in Netlify: Site settings > Environment variables):
 //   1. NETLIFY_API_TOKEN — create at app.netlify.com > User settings > Applications > New access token
-//   2. ADMIN_EMAILS — comma-separated list of emails allowed to view the dashboard, e.g. ar.jaber@hotmail.com
+//   2. ADMIN_PASSWORD — the password you use to sign into the dashboard (see admin-auth.js)
 // Redeploy after adding these.
+
+const { isAdminRequest } = require('./_admin-check');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
 const SITE_ID = 'd48f5b64-a318-4ef9-8b60-a9704a807836';
 
 exports.handler = async (event) => {
-  const authHeader = event.headers.authorization || event.headers.Authorization;
-  if (!authHeader) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Not signed in.' }) };
-  }
-  const token = authHeader.replace('Bearer ', '');
-
-  // Verify this is a real, currently-valid Supabase session
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY }
-  });
-  if (!userRes.ok) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Your session has expired. Please sign in again.' }) };
-  }
-  const user = await userRes.json();
-
-  const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  if (!adminEmails.includes((user.email || '').toLowerCase())) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'This account is not authorized to view the dashboard.' }) };
+  if (!isAdminRequest(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Not authorized.' }) };
   }
 
   const netlifyToken = process.env.NETLIFY_API_TOKEN;
@@ -61,7 +47,7 @@ exports.handler = async (event) => {
     let statusMap = {};
     try {
       const statusRes = await fetch(`${SUPABASE_URL}/rest/v1/order_status?select=submission_id,status`, {
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}` }
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
       });
       if (statusRes.ok) {
         const rows = await statusRes.json();
