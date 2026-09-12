@@ -1,9 +1,8 @@
 // netlify/functions/upload-site-photo.js
 //
-// Admin-only. Uploads a replacement photo to Supabase Storage and records
-// it in the `site_photos` table so every page picks it up via
-// site-photos.js. Requires the same admin sign-in as the rest of the
-// dashboard (ADMIN_EMAILS).
+// Admin-only (single shared password, see admin-auth.js). Uploads a
+// replacement photo to Supabase Storage and records it in the
+// `site_photos` table so every page picks it up via site-photos.js.
 //
 // ONE-TIME SETUP NEEDED IN SUPABASE (separate from the blocked table
 // migration -- this is a Storage bucket, a different part of Supabase):
@@ -12,6 +11,8 @@
 //        filename text primary key, url text, updated_at timestamptz
 //   Until both exist, this function returns a clear error explaining
 //   exactly what's missing, rather than failing silently.
+
+const { isAdminRequest } = require('./_admin-check');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -32,19 +33,8 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  const authHeader = event.headers.authorization || event.headers.Authorization;
-  if (!authHeader) return { statusCode: 401, body: JSON.stringify({ error: 'Not signed in.' }) };
-  const token = authHeader.replace('Bearer ', '');
-
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { Authorization: `Bearer ${token}`, apikey: SUPABASE_ANON_KEY }
-  });
-  if (!userRes.ok) return { statusCode: 401, body: JSON.stringify({ error: 'Your session has expired. Please sign in again.' }) };
-  const user = await userRes.json();
-
-  const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
-  if (!adminEmails.includes((user.email || '').toLowerCase())) {
-    return { statusCode: 403, body: JSON.stringify({ error: 'This account is not authorized to manage site photos.' }) };
+  if (!isAdminRequest(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Not authorized.' }) };
   }
 
   let payload;
@@ -73,7 +63,7 @@ exports.handler = async (event) => {
     const uploadRes = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${filename}`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         apikey: SUPABASE_ANON_KEY,
         'Content-Type': mimeType,
         'x-upsert': 'true',
