@@ -67,6 +67,21 @@
   .order-tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--coral-deep); background: var(--bg-soft); padding: 3px 9px; border-radius: 100px; margin: 8px 6px 0 0; }
   .order-gift { font-size: 12.5px; color: var(--ink-soft); font-style: italic; margin-top: 8px; }
   .order-status { font-size: 12px; color: var(--ink-soft); margin-top: 10px; }
+
+  .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+  .photo-card { background: #fff; border-radius: var(--radius); overflow: hidden; }
+  .photo-card .thumb { aspect-ratio: 4/3; background-size: cover; background-position: center; background-color: var(--bg-soft); }
+  .photo-card .body { padding: 12px 14px 14px; }
+  .photo-card .label { font-weight: 800; font-size: 13px; margin-bottom: 2px; }
+  .photo-card .filename { font-size: 11px; color: var(--ink-soft); font-family: monospace; margin-bottom: 10px; }
+  .photo-card .upload-btn {
+    display: block; width: 100%; text-align: center; padding: 9px; border-radius: 100px; border: 1px solid var(--line, #ddd);
+    background: #fff; font-size: 12.5px; font-weight: 700; cursor: pointer; color: var(--ink);
+  }
+  .photo-card .upload-btn:hover { background: var(--bg-soft); }
+  .photo-card .upload-status { font-size: 11px; margin-top: 6px; min-height: 14px; font-weight: 600; }
+  .photo-card .upload-status.success { color: #3d5a26; }
+  .photo-card .upload-status.error { color: var(--coral-deep, #b5563b); }
   .req-top { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; margin-bottom: 14px; }
   @media (max-width: 700px) { .req-top { grid-template-columns: 1fr; } }
   .req-photos { display: flex; gap: 6px; }
@@ -96,6 +111,7 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
 <script src="/analytics.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
@@ -129,6 +145,13 @@
 <div class="wrap" id="content">
   <div class="state-box" id="state-box" data-i18n="admin.checking_access">Checking your access…</div>
 </div>
+
+<div class="wrap page-head">
+  <h1 data-i18n="admin.photos_title">Site Photos</h1>
+  <p data-i18n="admin.photos_sub">Upload a replacement for any photo used across the site — it updates everywhere that photo appears, right away.</p>
+</div>
+
+<div class="wrap" id="photos-grid" style="margin-bottom: 48px;"></div>
 
 <footer class="site"><div class="wrap"><p data-i18n="admin.footer">&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
 
@@ -224,6 +247,7 @@
     accessToken = session.access_token;
     loadOrders(accessToken);
     loadSubmissions(accessToken);
+    loadSitePhotos(accessToken);
   }
 
   async function loadOrders(token) {
@@ -309,6 +333,93 @@
       <div class="stat-card"><div class="num">${revenue.toFixed(0)}</div><div class="lbl">Revenue (mixed currencies)</div></div>
       <div class="stat-card"><div class="num">${giftCount}</div><div class="lbl">Marked as Gift</div></div>
     `;
+  }
+
+  // ---------- Site photos ----------
+  const PHOTO_SLOTS = [
+    { filename: 'hero-bedroom-wide.jpg', label: 'Homepage Hero — Bedroom Scene' },
+    { filename: 'giftbox-open-pair.jpg', label: 'Gift Box, Open (Pair)' },
+    { filename: 'fantasy-night-scene.jpg', label: 'Fantasy Night Scene' },
+    { filename: 'book-flatlay.jpg', label: 'Book Flatlay' },
+    { filename: 'bookshelf-scene.jpg', label: 'Bookshelf Scene (About page)' },
+    { filename: 'giftbox-closeup.jpg', label: 'Gift Box Close-up' },
+    { filename: 'bunny-card-books.jpg', label: 'Bunny with Card & Books' },
+    { filename: 'desk-flatlay-globe.jpg', label: 'Desk Flatlay with Globe (Help page)' },
+    { filename: 'child-reading-closeup.jpg', label: 'Child Reading Close-up' },
+    { filename: 'giftbag-set.jpg', label: 'Gift Bag Set' },
+    { filename: 'note-card-closeup.jpg', label: 'Note Card Close-up' },
+    { filename: 'logo-hikaya.png', label: 'Site Logo' },
+    { filename: 'favicon.png', label: 'Favicon' },
+  ];
+
+  async function loadSitePhotos(token) {
+    let overrides = {};
+    try {
+      const res = await fetch('/.netlify/functions/get-site-photos');
+      const data = await res.json();
+      overrides = data.overrides || {};
+    } catch { /* defaults will show instead */ }
+
+    const grid = document.getElementById('photos-grid');
+    grid.className = 'photos-grid';
+    grid.innerHTML = PHOTO_SLOTS.map(slot => `
+      <div class="photo-card" data-filename="${slot.filename}">
+        <div class="thumb" style="background-image:url('${overrides[slot.filename] || ('images/' + slot.filename)}')"></div>
+        <div class="body">
+          <div class="label">${slot.label}</div>
+          <div class="filename">${slot.filename}</div>
+          <input type="file" accept="image/*" style="display:none;" class="photo-file-input" />
+          <button type="button" class="upload-btn">Upload replacement</button>
+          <div class="upload-status"></div>
+        </div>
+      </div>
+    `).join('');
+
+    grid.querySelectorAll('.photo-card').forEach(card => {
+      const filename = card.dataset.filename;
+      const fileInput = card.querySelector('.photo-file-input');
+      const uploadBtn = card.querySelector('.upload-btn');
+      const status = card.querySelector('.upload-status');
+      const thumb = card.querySelector('.thumb');
+
+      uploadBtn.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        status.className = 'upload-status';
+        status.textContent = 'Uploading…';
+        uploadBtn.disabled = true;
+
+        try {
+          const base64Data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+
+          const res = await fetch('/.netlify/functions/upload-site-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ filename, base64Data, mimeType: file.type }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            status.className = 'upload-status error';
+            status.textContent = data.error || 'Upload failed.';
+          } else {
+            status.className = 'upload-status success';
+            status.textContent = 'Updated! Live across the site now.';
+            thumb.style.backgroundImage = `url('${data.url}')`;
+          }
+        } catch (err) {
+          status.className = 'upload-status error';
+          status.textContent = 'Something went wrong. Please try again.';
+        }
+        uploadBtn.disabled = false;
+      });
+    });
   }
 
   async function loadSubmissions(token) {

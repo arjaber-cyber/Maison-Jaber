@@ -462,6 +462,8 @@ window.HIKAYA_TRANSLATIONS = {
     dashboard_label: { en: 'Dashboard', de: 'Dashboard', ar: 'لوحة التحكم' },
     back_to_site: { en: '← Back to site', de: '← Zurück zur Website', ar: '← العودة إلى الموقع' },
     incoming_requests: { en: 'Incoming requests', de: 'Eingehende Anfragen', ar: 'الطلبات الواردة' },
+    photos_title: { en: 'Site Photos', de: 'Website-Fotos', ar: 'صور الموقع' },
+    photos_sub: { en: 'Upload a replacement for any photo used across the site — it updates everywhere that photo appears, right away.', de: 'Laden Sie einen Ersatz für jedes auf der Website verwendete Foto hoch — es wird sofort überall aktualisiert, wo dieses Foto erscheint.', ar: 'حمّل صورة بديلة لأي صورة مستخدمة في الموقع — سيتم تحديثها فورًا في كل مكان تظهر فيه.' },
     orders_title: { en: 'Orders', de: 'Bestellungen', ar: 'الطلبات' },
     orders_received: { en: 'orders received.', de: 'Bestellungen erhalten.', ar: 'طلب تم استلامه.' },
     orders_table_not_ready: { en: 'Orders table isn\'t set up in Supabase yet — once it is, real completed orders will appear here.', de: 'Die Bestelltabelle ist in Supabase noch nicht eingerichtet — sobald sie es ist, erscheinen hier die abgeschlossenen Bestellungen.', ar: 'جدول الطلبات غير مُعد بعد في Supabase — بمجرد إعداده، ستظهر هنا الطلبات المكتملة الفعلية.' },
