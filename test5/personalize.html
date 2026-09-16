@@ -139,13 +139,28 @@
   }
   .photo-guidance ul { margin: 6px 0 0; padding-left: 18px; font-weight: 600; }
   .photo-guidance li { margin-bottom: 3px; }
-  .photo-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-  .photo-thumb { position: relative; width: 56px; height: 56px; border-radius: 10px; overflow: hidden; }
-  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-thumb button {
+  .photo-thumbs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .photo-thumb { position: relative; width: 68px; height: 68px; border-radius: 10px; overflow: hidden; border: 2px solid transparent; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-thumb.state-failed { border-color: var(--coral-deep, #b5563b); }
+  .photo-thumb.state-verified { border-color: #3d5a26; }
+  .photo-thumb button.remove-photo {
     position: absolute; top: 1px; right: 1px; width: 17px; height: 17px; border-radius: 50%;
-    background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1;
+    background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1; z-index: 2;
   }
+  .photo-thumb .status-badge {
+    position: absolute; bottom: 0; left: 0; right: 0; text-align: center; padding: 3px 0;
+    font-size: 9px; font-weight: 800; color: #fff;
+  }
+  .photo-thumb .status-badge.checking { background: rgba(86,54,34,0.8); }
+  .photo-thumb .status-badge.verified { background: rgba(61,90,38,0.88); }
+  .photo-thumb .status-badge.failed { background: rgba(181,86,59,0.9); }
+  .photo-thumb .spinner {
+    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%;
+    display: inline-block; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 3px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .photo-retry-note { font-size: 12px; color: var(--coral-deep, #b5563b); font-weight: 700; margin-bottom: 10px; }
 
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
   .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
@@ -185,6 +200,7 @@
 <script src="/analytics.js" defer></script>
 <script src="/cart.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -293,6 +309,7 @@
           <div class="hint-sub" data-i18n="personalize.add_more_photos">You can add more than one for a better result</div>
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
+        <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
       </div>
 
       <button type="button" class="btn-primary" id="continue-order-btn" style="width:100%; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
@@ -318,79 +335,15 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
   );
 
-  // ---------- Draft persistence (survives the OAuth redirect) ----------
-  // Signing in with Google/Facebook navigates away to the provider and back,
-  // which reloads the page and would otherwise wipe every field the parent
-  // already filled in. We snapshot the form right before redirecting, then
-  // restore it once the page comes back.
-  const DRAFT_KEY = 'hikaya_personalize_draft_v1';
-
-  function dataUrlToFile(dataUrl, filename, mimeType) {
-    const arr = dataUrl.split(',');
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) u8arr[n] = bstr.charCodeAt(n);
-    return new File([u8arr], filename, { type: mimeType });
-  }
-
-  async function saveDraftToStorage() {
-    const base = {
-      childAge: document.getElementById('child-age').value,
-      ageEdition: document.getElementById('age-input').value,
-      story: document.getElementById('story-input').value,
-      gender: document.getElementById('child-gender').value,
-      childName: document.getElementById('child-name').value,
-      dedication: document.getElementById('dedication').value,
-      photos: [],
-    };
-    try {
-      base.photos = await Promise.all(photoFiles.map(file => new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ name: file.name, type: file.type, dataUrl: reader.result });
-        reader.readAsDataURL(file);
-      })));
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(base));
-    } catch {
-      // Photos may be too large for localStorage — save everything else anyway,
-      // rather than losing the whole draft over the photos.
-      try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...base, photos: [] })); } catch {}
-    }
-  }
-
-  function restoreDraftFromStorage() {
-    const raw = localStorage.getItem(DRAFT_KEY);
-    if (!raw) return;
-    try {
-      const draft = JSON.parse(raw);
-      if (draft.childAge) {
-        document.getElementById('child-age').value = draft.childAge;
-      }
-      if (draft.story) {
-        selectStory(draft.story);
-      }
-      if (draft.gender) {
-        document.getElementById('child-gender').value = draft.gender;
-        document.querySelectorAll('.gender-btn').forEach(b => { if (b.dataset.value === draft.gender) b.classList.add('selected'); });
-      }
-      if (draft.childName) {
-        document.getElementById('child-name').value = draft.childName;
-        document.getElementById('summary-name').textContent = draft.childName;
-      }
-      if (draft.dedication) document.getElementById('dedication').value = draft.dedication;
-      if (draft.photos && draft.photos.length) {
-        draft.photos.forEach(p => photoFiles.push(dataUrlToFile(p.dataUrl, p.name, p.type)));
-        renderThumbs();
-      }
-      checkDetailsComplete();
-    } catch {
-      // Corrupt draft — ignore rather than block the page.
-    } finally {
-      localStorage.removeItem(DRAFT_KEY);
-    }
-  }
-
   let photoFiles = [];
+
+  // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
+  const t = (key, fallback) => {
+    try {
+      const val = window.hikayaT && window.hikayaT(key);
+      return val || fallback || key;
+    } catch { return fallback || key; }
+  };
   let isSignedIn = false;
 
   // --- Birthday entry computes age edition, reveals stories ---
@@ -459,28 +412,120 @@
     });
   });
 
-  // --- Photo upload ---
+  // --- Photo upload: each photo gets checked before it counts ---
+  // Two free checks run on every photo: (1) a face is clearly visible,
+  // checked right in the browser with face-api.js (no cost, no upload
+  // needed for this part); (2) a content-policy check via OpenAI's free
+  // moderation endpoint. Only photos that pass both count toward "at
+  // least one photo" and get included in the order.
   const photoInput = document.getElementById('child-photos');
   const photoThumbs = document.getElementById('photo-thumbs');
+  const photoRetryNote = document.getElementById('photo-retry-note');
+  let faceModelsReady = false;
+
+  async function ensureFaceModels() {
+    if (faceModelsReady || !window.faceapi) return;
+    try {
+      await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights');
+      faceModelsReady = true;
+    } catch {
+      // Model failed to load (e.g. offline) -- checkPhoto() falls back to
+      // skipping the face check rather than blocking uploads entirely.
+    }
+  }
+  ensureFaceModels();
+
+  async function hasDetectableFace(file) {
+    if (!window.faceapi || !faceModelsReady) return true; // fail open if the model couldn't load
+    try {
+      const imgUrl = URL.createObjectURL(file);
+      const img = await new Promise((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = reject;
+        el.src = imgUrl;
+      });
+      const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.4 }));
+      URL.revokeObjectURL(imgUrl);
+      return detections.length > 0;
+    } catch {
+      return true; // fail open on any unexpected error -- don't block a real parent over our bug
+    }
+  }
+
+  async function passesContentCheck(file) {
+    try {
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch('/.netlify/functions/moderate-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64Data, mimeType: file.type }),
+      });
+      if (!res.ok) return true; // fail open if the check itself is down
+      const data = await res.json();
+      return data.approved !== false;
+    } catch {
+      return true; // fail open on network errors
+    }
+  }
+
+  async function checkPhoto(entry) {
+    const faceOk = await hasDetectableFace(entry.file);
+    if (!faceOk) {
+      entry.status = 'failed';
+      entry.reason = t('personalize.photo_fail_face', "We couldn't find a clear face in this photo.");
+      renderThumbs();
+      return;
+    }
+    const contentOk = await passesContentCheck(entry.file);
+    entry.status = contentOk ? 'verified' : 'failed';
+    if (!contentOk) entry.reason = t('personalize.photo_fail_content', "This photo can't be used — please try a different one.");
+    renderThumbs();
+    checkDetailsComplete();
+  }
+
   photoInput.addEventListener('change', () => {
-    Array.from(photoInput.files).forEach(file => photoFiles.push(file));
+    Array.from(photoInput.files).forEach(file => {
+      const entry = { file, status: 'checking', reason: null };
+      photoFiles.push(entry);
+      checkPhoto(entry);
+    });
+    photoInput.value = '';
     renderThumbs();
     checkDetailsComplete();
   });
+
   function renderThumbs() {
     photoThumbs.innerHTML = '';
-    photoFiles.forEach((file, i) => {
+    let anyFailed = false;
+    photoFiles.forEach((entry, i) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const div = document.createElement('div');
-        div.className = 'photo-thumb';
-        div.innerHTML = `<img src="${e.target.result}" /><button type="button" data-i="${i}">&times;</button>`;
-        div.querySelector('button').addEventListener('click', (ev) => { ev.preventDefault(); photoFiles.splice(i, 1); renderThumbs(); checkDetailsComplete(); });
+        div.className = 'photo-thumb state-' + entry.status;
+        let badge = '';
+        if (entry.status === 'checking') badge = `<div class="status-badge checking"><span class="spinner"></span>${t('personalize.photo_checking', 'Checking')}</div>`;
+        else if (entry.status === 'verified') badge = `<div class="status-badge verified">${t('personalize.photo_ok', '✓ OK')}</div>`;
+        else if (entry.status === 'failed') badge = `<div class="status-badge failed">${t('personalize.photo_failed', 'Try another')}</div>`;
+        div.innerHTML = `<img src="${e.target.result}" />${badge}<button type="button" class="remove-photo" data-i="${i}">&times;</button>`;
+        div.querySelector('.remove-photo').addEventListener('click', (ev) => { ev.preventDefault(); photoFiles.splice(i, 1); renderThumbs(); checkDetailsComplete(); });
         photoThumbs.appendChild(div);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(entry.file);
+      if (entry.status === 'failed') anyFailed = true;
     });
-    document.getElementById('summary-photos').textContent = photoFiles.length;
+    const verifiedCount = photoFiles.filter(p => p.status === 'verified').length;
+    document.getElementById('summary-photos').textContent = verifiedCount;
+    photoRetryNote.style.display = anyFailed ? 'block' : 'none';
+    if (anyFailed) {
+      const failedReasons = photoFiles.filter(p => p.status === 'failed').map(p => p.reason);
+      photoRetryNote.textContent = failedReasons[0] || t('personalize.photo_fail_generic', 'Please try a different photo.');
+    }
   }
 
   // --- Order form completion enables the Continue button ---
@@ -492,14 +537,20 @@
 
   const continueBtn = document.getElementById('continue-order-btn');
   function checkDetailsComplete() {
+    const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
+    const stillChecking = photoFiles.some(p => p.status === 'checking');
     const ready = document.getElementById('story-input').value
       && nameInput.value.trim()
       && ageInputEl.value.trim()
-      && photoFiles.length > 0;
+      && hasVerifiedPhoto;
     continueBtn.disabled = !ready;
-    continueBtn.textContent = ready
-      ? (window.hikayaT ? window.hikayaT('personalize.continue_ready') : 'Continue') || 'Continue'
-      : (window.hikayaT ? window.hikayaT('personalize.continue_btn') : 'Fill in the details above to continue') || 'Fill in the details above to continue';
+    if (stillChecking) {
+      continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
+    } else {
+      continueBtn.textContent = ready
+        ? t('personalize.continue_ready', 'Continue')
+        : t('personalize.continue_btn', 'Fill in the details above to continue');
+    }
   }
   checkDetailsComplete();
 
@@ -518,7 +569,7 @@
       childAge: ageInputEl.value,
       gender: document.getElementById('child-gender').value,
       dedication: document.getElementById('dedication').value.trim(),
-      photoCount: photoFiles.length,
+      photoCount: photoFiles.filter(p => p.status === 'verified').length,
     };
   }
 
@@ -545,15 +596,16 @@
   }
 
   continueBtn.addEventListener('click', async () => {
+    const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
     if (window.hikayaCart) {
       const item = buildCartItemFromForm();
       // Photos are converted to base64 so they survive a full page navigation
       // to checkout.html (the cart lives in localStorage, not memory).
       try {
-        item.photos = await Promise.all(photoFiles.map(file => new Promise((resolve) => {
+        item.photos = await Promise.all(verifiedPhotos.map(entry => new Promise((resolve) => {
           const reader = new FileReader();
-          reader.onload = () => resolve({ name: file.name, type: file.type, dataUrl: reader.result });
-          reader.readAsDataURL(file);
+          reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
+          reader.readAsDataURL(entry.file);
         })));
       } catch { item.photos = []; }
       window.hikayaCart.addToCart(item);
@@ -564,7 +616,7 @@
     // blocks the cart flow even if it fails).
     try {
       const formData = new FormData(document.getElementById('request-form'));
-      photoFiles.forEach((file, i) => formData.append(`photo_${i + 1}`, file, file.name));
+      verifiedPhotos.forEach((entry, i) => formData.append(`photo_${i + 1}`, entry.file, entry.file.name));
       fetch('/', { method: 'POST', body: formData }).catch(() => {});
     } catch { /* best-effort only */ }
 
