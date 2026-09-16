@@ -15,6 +15,8 @@ Living backlog of what's left to build. Update this file as items get done or ne
 - Legal pages: Privacy, Terms, Refund Policy (drafted to match how the site actually works — needs real lawyer review before launch)
 - Fixed: region/currency silently resetting to Germany/EUR at checkout (race condition), missing cart icon, "Added to cart" moved to its own page, checkout delivery form was fillable without ever choosing sign-in/guest, admin login redirecting to the wrong place afterward
 - Mobile audit: fixed a real horizontal-overflow bug on checkout (sign-in buttons wouldn't wrap), confirmed zero overflow across all 13 pages at phone width
+- Site Photos dashboard: admin can now upload a replacement for any of the 13 site photos and it updates everywhere that photo is used, no code changes needed
+- Simplified admin login: replaced Google sign-in with a single dashboard password (`ADMIN_PASSWORD` env var) — no Google account or OAuth chain needed to get in
 
 ## Still open
 
@@ -30,8 +32,11 @@ Everything else on the site is EN/DE/AR — this one page (the cart confirmation
 ### 4. "My Dashboard" scope for customers
 Admin dashboard (owner) is done. A separate customer-facing "track my order" page doesn't exist yet — worth deciding if that's wanted.
 
-### 5. Old Supabase migration block
-The `order_status`/`orders`/`discount_codes`/`abandoned_carts` tables are still blocked by an old migration approval issue. Everything that depends on them (order persistence, admin dashboard data, reminders, discount codes) is built to degrade gracefully without it, but real data won't show up until it's resolved.
+### 5. Old Supabase migration block — now also blocks Site Photos
+The `order_status`/`orders`/`discount_codes`/`abandoned_carts` tables are still blocked by an old migration approval issue. Also now blocks Site Photos: needs a public Storage bucket named `site-photos` and a `site_photos` table (filename, url, updated_at) — separate from the blocked migration, just needs creating in the Supabase dashboard. Everything that depends on these is built to degrade gracefully without them, but real data/photos won't show up until they exist.
+
+### 6. Set ADMIN_PASSWORD
+The new simplified admin login needs `ADMIN_PASSWORD` set in Netlify env vars — pick a real password, not something guessable, since this dashboard shows real customer names, addresses, phone numbers, and emails.
 
 ---
 
