@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Your Cart — Hikaya by Maison Jaber</title>
+<meta name="description" content="Review the personalized storybooks in your cart before checkout." />
+<meta name="robots" content="noindex, follow" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 16px; --radius-lg: 24px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
+  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; }
+  header.site .site-logo { height: 60px; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .lang-pill, .zone-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; cursor: pointer; }
+  .zone-pill { border: 1px solid var(--line-soft); }
+  .lang-pill:hover, .zone-pill:hover { background: var(--bg-soft); }
+
+  .page-head { padding: 36px 0 8px; }
+  .page-head h1 { font-size: 30px; }
+  .page-head p { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-top: 6px; }
+
+  .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; padding: 24px 0 80px; align-items: start; }
+  @media (max-width: 860px) { .cart-layout { grid-template-columns: 1fr; } }
+
+  .cart-item {
+    display: flex; gap: 16px; background: #fff; border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
+    box-shadow: 0 6px 18px rgba(50,44,36,0.06); align-items: center;
+  }
+  .cart-item .cover { width: 64px; height: 84px; border-radius: 10px; flex-shrink: 0; }
+  .cart-item .cover.courage { background: linear-gradient(165deg, #D98868 0%, #B5563B 100%); }
+  .cart-item .cover.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
+  .cart-item .cover.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
+  .cart-item .info { flex: 1; min-width: 0; }
+  .cart-item .info h3 { font-size: 17px; margin-bottom: 4px; }
+  .cart-item .info .meta { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  .cart-item .price { font-weight: 800; font-size: 15px; white-space: nowrap; }
+  .cart-item .remove-btn {
+    background: none; border: none; cursor: pointer; color: var(--ink-soft); font-size: 12px; font-weight: 700;
+    text-decoration: underline; margin-top: 6px; padding: 0;
+  }
+
+  .upsell-banner {
+    background: linear-gradient(135deg, #F3E8D8, #EADBC4); border-radius: var(--radius); padding: 16px 20px;
+    margin-bottom: 18px; display: flex; align-items: center; gap: 12px; font-size: 13.5px; font-weight: 700; color: var(--coral-deep);
+  }
+  .upsell-banner svg { width: 22px; height: 22px; stroke: var(--coral-deep); fill: none; flex-shrink: 0; }
+  .upsell-banner.maxed { background: linear-gradient(135deg, #e7dcc0, #dcc99e); }
+
+  .empty-cart { text-align: center; padding: 70px 20px; background: #fff; border-radius: var(--radius-lg); }
+  .empty-cart svg { width: 52px; height: 52px; stroke: var(--line); fill: none; margin-bottom: 16px; }
+  .empty-cart h2 { font-size: 22px; margin-bottom: 8px; }
+  .empty-cart p { color: var(--ink-soft); font-weight: 600; margin-bottom: 22px; }
+
+  .summary-box { background: #fff; border-radius: var(--radius); padding: 22px; position: sticky; top: 90px; }
+  .summary-box h3 { font-size: 17px; margin-bottom: 14px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13.5px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .summary-row.total { border-bottom: none; padding-top: 12px; }
+  .summary-row.total span:first-child { font-weight: 800; }
+  .summary-row.total span:last-child { color: var(--coral-deep); font-weight: 800; font-size: 16px; }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+
+  .btn-primary {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px;
+    border-radius: 999px; border: none; background: var(--coral); color: #fff; font-size: 14.5px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 12px 28px rgba(70,45,25,0.16); margin-top: 16px;
+  }
+  .btn-primary:hover { background: var(--coral-deep); }
+  .continue-shopping { display: block; text-align: center; margin-top: 14px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .continue-shopping:hover { color: var(--coral-deep); }
+
+  footer.site { background: #2E2018; color: #e8ddd0; padding: 30px 0; text-align: center; margin-top: 40px; }
+  footer.site p { font-size: 12.5px; }
+</style>
+<script src="/i18n.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap inner">
+    <a href="index.html"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
+    <div class="header-right">
+      <a class="lang-pill" href="#" data-i18n-skip>EN</a>
+      <a class="zone-pill" href="#">Europe</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap page-head">
+  <h1 data-i18n="cart.title">Your Cart</h1>
+  <p id="cart-count-sub"></p>
+</div>
+
+<div class="wrap cart-layout">
+  <div>
+    <div id="upsell-banner-slot"></div>
+    <div id="cart-items"><!-- populated by JS --></div>
+  </div>
+  <div id="summary-slot"></div>
+</div>
+
+<footer class="site">
+  <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+<script defer>
+  const t = (key, fallback) => {
+    try { const val = window.hikayaT && window.hikayaT(key); return val || fallback || key; }
+    catch { return fallback || key; }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    render();
+    document.addEventListener('hikaya:regionchange', render);
+  });
+
+  function fmt(n, region) {
+    return region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
+  }
+
+  function render() {
+    if (!window.hikayaCart || !window.hikayaRegion) return;
+    const cart = window.hikayaCart.getCart();
+    const region = window.hikayaRegion();
+    const itemsWrap = document.getElementById('cart-items');
+    const summarySlot = document.getElementById('summary-slot');
+    const upsellSlot = document.getElementById('upsell-banner-slot');
+    const countSub = document.getElementById('cart-count-sub');
+
+    countSub.textContent = cart.length === 0 ? '' : `${cart.length} ${cart.length === 1 ? t('cart.book_singular', 'book') : t('cart.book_plural', 'books')}`;
+
+    if (cart.length === 0) {
+      itemsWrap.innerHTML = `
+        <div class="empty-cart">
+          <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 4h2l2.2 11a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6.5"/><circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+          <h2>${t('cart.empty_title', 'Your cart is empty')}</h2>
+          <p>${t('cart.empty_sub', 'Create a personalized storybook to get started.')}</p>
+          <a class="btn-primary" href="stories.html" style="display:inline-flex; width:auto; padding:14px 30px;">${t('cart.browse_stories', 'Browse Stories')}</a>
+        </div>`;
+      summarySlot.innerHTML = '';
+      upsellSlot.innerHTML = '';
+      return;
+    }
+
+    const pricing = window.hikayaCart.computeCartPricing(region);
+
+    // Upsell messaging -- classic ecommerce nudge toward the next bundle tier.
+    let upsellHtml = '';
+    if (cart.length === 1) {
+      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_1', 'Add one more book and save 10% + free delivery.')}</span></div>`;
+    } else if (cart.length === 2) {
+      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_2', '10% off applied! Add one more to unlock 20% off.')}</span></div>`;
+    } else {
+      upsellHtml = `<div class="upsell-banner maxed"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg><span>${t('cart.upsell_max', '20% off + free delivery applied — our best price!')}</span></div>`;
+    }
+    upsellSlot.innerHTML = upsellHtml;
+
+    itemsWrap.innerHTML = cart.map(item => `
+      <div class="cart-item" data-id="${item.id}">
+        <div class="cover ${item.theme}"></div>
+        <div class="info">
+          <h3>${item.story}</h3>
+          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</div>
+          <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
+        </div>
+        <div class="price">${fmt(pricing.perBookDiscounted, region)}</div>
+      </div>
+    `).join('');
+
+    itemsWrap.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.hikayaCart.removeFromCart(btn.dataset.id);
+        render();
+      });
+    });
+
+    summarySlot.innerHTML = `
+      <div class="summary-box">
+        <h3>${t('cart.order_summary', 'Order Summary')}</h3>
+        <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.perBookFull * pricing.itemCount, region)}</span></div>
+        ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')}</span><span>-${pricing.tier.discountPct}%</span></div>` : ''}
+        <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${pricing.tier.freeDelivery ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>
+        <div class="summary-row total"><span>${t('checkout.est_total', 'Estimated total')}</span><span>${fmt(pricing.total, region)}</span></div>
+        <a class="btn-primary" href="checkout.html">${t('cart.checkout_btn', 'Proceed to Checkout →')}</a>
+        <a class="continue-shopping" href="stories.html">${t('cart.continue_shopping', '← Continue Shopping')}</a>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
