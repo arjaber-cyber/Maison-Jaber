@@ -72,6 +72,21 @@
 
   .back-link { position: relative; z-index: 2; margin-top: 24px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
   .back-link:hover { color: var(--coral-deep); }
+
+  .cross-sell { position: relative; z-index: 2; margin-top: 40px; width: 100%; max-width: 480px; text-align: center; }
+  .cross-sell-title { font-family: 'Cormorant Garamond', serif; font-size: 19px; margin-bottom: 14px; }
+  .cross-sell-grid { display: flex; gap: 12px; justify-content: center; }
+  .cross-sell-card {
+    background: #fff; border-radius: 14px; overflow: hidden; text-decoration: none; color: inherit; width: 140px;
+    box-shadow: 0 8px 22px rgba(70,45,25,0.1); transition: transform 0.2s ease;
+  }
+  .cross-sell-card:hover { transform: translateY(-3px); }
+  .cross-sell-card .thumb { aspect-ratio: 4/3.4; display: flex; align-items: center; justify-content: center; padding: 10px; text-align: center; }
+  .cross-sell-card .thumb.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .cross-sell-card .thumb.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .cross-sell-card .thumb.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .cross-sell-card .thumb span { color: #fff; font-size: 12.5px; font-weight: 700; line-height: 1.25; }
+  .cross-sell-card .label { padding: 8px 10px; font-size: 12px; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -105,6 +120,11 @@
   </div>
 
   <a href="personalize.html" class="back-link">&larr; Back to edit details</a>
+
+  <div class="cross-sell" id="cross-sell" style="display:none;">
+    <div class="cross-sell-title" id="cross-sell-title">You might also like</div>
+    <div class="cross-sell-grid" id="cross-sell-grid"></div>
+  </div>
 </div>
 
 <script src="/cart.js" defer></script>
@@ -135,6 +155,24 @@
     document.getElementById('add-another-btn').addEventListener('click', () => {
       window.location.href = 'personalize.html?new=1';
     });
+
+    // Cross-sell: suggest whichever stories aren't already in the cart.
+    const ALL_STORIES = [
+      { story: 'The Bravest Little One', theme: 'courage', label: 'The Bravest<br>Little One' },
+      { story: 'The Cloud Ship', theme: 'adventure', label: 'The Cloud<br>Ship' },
+      { story: "The Star Who Couldn't Sleep", theme: 'lullaby', label: "The Star Who<br>Couldn't Sleep" },
+    ];
+    const inCart = new Set(cart.map(i => i.story));
+    const suggestions = ALL_STORIES.filter(s => !inCart.has(s.story));
+    if (suggestions.length > 0) {
+      document.getElementById('cross-sell').style.display = 'block';
+      document.getElementById('cross-sell-grid').innerHTML = suggestions.map(s => `
+        <a class="cross-sell-card" href="personalize.html?story=${encodeURIComponent(s.story)}">
+          <div class="thumb ${s.theme}"><span>${s.label}</span></div>
+          <div class="label">${s.story}</div>
+        </a>
+      `).join('');
+    }
   });
 </script>
 

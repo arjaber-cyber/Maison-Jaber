@@ -171,6 +171,26 @@
 
   /* Footer */
   footer.site { background: var(--near-black); color: #e8ddd0; padding: 50px 0 30px; margin-top: 0; }
+  .newsletter-box {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    background: rgba(255,255,255,0.06); border-radius: 20px; padding: 28px 32px; margin-bottom: 36px;
+  }
+  .newsletter-box h3 { font-size: 21px; color: #fff; margin-bottom: 4px; }
+  .newsletter-box p { font-size: 13.5px; color: #cbbba9; }
+  .newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .newsletter-form input {
+    padding: 12px 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+    color: #fff; font-size: 13.5px; min-width: 220px; font-family: 'Inter', sans-serif;
+  }
+  .newsletter-form input::placeholder { color: #a8998a; }
+  .newsletter-form input:focus { outline: none; border-color: var(--gold); }
+  .newsletter-form button {
+    padding: 12px 24px; border-radius: 100px; border: none; background: var(--coral, #A67443); color: #fff;
+    font-size: 13.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .newsletter-form button:hover { background: var(--coral-deep, #563622); }
+  .newsletter-msg { text-align: center; font-size: 12.5px; font-weight: 600; color: #d8c9b0; margin: -24px 0 24px; min-height: 16px; }
+  @media (max-width: 640px) { .newsletter-box { flex-direction: column; align-items: stretch; text-align: center; } .newsletter-form { justify-content: center; } }
   .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; }
   footer.site .wordmark img { height: 70px; filter: brightness(0) invert(1) opacity(0.9); }
   footer.site nav { display: flex; gap: 24px; flex-wrap: wrap; }
@@ -183,6 +203,7 @@
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
+<script src="/search.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -200,7 +221,7 @@
       <a href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
     </nav>
     <div class="header-actions">
-      <a class="icon-btn" href="./stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
+      <a class="icon-btn search-trigger" href="./stories.html" aria-label="Search"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
       <a class="icon-btn" href="./cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 4h2l2.2 11a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6.5"/><circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
         <span class="cart-badge">0</span>
@@ -325,6 +346,17 @@
 
 <footer class="site">
   <div class="wrap">
+    <div class="newsletter-box">
+      <div>
+        <h3 data-i18n="home5.newsletter_title">Stories in your inbox</h3>
+        <p data-i18n="home5.newsletter_sub">New stories, gifting ideas, and the occasional discount code — no spam.</p>
+      </div>
+      <form id="newsletter-form" class="newsletter-form">
+        <input type="email" id="newsletter-email" placeholder="you@email.com" data-i18n-placeholder="home5.newsletter_ph" required />
+        <button type="submit" data-i18n="home5.newsletter_btn">Subscribe</button>
+      </form>
+    </div>
+    <div id="newsletter-msg" class="newsletter-msg"></div>
     <div class="footer-grid">
       <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
       <nav>
@@ -370,6 +402,33 @@
 
     setInterval(() => goTo(current + 1), 4500);
   })();
+
+  document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const emailInput = document.getElementById('newsletter-email');
+    const msg = document.getElementById('newsletter-msg');
+    const btn = e.target.querySelector('button');
+    const email = emailInput.value.trim();
+    if (!email) return;
+    btn.disabled = true;
+    try {
+      const res = await fetch('/.netlify/functions/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_success') : "Thanks! You're on the list.";
+        emailInput.value = '';
+      } else {
+        const data = await res.json();
+        msg.textContent = data.error || (window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.');
+      }
+    } catch {
+      msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.';
+    }
+    btn.disabled = false;
+  });
 </script>
 
 </body>
