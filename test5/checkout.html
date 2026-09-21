@@ -151,6 +151,8 @@
   .card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 18px; }
   .card-fields .full { grid-column: 1 / -1; }
   .card-fields-note { font-size: 11.5px; color: var(--ink-soft); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+  .paytabs-intro { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-bottom: 4px; }
+  #paytabs-status-note { font-size: 13.5px; font-weight: 700; color: var(--ink-soft); text-align: center; padding: 20px 0; }
 
   .cod-box {
     background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 20px;
@@ -696,10 +698,11 @@
     if (selectedPaymentMethod === 'card') {
       bodyHtml = `
         <div class="card-fields">
-          <div class="field full"><label class="field-label">${t('checkout.name_on_card', 'Name on card')}<span class="req-mark">*</span></label><input type="text" id="card-name" placeholder="e.g. Sara Al Habtoor" /></div>
-          <div class="field full"><label class="field-label">${t('checkout.card_number', 'Card number')}<span class="req-mark">*</span></label><input type="text" id="card-number" placeholder="1234 1234 1234 1234" maxlength="19" /></div>
-          <div class="field"><label class="field-label">${t('checkout.expiry', 'Expiry')}<span class="req-mark">*</span></label><input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" /></div>
-          <div class="field"><label class="field-label">CVC<span class="req-mark">*</span></label><input type="text" id="card-cvc" placeholder="123" maxlength="4" /></div>
+          <p class="paytabs-intro">${t('checkout.paytabs_intro', "You'll enter your card details securely on the next step — we never see or store them.")}</p>
+          <div id="paytabs-frame-wrap" style="display:none;">
+            <iframe id="paytabs-iframe" title="Secure payment" style="width:100%; min-height:480px; border:none; border-radius:12px; background:#fff;"></iframe>
+          </div>
+          <div id="paytabs-status-note" style="display:none;"></div>
         </div>
         <div class="card-fields-note">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -762,20 +765,6 @@
         selectedPaymentMethod = btn.dataset.method;
         renderPaymentSection();
       });
-    });
-    if (selectedPaymentMethod === 'card') attachCardFormatting();
-  }
-
-  function attachCardFormatting() {
-    const numberEl = document.getElementById('card-number');
-    const expiryEl = document.getElementById('card-expiry');
-    numberEl?.addEventListener('input', () => {
-      numberEl.value = numberEl.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
-    });
-    expiryEl?.addEventListener('input', () => {
-      let v = expiryEl.value.replace(/\D/g, '').slice(0, 4);
-      if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
-      expiryEl.value = v;
     });
   }
 
@@ -927,56 +916,13 @@
       return;
     }
 
-    if (selectedPaymentMethod === 'card') {
-      const cardName = document.getElementById('card-name')?.value.trim();
-      const cardNumber = (document.getElementById('card-number')?.value || '').replace(/\s/g, '');
-      const cardExpiry = document.getElementById('card-expiry')?.value.trim();
-      const cardCvc = document.getElementById('card-cvc')?.value.trim();
-      if (!cardName || !cardNumber || !cardExpiry || !cardCvc) {
-        errorBox.textContent = t('checkout.err_card_required', 'Please fill in all card details.');
-        errorBox.style.display = 'block';
-        return;
-      }
-      if (cardNumber.length < 13 || cardNumber.length > 16 || !/^\d+$/.test(cardNumber)) {
-        errorBox.textContent = t('checkout.err_card_number', 'Please enter a valid card number.');
-        errorBox.style.display = 'block';
-        return;
-      }
-      if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) {
-        errorBox.textContent = t('checkout.err_card_expiry', 'Please enter expiry as MM/YY.');
-        errorBox.style.display = 'block';
-        return;
-      }
-      if (!/^\d{3,4}$/.test(cardCvc)) {
-        errorBox.textContent = t('checkout.err_card_cvc', 'Please enter a valid CVC.');
-        errorBox.style.display = 'block';
-        return;
-      }
-    }
 
     placeOrderBtn.disabled = true;
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
 
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const headers = { 'Content-Type': 'application/json' };
-      if (session) headers.Authorization = `Bearer ${session.access_token}`;
-
-      const res = await fetch('/.netlify/functions/process-payment', {
-        method: 'POST', headers, body: JSON.stringify(order)
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        errorBox.textContent = data.error || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
-        errorBox.style.display = 'block';
-        placeOrderBtn.disabled = false;
-        placeOrderBtn.textContent = originalText;
-        return;
-      }
-
-      successBox.textContent = data.message || t('checkout.order_success', 'Order placed successfully!');
+    function finalizeOrderSuccess(message) {
+      successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
       document.getElementById('progress-step-2').classList.add('done');
@@ -996,6 +942,88 @@
       }).catch(() => { /* best-effort only */ });
 
       if (window.hikayaCart) window.hikayaCart.clearCart();
+    }
+
+    // Card payments go through PayTabs' hosted payment page, embedded as
+    // an iframe, so raw card numbers never touch this site's code.
+    if (selectedPaymentMethod === 'card') {
+      try {
+        const res = await fetch('/.netlify/functions/create-paytabs-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.redirectUrl) {
+          errorBox.textContent = data.error || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+          errorBox.style.display = 'block';
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.textContent = originalText;
+          return;
+        }
+
+        const frameWrap = document.getElementById('paytabs-frame-wrap');
+        const iframe = document.getElementById('paytabs-iframe');
+        const statusNote = document.getElementById('paytabs-status-note');
+        iframe.src = data.redirectUrl;
+        frameWrap.style.display = 'block';
+        placeOrderBtn.style.display = 'none';
+        iframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        window.addEventListener('message', async function onPaytabsMessage(e) {
+          if (!e.data || e.data.source !== 'hikaya-paytabs') return;
+          window.removeEventListener('message', onPaytabsMessage);
+          frameWrap.style.display = 'none';
+          statusNote.style.display = 'block';
+          statusNote.textContent = t('checkout.paytabs_verifying', 'Confirming your payment…');
+
+          try {
+            const checkRes = await fetch(`/.netlify/functions/check-paytabs-status?tranRef=${encodeURIComponent(e.data.tranRef)}`);
+            const checkData = await checkRes.json();
+            if (checkData.approved) {
+              statusNote.style.display = 'none';
+              finalizeOrderSuccess(t('checkout.order_success', 'Order placed successfully!'));
+            } else {
+              statusNote.textContent = t('checkout.paytabs_declined', 'This payment was not approved. Please try again or use a different card.');
+              placeOrderBtn.style.display = 'block';
+              placeOrderBtn.disabled = false;
+              placeOrderBtn.textContent = originalText;
+            }
+          } catch {
+            statusNote.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+            placeOrderBtn.style.display = 'block';
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = originalText;
+          }
+        });
+      } catch {
+        errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+        errorBox.style.display = 'block';
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = originalText;
+      }
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const headers = { 'Content-Type': 'application/json' };
+      if (session) headers.Authorization = `Bearer ${session.access_token}`;
+
+      const res = await fetch('/.netlify/functions/process-payment', {
+        method: 'POST', headers, body: JSON.stringify(order)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorBox.textContent = data.error || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+        errorBox.style.display = 'block';
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = originalText;
+        return;
+      }
+
+      finalizeOrderSuccess(data.message);
     } catch {
       errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
       errorBox.style.display = 'block';
