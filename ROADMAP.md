@@ -1,48 +1,75 @@
 # Hikaya — Build Roadmap
 
-Living backlog of what's left to build. Update this file as items get done or new ones come up.
+Living backlog for a full end-to-end ecommerce platform. Organized by what actually
+blocks a real launch vs. what's genuinely lower priority. Update as items land.
 
 ---
 
-## ✅ Done
+## 🔴 Critical — blocks a real launch
 
-- Order confirmation emails (Resend), abandoned-order recovery (scheduled reminders), analytics (GA4 + Meta Pixel event tracking)
-- Shopping cart with bundle pricing (1 book full price, 2 = -10% + free delivery, 3+ = -20% + free delivery — placeholder %, confirm real numbers)
-- Discount codes at checkout (stacks on top of bundle price; works today via starter codes even before the Supabase table exists)
-- Admin dashboard reconnected to real Supabase orders (multi-item orders, bundle/promo tags, gift messages) — also fixed a pre-existing crash bug (`accessToken` was never declared) that likely broke the whole dashboard before today
-- Payment audit across all 7 methods × all regions — added missing card-field validation that was silently absent
-- SEO basics: robots.txt, sitemap.xml, Open Graph/Twitter Card tags on all public pages
-- Legal pages: Privacy, Terms, Refund Policy (drafted to match how the site actually works — needs real lawyer review before launch)
-- Fixed: region/currency silently resetting to Germany/EUR at checkout (race condition), missing cart icon, "Added to cart" moved to its own page, checkout delivery form was fillable without ever choosing sign-in/guest, admin login redirecting to the wrong place afterward
-- Mobile audit: fixed a real horizontal-overflow bug on checkout (sign-in buttons wouldn't wrap), confirmed zero overflow across all 13 pages at phone width
-- Site Photos dashboard: admin can now upload a replacement for any of the 13 site photos and it updates everywhere that photo is used, no code changes needed
-- Simplified admin login: replaced Google sign-in with a single dashboard password (`ADMIN_PASSWORD` env var) — no Google account or OAuth chain needed to get in
+### 1. The AI illustration pipeline isn't connected to the order flow
+`generate-illustration.js` exists and works standalone (photo + story context → AI
+illustration), but nothing in Personalize, Checkout, or Admin ever calls it. This is
+the actual product mechanic, not a nice-to-have. Missing pieces:
+- Triggering illustration generation once an order comes in
+- A way for admin to review a result and regenerate if it's bad
+- A way for the **parent to see and approve** their child's illustrated pages before
+  it moves to printing (the "awaiting_approval" pipeline stage exists as a label
+  everywhere but has no actual screen behind it)
 
-## Still open
+### 2. Eight Supabase tables don't exist yet
+`orders`, `order_status`, `discount_codes`, `abandoned_carts`, `site_photos`,
+`pending_paytabs_orders`, `contact_messages`, `newsletter_subscribers`. Everything
+built degrades gracefully without them (no crashes), but that means large parts of
+the site are currently running in "silently does nothing" mode. Pure setup — exact
+table definitions can be handed over to paste into Supabase directly.
 
-### 1. Real merchant credentials
-Nothing charges real money yet — Telr/PayTabs (cards + wallets), Tabby, Tamara, and Sham Cash each need their own separate account + API keys in Netlify env vars. This blocks real payments regardless of anything else.
-
-### 2. Real tracking IDs
-`analytics.js` has placeholder GA4/Meta Pixel IDs — swap in the real ones whenever you have them.
-
-### 3. book-added.html isn't translated yet
-Everything else on the site is EN/DE/AR — this one page (the cart confirmation) is English-only.
-
-### 4. "My Dashboard" scope for customers
-Admin dashboard (owner) is done. A separate customer-facing "track my order" page doesn't exist yet — worth deciding if that's wanted.
-
-### 5. Old Supabase migration block — now also blocks Site Photos
-The `order_status`/`orders`/`discount_codes`/`abandoned_carts` tables are still blocked by an old migration approval issue. Also now blocks Site Photos: needs a public Storage bucket named `site-photos` and a `site_photos` table (filename, url, updated_at) — separate from the blocked migration, just needs creating in the Supabase dashboard. Everything that depends on these is built to degrade gracefully without them, but real data/photos won't show up until they exist.
-
-### 6. Set ADMIN_PASSWORD
-The new simplified admin login needs `ADMIN_PASSWORD` set in Netlify env vars — pick a real password, not something guessable, since this dashboard shows real customer names, addresses, phone numbers, and emails.
+### 3. Real merchant accounts
+PayTabs (chosen gateway), Tabby, Tamara, Sham Cash — no live credentials yet. No real
+order can be paid for until these exist. Also still needed: `ADMIN_PASSWORD`,
+`OPENAI_API_KEY` (photo moderation + illustration), `RESEND_API_KEY` (emails).
 
 ---
 
-## Lower priority / needs your input, not just code
+## 🟠 Fulfillment operations
 
-- Real story illustrations (still placeholder color gradients)
-- Referral / "gift a friend" program
-- Real customer reviews with photos, once real orders exist
-- Bundle discount % and BNPL minimum-order threshold — both are my placeholder judgment calls, not confirmed business numbers
+- No shipping/carrier integration (DHL, Aramex, etc.) — no real tracking numbers ever
+  reach the customer beyond internal stage labels
+- No way to cancel or edit an order from the admin dashboard once placed
+- No refund *issuance* from the dashboard — today a refund means going directly into
+  PayTabs' own dashboard
+
+## 🟡 Owner dashboard — solid, but incomplete
+
+- No discount code management UI — codes only exist as hardcoded fallbacks or via
+  direct Supabase table edits; no "create a new code" button
+- No customer messages inbox in admin — Contact Us only emails the owner, doesn't
+  surface anywhere in the dashboard itself
+- No newsletter subscriber list or export in admin
+- No revenue/sales reporting beyond the basic stat cards already on the dashboard
+- No illustration review/approval screen (ties directly to Critical #1)
+
+## 🟢 After-sales support — mostly there
+
+- ✅ Done: Contact Us, guest order tracking, printable invoices, order history on account page
+- ❌ No self-service refund/replacement *request* flow — only via email/contact form
+- ❌ No live chat or WhatsApp option (discussed, never built — WhatsApp may fit this
+  business better than a generic chat widget given the UAE/Syria customer base)
+
+---
+
+## Lower priority — real gaps, not launch-blocking
+
+- `analytics.js` still has placeholder GA4/Meta Pixel IDs
+- No reviews/ratings system (the system itself could be built, but populating it
+  honestly needs real customers first)
+- No referral / "gift a friend" program
+- Real story cover illustrations (site still uses color-gradient placeholders)
+- VAT/tax calculation and display not built (UAE 5%, Germany 19%)
+- No error monitoring/alerting if a serverless function fails in production
+- `book-added.html` isn't translated (EN only; rest of site is EN/DE/AR)
+- Bundle discount % and BNPL minimum-order threshold are still placeholder judgment
+  calls, not confirmed business numbers
+- Tabby/Tamara currently offered in all 6 GCC regions in the UI, but Tabby only
+  covers UAE/Saudi/Kuwait and Tamara adds Bahrain — Qatar/Oman need those options
+  hidden or handled once real BNPL credentials go in
