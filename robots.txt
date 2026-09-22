@@ -5,6 +5,7 @@ Disallow: /test5/account.html
 Disallow: /test5/checkout.html
 Disallow: /test5/personalize.html
 Disallow: /test5/cart.html
+Disallow: /test5/invoice.html
 Disallow: /test5/login.html
 Disallow: /test/
 Disallow: /test2/

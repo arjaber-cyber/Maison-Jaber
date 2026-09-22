@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Track Your Order — Hikaya by Maison Jaber</title>
+<meta name="description" content="Check the status of your Hikaya storybook order." />
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" type="image/png" href="images/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8; --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+
+  header.site { border-bottom: 1px solid var(--line-soft); }
+  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .site-logo { height: 56px; }
+  header.site nav a { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+
+  .page-head { padding: 44px 0 8px; text-align: center; }
+  .page-head h1 { font-size: 28px; }
+  .page-head p { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-top: 8px; }
+
+  .lookup-card { background: #fff; border-radius: var(--radius); padding: 28px; margin: 28px 0; }
+  .field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .field { margin-bottom: 16px; }
+  .field input {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line-soft); font-size: 14px;
+    font-family: 'Inter', sans-serif; box-sizing: border-box;
+  }
+  .field input:focus { outline: none; border-color: var(--coral); }
+  .btn-primary {
+    width: 100%; padding: 14px; border-radius: 999px; border: none; background: var(--coral); color: #fff;
+    font-size: 14.5px; font-weight: 700; cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--coral-deep); }
+  .lookup-error { color: var(--coral-deep); font-size: 13px; font-weight: 700; margin-top: 12px; text-align: center; display: none; }
+
+  .result-card { background: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 40px; display: none; }
+  .result-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .result-header h2 { font-size: 19px; }
+  .result-header span { font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .result-items { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 22px; }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-step { display: flex; gap: 14px; }
+  .tl-step .marker-col { display: flex; flex-direction: column; align-items: center; }
+  .tl-step .marker { width: 22px; height: 22px; border-radius: 50%; background: var(--line-soft); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .tl-step .marker svg { width: 12px; height: 12px; stroke: #fff; fill: none; display: none; }
+  .tl-step.done .marker, .tl-step.current .marker { background: var(--coral); }
+  .tl-step.done .marker svg { display: block; }
+  .tl-step .bar { width: 2px; flex: 1; background: var(--line-soft); min-height: 22px; }
+  .tl-step.done .bar { background: var(--coral); }
+  .tl-step:last-child .bar { display: none; }
+  .tl-step .label { padding-bottom: 24px; font-size: 13.5px; font-weight: 700; color: var(--ink-soft); padding-top: 2px; }
+  .tl-step.current .label { color: var(--ink); }
+  .invoice-link { display: block; text-align: center; margin-top: 4px; font-size: 13px; font-weight: 700; text-decoration: underline; color: var(--ink-soft); }
+
+  footer.site { background: #2E2018; color: #e8ddd0; padding: 30px 0; text-align: center; margin-top: 40px; }
+  footer.site p { font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <a href="index.html"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
+    <nav><a href="help.html">Help</a></nav>
+  </div>
+</header>
+
+<div class="wrap page-head">
+  <h1>Track Your Order</h1>
+  <p>Enter your order number and the email you used at checkout.</p>
+</div>
+
+<div class="wrap">
+  <div class="lookup-card">
+    <div class="field">
+      <label class="field-label" for="order-number">Order Number</label>
+      <input type="text" id="order-number" placeholder="HK-12345678" />
+    </div>
+    <div class="field">
+      <label class="field-label" for="track-email">Email</label>
+      <input type="email" id="track-email" placeholder="you@email.com" />
+    </div>
+    <button type="button" class="btn-primary" id="track-btn">Track Order</button>
+    <div class="lookup-error" id="lookup-error"></div>
+  </div>
+
+  <div class="result-card" id="result-card">
+    <div class="result-header">
+      <h2 id="result-order-number"></h2>
+      <span id="result-date"></span>
+    </div>
+    <div class="result-items" id="result-items"></div>
+    <div class="timeline" id="timeline"></div>
+    <a class="invoice-link" id="invoice-link" href="#">View Invoice &rarr;</a>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+</footer>
+
+<script>
+  const STAGE_LABELS = {
+    received: 'Order Received', preparing: 'Preparing the Book', awaiting_approval: 'Awaiting Final Approval',
+    sent_to_printing: 'Sent to Printing', received_from_printing: 'Received from Printing',
+    shipped: 'Shipped', delivered: 'Delivered',
+  };
+
+  async function trackOrder() {
+    const orderNumber = document.getElementById('order-number').value.trim();
+    const email = document.getElementById('track-email').value.trim();
+    const errorEl = document.getElementById('lookup-error');
+    const resultCard = document.getElementById('result-card');
+    errorEl.style.display = 'none';
+    resultCard.style.display = 'none';
+    if (!orderNumber || !email) {
+      errorEl.textContent = 'Please enter both your order number and email.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('track-btn');
+    btn.disabled = true;
+    btn.textContent = 'Checking…';
+
+    try {
+      const res = await fetch('/.netlify/functions/track-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderNumber, email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        errorEl.textContent = data.error || 'Something went wrong. Please try again.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('result-order-number').textContent = data.orderNumber;
+      document.getElementById('result-date').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '';
+      document.getElementById('result-items').textContent = data.items.map(i => i.story + (i.childName ? ' for ' + i.childName : '')).join(' · ');
+
+      const timeline = document.getElementById('timeline');
+      timeline.innerHTML = data.stages.map((stage, i) => `
+        <div class="tl-step ${i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : ''}">
+          <div class="marker-col">
+            <div class="marker"><svg viewBox="0 0 24 24" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
+            <div class="bar"></div>
+          </div>
+          <div class="label">${STAGE_LABELS[stage] || stage}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(email)}`;
+      resultCard.style.display = 'block';
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch {
+      errorEl.textContent = 'Something went wrong. Please try again.';
+      errorEl.style.display = 'block';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Track Order';
+  }
+
+  document.getElementById('track-btn').addEventListener('click', trackOrder);
+  document.getElementById('track-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') trackOrder(); });
+</script>
+
+</body>
+</html>

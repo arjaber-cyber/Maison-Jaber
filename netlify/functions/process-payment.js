@@ -62,6 +62,7 @@ exports.handler = async (event) => {
   // --- Cash on Delivery: works right now, no gateway needed ---
   if (paymentMethod === 'cod') {
     try {
+      const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
       const saveRes = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
         method: 'POST',
         headers: {
@@ -71,6 +72,7 @@ exports.handler = async (event) => {
           Prefer: 'return=representation'
         },
         body: JSON.stringify({
+          order_number: orderNumber,
           full_name: fullName, email: userEmail || email, address, city, country, phone,
           payment_method: 'cod', amount, currency: currency || 'EUR',
           is_gift: !!isGift, gift_message: giftMessage || null,
@@ -86,7 +88,6 @@ exports.handler = async (event) => {
         console.warn('orders table insert failed (may not exist yet):', await saveRes.text());
       }
 
-      const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
       const itemsListHtml = items.map(i => `<li>${i.story}${i.childName ? ' for ' + i.childName : ''}${i.ageEdition ? ' (Ages ' + i.ageEdition + ')' : ''}</li>`).join('');
       await sendEmail({
         to: userEmail || email,

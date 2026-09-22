@@ -82,6 +82,7 @@ exports.handler = async (event) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
       body: JSON.stringify({
+        order_number: orderNumber,
         full_name: order.fullName, email: order.email, address: order.address, city: order.city,
         country: order.country, phone: order.phone, payment_method: 'card',
         amount: order.amount, currency: order.currency, is_gift: !!order.isGift, gift_message: order.giftMessage || null,
