@@ -69,10 +69,15 @@ window.HIKAYA_BUNDLE_TIERS = [
     const perBookDiscounted = perBookFull * (1 - tier.discountPct / 100);
     const booksTotal = perBookDiscounted * items.length;
     const deliveryFee = tier.freeDelivery ? 0 : (region.deliveryFee || 0);
-    const total = booksTotal + deliveryFee;
+    // Extra-character fees (e.g. a real photo of a story's optional parent
+    // character) are a separate customization charge, not part of the base
+    // book price -- they're added on top, not discounted by the bundle tier.
+    const extraCharacterFeeAed = items.reduce((sum, item) => sum + (item.extraCharacterFeeAed || 0), 0);
+    const extraCharacterFee = window.hikayaConvertFromAed ? window.hikayaConvertFromAed(extraCharacterFeeAed, region) : 0;
+    const total = booksTotal + deliveryFee + extraCharacterFee;
     return {
       items, tier, perBookFull, perBookDiscounted,
-      booksTotal, deliveryFee, total,
+      booksTotal, deliveryFee, extraCharacterFee, total,
       itemCount: items.length,
     };
   }

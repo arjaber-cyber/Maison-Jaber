@@ -177,6 +177,7 @@
         <div class="info">
           <h3>${item.story}</h3>
           <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</div>
+          ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
         </div>
         <div class="price">${fmt(pricing.perBookDiscounted, region)}</div>
@@ -195,6 +196,7 @@
         <h3>${t('cart.order_summary', 'Order Summary')}</h3>
         <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.perBookFull * pricing.itemCount, region)}</span></div>
         ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')}</span><span>-${pricing.tier.discountPct}%</span></div>` : ''}
+        ${pricing.extraCharacterFee > 0 ? `<div class="summary-row"><span>${t('cart.extra_character_fee', 'Extra character photo')}</span><span>${fmt(pricing.extraCharacterFee, region)}</span></div>` : ''}
         <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${pricing.tier.freeDelivery ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>
         <div class="summary-row total"><span>${t('checkout.est_total', 'Estimated total')}</span><span>${fmt(pricing.total, region)}</span></div>
         <a class="btn-primary" href="checkout.html">${t('cart.checkout_btn', 'Proceed to Checkout →')}</a>

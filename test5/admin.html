@@ -82,6 +82,29 @@
   .photo-card .upload-status { font-size: 11px; margin-top: 6px; min-height: 14px; font-weight: 600; }
   .photo-card .upload-status.success { color: #3d5a26; }
   .photo-card .upload-status.error { color: var(--coral-deep, #b5563b); }
+
+  .story-card { background: #fff; border-radius: var(--radius); padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .story-card .swatch { width: 40px; height: 52px; border-radius: 8px; flex-shrink: 0; }
+  .story-card .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-card .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-card .swatch.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-card .info { display: flex; gap: 14px; align-items: center; }
+  .story-card h4 { font-size: 14.5px; margin-bottom: 2px; }
+  .story-card p { font-size: 12px; color: var(--ink-soft); margin: 0; }
+  .story-card .extra-tag { font-size: 10.5px; font-weight: 800; color: var(--coral-deep); background: var(--bg-soft); padding: 3px 9px; border-radius: 100px; margin-left: 6px; }
+  .story-card .built-in-tag { font-size: 10.5px; font-weight: 800; color: var(--ink-soft); background: #eee; padding: 3px 9px; border-radius: 100px; margin-left: 6px; }
+  .story-card .edit-story-btn { font-size: 12px; font-weight: 700; text-decoration: underline; color: var(--ink-soft); background: none; border: none; cursor: pointer; }
+
+  .story-form-card { background: #fff; border-radius: var(--radius); padding: 24px; }
+  .story-form-card h3 { font-size: 17px; margin-bottom: 16px; }
+  .story-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .field-label { display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); margin-bottom: 5px; }
+  .story-form-card input[type="text"], .story-form-card input[type="number"], .story-form-card select, .story-form-card textarea {
+    width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--line, #ddd); font-size: 13.5px; font-family: inherit; box-sizing: border-box;
+  }
+  .story-form-card textarea { margin-bottom: 14px; resize: vertical; }
+  .story-extra-toggle { display: flex; align-items: flex-start; gap: 10px; margin: 4px 0 14px; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .story-extra-toggle input { margin-top: 3px; }
   .req-top { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; margin-bottom: 14px; }
   @media (max-width: 700px) { .req-top { grid-template-columns: 1fr; } }
   .req-photos { display: flex; gap: 6px; }
@@ -162,6 +185,63 @@
 </div>
 
 <div class="wrap" id="photos-grid" style="margin-bottom: 48px;"></div>
+
+<div class="wrap page-head">
+  <h1 data-i18n="admin.stories_title">Stories</h1>
+  <p data-i18n="admin.stories_sub">Add a new story to the catalog, or give an existing one an optional extra character (like a parent) customers can personalize for an extra fee.</p>
+</div>
+
+<div class="wrap" id="stories-list" style="margin-bottom: 24px;"></div>
+
+<div class="wrap" style="margin-bottom: 60px;">
+  <div class="story-form-card">
+    <h3 id="story-form-title" data-i18n="admin.story_form_add">+ Add a New Story</h3>
+    <input type="hidden" id="story-slug" />
+    <div class="story-form-grid">
+      <div>
+        <label class="field-label" data-i18n="admin.story_field_title">Title</label>
+        <input type="text" id="story-title" placeholder="e.g. The Whispering Forest" />
+      </div>
+      <div>
+        <label class="field-label" data-i18n="admin.story_field_theme">Theme</label>
+        <select id="story-theme">
+          <option value="courage">Courage & Confidence</option>
+          <option value="adventure">Adventure & Wonder</option>
+          <option value="lullaby">Bedtime & Comfort</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label" data-i18n="admin.story_field_collection">Collection Label</label>
+        <input type="text" id="story-collection" placeholder="e.g. Family & Belonging" />
+      </div>
+      <div>
+        <label class="field-label" data-i18n="admin.story_field_ages">Age Ranges</label>
+        <input type="text" id="story-ages" value="2-4,5-7,8-10" />
+      </div>
+    </div>
+    <label class="field-label" data-i18n="admin.story_field_desc">Description</label>
+    <textarea id="story-description" rows="2" placeholder="A short line about the story..."></textarea>
+
+    <div class="story-extra-toggle">
+      <input type="checkbox" id="story-has-extra" />
+      <label for="story-has-extra" data-i18n="admin.story_extra_label">This story has an optional extra character (e.g. a parent) customers can personalize</label>
+    </div>
+    <div class="story-form-grid" id="story-extra-fields" style="display:none;">
+      <div>
+        <label class="field-label" data-i18n="admin.story_extra_name">Character Name</label>
+        <input type="text" id="story-extra-name" placeholder="e.g. Mother" />
+      </div>
+      <div>
+        <label class="field-label" data-i18n="admin.story_extra_fee">Extra Fee (AED)</label>
+        <input type="number" id="story-extra-fee" value="50" min="0" />
+      </div>
+    </div>
+
+    <button type="button" class="upload-btn" id="story-save-btn" style="margin-top:14px;" data-i18n="admin.story_save_btn">Save Story</button>
+    <button type="button" class="upload-btn" id="story-cancel-btn" style="margin-top:14px; margin-left:8px; display:none;" data-i18n="admin.story_cancel_btn">Cancel Edit</button>
+    <div class="upload-status" id="story-form-status"></div>
+  </div>
+</div>
 </div>
 
 <footer class="site"><div class="wrap"><p data-i18n="admin.footer">&copy; 2026 Maison Jaber. Admin dashboard.</p></div></footer>
@@ -260,6 +340,7 @@
     loadOrders(adminPassword);
     loadSubmissions(adminPassword);
     loadSitePhotos(adminPassword);
+    loadStories(adminPassword);
   }
 
   document.getElementById('admin-password-submit').addEventListener('click', async () => {
@@ -459,6 +540,135 @@
       });
     });
   }
+
+  // ---------- Stories ----------
+  const THEME_LABELS = { courage: 'Courage & Confidence', adventure: 'Adventure & Wonder', lullaby: 'Bedtime & Comfort' };
+  let storiesCache = [];
+
+  async function loadStories(token) {
+    const listEl = document.getElementById('stories-list');
+    try {
+      const res = await fetch('/.netlify/functions/get-stories');
+      const data = await res.json();
+      storiesCache = data.stories || [];
+
+      listEl.innerHTML = storiesCache.map(s => `
+        <div class="story-card" data-slug="${s.slug}">
+          <div class="info">
+            <div class="swatch ${s.theme}"></div>
+            <div>
+              <h4>${s.title}
+                ${s.has_extra_character ? `<span class="extra-tag">+ ${s.extra_character_name} (AED ${s.extra_character_fee_aed})</span>` : ''}
+                ${s.built_in ? '<span class="built-in-tag">Built-in</span>' : ''}
+              </h4>
+              <p>${THEME_LABELS[s.theme] || s.theme}${s.collection ? ' · ' + s.collection : ''}</p>
+            </div>
+          </div>
+          ${s.built_in ? '' : `<button type="button" class="edit-story-btn" data-slug="${s.slug}">Edit</button>`}
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.edit-story-btn').forEach(btn => {
+        btn.addEventListener('click', () => editStory(btn.dataset.slug));
+      });
+
+      if (!data.tableReady) {
+        const note = document.createElement('p');
+        note.style.cssText = 'font-size:12.5px; color:var(--ink-soft); margin-top:10px;';
+        note.textContent = 'Stories table isn\'t set up in Supabase yet -- only the 3 built-in stories show until it is. New stories you add below will be saved once it exists.';
+        listEl.appendChild(note);
+      }
+    } catch (err) {
+      console.error('loadStories error:', err);
+    }
+  }
+
+  function editStory(slug) {
+    const story = storiesCache.find(s => s.slug === slug);
+    if (!story) return;
+    document.getElementById('story-form-title').textContent = 'Edit Story';
+    document.getElementById('story-slug').value = story.slug;
+    document.getElementById('story-title').value = story.title;
+    document.getElementById('story-theme').value = story.theme;
+    document.getElementById('story-collection').value = story.collection || '';
+    document.getElementById('story-ages').value = story.age_ranges || '2-4,5-7,8-10';
+    document.getElementById('story-description').value = story.description || '';
+    document.getElementById('story-has-extra').checked = !!story.has_extra_character;
+    document.getElementById('story-extra-fields').style.display = story.has_extra_character ? 'grid' : 'none';
+    document.getElementById('story-extra-name').value = story.extra_character_name || '';
+    document.getElementById('story-extra-fee').value = story.extra_character_fee_aed || 50;
+    document.getElementById('story-cancel-btn').style.display = 'inline-block';
+    document.querySelector('.story-form-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function resetStoryForm() {
+    document.getElementById('story-form-title').textContent = '+ Add a New Story';
+    document.getElementById('story-slug').value = '';
+    document.getElementById('story-title').value = '';
+    document.getElementById('story-theme').value = 'courage';
+    document.getElementById('story-collection').value = '';
+    document.getElementById('story-ages').value = '2-4,5-7,8-10';
+    document.getElementById('story-description').value = '';
+    document.getElementById('story-has-extra').checked = false;
+    document.getElementById('story-extra-fields').style.display = 'none';
+    document.getElementById('story-extra-name').value = '';
+    document.getElementById('story-extra-fee').value = 50;
+    document.getElementById('story-cancel-btn').style.display = 'none';
+    document.getElementById('story-form-status').textContent = '';
+  }
+
+  document.getElementById('story-has-extra').addEventListener('change', (e) => {
+    document.getElementById('story-extra-fields').style.display = e.target.checked ? 'grid' : 'none';
+  });
+  document.getElementById('story-cancel-btn').addEventListener('click', resetStoryForm);
+
+  document.getElementById('story-save-btn').addEventListener('click', async () => {
+    const statusEl = document.getElementById('story-form-status');
+    const title = document.getElementById('story-title').value.trim();
+    if (!title) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = 'Please enter a title.';
+      return;
+    }
+    const hasExtra = document.getElementById('story-has-extra').checked;
+    if (hasExtra && !document.getElementById('story-extra-name').value.trim()) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = 'Please name the extra character.';
+      return;
+    }
+
+    statusEl.className = 'upload-status';
+    statusEl.textContent = 'Saving…';
+    try {
+      const res = await fetch('/.netlify/functions/save-story', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
+        body: JSON.stringify({
+          slug: document.getElementById('story-slug').value || null,
+          title, theme: document.getElementById('story-theme').value,
+          collection: document.getElementById('story-collection').value.trim(),
+          ageRanges: document.getElementById('story-ages').value.trim(),
+          description: document.getElementById('story-description').value.trim(),
+          hasExtraCharacter: hasExtra,
+          extraCharacterName: document.getElementById('story-extra-name').value.trim(),
+          extraCharacterFeeAed: document.getElementById('story-extra-fee').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.className = 'upload-status error';
+        statusEl.textContent = data.error || 'Something went wrong.';
+        return;
+      }
+      resetStoryForm();
+      statusEl.className = 'upload-status success';
+      statusEl.textContent = 'Saved!';
+      loadStories(adminPassword);
+    } catch {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = 'Something went wrong. Please try again.';
+    }
+  });
 
   async function loadSubmissions(token) {
     try {

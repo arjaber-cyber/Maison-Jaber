@@ -162,6 +162,17 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .photo-retry-note { font-size: 12px; color: var(--coral-deep, #b5563b); font-weight: 700; margin-bottom: 10px; }
 
+  .extra-char-block { background: var(--bg-soft, #F3E8D8); border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; }
+  .extra-char-block h4 { font-size: 15px; margin-bottom: 4px; }
+  .extra-char-sub { font-size: 12.5px; color: var(--ink-soft, #7d6a5a); font-weight: 600; margin-bottom: 12px; }
+  .extra-char-choice { display: flex; gap: 10px; margin-bottom: 4px; }
+  .extra-char-btn {
+    flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid var(--line, #DFC9AE); background: #fff;
+    font-size: 13px; font-weight: 700; cursor: pointer; color: var(--ink, #2E2018);
+  }
+  .extra-char-btn.selected { border-color: var(--coral, #A67443); background: var(--coral, #A67443); color: #fff; }
+  #extra-char-upload-wrap { margin-top: 14px; }
+
   .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
   .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
 
@@ -312,6 +323,23 @@
         <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
       </div>
 
+      <div class="extra-char-block" id="extra-char-block" style="display:none;">
+        <h4 id="extra-char-question"></h4>
+        <p class="extra-char-sub" id="extra-char-sub"></p>
+        <div class="extra-char-choice">
+          <button type="button" class="extra-char-btn" id="extra-char-yes" data-value="yes"></button>
+          <button type="button" class="extra-char-btn" id="extra-char-no" data-value="no"></button>
+        </div>
+        <div id="extra-char-upload-wrap" style="display:none;">
+          <div class="photo-upload" id="extra-photo-upload">
+            <input type="file" id="extra-char-photos" accept="image/*" />
+            <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+          </div>
+          <div class="photo-thumbs" id="extra-photo-thumbs"></div>
+          <div class="photo-retry-note" id="extra-photo-retry-note" style="display:none;"></div>
+        </div>
+      </div>
+
       <button type="button" class="btn-primary" id="continue-order-btn" style="width:100%; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
     </div>
   </div>
@@ -336,6 +364,7 @@
   );
 
   let photoFiles = [];
+  let extraPhotoFiles = [];
 
   // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
   const t = (key, fallback) => {
@@ -354,11 +383,53 @@
   }
 
   // --- Story selection (either pre-picked via ?story= URL param, or chosen here) ---
+  // STORY_THEMES starts with the 3 built-in stories so the page works
+  // immediately; loadStoryCatalog() below fills in any admin-added ones
+  // (and their extra-character info) once fetched, without blocking the page.
   const STORY_THEMES = {
     'The Bravest Little One': 'courage',
     'The Cloud Ship': 'adventure',
     "The Star Who Couldn't Sleep": 'lullaby',
   };
+  const STORY_CATALOG = {}; // title -> full story record, once fetched
+
+  async function loadStoryCatalog() {
+    try {
+      const res = await fetch('/.netlify/functions/get-stories');
+      const data = await res.json();
+      const grid = document.getElementById('story-grid');
+      (data.stories || []).forEach(story => {
+        STORY_THEMES[story.title] = story.theme;
+        STORY_CATALOG[story.title] = story;
+        if (!story.built_in) {
+          const card = document.createElement('div');
+          card.className = 'story-pick';
+          card.dataset.value = story.title;
+          card.dataset.theme = story.theme;
+          card.innerHTML = `
+            <div class="cover ${story.theme}"><div class="t">${story.title}</div></div>
+            <div class="body">
+              <div class="theme" style="color:var(--ink-soft);">${story.collection || ''}</div>
+              <h3>${story.title}</h3>
+            </div>`;
+          card.addEventListener('click', () => selectStory(story.title));
+          grid.appendChild(card);
+        }
+      });
+      // If the page was pre-loaded with ?story= pointing at a story that
+      // only exists in the catalog (not the 3 built-ins), select it now
+      // that we actually know about it.
+      const urlStory = new URLSearchParams(window.location.search).get('story');
+      if (urlStory && STORY_THEMES[urlStory] && document.getElementById('story-input').value !== urlStory) {
+        selectStory(urlStory);
+      }
+    } catch {
+      // Catalog fetch failed -- the 3 built-in stories still work fine.
+    }
+  }
+  loadStoryCatalog();
+
+  let extraCharChoice = null; // 'yes' | 'no' | null
 
   function selectStory(storyName) {
     const theme = STORY_THEMES[storyName] || 'courage';
@@ -376,6 +447,26 @@
     document.getElementById('story-grid').style.display = 'none';
 
     document.querySelectorAll('.story-pick').forEach(c => c.classList.toggle('selected', c.dataset.value === storyName));
+
+    // Show the optional extra-character prompt if this story has one.
+    const storyInfo = STORY_CATALOG[storyName];
+    const extraBlock = document.getElementById('extra-char-block');
+    extraCharChoice = null;
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    extraPhotoFiles = [];
+    if (storyInfo && storyInfo.has_extra_character) {
+      const name = storyInfo.extra_character_name;
+      const fee = storyInfo.extra_character_fee_aed;
+      document.getElementById('extra-char-question').textContent = `This story has a ${name} character`;
+      document.getElementById('extra-char-sub').textContent = `Would you like to use a real photo of the ${name.toLowerCase()}, or keep it generated for you? Using a real photo adds AED ${fee}.`;
+      document.getElementById('extra-char-yes').textContent = `Yes, use a real photo (+AED ${fee})`;
+      document.getElementById('extra-char-no').textContent = `No, keep it generated`;
+      document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
+      extraBlock.style.display = 'block';
+    } else {
+      extraBlock.style.display = 'none';
+    }
+
     checkDetailsComplete();
   }
 
@@ -474,36 +565,69 @@
     }
   }
 
-  async function checkPhoto(entry) {
+  async function checkPhoto(entry, onDone) {
     const faceOk = await hasDetectableFace(entry.file);
     if (!faceOk) {
       entry.status = 'failed';
       entry.reason = t('personalize.photo_fail_face', "We couldn't find a clear face in this photo.");
-      renderThumbs();
+      onDone();
       return;
     }
     const contentOk = await passesContentCheck(entry.file);
     entry.status = contentOk ? 'verified' : 'failed';
     if (!contentOk) entry.reason = t('personalize.photo_fail_content', "This photo can't be used — please try a different one.");
-    renderThumbs();
-    checkDetailsComplete();
+    onDone();
   }
 
   photoInput.addEventListener('change', () => {
     Array.from(photoInput.files).forEach(file => {
       const entry = { file, status: 'checking', reason: null };
       photoFiles.push(entry);
-      checkPhoto(entry);
+      checkPhoto(entry, () => { renderThumbs(photoFiles, photoThumbs, photoRetryNote, true); checkDetailsComplete(); });
     });
     photoInput.value = '';
-    renderThumbs();
+    renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
     checkDetailsComplete();
   });
 
-  function renderThumbs() {
-    photoThumbs.innerHTML = '';
+  // --- Optional extra character (e.g. a parent) some stories support ---
+  const extraPhotoInput = document.getElementById('extra-char-photos');
+  const extraPhotoThumbs = document.getElementById('extra-photo-thumbs');
+  const extraPhotoRetryNote = document.getElementById('extra-photo-retry-note');
+
+  document.getElementById('extra-char-yes').addEventListener('click', () => {
+    extraCharChoice = 'yes';
+    document.getElementById('extra-char-yes').classList.add('selected');
+    document.getElementById('extra-char-no').classList.remove('selected');
+    document.getElementById('extra-char-upload-wrap').style.display = 'block';
+    checkDetailsComplete();
+  });
+  document.getElementById('extra-char-no').addEventListener('click', () => {
+    extraCharChoice = 'no';
+    document.getElementById('extra-char-no').classList.add('selected');
+    document.getElementById('extra-char-yes').classList.remove('selected');
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    extraPhotoFiles = [];
+    renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false);
+    checkDetailsComplete();
+  });
+  extraPhotoInput.addEventListener('change', () => {
+    Array.from(extraPhotoInput.files).forEach(file => {
+      const entry = { file, status: 'checking', reason: null };
+      extraPhotoFiles.push(entry);
+      checkPhoto(entry, () => { renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false); checkDetailsComplete(); });
+    });
+    extraPhotoInput.value = '';
+    renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false);
+    checkDetailsComplete();
+  });
+
+  // Generic thumbnail renderer -- used for both the child's photos and, if
+  // this story has one, the optional extra character's photos.
+  function renderThumbs(files, thumbsEl, retryNoteEl, updateSummaryCount) {
+    thumbsEl.innerHTML = '';
     let anyFailed = false;
-    photoFiles.forEach((entry, i) => {
+    files.forEach((entry, i) => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const div = document.createElement('div');
@@ -513,18 +637,25 @@
         else if (entry.status === 'verified') badge = `<div class="status-badge verified">${t('personalize.photo_ok', '✓ OK')}</div>`;
         else if (entry.status === 'failed') badge = `<div class="status-badge failed">${t('personalize.photo_failed', 'Try another')}</div>`;
         div.innerHTML = `<img src="${e.target.result}" />${badge}<button type="button" class="remove-photo" data-i="${i}">&times;</button>`;
-        div.querySelector('.remove-photo').addEventListener('click', (ev) => { ev.preventDefault(); photoFiles.splice(i, 1); renderThumbs(); checkDetailsComplete(); });
-        photoThumbs.appendChild(div);
+        div.querySelector('.remove-photo').addEventListener('click', (ev) => {
+          ev.preventDefault();
+          files.splice(i, 1);
+          renderThumbs(files, thumbsEl, retryNoteEl, updateSummaryCount);
+          checkDetailsComplete();
+        });
+        thumbsEl.appendChild(div);
       };
       reader.readAsDataURL(entry.file);
       if (entry.status === 'failed') anyFailed = true;
     });
-    const verifiedCount = photoFiles.filter(p => p.status === 'verified').length;
-    document.getElementById('summary-photos').textContent = verifiedCount;
-    photoRetryNote.style.display = anyFailed ? 'block' : 'none';
+    if (updateSummaryCount) {
+      const verifiedCount = files.filter(p => p.status === 'verified').length;
+      document.getElementById('summary-photos').textContent = verifiedCount;
+    }
+    retryNoteEl.style.display = anyFailed ? 'block' : 'none';
     if (anyFailed) {
-      const failedReasons = photoFiles.filter(p => p.status === 'failed').map(p => p.reason);
-      photoRetryNote.textContent = failedReasons[0] || t('personalize.photo_fail_generic', 'Please try a different photo.');
+      const failedReasons = files.filter(p => p.status === 'failed').map(p => p.reason);
+      retryNoteEl.textContent = failedReasons[0] || t('personalize.photo_fail_generic', 'Please try a different photo.');
     }
   }
 
@@ -538,11 +669,20 @@
   const continueBtn = document.getElementById('continue-order-btn');
   function checkDetailsComplete() {
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
-    const stillChecking = photoFiles.some(p => p.status === 'checking');
+    const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking');
+
+    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    let extraCharOk = true;
+    if (storyInfo && storyInfo.has_extra_character) {
+      if (!extraCharChoice) extraCharOk = false;
+      else if (extraCharChoice === 'yes' && !extraPhotoFiles.some(p => p.status === 'verified')) extraCharOk = false;
+    }
+
     const ready = document.getElementById('story-input').value
       && nameInput.value.trim()
       && ageInputEl.value.trim()
-      && hasVerifiedPhoto;
+      && hasVerifiedPhoto
+      && extraCharOk;
     continueBtn.disabled = !ready;
     if (stillChecking) {
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
@@ -554,13 +694,19 @@
   }
   checkDetailsComplete();
 
-  // Pre-select story if the visitor arrived from a story page (?story=...)
-  // Placed last, after every element/function above it depends on already exists.
+
+  // Pre-select story if the visitor arrived from a story page (?story=...).
+  // Built-in stories are already known synchronously (STORY_THEMES has them
+  // from the start), so select immediately -- no flash of an empty state.
+  // Admin-added stories aren't known until loadStoryCatalog()'s fetch
+  // resolves, which has its own matching check to catch that case.
   const urlStory = new URLSearchParams(window.location.search).get('story');
   if (urlStory && STORY_THEMES[urlStory]) selectStory(urlStory);
 
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
+    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    const hasExtra = storyInfo && storyInfo.has_extra_character && extraCharChoice === 'yes';
     return {
       story: document.getElementById('story-input').value,
       theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
@@ -570,6 +716,9 @@
       gender: document.getElementById('child-gender').value,
       dedication: document.getElementById('dedication').value.trim(),
       photoCount: photoFiles.filter(p => p.status === 'verified').length,
+      extraCharacterName: hasExtra ? storyInfo.extra_character_name : null,
+      extraCharacterFeeAed: hasExtra ? storyInfo.extra_character_fee_aed : 0,
+      extraCharacterPhotoCount: hasExtra ? extraPhotoFiles.filter(p => p.status === 'verified').length : 0,
     };
   }
 
@@ -591,12 +740,18 @@
     document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('child-gender').value = '';
     photoFiles = [];
-    renderThumbs();
+    renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
+    extraPhotoFiles = [];
+    extraCharChoice = null;
+    document.getElementById('extra-char-block').style.display = 'none';
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
     checkDetailsComplete();
   }
 
   continueBtn.addEventListener('click', async () => {
     const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
+    const verifiedExtraPhotos = extraPhotoFiles.filter(p => p.status === 'verified');
     if (window.hikayaCart) {
       const item = buildCartItemFromForm();
       // Photos are converted to base64 so they survive a full page navigation
@@ -608,6 +763,15 @@
           reader.readAsDataURL(entry.file);
         })));
       } catch { item.photos = []; }
+      if (item.extraCharacterName) {
+        try {
+          item.extraCharacterPhotos = await Promise.all(verifiedExtraPhotos.map(entry => new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
+            reader.readAsDataURL(entry.file);
+          })));
+        } catch { item.extraCharacterPhotos = []; }
+      }
       window.hikayaCart.addToCart(item);
     }
 
@@ -617,6 +781,7 @@
     try {
       const formData = new FormData(document.getElementById('request-form'));
       verifiedPhotos.forEach((entry, i) => formData.append(`photo_${i + 1}`, entry.file, entry.file.name));
+      verifiedExtraPhotos.forEach((entry, i) => formData.append(`extra_photo_${i + 1}`, entry.file, entry.file.name));
       fetch('/', { method: 'POST', body: formData }).catch(() => {});
     } catch { /* best-effort only */ }
 

@@ -379,6 +379,7 @@
 
       <div class="price-row" id="bundle-discount-row" style="display:none;"><span data-i18n="checkout.bundle_discount">Bundle discount</span><span class="note" id="bundle-discount-note"></span></div>
       <div class="price-row" id="promo-discount-row" style="display:none;"><span data-i18n="checkout.promo_discount">Discount code</span><span class="note" id="promo-discount-note"></span></div>
+      <div class="price-row" id="extra-char-row" style="display:none;"><span data-i18n="cart.extra_character_fee">Extra character photo</span><span class="note" id="extra-char-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
     </div>
@@ -589,7 +590,7 @@
         promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}` };
       }
     }
-    return { ...pricing, deliveryFee, booksTotal, total: booksTotal + deliveryFee, promoApplied };
+    return { ...pricing, deliveryFee, booksTotal, total: booksTotal + deliveryFee + (pricing.extraCharacterFee || 0), promoApplied };
   }
 
   function renderCartSummary() {
@@ -614,6 +615,7 @@
         <div>
           <h3>${item.story}</h3>
           <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</p>
+          ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
           <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
         </div>
       </div>
@@ -635,6 +637,14 @@
       document.getElementById('bundle-discount-note').textContent = `-${final.tier.discountPct}%`;
     } else {
       discountRow.style.display = 'none';
+    }
+
+    const extraCharRow = document.getElementById('extra-char-row');
+    if (final.extraCharacterFee > 0) {
+      extraCharRow.style.display = 'flex';
+      document.getElementById('extra-char-note').textContent = fmt(final.extraCharacterFee);
+    } else {
+      extraCharRow.style.display = 'none';
     }
 
     const promoRow = document.getElementById('promo-discount-row');
@@ -897,7 +907,7 @@
       isGift: giftSelect.value === 'yes',
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication })),
+      items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
       bundleDiscountPct: finalPricing.tier.discountPct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,
