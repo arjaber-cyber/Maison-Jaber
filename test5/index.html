@@ -200,6 +200,7 @@
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
@@ -374,6 +375,7 @@
       &nbsp;·&nbsp; <a href="privacy.html" style="color:#a8998a; text-decoration:underline;">Privacy</a>
       &nbsp;·&nbsp; <a href="terms.html" style="color:#a8998a; text-decoration:underline;">Terms</a>
       &nbsp;·&nbsp; <a href="refund-policy.html" style="color:#a8998a; text-decoration:underline;">Refunds</a>
+      &nbsp;·&nbsp; <a href="#" id="cookie-settings-link" style="color:#a8998a; text-decoration:underline;">Cookie Settings</a>
     </div>
   </div>
 </footer>
@@ -404,6 +406,11 @@
 
     setInterval(() => goTo(current + 1), 4500);
   })();
+
+  document.getElementById('cookie-settings-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (window.hikayaOpenConsentSettings) window.hikayaOpenConsentSettings();
+  });
 
   document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
     e.preventDefault();

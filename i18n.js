@@ -172,7 +172,7 @@ window.HIKAYA_TRANSLATIONS = {
     slide1_cta: { en: 'Create a New Story', de: 'Neue Geschichte erstellen', ar: 'أنشئ قصة جديدة' },
     hero_eyebrow: { en: 'Your Account', de: 'Ihr Konto', ar: 'حسابك' },
     hero_title: { en: 'Welcome back', de: 'Willkommen zurück', ar: 'مرحبًا بعودتك' },
-    hero_body: { en: 'This is a preview of your account area — order tracking activates once checkout is connected.', de: 'Dies ist eine Vorschau Ihres Kontobereichs — die Bestellverfolgung wird aktiviert, sobald der Checkout verbunden ist.', ar: 'هذه معاينة لصفحة حسابك — سيتم تفعيل تتبع الطلبات بمجرد ربط صفحة الدفع.' },
+    hero_body: { en: 'Your orders, saved projects, and details, all in one place.', de: 'Ihre Bestellungen, gespeicherten Projekte und Daten, alles an einem Ort.', ar: 'طلباتك ومشاريعك المحفوظة وتفاصيلك، كلها في مكان واحد.' },
     tab_orders: { en: 'Orders', de: 'Bestellungen', ar: 'الطلبات' },
     tab_projects: { en: 'Saved Projects', de: 'Gespeicherte Projekte', ar: 'المشاريع المحفوظة' },
     tab_addresses: { en: 'Addresses', de: 'Adressen', ar: 'العناوين' },

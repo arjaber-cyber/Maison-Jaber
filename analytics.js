@@ -1,5 +1,6 @@
 /* Hikaya by Maison Jaber — shared analytics loader.
    Include with: <script src="/analytics.js" defer></script>
+   Load consent.js BEFORE this file on every page.
 
    SETUP (one-time):
      1. Create a GA4 property at analytics.google.com, get your Measurement
@@ -16,6 +17,11 @@
    (it checks for the literal placeholder strings and skips loading the
    real GA/Pixel scripts), so there's no broken network requests or errors
    in the meantime.
+
+   CONSENT: neither GA nor the Meta Pixel loads until the visitor has
+   actually granted that specific category via the cookie banner
+   (consent.js). If they grant consent after this page already loaded,
+   the relevant script loads right then, without needing a refresh.
 */
 
 window.HIKAYA_ANALYTICS_CONFIG = {
@@ -25,10 +31,20 @@ window.HIKAYA_ANALYTICS_CONFIG = {
 
 (function () {
   const cfg = window.HIKAYA_ANALYTICS_CONFIG;
-  const gaReady = cfg.GA_MEASUREMENT_ID && cfg.GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX';
-  const pixelReady = cfg.META_PIXEL_ID && cfg.META_PIXEL_ID !== '000000000000000';
+  const gaConfigured = cfg.GA_MEASUREMENT_ID && cfg.GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX';
+  const pixelConfigured = cfg.META_PIXEL_ID && cfg.META_PIXEL_ID !== '000000000000000';
+  let gaLoaded = false;
+  let pixelLoaded = false;
 
-  if (gaReady) {
+  function hasConsent(category) {
+    // If consent.js hasn't loaded for some reason, fail closed (no tracking)
+    // rather than silently ignoring the missing consent check.
+    return typeof window.hikayaHasConsent === 'function' && window.hikayaHasConsent(category);
+  }
+
+  function loadGA() {
+    if (gaLoaded || !gaConfigured || !hasConsent('analytics')) return;
+    gaLoaded = true;
     const s = document.createElement('script');
     s.async = true;
     s.src = `https://www.googletagmanager.com/gtag/js?id=${cfg.GA_MEASUREMENT_ID}`;
@@ -39,7 +55,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     window.gtag('config', cfg.GA_MEASUREMENT_ID);
   }
 
-  if (pixelReady) {
+  function loadPixel() {
+    if (pixelLoaded || !pixelConfigured || !hasConsent('marketing')) return;
+    pixelLoaded = true;
     /* eslint-disable */
     (function (f, b, e, v, n, t, s) {
       if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
@@ -52,13 +70,25 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     /* eslint-enable */
   }
 
+  function tryLoadAll() {
+    loadGA();
+    loadPixel();
+  }
+
+  document.addEventListener('DOMContentLoaded', tryLoadAll);
+  // Consent granted later in the same visit (e.g. via the banner, or
+  // reopening Cookie Settings) should start tracking immediately, not
+  // require a page reload.
+  document.addEventListener('hikaya:consentchange', tryLoadAll);
+
   // Single entry point the rest of the site calls -- fires to whichever
-  // of GA / Pixel are actually configured, silently no-ops otherwise.
+  // of GA / Pixel are actually configured AND consented to; silently
+  // no-ops otherwise.
   // Usage: window.hikayaTrackEvent('begin_checkout', { value: 34.90, currency: 'EUR' })
   window.hikayaTrackEvent = function (eventName, params) {
     params = params || {};
-    if (gaReady && window.gtag) window.gtag('event', eventName, params);
-    if (pixelReady && window.fbq) {
+    if (gaLoaded && window.gtag) window.gtag('event', eventName, params);
+    if (pixelLoaded && window.fbq) {
       // Meta uses its own standard-event names for the common ones; fall
       // back to a custom event for anything else.
       const metaEventMap = {

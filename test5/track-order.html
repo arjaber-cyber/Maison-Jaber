@@ -141,7 +141,7 @@
         body: JSON.stringify({ orderNumber, email }),
       });
       const data = await res.json();
-      if (!res.ok) {
+      if (!res.ok || !data.orderNumber) {
         errorEl.textContent = data.error || 'Something went wrong. Please try again.';
         errorEl.style.display = 'block';
         return;
