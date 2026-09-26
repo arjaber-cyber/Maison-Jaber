@@ -161,6 +161,12 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .photo-retry-note { font-size: 12px; color: var(--coral-deep, #b5563b); font-weight: 700; margin-bottom: 10px; }
+  .trust-note {
+    display: flex; gap: 10px; align-items: flex-start; background: var(--bg-soft, #F3E8D8); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 16px; font-size: 12.5px; color: var(--ink-soft, #7d6a5a); font-weight: 600; line-height: 1.5;
+  }
+  .trust-note svg { width: 17px; height: 17px; stroke: #3d5a26; flex-shrink: 0; margin-top: 1px; }
+  .trust-note a { color: inherit; text-decoration: underline; }
 
   .extra-char-block { background: var(--bg-soft, #F3E8D8); border-radius: 14px; padding: 18px 20px; margin-bottom: 18px; }
   .extra-char-block h4 { font-size: 15px; margin-bottom: 4px; }
@@ -205,6 +211,30 @@
   .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; border: 1px solid var(--line, #ddd); }
   .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
   .cart-badge { display: none; background: var(--coral, #A67443); color: #fff; font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; padding: 0 3px; margin-left: 4px; }
+
+  .wizard-progress { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px 0 6px; flex-wrap: wrap; }
+  .wizard-progress .w-step { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; color: var(--ink-soft, #7d6a5a); }
+  .wizard-progress .w-step .w-dot {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--parchment, #eee); color: var(--ink-soft, #999);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .wizard-progress .w-step.active .w-dot, .wizard-progress .w-step.done .w-dot { background: var(--coral, #A67443); color: #fff; }
+  .wizard-progress .w-step.active { color: var(--ink, #2E2018); }
+  .wizard-progress .w-line { width: 26px; height: 1px; background: var(--line-soft, #ece1d1); }
+  @media (max-width: 700px) { .wizard-progress .w-step span:last-child { display: none; } .wizard-progress .w-line { width: 14px; } }
+
+  .wizard-step { display: none; }
+  .wizard-step.active { display: block; }
+  .wizard-nav { display: flex; gap: 10px; margin-top: 18px; }
+  .wizard-nav .btn-back {
+    padding: 14px 20px; border-radius: 999px; border: 1.5px solid var(--line, #DFC9AE); background: #fff;
+    font-size: 14px; font-weight: 700; cursor: pointer; color: var(--ink, #2E2018);
+  }
+  .wizard-nav .btn-next { flex: 1; }
+  .review-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line-soft, #ece1d1); font-size: 13.5px; }
+  .review-row span:first-child { color: var(--ink-soft, #7d6a5a); font-weight: 600; }
+  .review-row span:last-child { font-weight: 700; text-align: right; max-width: 60%; }
+  .review-edit { font-size: 11.5px; text-decoration: underline; color: var(--ink-soft); font-weight: 700; margin-left: 8px; cursor: pointer; background: none; border: none; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -234,6 +264,8 @@
   <p data-i18n="personalize.page_sub_v2">Add their name, age, and photo &mdash; we'll take it from there.</p>
 </div>
 
+<div class="wizard-progress wrap" id="wizard-progress"></div>
+
 <form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
   <input type="hidden" name="form-name" value="book-request" />
   <input type="hidden" name="story" id="story-input" />
@@ -253,58 +285,76 @@
       <h2 data-i18n="personalize.order_title">Tell us about them</h2>
       <div class="sub" data-i18n="personalize.order_sub">Just the essentials &mdash; you can always add more later.</div>
 
-      <div class="story-chip" id="story-chip" style="display:none;">
-        <div class="swatch" id="story-chip-swatch"></div>
-        <div class="name" id="story-chip-name"></div>
-        <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
+      <!-- Step: Story -->
+      <div class="wizard-step active" data-step="story" id="wizard-step-story">
+        <div class="story-chip" id="story-chip" style="display:none;">
+          <div class="swatch" id="story-chip-swatch"></div>
+          <div class="name" id="story-chip-name"></div>
+          <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
+        </div>
+
+        <div class="story-grid" id="story-grid">
+          <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
+            <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
+              <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+            </div>
+          </div>
+          <div class="story-pick" data-value="The Cloud Ship" data-theme="adventure">
+            <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
+              <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
+            </div>
+          </div>
+          <div class="story-pick" data-value="The Star Who Couldn't Sleep" data-theme="lullaby">
+            <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
+              <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
+            </div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled>Next &rarr;</button>
+        </div>
       </div>
 
-      <div class="story-grid" id="story-grid">
-        <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
-          <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
-          <div class="body">
-            <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
-            <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
-          </div>
-        </div>
-        <div class="story-pick" data-value="The Cloud Ship" data-theme="adventure">
-          <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
-          <div class="body">
-            <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
-            <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
-          </div>
-        </div>
-        <div class="story-pick" data-value="The Star Who Couldn't Sleep" data-theme="lullaby">
-          <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
-          <div class="body">
-            <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
-            <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
-          </div>
-        </div>
-      </div>
-
-      <div class="details-card">
+      <!-- Step: Name & Age -->
+      <div class="wizard-step" data-step="details" id="wizard-step-details">
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
           <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
           <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
           <div class="field">
-            <label class="field-label" data-i18n="personalize.gender_label">Who's the hero?</label>
+            <label class="field-label" data-i18n="personalize.gender_label">Which pronouns should we use?</label>
             <div class="gender-toggle">
               <button type="button" class="gender-btn" data-value="boy">
                 <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="8" r="4.5"/><path d="M5 21c1.2-4.2 4-6.5 7-6.5s5.8 2.3 7 6.5"/></svg>
-                <span data-i18n="personalize.gender_boy">Boy</span>
+                <span data-i18n="personalize.gender_boy">He / him</span>
               </button>
               <button type="button" class="gender-btn" data-value="girl">
                 <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M9 12.5l-3.5 8.5h13l-3.5-8.5"/><path d="M12 12.5v3"/></svg>
-                <span data-i18n="personalize.gender_girl">Girl</span>
+                <span data-i18n="personalize.gender_girl">She / her</span>
               </button>
             </div>
             <input type="hidden" id="child-gender" name="child_gender" />
           </div>
-          <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Dedication (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
         </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Photo -->
+      <div class="wizard-step" data-step="photo" id="wizard-step-photo">
         <label class="field-label" style="display:block; margin-bottom:8px;"><span data-i18n="personalize.photos_label">Photo(s) of your child</span><span class="req-mark">*</span></label>
+        <div class="trust-note">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span data-i18n="personalize.photo_trust">Their photo stays private — used only to create their book, never for advertising or public galleries. <a href="help.html">How we protect your child's photo</a></span>
+        </div>
         <div class="photo-guidance">
           <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
           <ul>
@@ -322,26 +372,53 @@
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
         <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled>Next &rarr;</button>
+        </div>
       </div>
 
-      <div class="extra-char-block" id="extra-char-block" style="display:none;">
-        <h4 id="extra-char-question"></h4>
-        <p class="extra-char-sub" id="extra-char-sub"></p>
-        <div class="extra-char-choice">
-          <button type="button" class="extra-char-btn" id="extra-char-yes" data-value="yes"></button>
-          <button type="button" class="extra-char-btn" id="extra-char-no" data-value="no"></button>
-        </div>
-        <div id="extra-char-upload-wrap" style="display:none;">
-          <div class="photo-upload" id="extra-photo-upload">
-            <input type="file" id="extra-char-photos" accept="image/*" />
-            <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+      <!-- Step: Extra character (only shown for stories that have one) -->
+      <div class="wizard-step" data-step="extra" id="wizard-step-extra">
+        <div class="extra-char-block" id="extra-char-block">
+          <h4 id="extra-char-question"></h4>
+          <p class="extra-char-sub" id="extra-char-sub"></p>
+          <div class="extra-char-choice">
+            <button type="button" class="extra-char-btn" id="extra-char-yes" data-value="yes"></button>
+            <button type="button" class="extra-char-btn" id="extra-char-no" data-value="no"></button>
           </div>
-          <div class="photo-thumbs" id="extra-photo-thumbs"></div>
-          <div class="photo-retry-note" id="extra-photo-retry-note" style="display:none;"></div>
+          <div id="extra-char-upload-wrap" style="display:none;">
+            <div class="photo-upload" id="extra-photo-upload">
+              <input type="file" id="extra-char-photos" accept="image/*" />
+              <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+            </div>
+            <div class="photo-thumbs" id="extra-photo-thumbs"></div>
+            <div class="photo-retry-note" id="extra-photo-retry-note" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="extra">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled>Next &rarr;</button>
         </div>
       </div>
 
-      <button type="button" class="btn-primary" id="continue-order-btn" style="width:100%; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
+      <!-- Step: Dedication -->
+      <div class="wizard-step" data-step="dedication" id="wizard-step-dedication">
+        <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="dedication">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="dedication">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Review -->
+      <div class="wizard-step" data-step="review" id="wizard-step-review">
+        <div id="review-summary"></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="review">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary" id="continue-order-btn" style="flex:1; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -469,6 +546,7 @@
     }
 
     checkDetailsComplete();
+    if (typeof renderWizardProgress === 'function') renderWizardProgress();
   }
 
   document.querySelectorAll('.story-pick').forEach(card => {
@@ -672,14 +750,25 @@
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
     const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking');
 
-    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    const storyChosen = document.getElementById('story-input').value;
+    const storyInfo = STORY_CATALOG[storyChosen];
     let extraCharOk = true;
     if (storyInfo && storyInfo.has_extra_character) {
       if (!extraCharChoice) extraCharOk = false;
       else if (extraCharChoice === 'yes' && !extraPhotoFiles.some(p => p.status === 'verified')) extraCharOk = false;
     }
 
-    const ready = document.getElementById('story-input').value
+    // Per-step Next button gating.
+    const storyNextBtn = document.getElementById('story-next-btn');
+    if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
+    const detailsNextBtn = document.getElementById('details-next-btn');
+    if (detailsNextBtn) detailsNextBtn.disabled = !(nameInput.value.trim() && ageInputEl.value.trim());
+    const photoNextBtn = document.getElementById('photo-next-btn');
+    if (photoNextBtn) photoNextBtn.disabled = !hasVerifiedPhoto;
+    const extraNextBtn = document.getElementById('extra-next-btn');
+    if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
+
+    const ready = storyChosen
       && nameInput.value.trim()
       && ageInputEl.value.trim()
       && hasVerifiedPhoto
@@ -695,6 +784,97 @@
   }
   checkDetailsComplete();
 
+  // ---------- Wizard step navigation ----------
+  // The extra-character step only appears for stories that actually have
+  // one, so the active step list is recomputed whenever the story changes.
+  function activeSteps() {
+    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    const steps = ['story', 'details', 'photo'];
+    if (storyInfo && storyInfo.has_extra_character) steps.push('extra');
+    steps.push('dedication', 'review');
+    return steps;
+  }
+  let currentStepName = 'story';
+
+  const STEP_LABELS = {
+    story: () => t('personalize.wizard_step_story', 'Story'),
+    details: () => t('personalize.wizard_step_details', 'About Them'),
+    photo: () => t('personalize.wizard_step_photo', 'Photo'),
+    extra: () => t('personalize.wizard_step_extra', 'Extra Character'),
+    dedication: () => t('personalize.wizard_step_dedication', 'Dedication'),
+    review: () => t('personalize.wizard_step_review', 'Review'),
+  };
+
+  function renderWizardProgress() {
+    const steps = activeSteps();
+    const currentIndex = steps.indexOf(currentStepName);
+    document.getElementById('wizard-progress').innerHTML = steps.map((s, i) => `
+      <div class="w-step ${i < currentIndex ? 'done' : i === currentIndex ? 'active' : ''}">
+        <span class="w-dot">${i < currentIndex ? '&#10003;' : i + 1}</span><span>${STEP_LABELS[s]()}</span>
+      </div>
+      ${i < steps.length - 1 ? '<div class="w-line"></div>' : ''}
+    `).join('');
+  }
+
+  function showWizardStep(stepName) {
+    currentStepName = stepName;
+    document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('wizard-step-' + stepName);
+    if (target) target.classList.add('active');
+    if (stepName === 'review') renderReviewSummary();
+    renderWizardProgress();
+    const formCol = document.querySelector('.order-form-col');
+    if (formCol) formCol.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goNext(fromStep) {
+    const steps = activeSteps();
+    const idx = steps.indexOf(fromStep);
+    if (idx > -1 && idx < steps.length - 1) showWizardStep(steps[idx + 1]);
+  }
+  function goBack(fromStep) {
+    const steps = activeSteps();
+    const idx = steps.indexOf(fromStep);
+    if (idx > 0) showWizardStep(steps[idx - 1]);
+  }
+
+  document.querySelectorAll('[data-step-btn]').forEach(btn => {
+    btn.addEventListener('click', () => goNext(btn.dataset.stepBtn));
+  });
+  document.querySelectorAll('[data-step-back]').forEach(btn => {
+    btn.addEventListener('click', () => goBack(btn.dataset.stepBack));
+  });
+
+  function renderReviewSummary() {
+    const storyName = document.getElementById('story-input').value;
+    const storyInfo = STORY_CATALOG[storyName];
+    const name = nameInput.value.trim();
+    const age = ageInputEl.value;
+    const dedication = document.getElementById('dedication').value.trim();
+    const photoCount = photoFiles.filter(p => p.status === 'verified').length;
+    const rows = [
+      { label: t('personalize.summary_story_label', 'Story'), value: storyName || '—', step: 'story' },
+      { label: t('personalize.summary_name', "Child's name"), value: name || '—', step: 'details' },
+      { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
+      { label: t('personalize.summary_photos', 'Photos'), value: photoCount, step: 'photo' },
+    ];
+    if (storyInfo && storyInfo.has_extra_character) {
+      const extraVal = extraCharChoice === 'yes'
+        ? t('personalize.summary_extra_yes', 'Real photo (+fee)')
+        : t('personalize.summary_extra_no', 'Generated for you');
+      rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
+    }
+    rows.push({ label: t('personalize.dedication_label', 'Dedication'), value: dedication || '—', step: 'dedication' });
+
+    document.getElementById('review-summary').innerHTML = rows.map(r => `
+      <div class="review-row"><span>${r.label}</span><span>${r.value}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
+    `).join('');
+    document.querySelectorAll('.review-edit').forEach(btn => {
+      btn.addEventListener('click', () => showWizardStep(btn.dataset.goto));
+    });
+  }
+
+  renderWizardProgress();
 
   // Pre-select story if the visitor arrived from a story page (?story=...).
   // Built-in stories are already known synchronously (STORY_THEMES has them
@@ -744,10 +924,10 @@
     renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
     extraPhotoFiles = [];
     extraCharChoice = null;
-    document.getElementById('extra-char-block').style.display = 'none';
     document.getElementById('extra-char-upload-wrap').style.display = 'none';
     document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
     checkDetailsComplete();
+    if (typeof showWizardStep === 'function') showWizardStep('story');
   }
 
   continueBtn.addEventListener('click', async () => {
