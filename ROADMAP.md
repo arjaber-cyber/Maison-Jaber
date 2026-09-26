@@ -73,3 +73,31 @@ order can be paid for until these exist. Also still needed: `ADMIN_PASSWORD`,
 - Tabby/Tamara currently offered in all 6 GCC regions in the UI, but Tabby only
   covers UAE/Saudi/Kuwait and Tamara adds Bahrain — Qatar/Oman need those options
   hidden or handled once real BNPL credentials go in
+
+
+---
+
+## QA Report Follow-up (23 Sept 2026) — in progress
+
+Working through a full QA report against the staging site. Status:
+
+**Done and pushed:**
+- Story CMS + optional extra-character customization (admin can add stories, mark one with an extra character like "Mother", customer gets a Yes/No + real-photo prompt, fee flows through cart/checkout correctly)
+- Removed customer-facing "starter policy, needs a lawyer" disclaimers from legal pages (hidden as dev comments instead) -- still genuinely needs real lawyer review, that has NOT happened
+- Fixed stale "preview" text on account page
+- Real cookie consent banner (essential/analytics/marketing), GA4/Meta Pixel now gated behind actual consent
+- Personalize rebuilt as a real step wizard (Story -> About Them -> Photo -> Extra Character if applicable -> Dedication -> Review), photo-privacy trust copy moved inline, gender question reworded to pronouns
+- One shared header (site-header.js) applied identically across all 7 browsing pages (home/stories/about/help/3 story pages) -- fixes the "different nav on every page" finding. Found + fixed 2 real bugs doing this: a dead script crashing on the homepage, and about.html/help.html silently missing region.js/cart.js/search.js entirely.
+
+**Investigated, could not reproduce (reported honestly rather than "fixing" working code):**
+- Order tracking "empty heading" -- added a defensive guard anyway
+- GCC-shown-next-to-EUR price mismatch -- tested default state, manual region selection, confirmed group headers aren't clickable; never reproduced
+
+**Still open from the QA report:**
+- Standardize CTA language site-wide (still some "Create Their Book" vs "Create Their Story" inconsistency to sweep for)
+- "Our artists" copy fix (shouldn't imply human illustrators if the pipeline is AI-assisted)
+- "How It Works" needs the preview/approval step added
+- Story product pages rebuilt as real product pages (gallery + buy box + trust icons)
+- Story library cards enriched (emotional tag, premise line, dual CTA)
+- Homepage copy sharpened for the first viewport
+- Real book/packaging photography, the "See the Magic" demo, About page photos -- all blocked on real assets, not code
