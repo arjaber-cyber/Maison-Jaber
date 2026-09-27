@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Invoice — Hikaya by Maison Jaber</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/png" href="images/favicon.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500,600&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root { --ink: #2E2018; --ink-soft: #7d6a5a; --line-soft: #ece1d1; --coral: #A67443; --bg: #F8F2E8; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 14px; }
+  h1, h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
+
+  .toolbar { max-width: 760px; margin: 0 auto; padding: 20px 24px 0; display: flex; justify-content: flex-end; }
+  .print-btn { padding: 10px 20px; border-radius: 999px; border: none; background: var(--coral); color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+  .invoice-sheet { max-width: 760px; margin: 20px auto 60px; background: #fff; border-radius: 16px; padding: 48px; }
+  .inv-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--line-soft); }
+  .inv-head h1 { font-size: 24px; }
+  .inv-head .brand-sub { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-top: 4px; }
+  .inv-head .meta { text-align: right; font-size: 13px; color: var(--ink-soft); }
+  .inv-head .meta strong { color: var(--ink); display: block; font-size: 15px; margin-bottom: 2px; }
+
+  .inv-parties { display: flex; justify-content: space-between; margin-bottom: 32px; gap: 24px; }
+  .inv-parties h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); margin-bottom: 6px; }
+  .inv-parties p { margin: 0; line-height: 1.6; }
+
+  table.inv-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  table.inv-table th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); padding: 8px 0; border-bottom: 1.5px solid var(--ink); }
+  table.inv-table td { padding: 12px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  table.inv-table td:last-child, table.inv-table th:last-child { text-align: right; }
+
+  .inv-totals { margin-left: auto; width: 260px; }
+  .inv-totals .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13.5px; }
+  .inv-totals .row.total { border-top: 1.5px solid var(--ink); margin-top: 6px; padding-top: 12px; font-weight: 800; font-size: 15px; }
+  .inv-totals .row span:last-child { color: var(--ink-soft); }
+  .inv-totals .row.total span:last-child { color: var(--ink); }
+
+  .inv-footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 11.5px; color: var(--ink-soft); text-align: center; }
+  #loading, #error-box { max-width: 760px; margin: 60px auto; text-align: center; color: var(--ink-soft); font-weight: 600; }
+  #error-box { display: none; color: #b5563b; }
+
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none; }
+    .invoice-sheet { box-shadow: none; margin: 0; border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button class="print-btn" id="print-btn">Print / Save as PDF</button></div>
+
+<div id="loading">Loading your invoice…</div>
+<div id="error-box"></div>
+
+<div class="invoice-sheet" id="invoice-sheet" style="display:none;">
+  <div class="inv-head">
+    <div>
+      <h1>Hikaya</h1>
+      <div class="brand-sub">by Maison Jaber</div>
+    </div>
+    <div class="meta">
+      <strong id="inv-number"></strong>
+      <span id="inv-date"></span>
+    </div>
+  </div>
+
+  <div class="inv-parties">
+    <div>
+      <h3>Billed To</h3>
+      <p id="inv-customer"></p>
+      <p id="inv-address"></p>
+    </div>
+    <div style="text-align:right;">
+      <h3>Payment</h3>
+      <p id="inv-payment-method"></p>
+    </div>
+  </div>
+
+  <table class="inv-table">
+    <thead><tr><th>Item</th><th>Price</th></tr></thead>
+    <tbody id="inv-items"></tbody>
+  </table>
+
+  <div class="inv-totals">
+    <div class="row" id="inv-subtotal-row"><span>Subtotal</span><span></span></div>
+    <div class="row" id="inv-discount-row" style="display:none;"><span>Bundle discount</span><span></span></div>
+    <div class="row" id="inv-promo-row" style="display:none;"><span>Promo code</span><span></span></div>
+    <div class="row total"><span>Total</span><span id="inv-total"></span></div>
+  </div>
+
+  <div class="inv-footer">Thank you for choosing Hikaya by Maison Jaber. Questions? <a href="contact.html">Contact us</a>.</div>
+</div>
+
+<script>
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+  (async function () {
+    const params = new URLSearchParams(window.location.search);
+    const orderNumber = params.get('orderNumber');
+    const email = params.get('email');
+    const loading = document.getElementById('loading');
+    const errorBox = document.getElementById('error-box');
+
+    if (!orderNumber || !email) {
+      loading.style.display = 'none';
+      errorBox.style.display = 'block';
+      errorBox.textContent = 'Missing order number or email. Use the link from your order confirmation email or track-order page.';
+      return;
+    }
+
+    try {
+      const res = await fetch(`/.netlify/functions/get-invoice?orderNumber=${encodeURIComponent(orderNumber)}&email=${encodeURIComponent(email)}`);
+      const data = await res.json();
+      if (!res.ok) {
+        loading.style.display = 'none';
+        errorBox.style.display = 'block';
+        errorBox.textContent = data.error || 'Invoice not found.';
+        return;
+      }
+
+      const fmt = (n) => `${Number(n).toFixed(2)} ${data.currency || ''}`;
+      document.getElementById('inv-number').textContent = data.orderNumber;
+      document.getElementById('inv-date').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '';
+      document.getElementById('inv-customer').textContent = data.fullName;
+      document.getElementById('inv-address').textContent = `${data.address}, ${data.city}, ${data.country || ''}`;
+      document.getElementById('inv-payment-method').textContent = (data.paymentMethod || '').toUpperCase();
+
+      document.getElementById('inv-items').innerHTML = data.items.map(i => `
+        <tr><td>${i.story}${i.childName ? ' — for ' + i.childName : ''}${i.ageEdition ? ' (Ages ' + i.ageEdition + ')' : ''}</td><td>—</td></tr>
+      `).join('');
+
+      // `amount` stored on the order is already the final, post-discount
+      // total -- reverse the bundle % to show a true pre-discount subtotal,
+      // so the discount line actually explains the difference shown.
+      const subtotal = data.bundleDiscountPct > 0 ? data.amount / (1 - data.bundleDiscountPct / 100) : data.amount;
+      document.querySelector('#inv-subtotal-row span:last-child').textContent = fmt(subtotal);
+      if (data.bundleDiscountPct > 0) {
+        document.getElementById('inv-discount-row').style.display = 'flex';
+        document.querySelector('#inv-discount-row span:last-child').textContent = `-${data.bundleDiscountPct}% (-${fmt(subtotal - data.amount)})`;
+      }
+      if (data.promoCode) {
+        document.getElementById('inv-promo-row').style.display = 'flex';
+        document.querySelector('#inv-promo-row span:last-child').textContent = data.promoCode;
+      }
+      document.getElementById('inv-total').textContent = fmt(data.amount);
+
+      loading.style.display = 'none';
+      document.getElementById('invoice-sheet').style.display = 'block';
+    } catch {
+      loading.style.display = 'none';
+      errorBox.style.display = 'block';
+      errorBox.textContent = 'Something went wrong loading the invoice.';
+    }
+  })();
+</script>
+
+</body>
+</html>

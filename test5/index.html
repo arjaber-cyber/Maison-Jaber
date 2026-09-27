@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Hikaya by Maison Jaber — More than a book, it's a memory for life.</title>
 <meta name="description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Hikaya by Maison Jaber — More than a book, it's a memory for life." />
+<meta property="og:description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
+<meta property="og:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
+<meta property="og:url" content="https://maison-jaber.com/test5/index.html" />
+<meta property="og:site_name" content="Hikaya by Maison Jaber" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Hikaya by Maison Jaber — More than a book, it's a memory for life." />
+<meta name="twitter:description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
+<meta name="twitter:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
   * { box-sizing: border-box; }
@@ -46,6 +56,12 @@
   nav.main a:hover { color: var(--caramel); }
   .header-actions { display: flex; align-items: center; gap: 18px; }
   .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
+  .icon-btn { position: relative; display: inline-flex; }
+  .cart-badge {
+    display: none; position: absolute; top: -7px; right: -8px; background: var(--coral); color: #fff;
+    font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%;
+    align-items: center; justify-content: center; padding: 0 3px; font-family: 'Inter', sans-serif;
+  }
   .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--brown); }
   .lang-pill:hover { background: var(--cream); }
   .zone-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--coral-deep); cursor: pointer; }
@@ -155,6 +171,26 @@
 
   /* Footer */
   footer.site { background: var(--near-black); color: #e8ddd0; padding: 50px 0 30px; margin-top: 0; }
+  .newsletter-box {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    background: rgba(255,255,255,0.06); border-radius: 20px; padding: 28px 32px; margin-bottom: 36px;
+  }
+  .newsletter-box h3 { font-size: 21px; color: #fff; margin-bottom: 4px; }
+  .newsletter-box p { font-size: 13.5px; color: #cbbba9; }
+  .newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .newsletter-form input {
+    padding: 12px 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+    color: #fff; font-size: 13.5px; min-width: 220px; font-family: 'Inter', sans-serif;
+  }
+  .newsletter-form input::placeholder { color: #a8998a; }
+  .newsletter-form input:focus { outline: none; border-color: var(--gold); }
+  .newsletter-form button {
+    padding: 12px 24px; border-radius: 100px; border: none; background: var(--coral, #A67443); color: #fff;
+    font-size: 13.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .newsletter-form button:hover { background: var(--coral-deep, #563622); }
+  .newsletter-msg { text-align: center; font-size: 12.5px; font-weight: 600; color: #d8c9b0; margin: -24px 0 24px; min-height: 16px; }
+  @media (max-width: 640px) { .newsletter-box { flex-direction: column; align-items: stretch; text-align: center; } .newsletter-form { justify-content: center; } }
   .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; }
   footer.site .wordmark img { height: 70px; filter: brightness(0) invert(1) opacity(0.9); }
   footer.site nav { display: flex; gap: 24px; flex-wrap: wrap; }
@@ -162,45 +198,19 @@
   footer.site nav a:hover { color: #fff; }
   .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 12px; color: #a8998a; text-align: center; }
 </style>
+<script src="/site-header.js" defer></script>
 <script src="/i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="/search.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
 
-<header class="site">
-  <div class="wrap inner">
-    <button class="hamburger" id="hamburger-btn" aria-label="Menu">
-      <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-    </button>
-    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
-    <nav class="main">
-      <a href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
-      <a href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
-      <a href="./about.html" data-i18n="common.nav_about">About</a>
-      <a href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
-    </nav>
-    <div class="header-actions">
-      <a class="icon-btn" href="./stories.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></a>
-      <a class="icon-btn" href="./login.html"><svg viewBox="0 0 24 24" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg></a>
-      <a class="lang-pill" href="#" data-i18n-skip style="margin-right:6px; padding:8px 10px;">EN</a>
-      <a class="zone-pill" href="#" style="margin-right:6px;">GCC</a>
-      <a class="btn-primary" href="./personalize.html" style="padding:12px 22px; font-size:13px;" data-i18n="home5.create_book">Create Their Book</a>
-    </div>
-    <a class="mobile-cta-icon" href="./personalize.html" aria-label="Create Their Book">
-      <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 5v14M5 12h14"/></svg>
-    </a>
-  </div>
-  <div class="mobile-nav-panel" id="mobile-nav-panel">
-    <a class="nav-link" href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
-    <a class="nav-link" href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
-    <a class="nav-link" href="./about.html" data-i18n="common.nav_about">About</a>
-    <a class="nav-link" href="#gifts" data-i18n="home5.nav_gifts">Gifts</a>
-    <a class="lang-pill" href="#" data-i18n-skip style="align-self:center; margin-bottom:8px;">EN</a>
-    <a class="zone-pill" href="#" style="align-self:center; margin-bottom:8px;">GCC</a>
-    <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
-  </div>
-</header>
+<div id="site-header-root"></div>
 
 <section class="hero">
   <div class="hero-bg" id="hero-carousel">
@@ -301,6 +311,17 @@
 
 <footer class="site">
   <div class="wrap">
+    <div class="newsletter-box">
+      <div>
+        <h3 data-i18n="home5.newsletter_title">Stories in your inbox</h3>
+        <p data-i18n="home5.newsletter_sub">New stories, gifting ideas, and the occasional discount code — no spam.</p>
+      </div>
+      <form id="newsletter-form" class="newsletter-form">
+        <input type="email" id="newsletter-email" placeholder="you@email.com" data-i18n-placeholder="home5.newsletter_ph" required />
+        <button type="submit" data-i18n="home5.newsletter_btn">Subscribe</button>
+      </form>
+    </div>
+    <div id="newsletter-msg" class="newsletter-msg"></div>
     <div class="footer-grid">
       <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
       <nav>
@@ -308,18 +329,22 @@
         <a href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
         <a href="./about.html" data-i18n="common.nav_about">About</a>
         <a href="./help.html" data-i18n="common.nav_help">Help</a>
+        <a href="./track-order.html" data-i18n="common.nav_track">Track Order</a>
+        <a href="./contact.html" data-i18n="common.nav_contact">Contact</a>
         <a href="./account.html" data-i18n="home5.footer_account">Account</a>
       </nav>
     </div>
-    <div class="footer-bottom" data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</div>
+    <div class="footer-bottom">
+      <span data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</span>
+      &nbsp;·&nbsp; <a href="privacy.html" style="color:#a8998a; text-decoration:underline;">Privacy</a>
+      &nbsp;·&nbsp; <a href="terms.html" style="color:#a8998a; text-decoration:underline;">Terms</a>
+      &nbsp;·&nbsp; <a href="refund-policy.html" style="color:#a8998a; text-decoration:underline;">Refunds</a>
+      &nbsp;·&nbsp; <a href="#" id="cookie-settings-link" style="color:#a8998a; text-decoration:underline;">Cookie Settings</a>
+    </div>
   </div>
 </footer>
 
 <script>
-  document.getElementById('hamburger-btn').addEventListener('click', () => {
-    document.getElementById('mobile-nav-panel').classList.toggle('open');
-  });
-
   (function () {
     const track = document.getElementById('hero-carousel');
     const slides = track.querySelectorAll('.slide');
@@ -341,6 +366,38 @@
 
     setInterval(() => goTo(current + 1), 4500);
   })();
+
+  document.getElementById('cookie-settings-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    if (window.hikayaOpenConsentSettings) window.hikayaOpenConsentSettings();
+  });
+
+  document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const emailInput = document.getElementById('newsletter-email');
+    const msg = document.getElementById('newsletter-msg');
+    const btn = e.target.querySelector('button');
+    const email = emailInput.value.trim();
+    if (!email) return;
+    btn.disabled = true;
+    try {
+      const res = await fetch('/.netlify/functions/subscribe-newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_success') : "Thanks! You're on the list.";
+        emailInput.value = '';
+      } else {
+        const data = await res.json();
+        msg.textContent = data.error || (window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.');
+      }
+    } catch {
+      msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.';
+    }
+    btn.disabled = false;
+  });
 </script>
 
 </body>

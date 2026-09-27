@@ -24,6 +24,13 @@
   a { color: inherit; text-decoration: none; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+
+  .signin-box { background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .signin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  @media (max-width: 560px) {
+    .signin-buttons { flex-direction: column; width: 100%; }
+    .signin-buttons button { width: 100%; }
+  }
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
@@ -65,8 +72,25 @@
     background: var(--parchment); text-align: center; padding: 10px 16px; font-size: 12px; color: var(--text-on-light-soft);
   }
 
-  .checkout-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; padding: 32px 0 70px; max-width: 1080px; margin: 0 auto; align-items: start; }
-  @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; padding: 24px 20px 50px; } }
+  .checkout-layout { display: none; grid-template-columns: 1fr 360px; gap: 40px; padding: 32px 0 70px; max-width: 1080px; margin: 0 auto; align-items: start; }
+  .checkout-layout.unlocked { display: grid; }
+  @media (max-width: 900px) { .checkout-layout.unlocked { grid-template-columns: 1fr; padding: 24px 20px 50px; } }
+  .checkout-progress { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 22px 0 4px; max-width: 560px; }
+  .progress-step { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--text-on-light-soft, #999); }
+  .progress-step .dot {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--parchment, #eee); color: var(--text-on-light-soft, #999);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0;
+  }
+  .progress-step.active .dot, .progress-step.done .dot { background: var(--coral, #A67443); color: #fff; }
+  .progress-step.active { color: var(--ink, #2E2018); }
+  .progress-step.done { color: var(--coral-deep, #563622); }
+  .progress-line { width: 40px; height: 1px; background: var(--line-soft, #ece1d1); }
+  @media (max-width: 560px) { .progress-step span:last-child { display: none; } .progress-line { width: 20px; } }
+
+  .checkout-locked-note {
+    max-width: 1080px; margin: 0 auto; padding: 8px 32px 40px; text-align: center;
+    font-size: 13.5px; color: var(--ink-soft); font-weight: 600;
+  }
 
   .checkout-col h2 { font-size: 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
   .checkout-col h2 .step-num {
@@ -127,6 +151,8 @@
   .card-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 18px; }
   .card-fields .full { grid-column: 1 / -1; }
   .card-fields-note { font-size: 11.5px; color: var(--ink-soft); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+  .paytabs-intro { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-bottom: 4px; }
+  #paytabs-status-note { font-size: 13.5px; font-weight: 700; color: var(--ink-soft); text-align: center; padding: 20px 0; }
 
   .cod-box {
     background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 20px;
@@ -145,17 +171,41 @@
   .payment-success { background: #eef3e6; border: 1px solid #b9cf9d; color: #3d5a26; border-radius: var(--radius); padding: 16px; font-size: 13px; margin-top: 12px; display: none; }
 
   .approval { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text-on-light-soft); margin: 20px 0; }
+  .trust-bar { text-align: center; margin-top: 18px; }
+  .trust-line { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--text-on-light-soft); margin-bottom: 10px; }
+  .trust-line svg { width: 15px; height: 15px; stroke: #3d5a26; flex-shrink: 0; }
+  .trust-logos { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .trust-logos span { font-size: 11px; font-weight: 800; color: var(--text-on-light-soft); border: 1px solid var(--line-soft, #ddd); border-radius: 6px; padding: 4px 9px; }
 
   /* Summary sidebar */
   .summary-card {
     background: #fff; border: 1px solid rgba(184,149,75,0.25); border-radius: var(--radius); padding: 24px;
     position: sticky; top: 24px;
   }
-  .summary-book { display: flex; gap: 14px; margin-bottom: 20px; }
+  .summary-book { display: flex; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line-soft); }
+  .summary-book:last-child { border-bottom: none; }
   .summary-book .cover-mini {
     width: 54px; height: 72px; border-radius: 12px; flex-shrink: 0;
     background: linear-gradient(165deg, #D98868 0%, #B5563B 100%);
   }
+  .summary-book .cover-mini.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
+  .summary-book .cover-mini.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
+  .summary-book .remove-item { font-size: 11px; color: var(--ink-soft); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 0; margin-left: 8px; }
+
+  .promo-box { display: flex; gap: 8px; margin: 4px 0 6px; }
+  .promo-box input {
+    flex: 1; padding: 10px 12px; font-size: 13px; border: 1.5px solid var(--line-soft); border-radius: 10px;
+    font-family: 'Inter', sans-serif; background: var(--bg-soft);
+  }
+  .promo-box input:focus { outline: none; border-color: var(--gold); background: #fff; }
+  .promo-box button {
+    padding: 10px 16px; border-radius: 10px; border: none; background: var(--coral-deep); color: #fff;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .promo-box button:hover { background: var(--coral); }
+  .promo-message { font-size: 12px; font-weight: 600; margin-bottom: 10px; min-height: 16px; }
+  .promo-message.success { color: #3d5a26; }
+  .promo-message.error { color: var(--coral-deep); }
   .summary-book h3 { font-size: 15px; margin-bottom: 4px; }
   .summary-book p { font-size: 12px; color: var(--text-on-light-soft); margin: 0; }
   .summary-book a.edit { font-size: 12px; color: var(--gold); text-decoration: underline; }
@@ -173,7 +223,11 @@
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
@@ -199,16 +253,24 @@
 
 <div class="preview-banner" data-i18n="checkout.preview_banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
 
+<div class="wrap checkout-progress" id="checkout-progress">
+  <div class="progress-step active" id="progress-step-1"><span class="dot">1</span><span data-i18n="checkout.progress_account">Your Info</span></div>
+  <div class="progress-line"></div>
+  <div class="progress-step" id="progress-step-2"><span class="dot">2</span><span data-i18n="checkout.progress_delivery">Delivery &amp; Payment</span></div>
+  <div class="progress-line"></div>
+  <div class="progress-step" id="progress-step-3"><span class="dot">3</span><span data-i18n="checkout.progress_confirm">Confirmation</span></div>
+</div>
+
 <div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 20px;">
-  <div style="background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+  <div class="signin-box">
     <div>
       <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.signin_title">Sign in for faster checkout</span>
       <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
     </div>
-    <div style="display: flex; gap: 8px; flex-shrink: 0;">
-      <button class="btn-secondary" id="google-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
-      <button class="btn-secondary" id="facebook-signin" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
-      <button class="btn-secondary" id="guest-continue" style="width:auto; padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
+    <div class="signin-buttons">
+      <button class="btn-secondary" id="google-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
+      <button class="btn-secondary" id="facebook-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
+      <button class="btn-secondary" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
 </div>
@@ -220,7 +282,9 @@
   </div>
 </div>
 
-<div class="checkout-layout">
+<div class="checkout-locked-note" id="checkout-locked-note" data-i18n="checkout.locked_note">Sign in or continue as a guest above to enter your delivery details.</div>
+
+<div class="checkout-layout" id="checkout-layout">
   <div class="checkout-col">
     <div class="form-block">
       <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
@@ -288,19 +352,35 @@
     <button class="btn-primary" id="place-order" disabled>Payment not yet available</button>
     <div class="payment-error" id="payment-error"></div>
     <div class="payment-success" id="payment-success"></div>
+
+    <div class="trust-bar">
+      <div class="trust-line">
+        <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span data-i18n="checkout.trust_secure">Secure checkout — your details are encrypted</span>
+      </div>
+      <div class="trust-logos" aria-hidden="true">
+        <span>VISA</span><span>Mastercard</span><span> Pay</span><span>G Pay</span>
+      </div>
+    </div>
   </div>
 
   <div>
     <div class="summary-card">
-      <div class="summary-book">
-        <div class="cover-mini"></div>
-        <div>
-          <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
-          <p data-i18n-skip>For Layla &middot; Ages 5&ndash;7 &middot; Hardcover</p>
-          <a class="edit" href="personalize.html" data-i18n="checkout.edit">Edit</a>
-        </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2 style="font-size:16px;" data-i18n="cart.order_summary">Order Summary</h2>
+        <a href="cart.html" style="font-size:12px; font-weight:700; text-decoration:underline; color:var(--text-on-light-soft);" data-i18n="checkout.edit_cart">Edit cart</a>
       </div>
-      <div class="price-row" id="price-book-row"><span data-i18n="checkout.book">Book</span><span class="note">&euro;35.00</span></div>
+      <div id="summary-cart-items"><!-- populated from cart.js --></div>
+
+      <div class="promo-box">
+        <input type="text" id="promo-code-input" placeholder="Discount code" data-i18n-placeholder="checkout.promo_placeholder" />
+        <button type="button" id="promo-apply-btn" data-i18n="checkout.apply">Apply</button>
+      </div>
+      <div class="promo-message" id="promo-message"></div>
+
+      <div class="price-row" id="bundle-discount-row" style="display:none;"><span data-i18n="checkout.bundle_discount">Bundle discount</span><span class="note" id="bundle-discount-note"></span></div>
+      <div class="price-row" id="promo-discount-row" style="display:none;"><span data-i18n="checkout.promo_discount">Discount code</span><span class="note" id="promo-discount-note"></span></div>
+      <div class="price-row" id="extra-char-row" style="display:none;"><span data-i18n="cart.extra_character_fee">Extra character photo</span><span class="note" id="extra-char-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
     </div>
@@ -308,7 +388,14 @@
 </div>
 
 <footer class="site">
-  <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
+  <div class="wrap">
+    <p>
+      <span data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</span>
+      &nbsp;·&nbsp; <a href="privacy.html" style="text-decoration:underline;">Privacy</a>
+      &nbsp;·&nbsp; <a href="terms.html" style="text-decoration:underline;">Terms</a>
+      &nbsp;·&nbsp; <a href="refund-policy.html" style="text-decoration:underline;">Refunds</a>
+    </p>
+  </div>
 </footer>
 
 <script type="module">
@@ -322,6 +409,17 @@
   const accountStep = document.getElementById('account-step');
   const signedInBar = document.getElementById('signed-in-bar');
   const signedInEmail = document.getElementById('signed-in-email');
+  const checkoutLayout = document.getElementById('checkout-layout');
+  const checkoutLockedNote = document.getElementById('checkout-locked-note');
+  let continuedAsGuest = false;
+
+  function unlockCheckoutLayout() {
+    checkoutLayout.classList.add('unlocked');
+    checkoutLockedNote.style.display = 'none';
+    document.getElementById('progress-step-1').classList.add('done');
+    document.getElementById('progress-step-1').classList.remove('active');
+    document.getElementById('progress-step-2').classList.add('active');
+  }
 
   async function refreshAuthUI() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -333,9 +431,16 @@
       const fullName = session.user.user_metadata?.full_name;
       if (fullName) document.getElementById('full-name').value = fullName;
       document.getElementById('email').value = session.user.email;
+      unlockCheckoutLayout();
+    } else if (continuedAsGuest) {
+      accountStep.style.display = 'none';
+      signedInBar.style.display = 'none';
+      unlockCheckoutLayout();
     } else {
       accountStep.style.display = 'block';
       signedInBar.style.display = 'none';
+      checkoutLayout.classList.remove('unlocked');
+      checkoutLockedNote.style.display = 'block';
     }
   }
   refreshAuthUI();
@@ -347,10 +452,14 @@
     await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
+    continuedAsGuest = true;
     accountStep.style.display = 'none';
+    unlockCheckoutLayout();
+    checkoutLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   document.getElementById('sign-out-checkout').addEventListener('click', async () => {
     await supabase.auth.signOut();
+    continuedAsGuest = false;
     refreshAuthUI();
   });
 
@@ -427,25 +536,133 @@
   }
 
   // ---------- Pricing ----------
-  function updatePricing() {
-    const region = REGIONS[currentRegionKey];
-    const priceBookRow = document.getElementById('price-book-row');
-    const priceDelivery = document.getElementById('price-delivery');
-    const priceTotal = document.getElementById('price-total');
+  const THEME_ITEM_LABEL = { courage: 'story1_title', adventure: 'story2_title', lullaby: 'story3_title' };
+  let appliedPromo = null;
 
-    if (region.deliveryFee === null) {
-      priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">—</span>`;
-      priceDelivery.textContent = t('checkout.confirmed_region', 'Confirmed by region');
-      priceTotal.textContent = t('checkout.confirmed_checkout', 'Confirmed at checkout');
+  document.getElementById('promo-apply-btn').addEventListener('click', async () => {
+    const input = document.getElementById('promo-code-input');
+    const msg = document.getElementById('promo-message');
+    const code = input.value.trim();
+    if (!code) return;
+
+    msg.className = 'promo-message';
+    msg.textContent = t('checkout.promo_checking', 'Checking…');
+
+    try {
+      const res = await fetch('/.netlify/functions/validate-discount-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.valid) {
+        appliedPromo = null;
+        msg.className = 'promo-message error';
+        msg.textContent = data.error || t('checkout.promo_invalid', "That code isn't valid.");
+      } else {
+        appliedPromo = { code: code.toUpperCase(), type: data.type, value: data.value };
+        msg.className = 'promo-message success';
+        msg.textContent = t('checkout.promo_applied', 'Code applied!');
+        input.disabled = true;
+        document.getElementById('promo-apply-btn').disabled = true;
+      }
+    } catch {
+      appliedPromo = null;
+      msg.className = 'promo-message error';
+      msg.textContent = t('checkout.err_generic', 'Something went wrong. Please try again.');
+    }
+    renderCartSummary();
+  });
+
+  function computeFinalPricing(region) {
+    const pricing = window.hikayaCart.computeCartPricing(region);
+    let deliveryFee = pricing.tier.freeDelivery ? 0 : pricing.deliveryFee;
+    let booksTotal = pricing.booksTotal;
+    let promoApplied = null;
+    if (appliedPromo) {
+      if (appliedPromo.type === 'free_shipping') {
+        deliveryFee = 0;
+        promoApplied = { code: appliedPromo.code, label: t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase() };
+      } else if (appliedPromo.type === 'percent') {
+        booksTotal -= booksTotal * (appliedPromo.value / 100);
+        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}%` };
+      } else if (appliedPromo.type === 'fixed') {
+        booksTotal = Math.max(0, booksTotal - appliedPromo.value);
+        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}` };
+      }
+    }
+    return { ...pricing, deliveryFee, booksTotal, total: booksTotal + deliveryFee + (pricing.extraCharacterFee || 0), promoApplied };
+  }
+
+  function renderCartSummary() {
+    const region = REGIONS[currentRegionKey];
+    const itemsWrap = document.getElementById('summary-cart-items');
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    const placeOrderBtnEl = document.getElementById('place-order');
+
+    if (cart.length === 0) {
+      itemsWrap.innerHTML = `<p style="font-size:13px; color:var(--text-on-light-soft); text-align:center; padding:10px 0;">${t('checkout.cart_empty', 'Your cart is empty.')} <a href="personalize.html" style="text-decoration:underline;">${t('checkout.cart_empty_cta', 'Create a book')}</a></p>`;
+      document.getElementById('bundle-discount-row').style.display = 'none';
+      document.getElementById('promo-discount-row').style.display = 'none';
+      document.getElementById('price-delivery').textContent = '—';
+      document.getElementById('price-total').textContent = '—';
+      if (placeOrderBtnEl) placeOrderBtnEl.disabled = true;
       return;
     }
+
+    itemsWrap.innerHTML = cart.map(item => `
+      <div class="summary-book">
+        <div class="cover-mini ${item.theme}"></div>
+        <div>
+          <h3>${item.story}</h3>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</p>
+          ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
+          <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
+        </div>
+      </div>
+    `).join('');
+
+    itemsWrap.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.hikayaCart.removeFromCart(btn.dataset.id);
+        renderCartSummary();
+      });
+    });
+
     const fmt = (n) => region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
-    const bookHtml = region.bookWas > region.bookNow
-      ? `<span style="text-decoration:line-through; opacity:0.55; margin-right:6px;">${fmt(region.bookWas)}</span><strong style="color:var(--coral-deep);">${fmt(region.bookNow)}</strong>`
-      : `<strong>${fmt(region.bookNow)}</strong>`;
-    priceBookRow.innerHTML = `<span>${t('checkout.book','Book')}</span><span class="note">${bookHtml}</span>`;
-    priceDelivery.textContent = region.deliveryFee === 0 ? t('checkout.cod_fee_free', 'Free') : fmt(region.deliveryFee);
-    priceTotal.textContent = fmt(region.bookNow + region.deliveryFee);
+    const final = computeFinalPricing(region);
+
+    const discountRow = document.getElementById('bundle-discount-row');
+    if (final.tier.discountPct > 0) {
+      discountRow.style.display = 'flex';
+      document.getElementById('bundle-discount-note').textContent = `-${final.tier.discountPct}%`;
+    } else {
+      discountRow.style.display = 'none';
+    }
+
+    const extraCharRow = document.getElementById('extra-char-row');
+    if (final.extraCharacterFee > 0) {
+      extraCharRow.style.display = 'flex';
+      document.getElementById('extra-char-note').textContent = fmt(final.extraCharacterFee);
+    } else {
+      extraCharRow.style.display = 'none';
+    }
+
+    const promoRow = document.getElementById('promo-discount-row');
+    if (final.promoApplied) {
+      promoRow.style.display = 'flex';
+      document.getElementById('promo-discount-note').textContent = final.promoApplied.label;
+    } else {
+      promoRow.style.display = 'none';
+    }
+
+    document.getElementById('price-delivery').textContent = final.deliveryFee === 0 ? t('checkout.free', 'Free') : fmt(final.deliveryFee);
+    document.getElementById('price-total').textContent = fmt(final.total);
+    if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
+  }
+
+  function updatePricing() {
+    renderCartSummary();
   }
 
   // ---------- Payment section ----------
@@ -465,7 +682,6 @@
 
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
-    localStorage.setItem('hikaya_region', currentRegionKey);
     const region = REGIONS[currentRegionKey];
     updatePricing();
 
@@ -493,10 +709,11 @@
     if (selectedPaymentMethod === 'card') {
       bodyHtml = `
         <div class="card-fields">
-          <div class="field full"><label class="field-label">${t('checkout.name_on_card', 'Name on card')}<span class="req-mark">*</span></label><input type="text" id="card-name" placeholder="e.g. Sara Al Habtoor" /></div>
-          <div class="field full"><label class="field-label">${t('checkout.card_number', 'Card number')}<span class="req-mark">*</span></label><input type="text" id="card-number" placeholder="1234 1234 1234 1234" maxlength="19" /></div>
-          <div class="field"><label class="field-label">${t('checkout.expiry', 'Expiry')}<span class="req-mark">*</span></label><input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" /></div>
-          <div class="field"><label class="field-label">CVC<span class="req-mark">*</span></label><input type="text" id="card-cvc" placeholder="123" maxlength="4" /></div>
+          <p class="paytabs-intro">${t('checkout.paytabs_intro', "You'll enter your card details securely on the next step — we never see or store them.")}</p>
+          <div id="paytabs-frame-wrap" style="display:none;">
+            <iframe id="paytabs-iframe" title="Secure payment" style="width:100%; min-height:480px; border:none; border-radius:12px; background:#fff;"></iframe>
+          </div>
+          <div id="paytabs-status-note" style="display:none;"></div>
         </div>
         <div class="card-fields-note">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -560,25 +777,34 @@
         renderPaymentSection();
       });
     });
-    if (selectedPaymentMethod === 'card') attachCardFormatting();
   }
 
-  function attachCardFormatting() {
-    const numberEl = document.getElementById('card-number');
-    const expiryEl = document.getElementById('card-expiry');
-    numberEl?.addEventListener('input', () => {
-      numberEl.value = numberEl.value.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
-    });
-    expiryEl?.addEventListener('input', () => {
-      let v = expiryEl.value.replace(/\D/g, '').slice(0, 4);
-      if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
-      expiryEl.value = v;
-    });
-  }
-
-  countrySelect.addEventListener('change', renderPaymentSection);
+  countrySelect.addEventListener('change', () => {
+    localStorage.setItem('hikaya_region', countrySelect.value);
+    renderPaymentSection();
+  });
   renderPaymentSection();
   detectLocation();
+
+  // ---------- Abandoned cart tracking ----------
+  // Fires once someone types a plausible email at checkout but doesn't
+  // complete the order, so we can follow up later. Never blocks the page.
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  document.getElementById('email').addEventListener('blur', (e) => {
+    const email = e.target.value.trim();
+    if (!EMAIL_RE.test(email)) return;
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    fetch('/.netlify/functions/track-abandoned-cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        childName: cart[0]?.childName || null,
+        story: cart[0]?.story || null,
+        ageEdition: cart[0]?.ageEdition || null,
+      }),
+    }).catch(() => { /* best-effort only */ });
+  });
 
   // ---------- Live address map ----------
   const mapFrame = document.getElementById('address-map');
@@ -662,6 +888,16 @@
     }
 
     const region = REGIONS[currentRegionKey];
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+
+    if (cart.length === 0) {
+      errorBox.textContent = t('checkout.cart_empty', 'Your cart is empty.');
+      errorBox.style.display = 'block';
+      return;
+    }
+
+    const finalPricing = computeFinalPricing(region);
+
     const order = {
       fullName: document.getElementById('full-name').value,
       email: document.getElementById('email').value,
@@ -672,7 +908,10 @@
       isGift: giftSelect.value === 'yes',
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      amount: region.bookNow + (region.deliveryFee || 0),
+      items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
+      bundleDiscountPct: finalPricing.tier.discountPct,
+      promoCode: appliedPromo ? appliedPromo.code : null,
+      amount: finalPricing.total,
       currency: region.currency
     };
 
@@ -688,9 +927,94 @@
       return;
     }
 
+
     placeOrderBtn.disabled = true;
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
+
+    function finalizeOrderSuccess(message) {
+      successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
+      successBox.style.display = 'block';
+      placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
+      document.getElementById('progress-step-2').classList.add('done');
+      document.getElementById('progress-step-2').classList.remove('active');
+      document.getElementById('progress-step-3').classList.add('active');
+
+      if (window.hikayaTrackEvent) {
+        window.hikayaTrackEvent('purchase', {
+          value: order.amount, currency: order.currency, payment_method: order.paymentMethod,
+        });
+      }
+
+      fetch('/.netlify/functions/complete-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: order.email }),
+      }).catch(() => { /* best-effort only */ });
+
+      if (window.hikayaCart) window.hikayaCart.clearCart();
+    }
+
+    // Card payments go through PayTabs' hosted payment page, embedded as
+    // an iframe, so raw card numbers never touch this site's code.
+    if (selectedPaymentMethod === 'card') {
+      try {
+        const res = await fetch('/.netlify/functions/create-paytabs-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.redirectUrl) {
+          errorBox.textContent = data.error || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+          errorBox.style.display = 'block';
+          placeOrderBtn.disabled = false;
+          placeOrderBtn.textContent = originalText;
+          return;
+        }
+
+        const frameWrap = document.getElementById('paytabs-frame-wrap');
+        const iframe = document.getElementById('paytabs-iframe');
+        const statusNote = document.getElementById('paytabs-status-note');
+        iframe.src = data.redirectUrl;
+        frameWrap.style.display = 'block';
+        placeOrderBtn.style.display = 'none';
+        iframe.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        window.addEventListener('message', async function onPaytabsMessage(e) {
+          if (!e.data || e.data.source !== 'hikaya-paytabs') return;
+          window.removeEventListener('message', onPaytabsMessage);
+          frameWrap.style.display = 'none';
+          statusNote.style.display = 'block';
+          statusNote.textContent = t('checkout.paytabs_verifying', 'Confirming your payment…');
+
+          try {
+            const checkRes = await fetch(`/.netlify/functions/check-paytabs-status?tranRef=${encodeURIComponent(e.data.tranRef)}`);
+            const checkData = await checkRes.json();
+            if (checkData.approved) {
+              statusNote.style.display = 'none';
+              finalizeOrderSuccess(t('checkout.order_success', 'Order placed successfully!'));
+            } else {
+              statusNote.textContent = t('checkout.paytabs_declined', 'This payment was not approved. Please try again or use a different card.');
+              placeOrderBtn.style.display = 'block';
+              placeOrderBtn.disabled = false;
+              placeOrderBtn.textContent = originalText;
+            }
+          } catch {
+            statusNote.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+            placeOrderBtn.style.display = 'block';
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = originalText;
+          }
+        });
+      } catch {
+        errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+        errorBox.style.display = 'block';
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = originalText;
+      }
+      return;
+    }
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
@@ -710,9 +1034,7 @@
         return;
       }
 
-      successBox.textContent = data.message || t('checkout.order_success', 'Order placed successfully!');
-      successBox.style.display = 'block';
-      placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
+      finalizeOrderSuccess(data.message);
     } catch {
       errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
       errorBox.style.display = 'block';

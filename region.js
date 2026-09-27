@@ -161,12 +161,29 @@ window.HIKAYA_REGIONS = {
     });
   }
 
+  // Converts an AED-denominated fee (e.g. the extra-character upcharge an
+  // admin sets on a story) into whichever region's currency is active,
+  // using each region's book price as the conversion ratio -- consistent
+  // with how all other pricing here is a fixed table, not a live FX feed.
+  // Accepts either a region object directly (e.g. from computeCartPricing)
+  // or a region key string; falls back to the currently active region.
+  function convertFromAed(feeAed, regionOrKey) {
+    const region = typeof regionOrKey === 'object' && regionOrKey
+      ? regionOrKey
+      : window.HIKAYA_REGIONS[regionOrKey || currentRegionKey()];
+    const uae = window.HIKAYA_REGIONS.UAE;
+    if (!region || !uae || !feeAed) return 0;
+    const rate = region.bookNow / uae.bookNow;
+    return Math.round(feeAed * rate * 100) / 100;
+  }
+
   window.hikayaRegion = currentRegion;
   window.hikayaRegionKey = currentRegionKey;
   window.hikayaZone = currentZone;
   window.hikayaFormatPrice = fmtPrice;
   window.hikayaPriceHtml = priceHtml;
   window.hikayaApplyRegion = applyToPage;
+  window.hikayaConvertFromAed = convertFromAed;
 
   document.addEventListener('DOMContentLoaded', () => {
     buildSwitcher();
