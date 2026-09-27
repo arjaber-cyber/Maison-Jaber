@@ -471,15 +471,32 @@
   };
   const STORY_CATALOG = {}; // title -> full story record, once fetched
 
+  // Show a story's cover photo (uploaded in the admin dashboard) instead of the gradient.
+  function applyCoverPhoto(el, story) {
+    if (!el || !story || !story.cover_image_url) return;
+    el.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.45) 100%), url('${story.cover_image_url.replace(/'/g, '%27')}')`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+  }
+
   async function loadStoryCatalog() {
     try {
       const res = await fetch('/.netlify/functions/get-stories');
       const data = await res.json();
       const grid = document.getElementById('story-grid');
+      const catalogTitles = new Set((data.stories || []).map(st => st.title));
+      if (data.tableReady) {
+        // Stories deleted in the admin dashboard disappear from the picker.
+        document.querySelectorAll('#story-grid .story-pick').forEach(card => {
+          if (!catalogTitles.has(card.dataset.value)) card.remove();
+        });
+      }
       (data.stories || []).forEach(story => {
         STORY_THEMES[story.title] = story.theme;
         STORY_CATALOG[story.title] = story;
-        if (!story.built_in) {
+        const existing = [...document.querySelectorAll('#story-grid .story-pick')].find(c => c.dataset.value === story.title);
+        if (existing) { applyCoverPhoto(existing.querySelector('.cover'), story); return; }
+        {
           const card = document.createElement('div');
           card.className = 'story-pick';
           card.dataset.value = story.title;
@@ -491,6 +508,7 @@
               <h3>${story.title}</h3>
             </div>`;
           card.addEventListener('click', () => selectStory(story.title));
+          applyCoverPhoto(card.querySelector('.cover'), story);
           grid.appendChild(card);
         }
       });
@@ -516,6 +534,8 @@
     // Summary sidebar
     document.getElementById('summary-cover').className = 'summary-cover ' + theme;
     document.getElementById('summary-cover').innerHTML = `<div class="t">${storyName}</div>`;
+    document.getElementById('summary-cover').style.backgroundImage = '';
+    applyCoverPhoto(document.getElementById('summary-cover'), STORY_CATALOG[storyName]);
     document.getElementById('summary-story-title').textContent = storyName;
 
     // Compact chip replaces the picker grid
