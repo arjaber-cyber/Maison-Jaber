@@ -441,6 +441,8 @@ window.HIKAYA_TRANSLATIONS = {
     example_name: { en: '"...there lived someone brave named Layla."', de: '„...dort lebte jemand Mutiges namens Layla."', ar: '"...عاشت هناك شخصية شجاعة اسمها ليلى."' },
   },
   story_common: {
+    personalize_cta: { en: 'Personalize This Story', de: 'Diese Geschichte personalisieren', ar: 'خصّص هذه القصة' },
+    preview_note: { en: 'Sample pages. Your copy is illustrated with your child as the hero.', de: 'Beispielseiten. Ihr Exemplar wird mit Ihrem Kind als Held illustriert.', ar: 'صفحات نموذجية. نسختك مرسومة وطفلك بطل القصة.' },
     book_eyebrow: { en: 'The Book', de: 'Das Buch', ar: 'الكتاب' },
     book_title: { en: 'Seen from every angle', de: 'Aus jedem Blickwinkel', ar: 'من كل زاوية' },
     angle_front: { en: 'Front cover', de: 'Vorderseite', ar: 'الغلاف الأمامي' },
