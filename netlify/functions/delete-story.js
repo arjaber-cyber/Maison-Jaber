@@ -29,13 +29,13 @@ exports.handler = async (event) => {
       console.error('delete-story failed:', res.status, rows);
       return { statusCode: 404, body: JSON.stringify({ error: 'Story not found (it may already be deleted).' }) };
     }
-    // Best-effort: remove the cover file too.
-    const url = rows[0].cover_image_url || '';
-    const m = url.match(/\/object\/public\/site-photos\/([^?]+)/);
-    if (m) {
+    // Best-effort: remove the cover and preview image files too.
+    const urls = [rows[0].cover_image_url, ...(Array.isArray(rows[0].preview_images) ? rows[0].preview_images : [])];
+    const prefixes = urls.map(u => (u || '').match(/\/object\/public\/site-photos\/([^?]+)/)).filter(Boolean).map(m => decodeURIComponent(m[1]));
+    if (prefixes.length) {
       await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}`, {
         method: 'DELETE', headers: { ...headers, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prefixes: [decodeURIComponent(m[1])] }),
+        body: JSON.stringify({ prefixes }),
       }).catch(() => {});
     }
     return { statusCode: 200, body: JSON.stringify({ success: true }) };
