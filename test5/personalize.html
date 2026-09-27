@@ -472,11 +472,13 @@
   const STORY_CATALOG = {}; // title -> full story record, once fetched
 
   // Show a story's cover photo (uploaded in the admin dashboard) instead of the gradient.
+  // The photo already carries the title, so the text overlay is hidden.
   function applyCoverPhoto(el, story) {
     if (!el || !story || !story.cover_image_url) return;
-    el.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,.45) 100%), url('${story.cover_image_url.replace(/'/g, '%27')}')`;
+    el.style.backgroundImage = `url('${story.cover_image_url.replace(/'/g, '%27')}')`;
     el.style.backgroundSize = 'cover';
     el.style.backgroundPosition = 'center';
+    el.querySelectorAll('.t').forEach(t => { t.style.display = 'none'; });
   }
 
   async function loadStoryCatalog() {
@@ -536,6 +538,8 @@
     document.getElementById('summary-cover').innerHTML = `<div class="t">${storyName}</div>`;
     document.getElementById('summary-cover').style.backgroundImage = '';
     applyCoverPhoto(document.getElementById('summary-cover'), STORY_CATALOG[storyName]);
+    document.getElementById('story-chip-swatch').style.backgroundImage = '';
+    applyCoverPhoto(document.getElementById('story-chip-swatch'), STORY_CATALOG[storyName]);
     document.getElementById('summary-story-title').textContent = storyName;
 
     // Compact chip replaces the picker grid
