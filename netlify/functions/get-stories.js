@@ -45,17 +45,30 @@ const BUILT_IN_STORIES = [
   },
 ];
 
-exports.handler = async () => {
+const { isAdminRequest } = require('./_admin-check');
+
+// Stories now live entirely in the `stories` table (the 3 launch stories are
+// seeded there with built_in = true). The hardcoded list above is only a
+// fallback for when the database can't be reached.
+// ?all=1 with the admin password also returns hidden (inactive) stories.
+exports.handler = async (event) => {
+  const wantAll = event && event.queryStringParameters && event.queryStringParameters.all === '1' && isAdminRequest(event);
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/stories?active=eq.true&select=*&order=created_at.asc`, {
+    const filter = wantAll ? '' : 'active=eq.true&';
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/stories?${filter}select=*&order=sort_order.asc,created_at.asc`, {
       headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
     });
     if (!res.ok) {
-      return { statusCode: 200, headers: { 'Cache-Control': 'public, max-age=60' }, body: JSON.stringify({ stories: BUILT_IN_STORIES, tableReady: false }) };
+      return { statusCode: 200, headers: { 'Cache-Control': 'no-store' }, body: JSON.stringify({ stories: BUILT_IN_STORIES, tableReady: false }) };
     }
     const rows = await res.json();
-    const customStories = rows.map(r => ({ ...r, built_in: false, detail_url: null }));
-    return { statusCode: 200, headers: { 'Cache-Control': 'public, max-age=60' }, body: JSON.stringify({ stories: [...BUILT_IN_STORIES, ...customStories], tableReady: true }) };
+    // Table not seeded yet -> keep showing the launch stories rather than an empty shelf.
+    if (!wantAll && rows.length === 0) {
+      const any = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug&limit=1`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }).then(r => r.json()).catch(() => [1]);
+      if (Array.isArray(any) && any.length === 0) return { statusCode: 200, body: JSON.stringify({ stories: BUILT_IN_STORIES, tableReady: false }) };
+    }
+    const stories = rows.map(r => ({ ...r, built_in: !!r.built_in, detail_url: r.detail_url || null }));
+    return { statusCode: 200, headers: { 'Cache-Control': wantAll ? 'no-store' : 'public, max-age=30' }, body: JSON.stringify({ stories, tableReady: true }) };
   } catch (err) {
     console.error('get-stories error:', err);
     return { statusCode: 200, body: JSON.stringify({ stories: BUILT_IN_STORIES, tableReady: false }) };

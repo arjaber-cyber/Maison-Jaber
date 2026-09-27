@@ -64,7 +64,7 @@ exports.handler = async (event) => {
         Authorization: `Bearer ${SUPABASE_KEY}`,
         Prefer: 'resolution=merge-duplicates,return=representation',
       },
-      body: JSON.stringify({ ...row, created_at: new Date().toISOString() }),
+      body: JSON.stringify({ ...row, updated_at: new Date().toISOString() }),
     });
     if (!res.ok) {
       const errText = await res.text();
