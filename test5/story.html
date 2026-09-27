@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Star Who Couldn't Sleep — Hikaya by Maison Jaber</title>
-<meta name="description" content="A gentle bedtime story, personalized with your child's name, age, and photo. A soft wind-down for the very end of the day." />
+<title>Story — Hikaya by Maison Jaber</title>
+<meta name="description" content="A personalized storybook from Hikaya by Maison Jaber, with your child as the hero." />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="The Star Who Couldn't Sleep — Hikaya by Maison Jaber" />
-<meta property="og:description" content="A gentle bedtime story, personalized with your child's name, age, and photo. A soft wind-down for the very end of the day." />
-<meta property="og:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
-<meta property="og:url" content="https://maison-jaber.com/test5/story-star-who-couldnt-sleep.html" />
+<meta property="og:title" content="Hikaya by Maison Jaber" />
+<meta property="og:description" content="A personalized storybook, with your child as the hero." />
+<meta property="og:image" content="https://maison-jaber.com/test5/images/fantasy-night-scene.jpg" />
+<meta property="og:url" content="https://maison-jaber.com/test5/story.html" />
 <meta property="og:site_name" content="Hikaya by Maison Jaber" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="The Star Who Couldn't Sleep — Hikaya by Maison Jaber" />
-<meta name="twitter:description" content="A gentle bedtime story, personalized with your child's name, age, and photo. A soft wind-down for the very end of the day." />
-<meta name="twitter:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
+<meta name="twitter:title" content="Hikaya by Maison Jaber" />
+<meta name="twitter:description" content="A personalized storybook, with your child as the hero." />
+<meta name="twitter:image" content="https://maison-jaber.com/test5/images/fantasy-night-scene.jpg" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
@@ -36,7 +36,7 @@
   img { display: block; max-width: 100%; }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
   @media (max-width: 640px) { .wrap { padding: 0 20px; } }
-  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #7d5a6b; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #C08A3E; }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
     padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 600; border: none; cursor: pointer;
@@ -57,13 +57,13 @@
   .story-hero .inner { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 56px; align-items: center; }
   @media (max-width: 860px) { .story-hero .inner { grid-template-columns: 1fr; } }
   .cover-large {
-    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, #ecdde6 0%, #d8bdd0 100%);
+    aspect-ratio: 3/4.2; border-radius: 4px; background: linear-gradient(165deg, #f5e6c8 0%, #e8c98a 100%);
     box-shadow: 0 16px 40px rgba(70,45,25,0.14); display: flex; align-items: flex-end; padding: 30px;
   }
-  .cover-large .cover-line { width: 36px; height: 1px; background: #7d5a6b; margin-bottom: 14px; }
-  .cover-large .cover-title { font-family: 'Inter', sans-serif; color: #7d5a6b; font-size: 30px; line-height: 1.25; font-weight: 700; }
+  .cover-large .cover-line { width: 36px; height: 1px; background: #C08A3E; margin-bottom: 14px; }
+  .cover-large .cover-title { font-family: 'Inter', sans-serif; color: #C08A3E; font-size: 30px; line-height: 1.25; font-weight: 700; }
   .story-hero h1 { font-size: clamp(28px, 3.6vw, 42px); margin-top: 14px; }
-  .story-hero .promise { font-family: 'Inter', sans-serif; font-style: italic; font-size: 18px; color: #7d5a6b; margin-top: 14px; }
+  .story-hero .promise { font-family: 'Inter', sans-serif; font-style: italic; font-size: 18px; color: #C08A3E; margin-top: 14px; }
   .story-hero p.synopsis { margin-top: 18px; color: var(--ink-soft); max-width: 50ch; }
   .story-hero .ages-row { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
   .story-hero .ages-row span { font-size: 12px; border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; color: var(--ink-soft); }
@@ -158,6 +158,7 @@
   .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
   .cart-badge { display: none; background: var(--coral, #A67443); color: #fff; font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; padding: 0 3px; margin-left: 4px; }
   .story-price { font-size: 14px; font-weight: 700; color: var(--coral-deep, #B5563B); margin-top: 12px; }
+  body[data-story-generic]:not(.story-loaded) [data-story-main] { visibility: hidden; }
 </style>
 <script src="/site-header.js" defer></script>
 <script src="/i18n.js" defer></script>
@@ -169,80 +170,35 @@
 <script src="/search.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
-<body>
+<body data-story-generic>
 
 <div id="site-header-root"></div>
-<div class="wrap" style="padding-top:14px;"><div class="breadcrumb"><a href="index.html" data-i18n-skip>Maison Jaber</a> / <a href="stories.html" data-i18n="common.nav_stories">Stories</a> / <span data-i18n="home.story3_title">The Star Who Couldn't Sleep</span></div></div>
+<div class="wrap" style="padding-top:14px;"><div class="breadcrumb"><a href="index.html" data-i18n-skip>Maison Jaber</a> / <a href="stories.html" data-i18n="common.nav_stories">Stories</a> / <span data-story-title></span></div></div>
 
-<section class="carousel">
-  <div class="carousel-track" id="carousel-track">
-    <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('images/hero-bedroom-wide.jpg')">
-      <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow" data-i18n="stories.coll_bedtime">Bedtime & Comfort</div>
-        <h2 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h2>
-        <p data-i18n="story3.slide_body">A gentle bedtime tale about a little star finding rest.</p>
-        <a class="btn-primary" href="personalize.html?story=star-who-couldnt-sleep" data-i18n="story3.personalize_cta">Personalize This Story</a>
-      </div></div>
-    </div>
-  </div>
-  <div class="carousel-arrows">
-    <button class="carousel-arrow" id="car-prev">&#8592;</button>
-    <button class="carousel-arrow" id="car-next">&#8594;</button>
-  </div>
-  <div class="carousel-dots" id="carousel-dots"></div>
-</section>
 
+
+<div data-story-main>
 <section class="story-hero">
   <div class="wrap inner">
     <div class="cover-large">
-      <div><div class="cover-line"></div><div class="cover-title" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
+      <div><div class="cover-line"></div><div class="cover-title"></div></div>
     </div>
     <div>
-      <div class="eyebrow" data-i18n="stories.coll_bedtime">Bedtime &amp; Comfort</div>
-      <h1 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h1>
-      <div class="promise" data-i18n="story3.promise">"A gentle bedtime adventure."</div>
-      <p class="synopsis" data-i18n="story3.synopsis">Far up in the quiet sky, one little star just can't fall asleep &mdash; until your child teaches it the very same trick that always works at home.</p>
-      <div class="ages-row">
-        <span data-i18n="story1.ages1">Ages 2&ndash;4</span><span data-i18n="story1.ages2">Ages 5&ndash;7</span><span data-i18n="story1.ages3">Ages 8&ndash;10</span>
-        <span data-i18n="story1.personalized_throughout">Personalized throughout</span>
-      </div>
+      <div class="eyebrow" data-story-collection></div>
+      <h1 data-story-title></h1>
+      <p class="synopsis" data-story-synopsis></p>
+      <div class="ages-row" data-story-ages></div>
       <div class="actions">
-        <a class="btn-primary" href="personalize.html?story=The%20Star%20Who%20Couldn%27t%20Sleep" data-i18n="story3.personalize_cta">Personalize This Story</a>
+        <a class="btn-primary" data-story-cta href="personalize.html" data-i18n="story_common.personalize_cta">Personalize This Story</a>
       <div class="story-price">From <span data-hikaya-price>€34.90</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow" data-i18n="story1.discover_eyebrow">What They May Discover</div>
-      <h2 data-i18n="story3.discover_title">A gentle wind-down for the very end of the day</h2>
-    </div>
-    <div class="discover-grid">
-      <div class="discover-item"><h3 data-i18n="story3.disc1_title">That they know something helpful</h3><p data-i18n="story3.disc1_body">The child becomes the one who soothes, not just the one soothed.</p></div>
-      <div class="discover-item"><h3 data-i18n="story3.disc2_title">A calming bedtime rhythm</h3><p data-i18n="story3.disc2_body">Slow pacing and soft repetition, written to ease into sleep.</p></div>
-      <div class="discover-item"><h3 data-i18n="story3.disc3_title">A comforting sense of closeness</h3><p data-i18n="story3.disc3_body">Even the sky, it turns out, needs a little help falling asleep.</p></div>
-    </div>
-  </div>
-</section>
 
-<section class="section" style="background: var(--parchment);">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow" data-i18n="story_common.book_eyebrow">The Book</div>
-      <h2 data-i18n="story_common.book_title">Seen from every angle</h2>
-    </div>
-    <div class="angles-grid">
-      <div class="angle-frame" data-i18n="story_common.angle_front">Front cover</div>
-      <div class="angle-frame" data-i18n="story_common.angle_interior">Interior spread</div>
-      <div class="angle-frame" data-i18n="story_common.angle_spine">Spine</div>
-      <div class="angle-frame" data-i18n="story_common.angle_back">Back cover</div>
-      <div class="angle-frame" data-i18n="story_common.angle_gift">Gift packaging</div>
-    </div>
-  </div>
-</section>
+
+
 
 <section class="section">
   <div class="wrap">
@@ -261,7 +217,7 @@
       <h2 data-i18n="story_common.pers_title">Made for one child in particular</h2>
     </div>
     <div class="example-row">
-      <div class="example-card"><div class="name" data-i18n="story3.example_name">"...until Sara taught it the same trick."</div><p data-i18n="story_common.example_name_sub">Their name, woven into the story itself.</p></div>
+      <div class="example-card"><div class="name">Their name, on every page</div><p data-i18n="story_common.example_name_sub">Their name, woven into the story itself.</p></div>
       <div class="example-card"><div class="name" data-i18n="story_common.example_illustrated">Illustrated in their likeness</div><p data-i18n="story_common.example_illustrated_sub">Their character appears on every page.</p></div>
     </div>
   </div>
@@ -306,38 +262,19 @@
 
 <section class="final-cta">
   <div class="wrap">
-    <h2 data-i18n="story3.final_title">The sky is waiting for its helper.</h2>
+    <h2>Their story is ready to begin.</h2>
     <p data-i18n="story_common.final_body">Add their name, age, and a photo &mdash; the rest is ours to prepare.</p>
-    <div class="actions"><a class="btn-primary" href="personalize.html?story=The%20Star%20Who%20Couldn%27t%20Sleep" data-i18n="story3.personalize_cta">Personalize This Story</a></div>
+    <div class="actions"><a class="btn-primary" data-story-cta href="personalize.html">Personalize This Story</a></div>
   </div>
 </section>
+
+</div>
 
 <footer class="site">
   <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
 </footer>
 
-<script>
-  // Rotating banner carousel
-  const track = document.getElementById('carousel-track');
-  const slides = track.children;
-  const dotsWrap = document.getElementById('carousel-dots');
-  let current = 0;
-  for (let i = 0; i < slides.length; i++) {
-    const dot = document.createElement('button');
-    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
-  }
-  function goTo(i) {
-    current = (i + slides.length) % slides.length;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
-  }
-  document.getElementById('car-prev').addEventListener('click', () => goTo(current - 1));
-  document.getElementById('car-next').addEventListener('click', () => goTo(current + 1));
-  setInterval(() => goTo(current + 1), 5000);
-</script>
+<script src="/story-extras.js" defer></script>
 
-<script src="/story-extras.js" defer data-story-slug="star-who-couldnt-sleep"></script>
 </body>
 </html>

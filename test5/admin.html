@@ -93,6 +93,14 @@
   .story-card.hidden-story { opacity: .6; }
   .size-hint { font-size: 11.5px; color: var(--ink-soft); margin: 4px 0 8px; line-height: 1.4; }
   .size-hint strong { color: var(--ink); }
+  .preview-panel { width: 100%; margin-top: 12px; padding: 12px 14px; background: var(--bg); border-radius: 12px; }
+  .preview-thumbs { display: flex; gap: 10px; flex-wrap: wrap; }
+  .preview-thumb { width: 150px; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid var(--line-soft); }
+  .preview-thumb img { width: 150px; height: 110px; object-fit: contain; background: #fbf7f1; display: block; }
+  .preview-thumb .pt-actions { display: flex; justify-content: space-between; padding: 6px 8px; gap: 4px; }
+  .preview-thumb .pt-actions button { font: 700 11.5px Inter, sans-serif; background: none; border: 0; cursor: pointer; color: var(--ink-soft); padding: 2px 4px; }
+  .preview-thumb .pt-actions button.danger { color: #a3402b; text-decoration: underline; }
+  .preview-thumb .pt-actions button:disabled { opacity: .3; cursor: default; }
   .cover-preview { width: 84px; height: 110px; border-radius: 10px; background: var(--bg-soft) center/cover no-repeat; border: 1px dashed var(--line); flex-shrink: 0; }
   .story-card .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
   .story-card .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
@@ -816,6 +824,15 @@
     return data.coverImageUrl;
   }
 
+  const openPreviewSlugs = new Set();
+  async function storyPreviewAction(body) {
+    try {
+      const r = await fetch('/.netlify/functions/story-previews', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword }, body: JSON.stringify(body) });
+      const d = await r.json().catch(() => ({}));
+      return r.ok ? d : { error: d.error || 'Could not save.' };
+    } catch { return { error: 'Network error — please try again.' }; }
+  }
+
   async function loadStories(token) {
     const listEl = document.getElementById('stories-list');
     try {
@@ -838,11 +855,26 @@
           <div class="story-actions">
             <button type="button" data-act="edit">Edit</button>
             <button type="button" data-act="photo">${s.cover_image_url ? 'Change photo' : 'Add photo'}</button>
+            <button type="button" data-act="previews">Previews (${(s.preview_images || []).length})</button>
             ${s.cover_image_url ? '<button type="button" data-act="nophoto">Remove photo</button>' : ''}
             <button type="button" class="danger" data-act="delete">Delete</button>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-file>
           </div>
           <div class="story-status" data-status></div>
+          <div class="preview-panel" data-previews style="display:${openPreviewSlugs.has(s.slug) ? 'block' : 'none'};">
+            <div class="size-hint"><strong>Preview images</strong> appear as "A glimpse inside" on the story's page. Any shape works; they're always shown in full, never cropped. Best: <strong>at least 1600 px wide</strong> (e.g. a page 1600 × 1600 px or a spread 2400 × 1200 px).</div>
+            <div class="preview-thumbs">${(s.preview_images || []).map((u, i, arr) => `
+              <div class="preview-thumb">
+                <img src="${stEsc(u)}" alt="Preview ${i + 1}" loading="lazy">
+                <div class="pt-actions">
+                  <button type="button" data-pv="left" data-url="${stEsc(u)}" ${i === 0 ? 'disabled' : ''} title="Move earlier">&#8592;</button>
+                  <button type="button" data-pv="right" data-url="${stEsc(u)}" ${i === arr.length - 1 ? 'disabled' : ''} title="Move later">&#8594;</button>
+                  <button type="button" data-pv="remove" data-url="${stEsc(u)}" class="danger" title="Remove">Remove</button>
+                </div>
+              </div>`).join('') || '<span style="font-size:12px; color:var(--ink-soft);">No previews yet.</span>'}</div>
+            <button type="button" class="upload-btn" data-pv="add" style="margin-top:10px;">+ Add preview images</button>
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-pv-file>
+          </div>
         </div>
       `).join('') : '<p style="font-size:13px; color:var(--ink-soft);">No stories in the catalog yet — add one below.</p>';
 
@@ -852,6 +884,41 @@
         const status = card.querySelector('[data-status]');
         const fileIn = card.querySelector('[data-file]');
         card.querySelector('[data-act="edit"]').onclick = () => editStory(slug);
+        const panel = card.querySelector('[data-previews]');
+        card.querySelector('[data-act="previews"]').onclick = () => {
+          const open = panel.style.display === 'none';
+          panel.style.display = open ? 'block' : 'none';
+          if (open) openPreviewSlugs.add(slug); else openPreviewSlugs.delete(slug);
+        };
+        const pvFile = panel.querySelector('[data-pv-file]');
+        panel.querySelector('[data-pv="add"]').onclick = () => pvFile.click();
+        pvFile.onchange = async () => {
+          const files = [...pvFile.files];
+          if (!files.length) return;
+          for (let n = 0; n < files.length; n++) {
+            status.textContent = `Uploading preview ${n + 1} of ${files.length}…`;
+            try {
+              const d = await imageSize(files[n]);
+              if (d && d.w < 1000 && !confirm(`"${files[n].name}" is only ${d.w} px wide, so it may look blurry when opened full-size. Upload it anyway?`)) continue;
+              const img = await resizeImage(files[n], 2000);
+              const r = await storyPreviewAction({ slug, action: 'add', base64Data: img.base64Data, mimeType: img.mimeType });
+              if (r.error) { status.textContent = r.error; return; }
+            } catch (e) { status.textContent = e.message; return; }
+          }
+          openPreviewSlugs.add(slug);
+          status.textContent = 'Previews saved';
+          loadStories(adminPassword);
+        };
+        panel.querySelectorAll('[data-pv="left"],[data-pv="right"],[data-pv="remove"]').forEach(b => b.onclick = async () => {
+          if (b.dataset.pv === 'remove' && !confirm('Remove this preview image?')) return;
+          status.textContent = 'Saving…';
+          const r = await storyPreviewAction(b.dataset.pv === 'remove'
+            ? { slug, action: 'remove', url: b.dataset.url }
+            : { slug, action: 'move', url: b.dataset.url, dir: b.dataset.pv === 'left' ? -1 : 1 });
+          if (r.error) { status.textContent = r.error; return; }
+          openPreviewSlugs.add(slug);
+          loadStories(adminPassword);
+        });
         card.querySelector('[data-act="photo"]').onclick = () => fileIn.click();
         fileIn.onchange = async () => {
           if (!fileIn.files[0]) return;

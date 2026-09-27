@@ -84,7 +84,6 @@
   }
   .story-card:hover .story-cover { transform: translateY(-4px); }
   .story-cover.has-photo { background-size: cover; background-position: center; padding: 0; }
-  .story-cover.has-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
   .story-cover.has-photo > div { position: relative; z-index: 1; padding: 22px; }
   .story-cover.courage { background: linear-gradient(165deg, #D98868 0%, #B5563B 100%); }
   .story-cover.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
@@ -324,7 +323,7 @@
       const title = T(k.title, st.title);
       const blurb = T(k.blurb, st.description || '');
       const coll = T(k.coll, st.collection || '');
-      const href = st.detail_url || `personalize.html?story=${encodeURIComponent(st.title)}`;
+      const href = st.detail_url || `story.html?s=${encodeURIComponent(st.slug)}`;
       const ages = (st.age_ranges || '').split(',').map(a => a.trim()).filter(Boolean);
       const coverTitle = k.cover ? T(k.cover, esc(st.title)) : esc(st.title);
       return `
@@ -340,7 +339,7 @@
           ${blurb ? `<p>${esc(blurb)}</p>` : ''}
           ${ages.length ? `<div class="ages">${T('stories.ages_label', 'Ages')} ${ages.map(a => esc(a).replace('-', '&ndash;')).join(' &middot; ')}</div>` : ''}
           <div class="card-price">From <span data-hikaya-price>${priceHtml()}</span></div>
-          <a class="explore" href="${esc(href)}">${esc(st.detail_url ? T('stories.explore', 'Explore This Story') : T('common.btn_create_story', 'Personalize This Story'))}</a>
+          <a class="explore" href="${esc(href)}">${esc(T('stories.explore', 'Explore This Story'))}</a>
         </div>
       </div>`;
     }).join('');
