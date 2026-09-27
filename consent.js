@@ -36,36 +36,50 @@
   }
 
   function buildBanner() {
+    // Compact floating card (not a full-width bar): small on phones, a corner
+    // card on desktop, and above any third-party badge so the buttons are
+    // always clickable.
+    if (!document.getElementById('hikaya-consent-style')) {
+      const st = document.createElement('style');
+      st.id = 'hikaya-consent-style';
+      st.textContent = `
+        #hikaya-consent-banner { position: fixed; z-index: 2147483647; left: 16px; bottom: 16px; max-width: 380px; box-sizing: border-box;
+          background: #2E2018; color: #e8ddd0; padding: 14px 16px; border-radius: 14px; font-family: "Inter", sans-serif;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+        #hikaya-consent-banner p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.45; }
+        #hikaya-consent-banner a { color: #e8ddd0; text-decoration: underline; }
+        #hikaya-consent-banner .hc-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        #hikaya-consent-banner button { padding: 7px 14px; border-radius: 999px; font: 700 12px "Inter", sans-serif; cursor: pointer;
+          border: 1px solid rgba(255,255,255,0.3); background: none; color: #e8ddd0; }
+        #hikaya-consent-banner button.hc-primary { border: none; background: #A67443; color: #fff; }
+        #hikaya-consent-banner button.hc-link { border: none; padding: 7px 4px; text-decoration: underline; font-weight: 600; }
+        #hikaya-consent-banner label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-bottom: 7px; }
+        @media (max-width: 560px) {
+          #hikaya-consent-banner { left: 10px; right: 10px; bottom: 10px; max-width: none; padding: 12px 14px; }
+          #hikaya-consent-banner p { font-size: 12px; margin-bottom: 8px; }
+        }`;
+      document.head.appendChild(st);
+    }
     const banner = document.createElement('div');
     banner.id = 'hikaya-consent-banner';
-    banner.style.cssText = 'position:fixed; left:0; right:0; bottom:0; z-index:2000; background:#2E2018; color:#e8ddd0; padding:18px 20px; font-family:"Inter",sans-serif; box-shadow:0 -6px 24px rgba(0,0,0,0.2);';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Cookie preferences');
     banner.innerHTML = `
-      <div style="max-width:900px; margin:0 auto;">
         <div id="hikaya-consent-simple">
-          <p style="margin:0 0 12px; font-size:13.5px; line-height:1.5;">
-            We use cookies for essential site features, and — only with your permission — to understand site usage and improve how we reach families like yours.
-            <a href="privacy.html" style="color:#e8ddd0; text-decoration:underline;">Privacy Policy</a>
-          </p>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button type="button" id="hikaya-consent-reject" style="padding:9px 18px; border-radius:999px; border:1px solid rgba(255,255,255,0.3); background:none; color:#e8ddd0; font-size:12.5px; font-weight:700; cursor:pointer;">Reject Non-Essential</button>
-            <button type="button" id="hikaya-consent-customize" style="padding:9px 18px; border-radius:999px; border:1px solid rgba(255,255,255,0.3); background:none; color:#e8ddd0; font-size:12.5px; font-weight:700; cursor:pointer;">Customize</button>
-            <button type="button" id="hikaya-consent-accept" style="padding:9px 18px; border-radius:999px; border:none; background:#A67443; color:#fff; font-size:12.5px; font-weight:700; cursor:pointer;">Accept All</button>
+          <p>We use essential cookies, and, only with your OK, analytics to improve the site. <a href="privacy.html">Privacy Policy</a></p>
+          <div class="hc-row">
+            <button type="button" id="hikaya-consent-accept" class="hc-primary">Accept All</button>
+            <button type="button" id="hikaya-consent-reject">Reject</button>
+            <button type="button" id="hikaya-consent-customize" class="hc-link">Customize</button>
           </div>
         </div>
         <div id="hikaya-consent-detail" style="display:none;">
-          <p style="margin:0 0 12px; font-size:13.5px; font-weight:700;">Choose what you're comfortable with:</p>
-          <label style="display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:8px; opacity:0.7;">
-            <input type="checkbox" checked disabled /> Essential (always on — cart, language, region)
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:8px;">
-            <input type="checkbox" id="hikaya-consent-analytics" /> Analytics (Google Analytics)
-          </label>
-          <label style="display:flex; align-items:center; gap:8px; font-size:13px; margin-bottom:14px;">
-            <input type="checkbox" id="hikaya-consent-marketing" /> Marketing (Meta Pixel)
-          </label>
-          <button type="button" id="hikaya-consent-save" style="padding:9px 18px; border-radius:999px; border:none; background:#A67443; color:#fff; font-size:12.5px; font-weight:700; cursor:pointer;">Save Preferences</button>
-        </div>
-      </div>`;
+          <p style="font-weight:700;">Choose what you're comfortable with:</p>
+          <label style="opacity:0.7;"><input type="checkbox" checked disabled /> Essential (always on: cart, language, region)</label>
+          <label><input type="checkbox" id="hikaya-consent-analytics" /> Analytics (Google Analytics)</label>
+          <label style="margin-bottom:12px;"><input type="checkbox" id="hikaya-consent-marketing" /> Marketing (Meta Pixel)</label>
+          <button type="button" id="hikaya-consent-save" class="hc-primary">Save Preferences</button>
+        </div>`;
     document.body.appendChild(banner);
 
     document.getElementById('hikaya-consent-accept').addEventListener('click', () => {
@@ -109,6 +123,8 @@
   window.hikayaOpenConsentSettings = openSettings;
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Never on the owner dashboard.
+    if (/admin\.html$/.test(location.pathname)) return;
     if (!getConsent()) buildBanner();
   });
 })();
