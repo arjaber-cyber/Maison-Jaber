@@ -132,6 +132,45 @@
 
   .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+
+  /* ---- Orders manager ---- */
+  .om-toolbar { background:#fff; border:1px solid var(--line-soft); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+  .om-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .om-row input[type=search] { flex:1; min-width:200px; padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); font:inherit; font-size:13.5px; }
+  .om-row select, .om-btn { padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); font:inherit; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink); }
+  .om-btn:hover { border-color:var(--coral); }
+  .om-btn.danger { color:#a3402b; background:#fff; }
+  .om-chips { display:flex; gap:6px; flex-wrap:wrap; }
+  .om-chip { border:1px solid var(--line); background:var(--bg); border-radius:100px; padding:5px 11px; font-size:12px; font-weight:700; cursor:pointer; color:var(--ink-soft); }
+  .om-chip .c { opacity:.7; margin-left:4px; }
+  .om-chip.active { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; }
+  .om-card { background:#fff; border:1px solid var(--line-soft); border-radius:14px; margin-bottom:10px; overflow:hidden; }
+  .om-head { display:grid; grid-template-columns:1fr auto; gap:12px; padding:14px 16px; cursor:pointer; align-items:center; }
+  .om-head:hover { background:#fffcf7; }
+  .om-title { font-weight:800; font-size:14.5px; }
+  .om-title .no { color:var(--ink-soft); font-weight:700; font-size:12px; margin-left:6px; }
+  .om-sub { color:var(--ink-soft); font-size:12.5px; font-weight:600; margin-top:3px; }
+  .om-badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; }
+  .om-badge { font-size:11px; font-weight:800; padding:3px 9px; border-radius:100px; background:var(--bg-soft); color:var(--ink-soft); }
+  .om-badge.ok { background:#e7f0e4; color:#4f7a52; } .om-badge.warn { background:#fbf0d9; color:#9a6a12; }
+  .om-badge.bad { background:#f7e3dd; color:#a3402b; } .om-badge.info { background:#e3ecf3; color:#3f5f7a; }
+  .om-right { text-align:right; } .om-amt { font-weight:800; font-variant-numeric:tabular-nums; } .om-date { color:var(--ink-soft); font-size:12px; font-weight:600; margin-top:3px; }
+  .om-body { display:none; border-top:1px solid var(--line-soft); padding:16px; }
+  .om-card.open .om-body { display:block; }
+  .om-pipe { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:14px; }
+  .om-stage { flex:1; min-width:92px; font:inherit; font-size:11px; font-weight:800; padding:9px 6px; border-radius:10px; border:2px solid var(--line-soft); background:var(--bg); color:var(--ink-soft); cursor:pointer; line-height:1.25; }
+  .om-stage.done { background:#cdb79c; border-color:#cdb79c; color:#fff; } .om-stage.current { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; }
+  .om-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; } @media (max-width:900px) { .om-grid { grid-template-columns:1fr; } }
+  .om-box { background:var(--bg); border-radius:12px; padding:12px 14px; }
+  .om-box h4 { margin:0 0 8px; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+  .om-kv { display:grid; grid-template-columns:92px 1fr; gap:4px 10px; font-size:13px; margin:0; } .om-kv dt { color:var(--ink-soft); font-weight:600; } .om-kv dd { margin:0; font-weight:600; word-break:break-word; }
+  .om-quote { font-style:italic; background:#fff; border-radius:8px; padding:8px 10px; margin-top:8px; font-size:13px; }
+  .om-item { background:#fff; border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+  .om-photos { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; } .om-photos img { width:96px; height:96px; object-fit:cover; border-radius:10px; }
+  .om-notes { width:100%; min-height:60px; border:1px solid var(--line); border-radius:10px; padding:8px 10px; font:inherit; font-size:13px; background:#fff; resize:vertical; }
+  .om-note { font-size:12px; color:var(--ink-soft); font-weight:600; min-height:16px; }
+  .om-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; }
+  @media (max-width:640px) { .om-head { grid-template-columns:1fr; } .om-right { text-align:left; } }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -169,6 +208,7 @@
   <div class="state-box" id="orders-state-box" data-i18n="admin.checking_access">Checking your access…</div>
 </div>
 
+<div id="legacy-requests" style="display:none;">
 <div class="wrap page-head">
   <h1 data-i18n="admin.incoming_requests">Personalize Activity</h1>
   <p id="page-sub" data-i18n="admin.loading">Loading...</p>
@@ -178,6 +218,7 @@
 
 <div class="wrap" id="content">
   <div class="state-box" id="state-box" data-i18n="admin.checking_access">Checking your access…</div>
+</div>
 </div>
 
 <div class="wrap page-head">
@@ -339,7 +380,7 @@
     document.getElementById('password-gate').style.display = 'none';
     document.getElementById('dashboard-body').style.display = 'block';
     loadOrders(adminPassword);
-    loadSubmissions(adminPassword);
+    // Personalize requests now arrive as real orders (cart + checkout); the old Netlify Forms feed is retired.
     loadSitePhotos(adminPassword);
     loadStories(adminPassword);
   }
@@ -370,66 +411,33 @@
     });
   }
 
+  // ---------- Orders manager ----------
+  const OM_STAGES = [['received','Received'],['preparing','Preparing'],['awaiting_approval','Awaiting approval'],['sent_to_printing','Sent to printing'],['received_from_printing','Back from printing'],['shipped','Shipped'],['delivered','Delivered']];
+  const OM_STAGE_LABEL = Object.fromEntries([...OM_STAGES, ['cancelled','Cancelled']]);
+  const OM_PAY = { pending:['Awaiting payment','warn'], pending_cod:['Cash on delivery','info'], paid:['Paid','ok'], refunded:['Refunded','bad'], failed:['Payment failed','bad'] };
+  const OM_METHOD = { cod:'Cash on delivery', card:'Card', applepay:'Apple Pay', googlepay:'Google Pay', tabby:'Tabby', tamara:'Tamara', shamcash:'Sham Cash' };
+  const omEsc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const omMoney = (n, c) => n == null ? '—' : `${Number(n).toFixed(2)} ${c || ''}`.trim();
+  const omDate = (d) => d ? new Date(d).toLocaleString(undefined, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
+  let omOrders = [];
+  const omOpen = new Set();
+  const omFull = new Map();   // id -> items with photos
+  const omFilter = { q:'', stage:'all', pay:'all' };
+
   async function loadOrders(token) {
     const ordersStateBox = document.getElementById('orders-state-box');
     const ordersSub = document.getElementById('orders-sub');
     try {
-      const res = await fetch('/.netlify/functions/get-orders', {
-        headers: { 'x-admin-password': token }
-      });
+      const res = await fetch('/.netlify/functions/get-orders', { headers: { 'x-admin-password': token } });
       const data = await res.json();
-      if (!res.ok) {
-        ordersStateBox.textContent = data.error || window.hikayaT('admin.orders_err_generic');
-        ordersSub.textContent = '';
-        return;
-      }
-
-      const orders = data.orders || [];
-      ordersSub.textContent = `${orders.length} ${window.hikayaT('admin.orders_received')}`;
-
-      if (!data.tableReady) {
-        ordersStateBox.textContent = window.hikayaT('admin.orders_table_not_ready');
-        return;
-      }
-      if (orders.length === 0) {
-        ordersStateBox.textContent = window.hikayaT('admin.no_orders');
-        return;
-      }
-
-      renderOrderStats(orders);
-      ordersStateBox.remove();
-
-      const ordersContent = document.getElementById('orders-content');
-      orders.forEach(order => {
-        const card = document.createElement('div');
-        card.className = 'order-card';
-        const itemsHtml = (order.items || []).map(item => `
-          <div class="order-item-row">
-            <strong>${item.story || '—'}</strong>
-            ${item.childName ? ' · ' + item.childName : ''}
-            ${item.ageEdition ? ' · Ages ' + item.ageEdition : ''}
-          </div>
-        `).join('');
-        card.innerHTML = `
-          <div class="order-top">
-            <div>
-              <div class="order-customer">${order.full_name || '—'} <span class="order-method">${(order.payment_method || '').toUpperCase()}</span></div>
-              <div class="order-meta">${order.email || ''} ${order.phone ? '· ' + order.phone : ''}</div>
-              <div class="order-meta">${order.address || ''}, ${order.city || ''}, ${order.country || ''}</div>
-            </div>
-            <div class="order-amount">
-              <div class="order-total">${order.amount} ${order.currency || ''}</div>
-              <div class="order-date">${order.created_at ? new Date(order.created_at).toLocaleDateString() : ''}</div>
-            </div>
-          </div>
-          <div class="order-items">${itemsHtml}</div>
-          ${order.bundle_discount_pct ? `<div class="order-tag">${window.hikayaT('admin.bundle_tag')}: -${order.bundle_discount_pct}%</div>` : ''}
-          ${order.promo_code ? `<div class="order-tag">${window.hikayaT('admin.promo_tag')}: ${order.promo_code}</div>` : ''}
-          ${order.is_gift ? `<div class="order-gift">🎁 ${order.gift_message || ''}</div>` : ''}
-          <div class="order-status">${window.hikayaT('admin.order_status')}: <strong>${order.order_status || 'received'}</strong></div>
-        `;
-        ordersContent.appendChild(card);
-      });
+      if (!res.ok) { ordersStateBox.textContent = data.error || window.hikayaT('admin.orders_err_generic'); ordersSub.textContent = ''; return; }
+      if (!data.tableReady) { ordersStateBox.textContent = 'Orders can\'t be loaded yet — SUPABASE_SERVICE_ROLE_KEY still needs to be added in Netlify.'; ordersSub.textContent = ''; return; }
+      omOrders = data.orders || [];
+      ordersSub.textContent = `${omOrders.length} ${window.hikayaT('admin.orders_received')} · updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+      renderOrderStats(omOrders);
+      if (!omOrders.length) { ordersStateBox.textContent = window.hikayaT('admin.no_orders'); return; }
+      ordersStateBox.style.display = 'none';
+      omRenderShell();
     } catch (err) {
       console.error('loadOrders error:', err);
       ordersStateBox.textContent = window.hikayaT('admin.orders_err_generic');
@@ -438,21 +446,211 @@
 
   function renderOrderStats(orders) {
     const statsRow = document.getElementById('orders-stats-row');
-    const now = new Date();
-    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-    const total = orders.length;
-    const thisWeek = orders.filter(o => o.created_at && new Date(o.created_at) >= weekAgo).length;
-    const revenue = orders.reduce((sum, o) => sum + (parseFloat(o.amount) || 0), 0);
-    const giftCount = orders.filter(o => o.is_gift).length;
-
+    const live = orders.filter(o => o.order_status !== 'cancelled');
+    const weekAgo = Date.now() - 7 * 864e5;
+    const revenue = {};
+    live.filter(o => o.payment_status === 'paid' || o.payment_status === 'pending_cod').forEach(o => {
+      revenue[o.currency || '?'] = (revenue[o.currency || '?'] || 0) + (parseFloat(o.amount) || 0);
+    });
+    const revText = Object.keys(revenue).length ? Object.entries(revenue).map(([c, v]) => `${v.toFixed(0)} ${c}`).join('<br>') : '—';
+    const inProd = live.filter(o => ['received','preparing','awaiting_approval','sent_to_printing','received_from_printing'].includes(o.order_status || 'received')).length;
     statsRow.style.display = 'grid';
-    statsRow.className = 'stats-grid';
+    statsRow.className = 'wrap stats-grid';
     statsRow.innerHTML = `
-      <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total Orders</div></div>
-      <div class="stat-card"><div class="num">${thisWeek}</div><div class="lbl">This Week</div></div>
-      <div class="stat-card"><div class="num">${revenue.toFixed(0)}</div><div class="lbl">Revenue (mixed currencies)</div></div>
-      <div class="stat-card"><div class="num">${giftCount}</div><div class="lbl">Marked as Gift</div></div>
-    `;
+      <div class="stat-card"><div class="num">${live.length}</div><div class="lbl">Orders</div></div>
+      <div class="stat-card"><div class="num">${inProd}</div><div class="lbl">To fulfil</div></div>
+      <div class="stat-card"><div class="num">${live.filter(o => o.created_at && new Date(o.created_at) >= weekAgo).length}</div><div class="lbl">This week</div></div>
+      <div class="stat-card"><div class="num" style="font-size:18px; line-height:1.35;">${revText}</div><div class="lbl">Revenue (paid + COD)</div></div>`;
+  }
+
+  function omRenderShell() {
+    const box = document.getElementById('orders-content');
+    let shell = document.getElementById('om-shell');
+    if (!shell) { shell = document.createElement('div'); shell.id = 'om-shell'; box.appendChild(shell); }
+    shell.innerHTML = `
+      <div class="om-toolbar">
+        <div class="om-row">
+          <input type="search" id="om-q" placeholder="Search order no., child, customer, email, phone, city…" value="${omEsc(omFilter.q)}">
+          <select id="om-pay"><option value="all">All payments</option>${Object.entries(OM_PAY).map(([k,[l]]) => `<option value="${k}">${l}</option>`).join('')}</select>
+          <button class="om-btn" id="om-refresh">↻ Refresh</button>
+          <button class="om-btn" id="om-export">Export CSV</button>
+        </div>
+        <div class="om-chips" id="om-chips"></div>
+      </div>
+      <div id="om-list"></div>`;
+    document.getElementById('om-pay').value = omFilter.pay;
+    document.getElementById('om-q').oninput = (e) => { omFilter.q = e.target.value; omRenderList(); };
+    document.getElementById('om-pay').onchange = (e) => { omFilter.pay = e.target.value; omRenderList(); };
+    document.getElementById('om-refresh').onclick = () => loadOrders(adminPassword);
+    document.getElementById('om-export').onclick = omExport;
+    omRenderList();
+  }
+
+  function omMatch(o, ignoreStage) {
+    const st = o.order_status || 'received';
+    if (!ignoreStage && omFilter.stage !== 'all' && st !== omFilter.stage) return false;
+    if (omFilter.pay !== 'all' && o.payment_status !== omFilter.pay) return false;
+    const q = omFilter.q.trim().toLowerCase();
+    if (q) {
+      const kids = (o.items || []).map(i => `${i.childName || ''} ${i.story || ''}`).join(' ');
+      if (![o.order_number, o.full_name, o.email, o.phone, o.city, o.country, kids].join(' ').toLowerCase().includes(q)) return false;
+    }
+    return true;
+  }
+
+  function omRenderList() {
+    const base = omOrders.filter(o => omMatch(o, true));
+    const cnt = (k) => base.filter(o => (o.order_status || 'received') === k).length;
+    const chips = [['all','All',base.length], ...OM_STAGES.map(([k,l]) => [k,l,cnt(k)]), ['cancelled','Cancelled',cnt('cancelled')]];
+    const chipsEl = document.getElementById('om-chips');
+    chipsEl.innerHTML = chips.map(([k,l,c]) => `<button class="om-chip ${omFilter.stage === k ? 'active' : ''}" data-k="${k}">${l}<span class="c">${c}</span></button>`).join('');
+    chipsEl.querySelectorAll('.om-chip').forEach(b => b.onclick = () => { omFilter.stage = b.dataset.k; omRenderList(); });
+    const rows = omOrders.filter(o => omMatch(o));
+    const list = document.getElementById('om-list');
+    list.innerHTML = rows.length ? rows.map(omCardHtml).join('') : '<div class="state-box">No orders match these filters.</div>';
+    rows.forEach(omBind);
+  }
+
+  function omCardHtml(o) {
+    const st = o.order_status || 'received';
+    const idx = OM_STAGES.findIndex(([k]) => k === st);
+    const [payL, payC] = OM_PAY[o.payment_status] || [o.payment_status || '—', ''];
+    const items = o.items || [];
+    const kids = items.map(i => `${omEsc(i.childName || '—')} · ${omEsc(i.story || '')}`).join(' + ');
+    const stBadge = st === 'cancelled' ? '<span class="om-badge bad">Cancelled</span>' : `<span class="om-badge ${st === 'delivered' ? 'ok' : st === 'shipped' ? 'info' : ''}">${OM_STAGE_LABEL[st] || omEsc(st)}</span>`;
+    const phone = (o.phone || '').replace(/[^\d]/g, '');
+    return `
+    <div class="om-card ${omOpen.has(o.id) ? 'open' : ''}" id="om-${o.id}">
+      <div class="om-head" data-toggle>
+        <div>
+          <div class="om-title">${kids || 'Order'}<span class="no">${omEsc(o.order_number || '')}</span></div>
+          <div class="om-sub">${omEsc(o.full_name || o.email || '')}${o.city ? ' · ' + omEsc(o.city) : ''}${o.country ? ' · ' + omEsc(o.country) : ''}</div>
+          <div class="om-badges">${stBadge}<span class="om-badge ${payC}">${payL}</span>${items.length > 1 ? `<span class="om-badge">${items.length} books</span>` : ''}${o.is_gift ? '<span class="om-badge info">Gift</span>' : ''}${o.promo_code ? `<span class="om-badge">${omEsc(o.promo_code)}</span>` : ''}</div>
+        </div>
+        <div class="om-right"><div class="om-amt">${omMoney(o.amount, o.currency)}</div><div class="om-date">${omDate(o.created_at)}</div></div>
+      </div>
+      <div class="om-body">
+        ${st === 'cancelled' ? '' : `<div class="om-pipe">${OM_STAGES.map(([k,l],i) => `<button class="om-stage ${i < idx ? 'done' : ''} ${i === idx ? 'current' : ''}" data-stage="${k}">${l}</button>`).join('')}</div>`}
+        <div class="om-grid">
+          <div class="om-box" style="grid-column: span 1;">
+            <h4>Books (${items.length})</h4>
+            <div data-items>${items.map((it, n) => `
+              <div class="om-item">
+                <strong>${omEsc(it.story || '—')}</strong><br>
+                <span style="font-size:12.5px; color:var(--ink-soft); font-weight:600;">${omEsc(it.childName || '—')}${it.ageEdition ? ' · Ages ' + omEsc(it.ageEdition) : ''}${it.gender ? ' · ' + omEsc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + omEsc(it.extraCharacterName) : ''}</span>
+                ${it.dedication ? `<div class="om-quote">“${omEsc(it.dedication)}”</div>` : ''}
+                <div class="om-photos" data-photos="${n}">${(it.photos || []).length ? `<span class="om-note">${(it.photos || []).length} photo(s) — loading…</span>` : '<span class="om-note">No photos</span>'}</div>
+              </div>`).join('')}</div>
+          </div>
+          <div class="om-box">
+            <h4>Customer &amp; delivery</h4>
+            <dl class="om-kv">
+              <dt>Name</dt><dd>${omEsc(o.full_name || '—')}</dd>
+              <dt>Email</dt><dd>${o.email ? `<a style="text-decoration:underline" href="mailto:${omEsc(o.email)}?subject=${encodeURIComponent('Your Hikaya order ' + (o.order_number || ''))}">${omEsc(o.email)}</a>` : '—'}</dd>
+              <dt>Phone</dt><dd>${o.phone ? `${omEsc(o.phone)}${phone ? ` · <a style="text-decoration:underline" target="_blank" rel="noopener" href="https://wa.me/${phone}">WhatsApp</a>` : ''}` : '—'}</dd>
+              <dt>Address</dt><dd>${omEsc([o.address, o.city, o.country].filter(Boolean).join(', ') || '—')}</dd>
+            </dl>
+            ${o.is_gift && o.gift_message ? `<div class="om-quote">Gift note: “${omEsc(o.gift_message)}”</div>` : ''}
+          </div>
+          <div class="om-box">
+            <h4>Payment</h4>
+            <dl class="om-kv">
+              <dt>Status</dt><dd>${payL}</dd>
+              <dt>Method</dt><dd>${omEsc(OM_METHOD[o.payment_method] || o.payment_method || '—')}</dd>
+              <dt>Amount</dt><dd>${omMoney(o.amount, o.currency)}</dd>
+              ${o.bundle_discount_pct ? `<dt>Bundle</dt><dd>-${omEsc(o.bundle_discount_pct)}%</dd>` : ''}
+              ${o.promo_code ? `<dt>Promo</dt><dd>${omEsc(o.promo_code)}</dd>` : ''}
+              ${o.paytabs_tran_ref ? `<dt>PayTabs ref</dt><dd>${omEsc(o.paytabs_tran_ref)}</dd>` : ''}
+              <dt>Placed</dt><dd>${omDate(o.created_at)}</dd>
+              <dt>Stage since</dt><dd>${omDate(o.status_updated_at)}</dd>
+            </dl>
+          </div>
+        </div>
+        <div class="om-box" style="margin-top:12px;">
+          <h4>Internal notes</h4>
+          <textarea class="om-notes" data-notes placeholder="Only visible to you">${omEsc(o.admin_notes || '')}</textarea>
+          <div class="om-note" data-note-status></div>
+        </div>
+        <div class="om-actions">
+          ${o.payment_status !== 'paid' ? '<button class="om-btn" data-pay="paid">Mark as paid</button>' : '<button class="om-btn" data-pay="refunded">Mark refunded</button>'}
+          ${o.order_number && o.email ? `<a class="om-btn" target="_blank" rel="noopener" href="invoice.html?order=${encodeURIComponent(o.order_number)}&email=${encodeURIComponent(o.email)}">Invoice</a>` : ''}
+          ${st === 'cancelled' ? '<button class="om-btn" data-stage="received">Restore order</button>' : '<button class="om-btn danger" data-cancel>Cancel order</button>'}
+          <span class="om-note" data-status></span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function omBind(o) {
+    const el = document.getElementById('om-' + o.id);
+    el.querySelector('[data-toggle]').onclick = () => {
+      el.classList.toggle('open');
+      if (el.classList.contains('open')) { omOpen.add(o.id); omLoadPhotos(o, el); } else omOpen.delete(o.id);
+    };
+    if (el.classList.contains('open')) omLoadPhotos(o, el);
+    el.querySelectorAll('[data-stage]').forEach(b => b.onclick = () => omSave(o, { orderStatus: b.dataset.stage }, `Moved to ${OM_STAGE_LABEL[b.dataset.stage]}`));
+    el.querySelectorAll('[data-pay]').forEach(b => b.onclick = () => omSave(o, { paymentStatus: b.dataset.pay }, `Marked ${OM_PAY[b.dataset.pay][0].toLowerCase()}`));
+    const c = el.querySelector('[data-cancel]');
+    if (c) c.onclick = () => { if (confirm(`Cancel order ${o.order_number || ''}?`)) omSave(o, { orderStatus: 'cancelled' }, 'Order cancelled'); };
+    const ta = el.querySelector('[data-notes]'); const ns = el.querySelector('[data-note-status]'); let t;
+    ta.oninput = () => { ns.textContent = 'Unsaved…'; clearTimeout(t); t = setTimeout(async () => {
+      const r = await omPost({ orderId: o.id, adminNotes: ta.value });
+      if (r.error) { ns.textContent = r.error; return; }
+      o.admin_notes = ta.value; ns.textContent = 'Saved';
+    }, 700); };
+  }
+
+  async function omLoadPhotos(o, el) {
+    const needs = (o.items || []).some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length);
+    if (!needs) return;
+    let items = omFull.get(o.id);
+    if (!items) {
+      try {
+        const res = await fetch('/.netlify/functions/get-orders?id=' + encodeURIComponent(o.id), { headers: { 'x-admin-password': adminPassword } });
+        const data = await res.json();
+        items = (data.orders && data.orders[0] && data.orders[0].items) || [];
+        omFull.set(o.id, items);
+      } catch { items = []; }
+    }
+    items.forEach((it, n) => {
+      const box = el.querySelector(`[data-photos="${n}"]`);
+      if (!box) return;
+      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' }))].filter(p => p.dataUrl && /^data:image\//.test(p.dataUrl));
+      box.innerHTML = pics.length
+        ? pics.map((p, k) => `<a href="${p.dataUrl}" download="${omEsc((o.order_number || 'order') + '-' + p.who + '-' + (k + 1))}" title="${omEsc(p.who)} — click to download"><img src="${p.dataUrl}" alt="${omEsc(p.who)}"></a>`).join('')
+        : '<span class="om-note">No photos</span>';
+    });
+  }
+
+  async function omPost(body) {
+    try {
+      const res = await fetch('/.netlify/functions/update-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      return res.ok ? data : { error: data.error || 'Could not save.' };
+    } catch { return { error: 'Network error — please try again.' }; }
+  }
+
+  async function omSave(o, patch, okMsg) {
+    const st = document.querySelector(`#om-${o.id} [data-status]`);
+    if (st) st.textContent = 'Saving…';
+    const r = await omPost({ orderId: o.id, ...patch });
+    if (r.error) { if (st) st.textContent = r.error; return; }
+    Object.assign(o, r.order || {});
+    omOpen.add(o.id);
+    renderOrderStats(omOrders);
+    omRenderList();
+    const s2 = document.querySelector(`#om-${o.id} [data-status]`); if (s2) { s2.textContent = okMsg; setTimeout(() => { s2.textContent = ''; }, 2000); }
+  }
+
+  function omExport() {
+    const cols = ['order_number','created_at','order_status','payment_status','payment_method','amount','currency','full_name','email','phone','address','city','country','is_gift','gift_message','promo_code','bundle_discount_pct','admin_notes'];
+    const cell = (v) => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+    const rows = omOrders.filter(o => omMatch(o)).map(o => [...cols.map(c => cell(o[c])), cell((o.items || []).map(i => `${i.story} for ${i.childName}${i.ageEdition ? ' (' + i.ageEdition + ')' : ''}`).join('; '))].join(','));
+    const csv = [[...cols, 'books'].join(','), ...rows].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv' }));
+    a.download = `hikaya-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
   }
 
   // ---------- Site photos ----------
