@@ -83,6 +83,9 @@
     padding: 22px; box-shadow: 0 18px 40px rgba(23,23,25,0.18); transition: transform 0.35s ease;
   }
   .story-card:hover .story-cover { transform: translateY(-4px); }
+  .story-cover.has-photo { background-size: cover; background-position: center; padding: 0; }
+  .story-cover.has-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.45) 100%); }
+  .story-cover.has-photo > div { position: relative; z-index: 1; padding: 22px; }
   .story-cover.courage { background: linear-gradient(165deg, #D98868 0%, #B5563B 100%); }
   .story-cover.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
   .story-cover.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
@@ -297,6 +300,52 @@
     });
     document.getElementById('empty-note').style.display = visibleCount === 0 ? 'block' : 'none';
   }
+
+
+  // ---------- Live catalog (managed from the admin dashboard) ----------
+  // The 3 cards above are a fallback; once the catalog loads it replaces them,
+  // so stories added/deleted in the dashboard (and their cover photos) show here.
+  (async function loadCatalog() {
+    const BUILTIN_I18N = {
+      'bravest-little-one': { title: 'home.story1_title', blurb: 'stories.card1_blurb', cover: 'stories.card1_covertitle', coll: 'stories.coll_courage' },
+      'cloud-ship': { title: 'home.story2_title', blurb: 'home.story2_blurb', cover: 'stories.card2_covertitle', coll: 'stories.coll_adventure' },
+      'star-who-couldnt-sleep': { title: 'home.story3_title', blurb: 'home.story3_blurb', cover: 'stories.card3_covertitle', coll: 'stories.coll_bedtime' },
+    };
+    const THEME_COLOR = { courage: '#B5563B', adventure: '#C08A3E', lullaby: '#7d5a6b' };
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const T = (k, f) => (k && window.hikayaT && window.hikayaT(k)) || f;
+    let data;
+    try { data = await (await fetch('/.netlify/functions/get-stories')).json(); } catch { return; }
+    if (!data || !data.tableReady || !Array.isArray(data.stories)) return;
+    const grid = document.getElementById('stories-grid');
+    const priceHtml = () => (window.hikayaPriceHtml && window.hikayaRegion) ? window.hikayaPriceHtml(window.hikayaRegion()) : '€34.90';
+    grid.innerHTML = data.stories.map(st => {
+      const k = BUILTIN_I18N[st.slug] || {};
+      const title = T(k.title, st.title);
+      const blurb = T(k.blurb, st.description || '');
+      const coll = T(k.coll, st.collection || '');
+      const href = st.detail_url || `personalize.html?story=${encodeURIComponent(st.title)}`;
+      const ages = (st.age_ranges || '').split(',').map(a => a.trim()).filter(Boolean);
+      const coverTitle = k.cover ? T(k.cover, esc(st.title)) : esc(st.title);
+      return `
+      <div class="story-card" data-collection="${esc(st.collection || '')}" data-ages="${esc(ages.join(' '))}">
+        <a href="${esc(href)}">
+          <div class="story-cover ${esc(st.theme || 'courage')} ${st.cover_image_url ? 'has-photo' : ''}" ${st.cover_image_url ? `style="background-image:url('${esc(st.cover_image_url)}')"` : ''}>
+            ${st.cover_image_url ? '<div></div>' : `<div><div class="cover-line"></div><div class="cover-title">${coverTitle}</div></div>`}
+          </div>
+        </a>
+        <div class="story-meta">
+          <div class="coll" style="color:${THEME_COLOR[st.theme] || 'var(--gold)'};">${esc(coll)}</div>
+          <h3>${esc(title)}</h3>
+          ${blurb ? `<p>${esc(blurb)}</p>` : ''}
+          ${ages.length ? `<div class="ages">${T('stories.ages_label', 'Ages')} ${ages.map(a => esc(a).replace('-', '&ndash;')).join(' &middot; ')}</div>` : ''}
+          <div class="card-price">From <span data-hikaya-price>${priceHtml()}</span></div>
+          <a class="explore" href="${esc(href)}">${esc(st.detail_url ? T('stories.explore', 'Explore This Story') : T('common.btn_create_story', 'Personalize This Story'))}</a>
+        </div>
+      </div>`;
+    }).join('');
+    applyFilters();
+  })();
 
   // Rotating banner carousel
   const track = document.getElementById('carousel-track');
