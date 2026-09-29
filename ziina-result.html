@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Payment result · Maison Jaber</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;600;700&display=swap");
+:root{--ink:#2E2018;--ink-soft:#7d6a5a;--line:#DFC9AE;--coral:#A67443;--coral-deep:#563622;--bg:#F8F2E8;--bg-soft:#F3E8D8;--gold:#C8954D;--ok:#3f7a4a;--bad:#B5563B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6}
+main{max-width:560px;margin:48px auto;padding:0 20px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:34px;margin:6px 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;margin-top:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button{flex:1;padding:14px 20px;border-radius:16px;border:none;font:700 14px Inter,sans-serif;cursor:pointer;background:var(--coral);color:#fff}
+button.alt{background:#fff;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:wait}
+input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:15px Inter,sans-serif;margin:8px 0 12px}
+.muted{color:var(--ink-soft);font-size:14px}
+.msg{margin-top:14px;font-size:14px;white-space:pre-wrap}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+iframe{width:100%;max-width:450px;height:820px;border:0;display:block;margin:18px auto 0}
+</style>
+<script>if(window.top!==window.self){window.top.location.href=location.href;}</script>
+</head><body><main>
+<div class="eyebrow">Hikaya by Maison Jaber</div>
+<h1 id="title">Checking payment…</h1>
+<div class="card"><div id="msg" class="msg muted">Asking Ziina for the real status.</div></div>
+<p style="margin-top:18px"><a href="/ziina-test.html" style="color:var(--coral-deep);font-weight:600">← Back to test page</a></p>
+<script>
+(async()=>{
+  const p=new URLSearchParams(location.search), pi=p.get('pi');
+  const t=document.getElementById('title'), m=document.getElementById('msg');
+  if(!pi){t.textContent='No payment found';m.textContent='Missing payment id.';return;}
+  try{
+    const r=await fetch('/.netlify/functions/ziina-status?pi='+encodeURIComponent(pi)); const d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Lookup failed');
+    const amt=(d.amount/100).toFixed(2)+' '+d.currency;
+    if(d.status==='completed'){t.textContent='Payment successful';m.className='msg ok';m.textContent='Paid '+amt+'\nPayment ID: '+pi;}
+    else if(d.status==='failed'){t.textContent='Payment failed';m.className='msg bad';m.textContent=(d.error||'The card was declined.')+'\nPayment ID: '+pi;}
+    else if(p.get('r')==='cancel'){t.textContent='Payment cancelled';m.textContent='No money was taken.\nStatus: '+d.status;}
+    else{t.textContent='Payment processing';m.textContent='Status: '+d.status+'. Refresh in a few seconds.';}
+  }catch(e){t.textContent='Could not check payment';m.className='msg bad';m.textContent=e.message;}
+})();
+</script>
+</main></body></html>

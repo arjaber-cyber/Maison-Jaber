@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Ziina setup · Maison Jaber</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Inter:wght@400;600;700&display=swap");
+:root{--ink:#2E2018;--ink-soft:#7d6a5a;--line:#DFC9AE;--coral:#A67443;--coral-deep:#563622;--bg:#F8F2E8;--bg-soft:#F3E8D8;--gold:#C8954D;--ok:#3f7a4a;--bad:#B5563B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,sans-serif;line-height:1.6}
+main{max-width:560px;margin:48px auto;padding:0 20px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+h1{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:34px;margin:6px 0 10px}
+.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;margin-top:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+button{flex:1;padding:14px 20px;border-radius:16px;border:none;font:700 14px Inter,sans-serif;cursor:pointer;background:var(--coral);color:#fff}
+button.alt{background:#fff;color:var(--ink);border:1px solid var(--line)}
+button:disabled{opacity:.5;cursor:wait}
+input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:15px Inter,sans-serif;margin:8px 0 12px}
+.muted{color:var(--ink-soft);font-size:14px}
+.msg{margin-top:14px;font-size:14px;white-space:pre-wrap}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+iframe{width:100%;max-width:450px;height:820px;border:0;display:block;margin:18px auto 0}
+</style>
+</head><body><main>
+<div class="eyebrow">Admin · one-time</div>
+<h1>Connect Ziina webhook</h1>
+<p class="muted">Tells Ziina to notify this site whenever a payment succeeds, fails, or is refunded. Only needs to run once.</p>
+<div class="card">
+  <label class="muted">Admin password</label>
+  <input type="password" id="pw" autocomplete="current-password">
+  <button onclick="go()">Connect webhook</button>
+  <div id="msg" class="msg"></div>
+</div>
+<script>
+async function go(){
+  const m=document.getElementById('msg'); m.className='msg'; m.textContent='Connecting…';
+  const r=await fetch('/.netlify/functions/ziina-register-webhook',{method:'POST',headers:{'x-admin-password':document.getElementById('pw').value}});
+  const d=await r.json().catch(()=>({}));
+  if(r.ok){m.className='msg ok';m.textContent='Done. Ziina will send events to:\n'+d.webhookUrl;}
+  else{m.className='msg bad';m.textContent=(d.error||'Failed')+(d.detail?'\n'+JSON.stringify(d.detail):'');}
+}
+</script>
+</main></body></html>
