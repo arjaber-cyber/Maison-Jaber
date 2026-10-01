@@ -179,3 +179,17 @@ html[dir="rtl"] .site-footer h2 { font-family: var(--font-ar-body); letter-spaci
   .site-header .site-header__inner { height: 68px; }
   .wordmark__logo { height: 56px; }
 }
+
+/* ---------- Compact footer ---------- */
+.site-footer { padding-block: clamp(32px, 4vw, 48px) 20px; }
+.site-footer__grid { gap: 28px; }
+.site-footer h2 { margin-bottom: 10px; }
+.site-footer ul { gap: 6px; }
+.site-footer__brand p { margin: 8px 0 12px; }
+.site-footer__brand .wordmark__logo { height: 92px; }
+.site-footer__bottom { margin-top: 28px; padding-top: 16px; }
+@media (max-width: 860px) {
+  .site-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .site-footer__brand .wordmark__logo { height: 72px; }
+  .site-footer ul a { font-size: .875rem; }
+}

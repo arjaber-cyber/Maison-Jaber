@@ -115,3 +115,28 @@ html, body { background: #F8F2E8 !important; }
 /* Story artwork is square — show it square everywhere */
 .story-cover, .cover-large, .angle-frame, .summary-cover, .story-pick .cover, .preview-strip button { aspect-ratio: 1 / 1 !important; }
 .preview-strip img { object-fit: cover !important; }
+
+/* ---------- Compact rhythm on the older pages ---------- */
+.page-hero { padding: clamp(32px, 4.5vw, 56px) 0 clamp(24px, 3vw, 40px) !important; }
+.section { padding-top: clamp(32px, 4.5vw, 56px) !important; padding-bottom: clamp(32px, 4.5vw, 56px) !important; }
+.story-hero { padding: clamp(24px, 3.5vw, 44px) 0 !important; }
+.story-hero .inner { gap: clamp(24px, 4vw, 48px) !important; }
+.cover-large { max-width: 420px; width: 100%; justify-self: center; }
+.final-cta { padding: clamp(36px, 5vw, 56px) 0 !important; }
+.filters { padding: 14px 0 !important; }
+.faq-section { padding-top: clamp(28px, 4vw, 44px) !important; }
+.toc { padding: 16px 0 !important; }
+.contact-block { padding: 28px 0 44px !important; }
+/* story grids on the Stories page: 4 across, 2 on phones */
+.stories-grid, .story-grid, #stories-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 18px !important; }
+@media (max-width: 960px) { .stories-grid, .story-grid, #stories-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+@media (max-width: 640px) {
+  .stories-grid, .story-grid, #stories-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .cover-large { max-width: 300px; }
+}
+@media (max-width: 640px) {
+  .filters .filter-group { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .filters .filter-group::-webkit-scrollbar { display: none; }
+  .filters .filter-group > * { flex: none; }
+  .filters { position: static !important; }
+}

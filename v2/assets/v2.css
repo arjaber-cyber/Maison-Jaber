@@ -459,3 +459,64 @@ html[dir="rtl"] .hero__media {
 
 /* Story artwork is square — show it square everywhere */
 .story-card__media, .spread__img { aspect-ratio: 1 / 1; }
+
+/* ---------- Compact rhythm: tighter sections, smaller boxes, less scrolling ---------- */
+:root { --section: clamp(36px, 4.5vw, 64px); --section-tight: clamp(24px, 3vw, 40px); --fs-hero: clamp(2.2rem, 1.4rem + 3.2vw, 3.8rem); --fs-h2: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem); }
+.section-head { margin-bottom: clamp(16px, 2vw, 26px); }
+.hero { min-height: clamp(420px, 60vh, 580px); }
+.hero__grid { padding-block: clamp(24px, 3.5vw, 48px); }
+.hero__title { margin: 12px 0 16px; }
+.hero__actions { margin-top: 22px; }
+.hero__assure { margin-top: 18px; }
+/* stories: 4 across on desktop, 2 across on phones */
+#story-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.story-card__body { padding: 14px 16px 16px; gap: 5px; }
+.story-card__title { font-size: 1.2rem; }
+.story-card__premise { font-size: .875rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cover-placeholder span { font-size: 1.25rem; }
+@media (max-width: 960px) { #story-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  #story-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .story-card__body { padding: 10px 12px 12px; }
+  .story-card__title { font-size: 1.02rem; }
+  .story-card__premise, .story-card__theme { display: none; }
+  .story-card__foot { font-size: .8rem; }
+}
+/* moments strip */
+.moment { padding-block: 16px; }
+/* how it works: smaller pictures */
+.step__media { aspect-ratio: 16 / 10; }
+@media (max-width: 760px) { .step { grid-template-columns: 96px 1fr; } .step__media { aspect-ratio: 1; } }
+/* look inside: smaller square pages */
+.rail { grid-auto-columns: minmax(200px, 23%); }
+@media (max-width: 700px) { .rail { grid-auto-columns: 58%; } }
+/* image + text features: shorter pictures */
+.split { gap: clamp(24px, 4vw, 56px); }
+.split__media { aspect-ratio: 4 / 3; max-height: 440px; }
+@media (max-width: 820px) { .split__media { aspect-ratio: 16 / 10; max-height: none; } }
+.mosaic { aspect-ratio: 21 / 8; gap: 10px; }
+@media (max-width: 700px) { .mosaic > div:first-child { aspect-ratio: 16/9; } .mosaic > div { aspect-ratio: 4/3; } }
+.assure > div, .theme { padding-block: 18px; }
+/* closing banner */
+.final { min-height: clamp(300px, 36vw, 420px); }
+.final__content { padding-block: clamp(28px, 4vw, 48px); }
+
+/* ---------- Compact footer ---------- */
+.site-footer { padding-block: clamp(32px, 4vw, 48px) 20px; }
+.site-footer__grid { gap: 28px; }
+.site-footer h2 { margin-bottom: 10px; }
+.site-footer ul { gap: 6px; }
+.site-footer__brand p { margin: 8px 0 12px; }
+.site-footer__brand .wordmark__logo { height: 92px; }
+.site-footer__bottom { margin-top: 28px; padding-top: 16px; }
+@media (max-width: 860px) {
+  .site-footer__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .site-footer__brand .wordmark__logo { height: 72px; }
+  .site-footer ul a { font-size: .875rem; }
+}
+
+/* Never show build placeholders to customers; hide "look inside" until real spreads exist */
+.dev-tag { display: none !important; }
+.dev-placeholder { outline: 0 !important; }
+section:has(.rail .spread.dev-placeholder):not(:has(.rail .spread:not(.dev-placeholder))) { display: none; }
+@media (max-width: 640px) { .story-card__foot .link { display: none; } }
