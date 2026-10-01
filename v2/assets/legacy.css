@@ -111,3 +111,7 @@ html, body { background: #F8F2E8 !important; }
 
 /* Cookie banner: brand brown, not caramel */
 #hikaya-consent-accept { background: #563622 !important; border-color: #563622 !important; color: #F8F2E8 !important; }
+
+/* Story artwork is square — show it square everywhere */
+.story-cover, .cover-large, .angle-frame, .summary-cover, .story-pick .cover, .preview-strip button { aspect-ratio: 1 / 1 !important; }
+.preview-strip img { object-fit: cover !important; }

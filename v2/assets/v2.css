@@ -456,3 +456,6 @@ html[dir="rtl"] .hero__media {
   .hero__media, html[dir="rtl"] .hero__media { -webkit-mask-composite: source-over; mask-composite: add; }
 }
 @media (max-width: 860px) { .hero__grid { align-items: stretch; } }
+
+/* Story artwork is square — show it square everywhere */
+.story-card__media, .spread__img { aspect-ratio: 1 / 1; }
