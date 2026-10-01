@@ -167,3 +167,15 @@ html[dir="rtl"] .site-footer h2 { font-family: var(--font-ar-body); letter-spaci
 .site-footer .zone-menu { top: auto !important; bottom: calc(100% + 8px) !important; }
 .footer-zone { display: inline-flex; align-items: center; gap: 10px; }
 @media (max-width: 860px) { .site-footer__grid { grid-template-columns: 1fr 1fr; } .site-footer__brand { grid-column: 1 / -1; } }
+
+/* ---------- Logo (the real Hikaya by Maison Jaber mark) ---------- */
+:root { --header-h: 92px; }
+.site-header .site-header__inner { height: 92px; }
+.wordmark__logo { display: block; height: 76px; width: auto; }
+.mobile-menu__top .wordmark__logo { height: 64px; }
+.site-footer__brand .wordmark__logo { height: 120px; margin-inline-start: -8px; }
+@media (max-width: 960px) {
+  :root { --header-h: 68px; }
+  .site-header .site-header__inner { height: 68px; }
+  .wordmark__logo { height: 56px; }
+}

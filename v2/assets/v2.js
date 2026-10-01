@@ -224,7 +224,7 @@
       <header class="site-header">
         <div class="wrap site-header__inner">
           <a class="wordmark" href="${R.home}" aria-label="Hikaya by Maison Jaber — home">
-            <span class="wordmark__text">HIKAYA</span>
+            <img class="wordmark__logo" src="/test5/images/logo-hikaya.png" width="541" height="500" alt="Hikaya by Maison Jaber">
           </a>
           <nav class="site-nav" aria-label="Main">${nav}</nav>
           <div class="site-header__actions">
@@ -239,7 +239,7 @@
         <div class="mobile-menu__scrim" data-close-menu></div>
         <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="${V2.t('menu')}">
           <div class="mobile-menu__top">
-            <span class="wordmark__text">HIKAYA</span>
+            <img class="wordmark__logo" src="/test5/images/logo-hikaya.png" width="541" height="500" alt="Hikaya by Maison Jaber">
             <button class="icon-btn" type="button" data-close-menu aria-label="${V2.t('close')}">${ICON.close}</button>
           </div>
           <nav aria-label="Main">${nav}</nav>
@@ -256,7 +256,7 @@
         <div class="wrap">
           <div class="site-footer__grid">
             <div class="site-footer__brand">
-              <span class="wordmark__text">HIKAYA</span>
+              <img class="wordmark__logo" src="/test5/images/logo-hikaya.png" width="541" height="500" alt="Hikaya by Maison Jaber">
               <p ${i('f_tagline')}>${V2.t('f_tagline')}</p>
               <h2 ${i('f_news_title')}>${V2.t('f_news_title')}</h2>
               <p class="meta" style="margin:0 0 12px" ${i('f_news_copy')}>${V2.t('f_news_copy')}</p>

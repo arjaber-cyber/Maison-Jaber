@@ -384,3 +384,75 @@ html[dir="rtl"] .site-footer h2 { font-family: var(--font-ar-body); letter-spaci
 /* Cookie banner (from /consent.js): crisp, brand brown */
 #hikaya-consent-banner button { border-radius: var(--r-btn) !important; }
 #hikaya-consent-accept { background: var(--brown) !important; border-color: var(--brown) !important; color: var(--ivory) !important; }
+
+/* ---------- Logo (the real Hikaya by Maison Jaber mark) ---------- */
+:root { --header-h: 92px; }
+.site-header .site-header__inner { height: 92px; }
+.wordmark__logo { display: block; height: 76px; width: auto; }
+.mobile-menu__top .wordmark__logo { height: 64px; }
+.site-footer__brand .wordmark__logo { height: 120px; margin-inline-start: -8px; }
+@media (max-width: 960px) {
+  :root { --header-h: 68px; }
+  .site-header .site-header__inner { height: 68px; }
+  .wordmark__logo { height: 56px; }
+}
+
+/* ---------- Hero v2.1: rotating photos that dissolve into the page ---------- */
+.hero { position: relative; overflow: hidden; padding-block: 0; min-height: clamp(540px, 74vh, 760px); display: flex; align-items: center; }
+.hero > .wrap { width: 100%; }
+.hero__grid { grid-template-columns: minmax(0, 1fr); position: relative; z-index: 2; padding-block: clamp(40px, 6vw, 88px); }
+.hero__grid > div:first-child { max-width: 34rem; }
+.hero__media {
+  position: absolute; z-index: 1; inset-block: 0; inset-inline-end: 0; width: min(64%, 980px);
+  aspect-ratio: auto; border-radius: 0; background: none; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, #000 72%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-composite: intersect;
+}
+html[dir="rtl"] .hero__media {
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, #000 72%, transparent 100%);
+}
+.hero__media::after { content: ""; position: absolute; inset: 0; background: rgba(248,242,232,.10); pointer-events: none; }
+.hero__slide {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center;
+  opacity: 0; transform: scale(1.06); transition: opacity 1.8s ease, transform 7s ease-out;
+}
+.hero__slide.is-active { opacity: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { .hero__slide { transition: opacity .01s; transform: none !important; } }
+@media (max-width: 860px) {
+  .hero { display: block; min-height: 0; }
+  .hero__media {
+    position: relative; inset: auto; width: auto; height: 78vw; max-height: 520px; margin-inline: 0; order: 0;
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  html[dir="rtl"] .hero__media { -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); }
+  .hero__grid { padding-block: 0 48px; margin-top: -56px; }
+  .hero__grid > div:first-child { max-width: none; }
+}
+
+/* hero v2.1 layout fixes */
+.hero__grid { position: static; }
+.hero__grid > div:first-child { position: relative; z-index: 2; }
+@media (max-width: 860px) {
+  .hero__grid { display: flex; flex-direction: column; padding-block: 0 48px; margin-top: 0; }
+  .hero__media { order: -1; margin-inline: calc(var(--gutter) * -1); }
+  .hero__grid > div:first-child { margin-top: -64px; }
+}
+
+/* softer top edge on desktop; single-layer mask on mobile */
+@media (min-width: 861px) {
+  .hero__media {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+  }
+  html[dir="rtl"] .hero__media {
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.55) 22%, #000 46%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+  }
+}
+@media (max-width: 860px) {
+  .hero__media, html[dir="rtl"] .hero__media { -webkit-mask-composite: source-over; mask-composite: add; }
+}
+@media (max-width: 860px) { .hero__grid { align-items: stretch; } }

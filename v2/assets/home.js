@@ -156,3 +156,25 @@
 
   V2.track('homepage_viewed');
 })();
+
+
+/* Hero slideshow — crossfades the photos every few seconds */
+(function () {
+  const box = document.querySelector('[data-hero-slides]');
+  if (!box) return;
+  const slides = [...box.querySelectorAll('.hero__slide')];
+  if (slides.length < 2 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let i = 0, timer = null;
+  const next = () => {
+    slides[i].classList.remove('is-active');
+    i = (i + 1) % slides.length;
+    const img = slides[i];
+    if (img.loading === 'lazy') img.loading = 'eager';
+    img.classList.add('is-active');
+  };
+  const start = () => { if (!timer) timer = setInterval(next, 5000); };
+  const stop = () => { clearInterval(timer); timer = null; };
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  slides.slice(1).forEach(s => { s.loading = 'eager'; });
+  start();
+})();
