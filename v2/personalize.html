@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Their Story — Hikaya by Maison Jaber</title>
+<meta name="description" content="Choose their age, pick a story, add their details, and send us your request." />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Jost:wght@400;500;600&display=swap');
+
+  :root {
+    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
+    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
+    --radius: 16px; --radius-lg: 24px;
+    /* legacy aliases so existing component CSS re-themes automatically */
+    --charcoal: var(--ink); --ivory: var(--bg); --gold: #C8954D; --champagne: var(--coral-deep);
+    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
+    --taupe: var(--line); --parchment: var(--bg-soft);
+    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
+    --text-on-dark: #ffffff; --text-on-dark-soft: #f1e9dc;
+    --sunshine: #C08A3E; --sky: #7d6a5a; --terracotta: #B5563B; --brown: var(--ink);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--cream); color: var(--ink); font-family: 'Jost', sans-serif; font-size: 16px; line-height: 1.6; }
+  h1, h2, h3 { font-family: 'Jost', sans-serif; font-weight: 600; margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
+    padding: 15px 28px; border-radius: 3px; font-family: 'Jost', sans-serif; font-size: 15px;
+    font-weight: 600; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(232,128,95,0.3);
+  }
+  .btn-primary:hover { filter: brightness(1.03); }
+  .btn-primary:disabled { background: #ebebeb; color: var(--ink-soft); box-shadow: none; cursor: not-allowed; }
+  .btn-oauth {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+    background: #fff; border: 2px solid var(--line); padding: 13px; border-radius: 3px;
+    font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-oauth:hover { border-color: var(--coral); }
+
+  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; padding: 18px 0; }
+  header.site .inner { display: flex; align-items: center; justify-content: space-between; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .wordmark { font-family: 'Jost', sans-serif; font-size: 20px; font-weight: 700; color: var(--coral-deep); }
+  .wordmark .sub-brand { display: block; font-size: 9px; font-family: 'Jost', sans-serif; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-soft); text-transform: uppercase; }
+  header.site a.exit { font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+  header.site a.exit:hover { color: var(--coral); }
+
+  .page-head { text-align: center; padding: 20px 0 8px; }
+  .page-head h1 { font-size: clamp(24px, 3.4vw, 34px); }
+  .page-head p { margin-top: 8px; color: var(--ink-soft); font-weight: 600; }
+
+  .order-layout { display: grid; grid-template-columns: 340px 1fr; gap: 32px; padding: 28px 0 60px; max-width: 1080px; margin: 0 auto; align-items: start; }
+  @media (max-width: 900px) { .order-layout { grid-template-columns: 1fr; padding: 20px 20px 40px; } }
+
+  .order-summary { background: #fff; border-radius: var(--radius); padding: 24px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); position: sticky; top: 90px; }
+  @media (max-width: 900px) { .order-summary { position: static; } }
+  .summary-cover { aspect-ratio: 4/3; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 14px; margin-bottom: 16px; }
+  .summary-cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .summary-cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .summary-cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .summary-cover.empty { background: var(--bg-soft); color: var(--ink-soft); font-weight: 700; font-size: 13px; }
+  .summary-cover .t { font-family: 'Jost', sans-serif; color: #fff; font-size: 18px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
+  .order-summary h3 { font-size: 17px; margin-bottom: 14px; }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line-soft); }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+  .summary-row.total { border-bottom: none; padding-top: 12px; }
+  .summary-row.total span:first-child { font-weight: 600; color: var(--ink); }
+  .summary-row.total span:last-child { color: var(--coral-deep); font-weight: 600; font-size: 15px; }
+
+  .order-form-col h2 { font-size: 19px; margin-bottom: 4px; }
+  .order-form-col .sub { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-bottom: 18px; }
+
+  .story-chip { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; box-shadow: 0 6px 16px rgba(50,44,36,0.06); }
+  .story-chip .swatch { width: 40px; height: 40px; border-radius: 4px; flex-shrink: 0; }
+  .story-chip .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-chip .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-chip .swatch.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-chip .name { font-weight: 600; flex: 1; }
+  .story-chip button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 640px) { .story-grid { grid-template-columns: 1fr; } }
+  .story-pick {
+    background: #fff; border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    border: 3px solid transparent; box-shadow: 0 8px 22px rgba(50,44,36,0.07);
+  }
+  .story-pick:hover { border-color: var(--line); }
+  .story-pick.selected { border-color: var(--coral); }
+  .story-pick .cover {
+    aspect-ratio: 4/3.2; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center;
+  }
+  .story-pick .cover.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .story-pick .cover.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
+  .story-pick .cover.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
+  .story-pick .cover .t { font-family: 'Jost', sans-serif; color: #fff; font-size: 16px; line-height: 1.25; text-shadow: 0 2px 8px rgba(70,45,25,0.35); }
+  .story-pick .body { padding: 12px 14px 14px; }
+  .story-pick .theme { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 3px; }
+  .story-pick h3 { font-size: 14.5px; margin-bottom: 0; }
+
+  .gender-toggle { display: flex; gap: 12px; }
+  .gender-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: #fff; border: 2px solid var(--line-soft); border-radius: var(--radius); padding: 16px 12px;
+    cursor: pointer; font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 700; color: var(--ink-soft);
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .gender-btn svg { width: 26px; height: 26px; stroke: var(--ink-soft); transition: stroke 0.2s ease; }
+  .gender-btn:hover { border-color: var(--line); }
+  .gender-btn.selected { border-color: var(--coral); background: var(--bg-soft); color: var(--coral-deep); }
+  .gender-btn.selected svg { stroke: var(--coral-deep); }
+
+  .details-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: 0 8px 22px rgba(50,44,36,0.07); margin-bottom: 18px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .field.full { grid-column: 1 / -1; }
+  label.field-label { font-size: 13px; font-weight: 600; }
+  .req-mark { color: var(--coral-deep); margin-left: 2px; }
+  .req-note { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin: -8px 0 16px; }
+  input[type="text"], input[type="number"], textarea {
+    width: 100%; padding: 12px 14px; font-family: 'Jost', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); color: var(--ink);
+  }
+  input:focus, textarea:focus { outline: none; border-color: var(--coral); background: #fff; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .photo-upload {
+    border: 2px dashed var(--line); border-radius: var(--radius-sm); background: var(--cream);
+    padding: 18px; text-align: center; position: relative; cursor: pointer; margin-bottom: 10px;
+  }
+  .photo-guidance {
+    background: var(--cream); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
+    font-size: 12px; color: var(--ink-soft); font-weight: 700;
+  }
+  .photo-guidance ul { margin: 6px 0 0; padding-left: 18px; font-weight: 600; }
+  .photo-guidance li { margin-bottom: 3px; }
+  .photo-thumbs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .photo-thumb { position: relative; width: 68px; height: 68px; border-radius: 6px; overflow: hidden; border: 2px solid transparent; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-thumb.state-failed { border-color: var(--coral-deep, #b5563b); }
+  .photo-thumb.state-verified { border-color: #3d5a26; }
+  .photo-thumb button.remove-photo {
+    position: absolute; top: 1px; right: 1px; width: 17px; height: 17px; border-radius: 50%;
+    background: rgba(50,44,36,0.75); color: #fff; border: none; font-size: 10px; cursor: pointer; line-height: 1; z-index: 2;
+  }
+  .photo-thumb .status-badge {
+    position: absolute; bottom: 0; left: 0; right: 0; text-align: center; padding: 3px 0;
+    font-size: 9px; font-weight: 600; color: #fff;
+  }
+  .photo-thumb .status-badge.checking { background: rgba(86,54,34,0.8); }
+  .photo-thumb .status-badge.verified { background: rgba(61,90,38,0.88); }
+  .photo-thumb .status-badge.failed { background: rgba(181,86,59,0.9); }
+  .photo-thumb .spinner {
+    width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%;
+    display: inline-block; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 3px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .photo-retry-note { font-size: 12px; color: var(--coral-deep, #b5563b); font-weight: 700; margin-bottom: 10px; }
+  .trust-note {
+    display: flex; gap: 10px; align-items: flex-start; background: var(--bg-soft, #F3E8D8); border-radius: 6px;
+    padding: 12px 14px; margin-bottom: 16px; font-size: 12.5px; color: var(--ink-soft, #7d6a5a); font-weight: 600; line-height: 1.5;
+  }
+  .trust-note svg { width: 17px; height: 17px; stroke: #3d5a26; flex-shrink: 0; margin-top: 1px; }
+  .trust-note a { color: inherit; text-decoration: underline; }
+
+  .extra-char-block { background: var(--bg-soft, #F3E8D8); border-radius: 6px; padding: 18px 20px; margin-bottom: 18px; }
+  .extra-char-block h4 { font-size: 15px; margin-bottom: 4px; }
+  .extra-char-sub { font-size: 12.5px; color: var(--ink-soft, #7d6a5a); font-weight: 600; margin-bottom: 12px; }
+  .extra-char-choice { display: flex; gap: 10px; margin-bottom: 4px; }
+  .extra-char-btn {
+    flex: 1; padding: 12px; border-radius: 6px; border: 1.5px solid var(--line, #DFC9AE); background: #fff;
+    font-size: 13px; font-weight: 700; cursor: pointer; color: var(--ink, #2E2018);
+  }
+  .extra-char-btn.selected { border-color: var(--coral, #A67443); background: var(--coral, #A67443); color: #fff; }
+  #extra-char-upload-wrap { margin-top: 14px; }
+
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--line); text-align: left; }
+  .summary-row span:last-child { color: var(--ink-soft); font-weight: 700; }
+
+  .account-gate p.note { font-size: 13px; color: var(--ink-soft); font-weight: 700; margin-bottom: 14px; }
+  .divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  input[type="email"] {
+    width: 100%; padding: 12px 14px; font-family: 'Jost', sans-serif; font-size: 14px;
+    border: 2px solid var(--line); border-radius: var(--radius-sm); background: var(--cream); margin-bottom: 10px;
+  }
+
+  .signed-in-bar { background: var(--cream); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .signed-in-bar button { background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+
+  .form-status { font-size: 13px; margin-top: 12px; color: #B5563B; font-weight: 700; min-height: 16px; }
+
+  .success-panel { text-align: center; display: none; }
+  .success-panel.visible { display: block; }
+  .success-panel .mark { font-size: 30px; margin-bottom: 10px; }
+  .success-panel h3 { font-size: 20px; margin-bottom: 8px; }
+  .success-panel p { color: var(--ink-soft); font-weight: 600; }
+
+  footer.site { padding: 30px 0; text-align: center; }
+  footer.site p { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+
+  .site-logo { height: 88px; width: auto; display: block; }
+
+  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 3px; cursor: pointer; }
+  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .zone-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 3px; cursor: pointer; border: 1px solid var(--line, #ddd); }
+  .zone-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  .cart-badge { display: none; background: var(--coral, #A67443); color: #fff; font-size: 10px; font-weight: 600; min-width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; padding: 0 3px; margin-left: 4px; }
+
+  .wizard-progress { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 18px 0 6px; flex-wrap: wrap; }
+  .wizard-progress .w-step { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; color: var(--ink-soft, #7d6a5a); }
+  .wizard-progress .w-step .w-dot {
+    width: 24px; height: 24px; border-radius: 50%; background: var(--parchment, #eee); color: var(--ink-soft, #999);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0;
+  }
+  .wizard-progress .w-step.active .w-dot, .wizard-progress .w-step.done .w-dot { background: var(--coral, #A67443); color: #fff; }
+  .wizard-progress .w-step.active { color: var(--ink, #2E2018); }
+  .wizard-progress .w-line { width: 26px; height: 1px; background: var(--line-soft, #ece1d1); }
+  @media (max-width: 700px) { .wizard-progress .w-step span:last-child { display: none; } .wizard-progress .w-line { width: 14px; } }
+
+  .wizard-step { display: none; }
+  .wizard-step.active { display: block; }
+  .wizard-nav { display: flex; gap: 10px; margin-top: 18px; }
+  .wizard-nav .btn-back {
+    padding: 14px 20px; border-radius: 3px; border: 1.5px solid var(--line, #DFC9AE); background: #fff;
+    font-size: 14px; font-weight: 700; cursor: pointer; color: var(--ink, #2E2018);
+  }
+  .wizard-nav .btn-next { flex: 1; }
+  .review-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line-soft, #ece1d1); font-size: 13.5px; }
+  .review-row span:first-child { color: var(--ink-soft, #7d6a5a); font-weight: 600; }
+  .review-row span:last-child { font-weight: 700; text-align: right; max-width: 60%; }
+  .review-edit { font-size: 11.5px; text-decoration: underline; color: var(--ink-soft); font-weight: 700; margin-left: 8px; cursor: pointer; background: none; border: none; }
+</style>
+<script src="/i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/v2/assets/v2.js" defer></script>
+
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
+<link rel="icon" type="image/png" href="/test5/images/favicon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@400;500;600&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<link rel="stylesheet" href="/v2/assets/chrome.css">
+<link rel="stylesheet" href="/v2/assets/legacy.css">
+</head>
+<body>
+
+<div id="v2-header"></div>
+
+<div class="page-head wrap">
+  <h1 data-i18n="personalize.page_title">Let's create their story</h1>
+  <p data-i18n="personalize.page_sub_v2">Add their name, age, and photo &mdash; we'll take it from there.</p>
+</div>
+
+<div class="wizard-progress wrap" id="wizard-progress"></div>
+
+<form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
+  <input type="hidden" name="form-name" value="book-request" />
+  <input type="hidden" name="story" id="story-input" />
+  <input type="hidden" name="age_edition" id="age-input" />
+
+  <div class="order-layout">
+    <div class="order-summary">
+      <div class="summary-cover empty" id="summary-cover">Pick a story to begin</div>
+      <h3 id="summary-story-title">No story chosen yet</h3>
+      <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
+      <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
+      <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
+      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price>€34.90</span></div>
+    </div>
+
+    <div class="order-form-col">
+      <h2 data-i18n="personalize.order_title">Tell us about them</h2>
+      <div class="sub" data-i18n="personalize.order_sub">Just the essentials &mdash; you can always add more later.</div>
+
+      <!-- Step: Story -->
+      <div class="wizard-step active" data-step="story" id="wizard-step-story">
+        <div class="story-chip" id="story-chip" style="display:none;">
+          <div class="swatch" id="story-chip-swatch"></div>
+          <div class="name" id="story-chip-name"></div>
+          <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
+        </div>
+
+        <div class="story-grid" id="story-grid">
+          <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
+            <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
+              <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
+            </div>
+          </div>
+          <div class="story-pick" data-value="The Cloud Ship" data-theme="adventure">
+            <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
+              <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
+            </div>
+          </div>
+          <div class="story-pick" data-value="The Star Who Couldn't Sleep" data-theme="lullaby">
+            <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
+            <div class="body">
+              <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
+              <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
+            </div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Name & Age -->
+      <div class="wizard-step" data-step="details" id="wizard-step-details">
+        <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
+        <div class="form-grid">
+          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
+          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field">
+            <label class="field-label" data-i18n="personalize.gender_label">Which pronouns should we use?</label>
+            <div class="gender-toggle">
+              <button type="button" class="gender-btn" data-value="boy">
+                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="8" r="4.5"/><path d="M5 21c1.2-4.2 4-6.5 7-6.5s5.8 2.3 7 6.5"/></svg>
+                <span data-i18n="personalize.gender_boy">He / him</span>
+              </button>
+              <button type="button" class="gender-btn" data-value="girl">
+                <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M9 12.5l-3.5 8.5h13l-3.5-8.5"/><path d="M12 12.5v3"/></svg>
+                <span data-i18n="personalize.gender_girl">She / her</span>
+              </button>
+            </div>
+            <input type="hidden" id="child-gender" name="child_gender" />
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Photo -->
+      <div class="wizard-step" data-step="photo" id="wizard-step-photo">
+        <label class="field-label" style="display:block; margin-bottom:8px;"><span data-i18n="personalize.photos_label">Photo(s) of your child</span><span class="req-mark">*</span></label>
+        <div class="trust-note">
+          <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span data-i18n="personalize.photo_trust">Their photo stays private — used only to create their book, never for advertising or public galleries. <a href="help.html">How we protect your child's photo</a></span>
+        </div>
+        <div class="photo-guidance">
+          <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
+          <ul>
+            <li data-i18n="personalize.photo_g1">Shows their face clearly, looking toward the camera</li>
+            <li data-i18n="personalize.photo_g2">Is well-lit, without harsh shadows</li>
+            <li data-i18n="personalize.photo_g3">Isn't blurry or too far away</li>
+            <li data-i18n="personalize.photo_g4">Has nothing covering their face (no sunglasses, masks, or hands)</li>
+            <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
+          </ul>
+        </div>
+        <div class="photo-upload" id="photo-upload">
+          <input type="file" id="child-photos" accept="image/*" multiple />
+          <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+          <div class="hint-sub" data-i18n="personalize.add_more_photos">You can add more than one for a better result</div>
+        </div>
+        <div class="photo-thumbs" id="photo-thumbs"></div>
+        <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Extra character (only shown for stories that have one) -->
+      <div class="wizard-step" data-step="extra" id="wizard-step-extra">
+        <div class="extra-char-block" id="extra-char-block">
+          <h4 id="extra-char-question"></h4>
+          <p class="extra-char-sub" id="extra-char-sub"></p>
+          <div class="extra-char-choice">
+            <button type="button" class="extra-char-btn" id="extra-char-yes" data-value="yes"></button>
+            <button type="button" class="extra-char-btn" id="extra-char-no" data-value="no"></button>
+          </div>
+          <div id="extra-char-upload-wrap" style="display:none;">
+            <div class="photo-upload" id="extra-photo-upload">
+              <input type="file" id="extra-char-photos" accept="image/*" />
+              <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
+            </div>
+            <div class="photo-thumbs" id="extra-photo-thumbs"></div>
+            <div class="photo-retry-note" id="extra-photo-retry-note" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="extra">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Dedication -->
+      <div class="wizard-step" data-step="dedication" id="wizard-step-dedication">
+        <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="dedication">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="dedication">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step: Review -->
+      <div class="wizard-step" data-step="review" id="wizard-step-review">
+        <div id="review-summary"></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="review">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary" id="continue-order-btn" style="flex:1; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<div class="wrap">
+  <div class="success-panel" id="success-panel">
+    <div class="mark">&#127881;</div>
+    <h3 data-i18n="personalize.success_title">Your request has been sent!</h3>
+    <p data-i18n="personalize.success_body">We're preparing their story now, and will email you a preview soon.</p>
+  </div>
+</div>
+
+<div id="v2-footer"></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient(
+    'https://zxzlarlpoctpnnnvzced.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+  );
+
+  let photoFiles = [];
+  let extraPhotoFiles = [];
+
+  // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
+  const t = (key, fallback) => {
+    try {
+      const val = window.hikayaT && window.hikayaT(key);
+      return val || fallback || key;
+    } catch { return fallback || key; }
+  };
+  let isSignedIn = false;
+
+  // --- Birthday entry computes age edition, reveals stories ---
+  function editionForAge(years) {
+    if (years <= 4) return '2-4';
+    if (years <= 7) return '5-7';
+    return '8-10';
+  }
+
+  // --- Story selection (either pre-picked via ?story= URL param, or chosen here) ---
+  // STORY_THEMES starts with the 3 built-in stories so the page works
+  // immediately; loadStoryCatalog() below fills in any admin-added ones
+  // (and their extra-character info) once fetched, without blocking the page.
+  const STORY_THEMES = {
+    'The Bravest Little One': 'courage',
+    'The Cloud Ship': 'adventure',
+    "The Star Who Couldn't Sleep": 'lullaby',
+  };
+  const STORY_CATALOG = {}; // title -> full story record, once fetched
+
+  // Show a story's cover photo (uploaded in the admin dashboard) instead of the gradient.
+  // The photo already carries the title, so the text overlay is hidden.
+  function applyCoverPhoto(el, story) {
+    if (!el || !story || !story.cover_image_url) return;
+    el.style.backgroundImage = `url('${story.cover_image_url.replace(/'/g, '%27')}')`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.querySelectorAll('.t').forEach(t => { t.style.display = 'none'; });
+  }
+
+  async function loadStoryCatalog() {
+    try {
+      const res = await fetch('/.netlify/functions/get-stories');
+      const data = await res.json();
+      const grid = document.getElementById('story-grid');
+      const catalogTitles = new Set((data.stories || []).map(st => st.title));
+      if (data.tableReady) {
+        // Stories deleted in the admin dashboard disappear from the picker.
+        document.querySelectorAll('#story-grid .story-pick').forEach(card => {
+          if (!catalogTitles.has(card.dataset.value)) card.remove();
+        });
+      }
+      (data.stories || []).forEach(story => {
+        STORY_THEMES[story.title] = story.theme;
+        STORY_CATALOG[story.title] = story;
+        const existing = [...document.querySelectorAll('#story-grid .story-pick')].find(c => c.dataset.value === story.title);
+        if (existing) { applyCoverPhoto(existing.querySelector('.cover'), story); return; }
+        {
+          const card = document.createElement('div');
+          card.className = 'story-pick';
+          card.dataset.value = story.title;
+          card.dataset.theme = story.theme;
+          card.innerHTML = `
+            <div class="cover ${story.theme}"><div class="t">${story.title}</div></div>
+            <div class="body">
+              <div class="theme" style="color:var(--ink-soft);">${story.collection || ''}</div>
+              <h3>${story.title}</h3>
+            </div>`;
+          card.addEventListener('click', () => selectStory(story.title));
+          applyCoverPhoto(card.querySelector('.cover'), story);
+          grid.appendChild(card);
+        }
+      });
+      // If the page was pre-loaded with ?story= pointing at a story that
+      // only exists in the catalog (not the 3 built-ins), select it now
+      // that we actually know about it.
+      const urlStory = new URLSearchParams(window.location.search).get('story');
+      if (urlStory && STORY_THEMES[urlStory] && document.getElementById('story-input').value !== urlStory) {
+        selectStory(urlStory);
+      }
+    } catch {
+      // Catalog fetch failed -- the 3 built-in stories still work fine.
+    }
+  }
+  loadStoryCatalog();
+
+  let extraCharChoice = null; // 'yes' | 'no' | null
+
+  function selectStory(storyName) {
+    const theme = STORY_THEMES[storyName] || 'courage';
+    document.getElementById('story-input').value = storyName;
+
+    // Summary sidebar
+    document.getElementById('summary-cover').className = 'summary-cover ' + theme;
+    document.getElementById('summary-cover').innerHTML = `<div class="t">${storyName}</div>`;
+    document.getElementById('summary-cover').style.backgroundImage = '';
+    applyCoverPhoto(document.getElementById('summary-cover'), STORY_CATALOG[storyName]);
+    document.getElementById('story-chip-swatch').style.backgroundImage = '';
+    applyCoverPhoto(document.getElementById('story-chip-swatch'), STORY_CATALOG[storyName]);
+    document.getElementById('summary-story-title').textContent = storyName;
+
+    // Compact chip replaces the picker grid
+    document.getElementById('story-chip-swatch').className = 'swatch ' + theme;
+    document.getElementById('story-chip-name').textContent = storyName;
+    document.getElementById('story-chip').style.display = 'flex';
+    document.getElementById('story-grid').style.display = 'none';
+
+    document.querySelectorAll('.story-pick').forEach(c => c.classList.toggle('selected', c.dataset.value === storyName));
+
+    // Show the optional extra-character prompt if this story has one.
+    const storyInfo = STORY_CATALOG[storyName];
+    const extraBlock = document.getElementById('extra-char-block');
+    extraCharChoice = null;
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    extraPhotoFiles = [];
+    if (storyInfo && storyInfo.has_extra_character) {
+      const name = storyInfo.extra_character_name;
+      const fee = storyInfo.extra_character_fee_aed;
+      document.getElementById('extra-char-question').textContent = `This story has a ${name} character`;
+      document.getElementById('extra-char-sub').textContent = `Would you like to use a real photo of the ${name.toLowerCase()}, or keep it generated for you? Using a real photo adds AED ${fee}.`;
+      document.getElementById('extra-char-yes').textContent = `Yes, use a real photo (+AED ${fee})`;
+      document.getElementById('extra-char-no').textContent = `No, keep it generated`;
+      document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
+      extraBlock.style.display = 'block';
+    } else {
+      extraBlock.style.display = 'none';
+    }
+
+    checkDetailsComplete();
+    if (typeof renderWizardProgress === 'function') renderWizardProgress();
+  }
+
+  document.querySelectorAll('.story-pick').forEach(card => {
+    card.addEventListener('click', () => selectStory(card.dataset.value));
+  });
+
+  document.getElementById('change-story-btn').addEventListener('click', () => {
+    document.getElementById('story-chip').style.display = 'none';
+    document.getElementById('story-grid').style.display = 'grid';
+  });
+
+  // --- Age (plain number, quietly maps to an edition behind the scenes) ---
+  const ageInputEl = document.getElementById('child-age');
+  ageInputEl.addEventListener('input', () => {
+    const years = parseInt(ageInputEl.value, 10);
+    if (years && years > 0) {
+      const edition = editionForAge(years);
+      document.getElementById('age-input').value = edition;
+      document.getElementById('summary-age').textContent = 'Ages ' + edition;
+    } else {
+      document.getElementById('age-input').value = '';
+      document.getElementById('summary-age').textContent = '—';
+    }
+    checkDetailsComplete();
+  });
+
+  // --- Gender toggle ---
+  document.querySelectorAll('.gender-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('child-gender').value = btn.dataset.value;
+    });
+  });
+
+  // --- Photo upload: each photo gets checked before it counts ---
+  // Two free checks run on every photo: (1) a face is clearly visible,
+  // checked right in the browser with face-api.js (no cost, no upload
+  // needed for this part); (2) a content-policy check via OpenAI's free
+  // moderation endpoint. Only photos that pass both count toward "at
+  // least one photo" and get included in the order.
+  const photoInput = document.getElementById('child-photos');
+  const photoThumbs = document.getElementById('photo-thumbs');
+  const photoRetryNote = document.getElementById('photo-retry-note');
+  let faceModelsReady = false;
+
+  async function ensureFaceModels() {
+    if (faceModelsReady || !window.faceapi) return;
+    try {
+      await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights');
+      faceModelsReady = true;
+    } catch {
+      // Model failed to load (e.g. offline) -- checkPhoto() falls back to
+      // skipping the face check rather than blocking uploads entirely.
+    }
+  }
+  ensureFaceModels();
+
+  async function hasDetectableFace(file) {
+    if (!window.faceapi || !faceModelsReady) return true; // fail open if the model couldn't load
+    try {
+      const imgUrl = URL.createObjectURL(file);
+      const img = await new Promise((resolve, reject) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.onerror = reject;
+        el.src = imgUrl;
+      });
+      const detections = await faceapi.detectAllFaces(img, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.4 }));
+      URL.revokeObjectURL(imgUrl);
+      return detections.length > 0;
+    } catch {
+      return true; // fail open on any unexpected error -- don't block a real parent over our bug
+    }
+  }
+
+  async function passesContentCheck(file) {
+    try {
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const res = await fetch('/.netlify/functions/moderate-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64Data, mimeType: file.type }),
+      });
+      if (!res.ok) return true; // fail open if the check itself is down
+      const data = await res.json();
+      return data.approved !== false;
+    } catch {
+      return true; // fail open on network errors
+    }
+  }
+
+  async function checkPhoto(entry, onDone) {
+    const faceOk = await hasDetectableFace(entry.file);
+    if (!faceOk) {
+      entry.status = 'failed';
+      entry.reason = t('personalize.photo_fail_face', "We couldn't find a clear face in this photo.");
+      onDone();
+      return;
+    }
+    const contentOk = await passesContentCheck(entry.file);
+    entry.status = contentOk ? 'verified' : 'failed';
+    if (!contentOk) entry.reason = t('personalize.photo_fail_content', "This photo can't be used — please try a different one.");
+    onDone();
+  }
+
+  photoInput.addEventListener('change', () => {
+    Array.from(photoInput.files).forEach(file => {
+      const entry = { file, status: 'checking', reason: null };
+      photoFiles.push(entry);
+      checkPhoto(entry, () => { renderThumbs(photoFiles, photoThumbs, photoRetryNote, true); checkDetailsComplete(); });
+    });
+    photoInput.value = '';
+    renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
+    checkDetailsComplete();
+  });
+
+  // --- Optional extra character (e.g. a parent) some stories support ---
+  const extraPhotoInput = document.getElementById('extra-char-photos');
+  const extraPhotoThumbs = document.getElementById('extra-photo-thumbs');
+  const extraPhotoRetryNote = document.getElementById('extra-photo-retry-note');
+
+  document.getElementById('extra-char-yes').addEventListener('click', () => {
+    extraCharChoice = 'yes';
+    document.getElementById('extra-char-yes').classList.add('selected');
+    document.getElementById('extra-char-no').classList.remove('selected');
+    document.getElementById('extra-char-upload-wrap').style.display = 'block';
+    checkDetailsComplete();
+  });
+  document.getElementById('extra-char-no').addEventListener('click', () => {
+    extraCharChoice = 'no';
+    document.getElementById('extra-char-no').classList.add('selected');
+    document.getElementById('extra-char-yes').classList.remove('selected');
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    extraPhotoFiles = [];
+    renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false);
+    checkDetailsComplete();
+  });
+  extraPhotoInput.addEventListener('change', () => {
+    Array.from(extraPhotoInput.files).forEach(file => {
+      const entry = { file, status: 'checking', reason: null };
+      extraPhotoFiles.push(entry);
+      checkPhoto(entry, () => { renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false); checkDetailsComplete(); });
+    });
+    extraPhotoInput.value = '';
+    renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false);
+    checkDetailsComplete();
+  });
+
+  // Generic thumbnail renderer -- used for both the child's photos and, if
+  // this story has one, the optional extra character's photos.
+  function renderThumbs(files, thumbsEl, retryNoteEl, updateSummaryCount) {
+    thumbsEl.innerHTML = '';
+    let anyFailed = false;
+    files.forEach((entry, i) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const div = document.createElement('div');
+        div.className = 'photo-thumb state-' + entry.status;
+        let badge = '';
+        if (entry.status === 'checking') badge = `<div class="status-badge checking"><span class="spinner"></span>${t('personalize.photo_checking', 'Checking')}</div>`;
+        else if (entry.status === 'verified') badge = `<div class="status-badge verified">${t('personalize.photo_ok', '✓ OK')}</div>`;
+        else if (entry.status === 'failed') badge = `<div class="status-badge failed">${t('personalize.photo_failed', 'Try another')}</div>`;
+        div.innerHTML = `<img src="${e.target.result}" />${badge}<button type="button" class="remove-photo" data-i="${i}">&times;</button>`;
+        div.querySelector('.remove-photo').addEventListener('click', (ev) => {
+          ev.preventDefault();
+          files.splice(i, 1);
+          renderThumbs(files, thumbsEl, retryNoteEl, updateSummaryCount);
+          checkDetailsComplete();
+        });
+        thumbsEl.appendChild(div);
+      };
+      reader.readAsDataURL(entry.file);
+      if (entry.status === 'failed') anyFailed = true;
+    });
+    if (updateSummaryCount) {
+      const verifiedCount = files.filter(p => p.status === 'verified').length;
+      document.getElementById('summary-photos').textContent = verifiedCount;
+    }
+    retryNoteEl.style.display = anyFailed ? 'block' : 'none';
+    if (anyFailed) {
+      const failedReasons = files.filter(p => p.status === 'failed').map(p => p.reason);
+      retryNoteEl.textContent = failedReasons[0] || t('personalize.photo_fail_generic', 'Please try a different photo.');
+    }
+  }
+
+  // --- Order form completion enables the Continue button ---
+  const nameInput = document.getElementById('child-name');
+  nameInput.addEventListener('input', () => {
+    document.getElementById('summary-name').textContent = nameInput.value || '—';
+    checkDetailsComplete();
+  });
+
+  const continueBtn = document.getElementById('continue-order-btn');
+  function checkDetailsComplete() {
+    const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
+    const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking');
+
+    const storyChosen = document.getElementById('story-input').value;
+    const storyInfo = STORY_CATALOG[storyChosen];
+    let extraCharOk = true;
+    if (storyInfo && storyInfo.has_extra_character) {
+      if (!extraCharChoice) extraCharOk = false;
+      else if (extraCharChoice === 'yes' && !extraPhotoFiles.some(p => p.status === 'verified')) extraCharOk = false;
+    }
+
+    // Per-step Next button gating.
+    const storyNextBtn = document.getElementById('story-next-btn');
+    if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
+    const detailsNextBtn = document.getElementById('details-next-btn');
+    if (detailsNextBtn) detailsNextBtn.disabled = !(nameInput.value.trim() && ageInputEl.value.trim());
+    const photoNextBtn = document.getElementById('photo-next-btn');
+    if (photoNextBtn) photoNextBtn.disabled = !hasVerifiedPhoto;
+    const extraNextBtn = document.getElementById('extra-next-btn');
+    if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
+
+    const ready = storyChosen
+      && nameInput.value.trim()
+      && ageInputEl.value.trim()
+      && hasVerifiedPhoto
+      && extraCharOk;
+    continueBtn.disabled = !ready;
+    if (stillChecking) {
+      continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
+    } else {
+      continueBtn.textContent = ready
+        ? t('personalize.continue_ready', 'Continue')
+        : t('personalize.continue_btn', 'Fill in the details above to continue');
+    }
+  }
+  checkDetailsComplete();
+
+  // ---------- Wizard step navigation ----------
+  // The extra-character step only appears for stories that actually have
+  // one, so the active step list is recomputed whenever the story changes.
+  function activeSteps() {
+    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    const steps = ['story', 'details', 'photo'];
+    if (storyInfo && storyInfo.has_extra_character) steps.push('extra');
+    steps.push('dedication', 'review');
+    return steps;
+  }
+  let currentStepName = 'story';
+
+  const STEP_LABELS = {
+    story: () => t('personalize.wizard_step_story', 'Story'),
+    details: () => t('personalize.wizard_step_details', 'About Them'),
+    photo: () => t('personalize.wizard_step_photo', 'Photo'),
+    extra: () => t('personalize.wizard_step_extra', 'Extra Character'),
+    dedication: () => t('personalize.wizard_step_dedication', 'Dedication'),
+    review: () => t('personalize.wizard_step_review', 'Review'),
+  };
+
+  function renderWizardProgress() {
+    const steps = activeSteps();
+    const currentIndex = steps.indexOf(currentStepName);
+    document.getElementById('wizard-progress').innerHTML = steps.map((s, i) => `
+      <div class="w-step ${i < currentIndex ? 'done' : i === currentIndex ? 'active' : ''}">
+        <span class="w-dot">${i < currentIndex ? '&#10003;' : i + 1}</span><span>${STEP_LABELS[s]()}</span>
+      </div>
+      ${i < steps.length - 1 ? '<div class="w-line"></div>' : ''}
+    `).join('');
+  }
+
+  function showWizardStep(stepName) {
+    currentStepName = stepName;
+    document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('wizard-step-' + stepName);
+    if (target) target.classList.add('active');
+    if (stepName === 'review') renderReviewSummary();
+    renderWizardProgress();
+    const formCol = document.querySelector('.order-form-col');
+    if (formCol) formCol.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function goNext(fromStep) {
+    const steps = activeSteps();
+    const idx = steps.indexOf(fromStep);
+    if (idx > -1 && idx < steps.length - 1) showWizardStep(steps[idx + 1]);
+  }
+  function goBack(fromStep) {
+    const steps = activeSteps();
+    const idx = steps.indexOf(fromStep);
+    if (idx > 0) showWizardStep(steps[idx - 1]);
+  }
+
+  document.querySelectorAll('[data-step-btn]').forEach(btn => {
+    btn.addEventListener('click', () => goNext(btn.dataset.stepBtn));
+  });
+  document.querySelectorAll('[data-step-back]').forEach(btn => {
+    btn.addEventListener('click', () => goBack(btn.dataset.stepBack));
+  });
+
+  function renderReviewSummary() {
+    const storyName = document.getElementById('story-input').value;
+    const storyInfo = STORY_CATALOG[storyName];
+    const name = nameInput.value.trim();
+    const age = ageInputEl.value;
+    const dedication = document.getElementById('dedication').value.trim();
+    const photoCount = photoFiles.filter(p => p.status === 'verified').length;
+    const rows = [
+      { label: t('personalize.summary_story_label', 'Story'), value: storyName || '—', step: 'story' },
+      { label: t('personalize.summary_name', "Child's name"), value: name || '—', step: 'details' },
+      { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
+      { label: t('personalize.summary_photos', 'Photos'), value: photoCount, step: 'photo' },
+    ];
+    if (storyInfo && storyInfo.has_extra_character) {
+      const extraVal = extraCharChoice === 'yes'
+        ? t('personalize.summary_extra_yes', 'Real photo (+fee)')
+        : t('personalize.summary_extra_no', 'Generated for you');
+      rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
+    }
+    rows.push({ label: t('personalize.dedication_label', 'Dedication'), value: dedication || '—', step: 'dedication' });
+
+    document.getElementById('review-summary').innerHTML = rows.map(r => `
+      <div class="review-row"><span>${r.label}</span><span>${r.value}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
+    `).join('');
+    document.querySelectorAll('.review-edit').forEach(btn => {
+      btn.addEventListener('click', () => showWizardStep(btn.dataset.goto));
+    });
+  }
+
+  renderWizardProgress();
+
+  // Pre-select story if the visitor arrived from a story page (?story=...).
+  // Built-in stories are already known synchronously (STORY_THEMES has them
+  // from the start), so select immediately -- no flash of an empty state.
+  // Admin-added stories aren't known until loadStoryCatalog()'s fetch
+  // resolves, which has its own matching check to catch that case.
+  const urlStory = new URLSearchParams(window.location.search).get('story');
+  if (urlStory && STORY_THEMES[urlStory]) selectStory(urlStory);
+
+  // ---------- Cart flow ----------
+  function buildCartItemFromForm() {
+    const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
+    const hasExtra = storyInfo && storyInfo.has_extra_character && extraCharChoice === 'yes';
+    return {
+      story: document.getElementById('story-input').value,
+      theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
+      childName: nameInput.value.trim(),
+      ageEdition: document.getElementById('age-input').value,
+      childAge: ageInputEl.value,
+      gender: document.getElementById('child-gender').value,
+      dedication: document.getElementById('dedication').value.trim(),
+      photoCount: photoFiles.filter(p => p.status === 'verified').length,
+      extraCharacterName: hasExtra ? storyInfo.extra_character_name : null,
+      extraCharacterFeeAed: hasExtra ? storyInfo.extra_character_fee_aed : 0,
+      extraCharacterPhotoCount: hasExtra ? extraPhotoFiles.filter(p => p.status === 'verified').length : 0,
+    };
+  }
+
+  function resetOrderForm() {
+    document.getElementById('story-input').value = '';
+    document.getElementById('age-input').value = '';
+    document.getElementById('story-chip').style.display = 'none';
+    document.getElementById('story-grid').style.display = 'grid';
+    document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
+    document.getElementById('summary-cover').className = 'summary-cover empty';
+    document.getElementById('summary-cover').textContent = window.hikayaT ? window.hikayaT('personalize.summary_pick_story') : 'Pick a story to begin';
+    document.getElementById('summary-story-title').textContent = window.hikayaT ? window.hikayaT('personalize.summary_no_story') : 'No story chosen yet';
+    document.getElementById('summary-age').textContent = '—';
+    document.getElementById('summary-name').textContent = '—';
+    document.getElementById('summary-photos').textContent = '0';
+    nameInput.value = '';
+    ageInputEl.value = '';
+    document.getElementById('dedication').value = '';
+    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('child-gender').value = '';
+    photoFiles = [];
+    renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
+    extraPhotoFiles = [];
+    extraCharChoice = null;
+    document.getElementById('extra-char-upload-wrap').style.display = 'none';
+    document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
+    checkDetailsComplete();
+    if (typeof showWizardStep === 'function') showWizardStep('story');
+  }
+
+  continueBtn.addEventListener('click', async () => {
+    const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
+    const verifiedExtraPhotos = extraPhotoFiles.filter(p => p.status === 'verified');
+    if (window.hikayaCart) {
+      const item = buildCartItemFromForm();
+      // Photos are converted to base64 so they survive a full page navigation
+      // to checkout.html (the cart lives in localStorage, not memory).
+      try {
+        item.photos = await Promise.all(verifiedPhotos.map(entry => new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
+          reader.readAsDataURL(entry.file);
+        })));
+      } catch { item.photos = []; }
+      if (item.extraCharacterName) {
+        try {
+          item.extraCharacterPhotos = await Promise.all(verifiedExtraPhotos.map(entry => new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
+            reader.readAsDataURL(entry.file);
+          })));
+        } catch { item.extraCharacterPhotos = []; }
+      }
+      window.hikayaCart.addToCart(item);
+    }
+
+    // Fire the underlying Netlify Forms submission in the background so the
+    // admin dashboard still sees this request come in (best-effort; never
+    // blocks the cart flow even if it fails).
+    try {
+      const formData = new FormData(document.getElementById('request-form'));
+      verifiedPhotos.forEach((entry, i) => formData.append(`photo_${i + 1}`, entry.file, entry.file.name));
+      verifiedExtraPhotos.forEach((entry, i) => formData.append(`extra_photo_${i + 1}`, entry.file, entry.file.name));
+      fetch('/', { method: 'POST', body: formData }).catch(() => {});
+    } catch { /* best-effort only */ }
+
+    if (window.hikayaTrackEvent) {
+      window.hikayaTrackEvent('add_to_cart', {
+        story: document.getElementById('story-input').value,
+        age_edition: document.getElementById('age-input').value,
+      });
+      window.hikayaTrackEvent('begin_checkout', {
+        story: document.getElementById('story-input').value,
+        age_edition: document.getElementById('age-input').value,
+      });
+    }
+
+    window.location.href = 'book-added.html';
+  });
+</script>
+
+</body>
+</html>

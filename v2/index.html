@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hikaya by Maison Jaber — Personalised hardcover storybooks</title>
+<meta name="description" content="Beautiful hardcover stories that turn your child into the hero — created from their photo and made especially for them. Gift packaging included.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/test5/images/favicon.png">
+<link rel="stylesheet" href="/v2/assets/v2.css">
+<meta name="theme-color" content="#F8F2E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@400;500&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+</head>
+<body>
+<div id="v2-header"></div>
+
+<main id="main">
+
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="eyebrow" data-i18n="v2.h_eyebrow">Personalised children's books</p>
+        <h1 class="hero__title">
+          <span data-i18n="v2.h_l1">Their name.</span>
+          <span data-i18n="v2.h_l2">Their face.</span>
+          <span data-i18n="v2.h_l3">Their adventure.</span>
+        </h1>
+        <p class="hero__copy" data-i18n="v2.h_copy">Beautiful hardcover stories that turn your child into the hero — created from their photo and made especially for them.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#stories" data-track="explore_stories_clicked" data-track-from="hero"><span data-i18n="v2.cta_explore">Explore Stories</span><svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+          <a class="link" href="#how-it-works" data-i18n="v2.cta_see_how">See How It Works</a>
+        </div>
+        <p class="hero__assure">
+          <span><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.fact_hardcover">Hardcover</span></span>
+          <span><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.fact_personalised">Personalised</span></span>
+          <span><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.fact_giftready">Gift-ready</span></span>
+        </p>
+      </div>
+      <div class="hero__media" data-hero-slides>
+        <img class="hero__slide is-active" src="/test5/images/child-reading-closeup.jpg" width="1200" height="1200" alt="A child reading a Hikaya book in which she is the hero" data-i18n-alt="v2.h_img_alt" fetchpriority="high">
+        <img class="hero__slide" src="/test5/images/hero-bedroom-wide.jpg" width="1200" height="1200" alt="" loading="lazy" decoding="async">
+        <img class="hero__slide" src="/test5/images/fantasy-night-scene.jpg" width="1200" height="1200" alt="" loading="lazy" decoding="async">
+        <img class="hero__slide" src="/test5/images/giftbox-open-pair.jpg" width="1200" height="1200" alt="" loading="lazy" decoding="async">
+        <img class="hero__slide" src="/test5/images/book-flatlay.jpg" width="1200" height="1200" alt="" loading="lazy" decoding="async">
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Shop by the moment -->
+  <section class="section--tight" id="moments-section" aria-labelledby="mo-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="mo-title" data-i18n="v2.mo_title">What are they growing through?</h2>
+          <p data-i18n="v2.mo_sub">Start with the moment, and we’ll show you the stories written for it.</p>
+        </div>
+      </div>
+      <div class="moments" id="moments"></div>
+    </div>
+  </section>
+
+  <!-- 3. Find their next adventure -->
+  <section class="section" id="stories" aria-labelledby="st-title" style="padding-top: 0">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="st-title" data-i18n="v2.st_title">Find their next adventure</h2>
+          <p class="meta" id="story-status" aria-live="polite" style="margin-top:10px"></p>
+        </div>
+        <a class="link" href="/test5/stories.html" data-track="view_all_stories"><span data-i18n="v2.cta_view_all">View All Stories</span><svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <div class="chips chips--scroll" id="age-chips" role="group" aria-label="Filter by age" style="margin-bottom:28px"></div>
+      <div class="grid-3" id="story-grid">
+        <div class="skeleton" style="aspect-ratio:3/4"></div><div class="skeleton" style="aspect-ratio:3/4"></div><div class="skeleton" style="aspect-ratio:3/4"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. How it works -->
+  <section class="section section--cream" id="how-it-works" aria-labelledby="hw-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="hw-title" data-i18n="v2.hw_title">From their photo to their favourite story</h2></div>
+      <ol class="steps" style="list-style:none;margin:0;padding:0">
+        <li class="step">
+          <div class="step__media"><img src="/test5/images/fantasy-night-scene.jpg" width="640" height="427" alt="" loading="lazy" decoding="async"></div>
+          <span class="step__num">1</span>
+          <h3 data-i18n="v2.hw_1">Choose their story</h3>
+          <p data-i18n="v2.hw_1c">Pick a story written for their age and the moment they’re in.</p>
+        </li>
+        <li class="step">
+          <div class="step__media"><img src="/test5/images/note-card-closeup.jpg" width="640" height="427" alt="" loading="lazy" decoding="async"></div>
+          <span class="step__num">2</span>
+          <h3 data-i18n="v2.hw_2">Make it theirs</h3>
+          <p data-i18n="v2.hw_2c">Add their name, one clear photo and a note from you. It takes a few minutes.</p>
+        </li>
+        <li class="step">
+          <div class="step__media"><img src="/test5/images/giftbag-set.jpg" width="640" height="427" alt="" loading="lazy" decoding="async"></div>
+          <span class="step__num">3</span>
+          <h3 data-i18n="v2.hw_3">We create &amp; deliver</h3>
+          <p data-i18n="v2.hw_3c">We illustrate, print and gift-wrap their book, and it arrives within about a week.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5. Look inside -->
+  <section class="section" aria-labelledby="li-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="li-title" data-i18n="v2.li_title">Take a little look inside</h2>
+          <p data-i18n="v2.li_copy">Every scene is illustrated and personalised with your child at the heart of the story.</p>
+        </div>
+      </div>
+      <div class="rail" id="inside-rail" tabindex="0" aria-label="Inside pages">
+        <figure class="spread dev-placeholder"><span class="dev-tag" data-i18n="v2.li_dev">Replace with a real story spread</span><div class="spread__img"></div></figure>
+        <figure class="spread dev-placeholder"><span class="dev-tag" data-i18n="v2.li_dev">Replace with a real story spread</span><div class="spread__img"></div></figure>
+        <figure class="spread dev-placeholder"><span class="dev-tag" data-i18n="v2.li_dev">Replace with a real story spread</span><div class="spread__img"></div></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Personalisation explained -->
+  <section class="section section--cream" aria-labelledby="pe-title">
+    <div class="wrap split">
+      <div class="split__media">
+        <picture>
+          <img src="/test5/images/book-flatlay.jpg" width="1200" height="1200" loading="lazy" decoding="async" data-i18n-alt="v2.pe_img_alt" alt="A personalised Hikaya cover showing the child's name and illustrated likeness">
+        </picture>
+      </div>
+      <div class="split__text">
+        <h2 id="pe-title" data-i18n="v2.pe_title">Made entirely for them</h2>
+        <p class="lead" data-i18n="v2.pe_copy">This isn’t a name dropped into a template. Your child becomes the character on the page.</p>
+        <ul class="checklist">
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.pe_name">Their name, woven through the story</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.pe_face">Their likeness, drawn from their photo</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.pe_pron">Their pronouns, where the story uses them</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.pe_welcome">A welcome page with their name</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.pe_note">Your personal message at the front</span></li>
+        </ul>
+        <p class="specs"><span data-i18n="v2.pe_spec_size">21 × 21 cm</span><span data-i18n="v2.pe_spec_cover">Hardcover</span><span data-i18n="v2.pe_spec_colour">Full colour throughout</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. The physical product -->
+  <section class="section" aria-labelledby="kp-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="kp-title" data-i18n="v2.kp_title">Made to be kept</h2>
+          <p data-i18n="v2.kp_copy">Created for bedtime today. Kept for years.</p>
+        </div>
+      </div>
+      <div class="mosaic">
+        <div><picture><img src="/test5/images/desk-flatlay-globe.jpg" width="1200" height="800" loading="lazy" decoding="async" data-i18n-alt="v2.kp_alt2" alt="Hikaya books on a child’s desk"></picture></div>
+        <div><img src="/test5/images/bookshelf-scene.jpg" width="640" height="427" loading="lazy" decoding="async" data-i18n-alt="v2.kp_alt1" alt="Hikaya hardcover books on a shelf"></div>
+        <div><img src="/test5/images/bunny-card-books.jpg" width="640" height="533" loading="lazy" decoding="async" data-i18n-alt="v2.kp_alt3" alt="A stack of Hikaya books beside a toy bunny"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Gift experience -->
+  <section class="section section--cream" id="gift" aria-labelledby="gf-title">
+    <div class="wrap split split--flip">
+      <div class="split__media">
+        <picture>
+          <img src="/test5/images/giftbox-open-pair.jpg" width="1200" height="1097" loading="lazy" decoding="async" data-i18n-alt="v2.gf_img_alt" alt="An open Hikaya gift box with gold-star tissue, ribbon and a message card">
+        </picture>
+      </div>
+      <div class="split__text">
+        <h2 id="gf-title"><span data-i18n="v2.gf_title1">Not just a book.</span><br><span data-i18n="v2.gf_title2">The whole gift.</span></h2>
+        <p class="lead" data-i18n="v2.gf_copy">Gift packaging is included with every Hikaya book.</p>
+        <ul class="checklist">
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.gf_box">Our signature box</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.gf_ribbon">Satin ribbon and tag</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.gf_tissue">Gold-star tissue and seal</span></li>
+          <li><span class="star"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span><span data-i18n="v2.gf_card">A card with your message</span></li>
+        </ul>
+        <p class="meta" data-i18n="v2.gf_direct">Sending it to someone else? We can ship it straight to them.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Delivery reassurance -->
+  <section class="section" aria-labelledby="dl-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2 id="dl-title" data-i18n="v2.dl_title">Ordering for a special day?</h2>
+          <p data-i18n="v2.dl_copy">Every book is made to order. Plan for about a week from order to door.</p>
+        </div>
+      </div>
+      <div class="assure">
+        <div><h3 data-i18n="v2.dl_1">Made especially for them</h3><p data-i18n="v2.dl_1c">We illustrate, print and finish each book after you order.</p></div>
+        <div><h3 data-i18n="v2.dl_2">Delivered within about a week</h3><p data-i18n="v2.dl_2c">Shipping cost is shown in your cart before you pay.</p></div>
+        <div><h3 data-i18n="v2.dl_3">Straight to them, as a gift</h3><p data-i18n="v2.dl_3c">Add their address and your message at checkout.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Social proof (hidden live until real reviews exist) -->
+  <section class="section section--cream" id="reviews" aria-labelledby="rv-title" hidden>
+    <div class="wrap">
+      <div class="section-head"><h2 id="rv-title" data-i18n="v2.rv_title">What parents say</h2></div>
+      <div class="grid-3">
+        <figure class="review dev-placeholder" style="margin:0"><span class="dev-tag" data-i18n="v2.rv_dev">Placeholder — hidden on the live site until real reviews exist</span><blockquote style="margin-top:28px">A real review about seeing themselves in the story goes here.</blockquote><cite>Parent name, city</cite></figure>
+        <figure class="review dev-placeholder" style="margin:0"><span class="dev-tag" data-i18n="v2.rv_dev">Placeholder — hidden on the live site until real reviews exist</span><blockquote style="margin-top:28px">A real review about opening the gift goes here.</blockquote><cite>Parent name, city</cite></figure>
+        <figure class="review dev-placeholder" style="margin:0"><span class="dev-tag" data-i18n="v2.rv_dev">Placeholder — hidden on the live site until real reviews exist</span><blockquote style="margin-top:28px">A real review about the quality of the book goes here.</blockquote><cite>Parent name, city</cite></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. Final CTA -->
+  <section class="final" aria-labelledby="fn-title">
+    <div class="final__bg">
+      <picture>
+        <img src="/test5/images/hero-bedroom-wide.jpg" width="1200" height="675" loading="lazy" decoding="async" data-i18n-alt="v2.fn_img_alt" alt="A child in a cosy bedroom holding her personalised Hikaya book beside its gift box">
+      </picture>
+    </div>
+    <div class="wrap final__content">
+      <h2 id="fn-title"><span data-i18n="v2.fn_l1">One day they’ll outgrow the story.</span><br><span data-i18n="v2.fn_l2">They won’t outgrow the memory.</span></h2>
+      <a class="btn btn--primary" href="#stories" data-track="explore_stories_clicked" data-track-from="final"><span data-i18n="v2.cta_explore">Explore Stories</span><svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+    </div>
+  </section>
+
+</main>
+
+<div id="v2-footer"></div>
+
+<script src="/i18n.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="/v2/assets/v2.js" defer></script>
+<script src="/v2/assets/home.js" defer></script>
+</body>
+</html>

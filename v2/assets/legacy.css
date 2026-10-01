@@ -1,0 +1,113 @@
+/* Hikaya v2 — bridge for pages that still carry their own page styles.
+   Loaded last, so it brings every older page onto the v2 look:
+   Jost body type, Cormorant headings, crisp 3px buttons, quiet surfaces. */
+
+:root {
+  --radius: 6px !important;
+  --radius-lg: 6px !important;
+  --radius-sm: 3px !important;
+  --r-btn: 3px;
+  --v2-brown: #563622;
+  --v2-brown-deep: #43291A;
+  --v2-ink: #2E2018;
+  --v2-taupe: #B69675;
+  --v2-beige: #DFC9AE;
+  --v2-ivory: #F8F2E8;
+}
+
+html, body { font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+html[dir="rtl"] body { font-family: 'IBM Plex Sans Arabic', Tahoma, sans-serif; }
+h1, h2, h3, h4 { font-weight: 500; letter-spacing: -.01em; }
+html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3, html[dir="rtl"] h4 { font-family: 'Amiri', 'Times New Roman', serif; font-weight: 400; letter-spacing: 0; }
+
+/* ---------- Every control: crisp corners, no bubbles ---------- */
+main button:not(.icon-btn),
+body > div:not(.mobile-menu) button:not(.icon-btn),
+section button:not(.icon-btn),
+form button:not(.icon-btn),
+input:not([type="radio"]):not([type="checkbox"]):not([type="range"]),
+select, textarea,
+[class*="btn-"], [class*="-btn"], [class^="btn"],
+[class*="pill"], [class*="chip"], [class*="tag"]:not(.dev-tag),
+#hikaya-consent-banner button, #hikaya-search-overlay input, #hikaya-search-overlay button {
+  border-radius: var(--r-btn) !important;
+}
+
+/* ---------- Primary button: solid brown, flat, quiet ---------- */
+.btn-primary, a.btn-primary, button.btn-primary {
+  background: var(--v2-brown) !important;
+  color: var(--v2-ivory) !important;
+  border: 1px solid var(--v2-brown) !important;
+  border-radius: var(--r-btn) !important;
+  box-shadow: none !important;
+  font-family: 'Jost', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: .02em;
+  min-height: 48px;
+  transform: none !important;
+  filter: none !important;
+  transition: background .2s, border-color .2s;
+  text-decoration: none;
+}
+.btn-primary:hover, a.btn-primary:hover, button.btn-primary:hover {
+  background: var(--v2-brown-deep) !important;
+  border-color: var(--v2-brown-deep) !important;
+}
+.btn-primary:disabled, .btn-primary[disabled], .btn-primary[aria-disabled="true"] {
+  background: #E9DFD1 !important; border-color: #E9DFD1 !important; color: #8A7666 !important; cursor: not-allowed;
+}
+html[dir="rtl"] .btn-primary { font-family: 'IBM Plex Sans Arabic', Tahoma, sans-serif !important; letter-spacing: 0; }
+
+/* ---------- Secondary / outline buttons ---------- */
+.btn-secondary, .btn-back, .btn-oauth, .oauth-btn, .om-btn:not(.danger), .print-btn {
+  background: transparent !important;
+  color: var(--v2-ink) !important;
+  border: 1px solid var(--v2-taupe) !important;
+  border-radius: var(--r-btn) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  transform: none !important;
+  transition: border-color .2s, background .2s;
+}
+.btn-secondary:hover, .btn-back:hover, .btn-oauth:hover, .oauth-btn:hover, .om-btn:not(.danger):hover, .print-btn:hover {
+  border-color: var(--v2-ink) !important; background: transparent !important;
+}
+
+/* ---------- Choice buttons (pronouns, payment method, etc.) ---------- */
+.gender-btn, .pay-method-btn, .extra-char-btn, .upload-btn, .gift-inspire-btn, .map-locate-btn {
+  box-shadow: none !important;
+  font-weight: 500 !important;
+}
+.gender-btn.active, .gender-btn.selected, .pay-method-btn.active, .extra-char-btn.active, .extra-char-btn.selected {
+  border-color: var(--v2-brown) !important;
+  box-shadow: inset 0 0 0 1px var(--v2-brown) !important;
+}
+
+/* ---------- Inputs ---------- */
+input:not([type="radio"]):not([type="checkbox"]):not([type="range"]):focus,
+select:focus, textarea:focus {
+  border-color: var(--v2-ink) !important;
+  box-shadow: 0 0 0 3px rgba(166,116,67,.18) !important;
+  outline: none;
+}
+
+/* ---------- Surfaces: lighter shadows, thin borders ---------- */
+[class*="card"]:not(.story-card), .panel, .summary, .order-summary {
+  box-shadow: 0 1px 2px rgba(46,32,24,.04), 0 10px 28px -16px rgba(46,32,24,.16) !important;
+}
+
+/* ---------- Eyebrows / small caps: calmer ---------- */
+.eyebrow { font-weight: 500 !important; letter-spacing: .16em; color: #6E5847 !important; }
+
+/* Pages that kept a sticky element under the old header height */
+body { scroll-padding-top: 84px; }
+
+/* One page colour across the site */
+html, body { background: #F8F2E8 !important; }
+
+/* Page intro bands: same calm treatment as the homepage sections */
+.page-hero { background: #F3E8D8 !important; padding: clamp(56px, 7vw, 96px) 0 clamp(40px, 5vw, 64px) !important; }
+.page-hero h1 { font-weight: 500 !important; font-size: clamp(2.2rem, 1.4rem + 2.6vw, 3.4rem) !important; line-height: 1.08; }
+
+/* Cookie banner: brand brown, not caramel */
+#hikaya-consent-accept { background: #563622 !important; border-color: #563622 !important; color: #F8F2E8 !important; }
