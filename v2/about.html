@@ -1,223 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>About — Hikaya by Maison Jaber</title>
-<meta name="description" content="Maison Jaber creates original, age-appropriate stories in which your child becomes the hero — combining timeless storytelling with thoughtful personalization." />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="About — Hikaya by Maison Jaber" />
-<meta property="og:description" content="Maison Jaber creates original, age-appropriate stories in which your child becomes the hero — combining timeless storytelling with thoughtful personalization." />
-<meta property="og:image" content="https://maison-jaber.com/test5/images/bookshelf-scene.jpg" />
-<meta property="og:url" content="https://maison-jaber.com/v2/about.html" />
-<meta property="og:site_name" content="Hikaya by Maison Jaber" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="About — Hikaya by Maison Jaber" />
-<meta name="twitter:description" content="Maison Jaber creates original, age-appropriate stories in which your child becomes the hero — combining timeless storytelling with thoughtful personalization." />
-<meta name="twitter:image" content="https://maison-jaber.com/test5/images/bookshelf-scene.jpg" />
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Jost:wght@400;500;600&display=swap');
-  :root {
-    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
-    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8;
-    --radius: 16px; --radius-lg: 24px;
-    /* legacy aliases so existing component CSS re-themes automatically */
-    --charcoal: var(--ink); --ivory: var(--bg); --gold: #C8954D; --champagne: var(--coral-deep);
-    --indigo: var(--ink); --lavender: var(--ink-soft); --rose: var(--coral); --sage: var(--ink-soft);
-    --taupe: var(--line); --parchment: var(--bg-soft);
-    --text-on-light: var(--ink); --text-on-light-soft: var(--ink-soft);
-    --text-on-dark: #ffffff; --text-on-dark-soft: #f1e9dc;
-    --sunshine: #C08A3E; --sky: #7d6a5a; --terracotta: #B5563B; --brown: var(--ink);
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--ivory); color: var(--text-on-light); font-family: 'Jost', sans-serif; font-size: 16px; line-height: 1.65; }
-  h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
-  a { color: inherit; text-decoration: none; }
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 32px; }
-  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
-  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
-    padding: 15px 30px; border-radius: var(--radius); font-size: 14px; font-weight: 700; border: none; cursor: pointer;
-  }
-
-  header.site { border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; background: var(--bg); z-index: 50; }
-  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
-  header.site nav a { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-left: 24px; }
-  header.site nav a:hover { color: var(--coral); }
-  .wordmark { font-family: 'Jost', sans-serif; font-weight: 600; letter-spacing: -0.02em; font-size: 21px; color: var(--ink); }
-  .wordmark .sub-brand { display: block; font-family: 'Jost', sans-serif; font-style: normal; font-size: 9px; letter-spacing: 0.2em; color: var(--ink-soft); margin-top: 2px; text-transform: uppercase; }
-
-
-  .page-hero { background: var(--bg-soft); color: var(--ink); padding: 72px 0 60px; text-align: center; }
-  .page-hero h1 { font-size: clamp(28px, 4vw, 42px); margin-top: 12px; max-width: 16ch; margin-left: auto; margin-right: auto; }
-
-  .section { padding: 64px 0; }
-  .section p { font-size: 16px; color: var(--text-on-light-soft); margin: 0 0 18px; }
-  .section h2 { font-size: 24px; margin-bottom: 16px; }
-
-  .belief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px; }
-  @media (max-width: 640px) { .belief-grid { grid-template-columns: 1fr; } }
-  .belief-item { background: #fff; border: 1px solid rgba(184,149,75,0.2); border-radius: var(--radius); padding: 22px; }
-  .belief-item h3 { font-size: 15px; margin-bottom: 8px; }
-  .belief-item p { font-size: 13px; margin: 0; }
-
-  .golden-note {
-    background: var(--charcoal); color: var(--text-on-dark); border-radius: var(--radius); padding: 40px 36px;
-    text-align: center; margin: 20px 0;
-  }
-  .golden-note .gold-line { width: 50px; height: 1px; background: var(--gold); margin: 0 auto 18px; }
-  .golden-note p { color: var(--text-on-dark-soft); font-style: italic; font-family: 'Jost', sans-serif; font-size: 18px; }
-
-  .cta-block { text-align: center; padding: 20px 0 10px; }
-
-  footer.site { background: var(--bg-soft); color: var(--ink-soft); padding: 34px 0; text-align: center; border-top: 1px solid var(--line-soft); margin-top: 40px; }
-  footer.site p { font-size: 13px; }
-  /* Rotating banner carousel (LoveBook-style) */
-  .carousel { position: relative; overflow: hidden; height: 480px; }
-  @media (max-width: 640px) { .carousel { height: 380px; } }
-  .carousel-track { display: flex; height: 100%; transition: transform 0.6s ease; }
-  .carousel-slide {
-    flex: 0 0 100%; height: 100%; position: relative; display: flex; align-items: center;
-    background-size: cover; background-position: center;
-  }
-  .carousel-slide::after {
-    content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0) 100%);
-  }
-  .carousel-copy { position: relative; z-index: 2; color: #fff; padding: 0 60px; max-width: 520px; }
-  @media (max-width: 640px) { .carousel-copy { padding: 0 64px; } .carousel-copy p { font-size: 14px; } }
-  .carousel-copy .eyebrow { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #ffd9a0; margin-bottom: 12px; }
-  .carousel-copy h2 { font-size: clamp(26px, 4vw, 42px); line-height: 1.1; color: #fff; font-weight: 600; }
-  .carousel-copy p { margin: 14px 0 22px; font-size: 15.5px; color: #f1eee8; max-width: 40ch; }
-  .carousel-arrows { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; padding: 0 16px; transform: translateY(-50%); z-index: 3; }
-  @media (max-width: 640px) { .carousel-arrow { width: 32px; height: 32px; font-size: 13px; } .carousel-arrows { padding: 0 12px; } }
-  .carousel-arrow {
-    width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none;
-    display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--ink);
-  }
-  .carousel-arrow:hover { background: #fff; }
-  .carousel-dots { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 3; }
-  .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
-  .carousel-dot.active { background: #fff; width: 22px; border-radius: 4px; transition: width 0.25s ease; }
-
-
-
-  .site-logo { height: 88px; width: auto; display: block; }
-
-  .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 3px; cursor: pointer; }
-  .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
-</style>
-<script src="/i18n.js" defer></script>
-<script src="/site-photos.js" defer></script>
-<script src="/consent.js" defer></script>
-<script src="/analytics.js" defer></script>
-<script src="/region.js" defer></script>
-<script src="/cart.js" defer></script>
-<script src="/search.js" defer></script>
-<script src="/v2/assets/v2.js" defer></script>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Our Story — Hikaya by Maison Jaber</title>
+<meta name="description" content="We grew up keeping things. Hikaya is our family's way of giving children a story they can keep — a book where they see themselves as the hero.">
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" href="/test5/images/favicon.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@400;500;600&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
-<link rel="stylesheet" href="/v2/assets/chrome.css">
-<link rel="stylesheet" href="/v2/assets/legacy.css">
+<link rel="stylesheet" href="/v2/assets/v2.css">
+<meta name="theme-color" content="#F8F2E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@400;500&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+
+<style>
+/* Our Story page */
+.ab-hero { position: relative; overflow: hidden; min-height: clamp(380px, 52vh, 520px); display: flex; align-items: center; }
+.ab-hero__inner { position: relative; z-index: 2; width: 100%; padding-block: clamp(32px, 5vw, 64px); }
+.ab-hero__text { max-width: 34rem; }
+.ab-hero__title { font-size: clamp(2.3rem, 1.5rem + 3vw, 3.8rem); line-height: 1.04; margin: 12px 0 18px; }
+.ab-hero__media { position: absolute; inset-block: 0; inset-inline-end: 0; width: min(58%, 900px); z-index: 1;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.5) 25%, #000 50%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.5) 25%, #000 50%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%); mask-composite: intersect; }
+html[dir="rtl"] .ab-hero__media {
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.5) 25%, #000 50%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,.5) 25%, #000 50%), linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, transparent 100%); }
+.ab-hero__media img { width: 100%; height: 100%; object-fit: cover; }
+.ab-prose { max-width: 42rem; }
+.ab-prose p, .ab-block p { font-size: 1.0625rem; color: var(--ink-soft); line-height: 1.75; margin: 0 0 1.05em; }
+.ab-prose p strong, .ab-block p strong { color: var(--ink); font-weight: 500; }
+.ab-turn { font-family: var(--font-display); font-size: clamp(1.35rem, 1.1rem + .8vw, 1.7rem) !important; color: var(--ink) !important; line-height: 1.3 !important; margin: 1.4em 0 .9em !important; }
+html[dir="rtl"] .ab-turn { font-family: var(--font-ar-display); }
+.ab-story + .ab-story { padding-top: 0; }
+.ab-capes__inner { max-width: 44rem; text-align: center; }
+.ab-capes .star { width: 18px; height: 18px; margin-bottom: 12px; }
+.ab-capes__title { font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem); margin-bottom: 18px; }
+.ab-capes__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ab-capes__list li { font-family: var(--font-display); font-size: clamp(1.2rem, 1rem + .7vw, 1.5rem); color: var(--ink-soft); }
+html[dir="rtl"] .ab-capes__list li { font-family: var(--font-ar-display); }
+.ab-capes__wink { margin-top: 18px; font-style: italic; color: var(--caramel); }
+html[dir="rtl"] .ab-capes__wink { font-style: normal; }
+.ab-block h2 { margin-bottom: 16px; }
+.ab-lines { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
+.ab-lines li { font-family: var(--font-display); font-size: 1.3rem; color: var(--ink); padding-inline-start: 18px; position: relative; }
+.ab-lines li::before { content: ""; position: absolute; inset-inline-start: 0; top: .62em; width: 8px; height: 1px; background: var(--gold); }
+html[dir="rtl"] .ab-lines li { font-family: var(--font-ar-display); }
+.ab-close__inner { max-width: 40rem; text-align: center; }
+.ab-close__trio { font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + .9vw, 1.6rem); color: var(--ink-soft); display: flex; gap: .6em; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+html[dir="rtl"] .ab-close__trio { font-family: var(--font-ar-display); }
+.ab-close .lead { margin-inline: auto; }
+.ab-close__title { font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem); margin: 22px 0 24px; }
+@media (max-width: 860px) {
+  .ab-hero { display: block; min-height: 0; }
+  .ab-hero__media { position: relative; width: auto; height: 72vw; max-height: 460px; -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); -webkit-mask-composite: source-over; mask-composite: add; }
+  html[dir="rtl"] .ab-hero__media { -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); mask-image: linear-gradient(to bottom, #000 55%, transparent 100%); }
+  .ab-hero__inner { margin-top: -64px; padding-top: 0; }
+  .ab-close__trio { flex-direction: column; gap: 2px; }
+}
+</style>
 </head>
 <body>
-
 <div id="v2-header"></div>
 
-<section class="carousel" hidden style="display:none">
-  <div class="carousel-track" id="carousel-track">
-    <div class="carousel-slide" style="background-image: linear-gradient(90deg, rgba(20,10,0,0.05), rgba(20,10,0,0.1)), url('/test5/images/bookshelf-scene.jpg')">
-      <div class="wrap"><div class="carousel-copy">
-        <div class="eyebrow" data-i18n="about.slide1_eyebrow">Our Story</div>
-        <h2 data-i18n="about.slide1_title">Made with family, for families</h2>
-        <p data-i18n="about.slide1_body">A trilingual storybook studio built between the UAE, Germany, and Syria.</p>
-        <a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a>
-      </div></div>
-    </div>
-  </div>
-  <div class="carousel-arrows">
-    <button class="carousel-arrow" id="car-prev">&#8592;</button>
-    <button class="carousel-arrow" id="car-next">&#8594;</button>
-  </div>
-  <div class="carousel-dots" id="carousel-dots"></div>
-</section>
+<main id="main">
 
-<section class="page-hero">
-  <div class="wrap">
-    <div class="eyebrow" data-i18n="about.hero_eyebrow">About Maison Jaber</div>
-    <h1 data-i18n="about.hero_title">We create the stories children carry with them.</h1>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <p data-i18n="about.p1">Maison Jaber began with a simple belief: every child deserves to find themselves in a beautiful story &mdash; not as a name printed on a sticker, but as the true hero of the telling.</p>
-    <p data-i18n="about.p2">We write original stories first, and personalize them second. A Maison Jaber book isn't a template with a blank left for a name; it's a story built to hold a child's name, likeness, and one meaningful detail from their world, adapted carefully to how they read and understand at their age.</p>
-
-    <div class="belief-grid">
-      <div class="belief-item">
-        <h3 data-i18n="about.belief1_title">Original story worlds</h3>
-        <p data-i18n="about.belief1_body">Every Maison Jaber story is written for this purpose, not adapted from something else.</p>
-      </div>
-      <div class="belief-item">
-        <h3 data-i18n="about.belief2_title">Age-appropriate, always</h3>
-        <p data-i18n="about.belief2_body">Language, pacing, and emotional depth are adapted per edition, not just page count.</p>
-      </div>
-      <div class="belief-item">
-        <h3 data-i18n="about.belief3_title">Personalization with purpose</h3>
-        <p data-i18n="about.belief3_body">Their name and likeness are woven into the story itself, not layered on top of it.</p>
-      </div>
-      <div class="belief-item">
-        <h3 data-i18n="about.belief4_title">Made to be kept</h3>
-        <p data-i18n="about.belief4_body">A printed keepsake, meant to sit on a shelf and be read again for years.</p>
+  <section class="ab-hero">
+    <div class="ab-hero__media" aria-hidden="true"><img src="/test5/images/note-card-closeup.jpg" width="1200" height="1200" alt="" fetchpriority="high"></div>
+    <div class="wrap ab-hero__inner">
+      <div class="ab-hero__text">
+        <p class="eyebrow" data-i18n="v2.ab_eyebrow">Our Story</p>
+        <h1 class="ab-hero__title" data-i18n="v2.ab_h1">We grew up keeping things.</h1>
+        <p class="lead" data-i18n="v2.ab_p1">Old books. Little notes. School photos. Birthday cards. Things that probably meant very little when we first received them, but somehow became more valuable with time.</p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="section" style="background: var(--parchment); padding-top: 60px; padding-bottom: 60px;">
-  <div class="wrap">
-    <div class="golden-note">
-      <div class="gold-line"></div>
-      <p data-i18n="about.golden_note">"Find the Golden Line" &mdash; a fine gold thread that runs through every Maison Jaber story, marking the courage, kindness, or wonder each child discovers along the way.</p>
+  <section class="section ab-story">
+    <div class="wrap ab-prose">
+      <p data-i18n="v2.ab_p2">You know that feeling when you find an old box at home and suddenly lose an hour going through it? You open a book you had as a child, see your name written inside, and suddenly remember a person, a moment, a feeling you had almost forgotten.</p>
+      <p data-i18n="v2.ab_p3">Wherever life takes us, those memories have a way of bringing us back to our families, to where we came from, and to the little moments that shaped us.</p>
+      <p data-i18n-html="v2.ab_p4">That feeling is a big part of what <strong>Maison Jaber</strong> means to us.</p>
+      <p class="ab-turn" data-i18n="v2.ab_p5">And it is also where Hikaya began.</p>
+      <p data-i18n="v2.ab_p6">We kept thinking about our children growing up today.</p>
+      <p data-i18n="v2.ab_p7">Their childhood is full of incredible things, but so much of it lives on a screen. Photos on phones. Videos in the cloud. Games, messages and moments that can disappear almost as quickly as they happened.</p>
+      <p data-i18n-html="v2.ab_p8">And we thought: <strong>they deserve something they can keep too.</strong></p>
+      <p data-i18n="v2.ab_p9">We wanted to create books that belong completely to the child. Not simply because their name appears inside, but because they can actually see themselves in the story.</p>
+      <p data-i18n="v2.ab_p10">The visuals matter to us just as much as the words.</p>
+      <p data-i18n="v2.ab_p11">We want a child to open a Hikaya book and see themselves exploring, solving problems, helping others, being brave, making mistakes and finding their way.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="section">
-  <div class="wrap">
-    <h2 data-i18n="about.work_title">Where we work from</h2>
-    <p data-i18n="about.work_body">Maison Jaber is based in the UAE, where the platform, story content, and support are run. Books are printed and fulfilled close to where they're delivered &mdash; keeping quality high and delivery times shorter than shipping printed books across borders.</p>
-  </div>
-  <div class="wrap cta-block">
-    <a class="btn-primary" href="personalize.html" data-i18n="common.btn_create_story">Create Their Story</a>
-  </div>
-</section>
+  <section class="section section--cream ab-capes">
+    <div class="wrap ab-capes__inner">
+      <span class="star" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 0c.6 6.3 5.7 11.4 12 12-6.3.6-11.4 5.7-12 12-.6-6.3-5.7-11.4-12-12C6.3 11.4 11.4 6.3 12 0z"/></svg></span>
+      <h2 class="ab-capes__title" data-i18n="v2.ab_c0">Because heroes do not always wear capes.</h2>
+      <ul class="ab-capes__list">
+        <li data-i18n="v2.ab_c1">Sometimes they are the child who tries again.</li>
+        <li data-i18n="v2.ab_c2">The child who tells the truth.</li>
+        <li data-i18n="v2.ab_c3">The child who helps someone.</li>
+        <li data-i18n="v2.ab_c4">The child who is scared but still takes one more step.</li>
+      </ul>
+      <p class="ab-capes__wink" data-i18n="v2.ab_c5">And yes, sometimes our heroes really do wear capes too.</p>
+    </div>
+  </section>
+
+  <section class="section ab-story">
+    <div class="wrap ab-prose">
+      <p data-i18n="v2.ab_p12">We want children to grow up seeing themselves that way.</p>
+      <p data-i18n="v2.ab_p13">And maybe one day, many years from now, they will find that same book on a shelf or inside an old box.</p>
+      <p data-i18n="v2.ab_p14">They might smile at the pictures. Remember who used to read it with them. Remember the people around them and the moments they shared.</p>
+      <p class="ab-turn" data-i18n="v2.ab_p15">That thought means a lot to us.</p>
+    </div>
+  </section>
+
+  <section class="section section--cream">
+    <div class="wrap split">
+      <div class="split__media"><img src="/test5/images/desk-flatlay-globe.jpg" width="1200" height="1200" loading="lazy" decoding="async" alt=""></div>
+      <div class="split__text ab-block">
+        <h2 data-i18n="v2.ab_h2">Made with care</h2>
+        <p data-i18n="v2.ab_m1">We use new technology to help us do something very old-fashioned: make a beautiful storybook worth keeping.</p>
+        <p data-i18n="v2.ab_m2">Every Hikaya story is written, edited and refined with care. We want the stories to be fun, but we also want something meaningful to sit quietly inside them — courage, kindness, curiosity, responsibility or confidence.</p>
+        <p data-i18n="v2.ab_m3">We never want the lesson to feel like a lesson.</p>
+        <p class="ab-turn" data-i18n="v2.ab_m4">It should just feel like a really good story.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split--flip">
+      <div class="split__media"><img src="/test5/images/bookshelf-scene.jpg" width="1200" height="1200" loading="lazy" decoding="async" alt=""></div>
+      <div class="split__text ab-block">
+        <h2 data-i18n="v2.ab_h3">From our family to yours</h2>
+        <p data-i18n-html="v2.ab_f1">Hikaya is part of <strong>Maison Jaber</strong>, our family business.</p>
+        <p data-i18n="v2.ab_f2">For us, Maison Jaber is not only a name. It is about the things that keep a family connected even when life takes us to different places.</p>
+        <p data-i18n="v2.ab_f3">An old photograph. A familiar story. Something kept from childhood. Small things that somehow bring everyone back together again.</p>
+        <p data-i18n="v2.ab_f4">That is what we want Maison Jaber to carry forward.</p>
+        <ul class="ab-lines">
+          <li data-i18n="v2.ab_f5">Things made with meaning.</li>
+          <li data-i18n="v2.ab_f6">Things worth keeping.</li>
+          <li data-i18n="v2.ab_f7">Things that one day become part of a family’s story.</li>
+        </ul>
+        <p class="ab-turn" data-i18n="v2.ab_f8">Hikaya is our first way of doing that.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--cream ab-close">
+    <div class="wrap ab-close__inner">
+      <p class="ab-close__trio"><span data-i18n="v2.ab_t1">A little imagination.</span> <span data-i18n="v2.ab_t2">A little technology.</span> <span data-i18n="v2.ab_t3">A lot of care.</span></p>
+      <p class="lead" data-i18n="v2.ab_t4">And hopefully, a memory your child keeps long after they have outgrown the book.</p>
+      <h2 class="ab-close__title" data-i18n="v2.ab_t5">Let’s build their memories together.</h2>
+      <a class="btn btn--primary" href="/v2/stories.html" data-track="explore_stories_clicked" data-track-from="our_story"><span data-i18n="v2.cta_explore">Explore Stories</span><svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a>
+    </div>
+  </section>
+</main>
 
 <div id="v2-footer"></div>
 
 <script>
-  // Rotating banner carousel
-  const track = document.getElementById('carousel-track');
-  const slides = track.children;
-  const dotsWrap = document.getElementById('carousel-dots');
-  let current = 0;
-  for (let i = 0; i < slides.length; i++) {
-    const dot = document.createElement('button');
-    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-    dot.addEventListener('click', () => goTo(i));
-    dotsWrap.appendChild(dot);
-  }
-  function goTo(i) {
-    current = (i + slides.length) % slides.length;
-    track.style.transform = `translateX(-${current * 100}%)`;
-    [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
-  }
-  document.getElementById('car-prev').addEventListener('click', () => goTo(current - 1));
-  document.getElementById('car-next').addEventListener('click', () => goTo(current + 1));
-  setInterval(() => goTo(current + 1), 5000);
+/* Our Story copy (EN / AR). Merged into the site's translations before i18n.js applies them. */
+(function () {
+  var STR = {"ab_eyebrow": {"en": "Our Story", "ar": "قصتنا"}, "ab_h1": {"en": "We grew up keeping things.", "ar": "كبرنا ونحن نحتفظ بأشياء بسيطة."}, "ab_p1": {"en": "Old books. Little notes. School photos. Birthday cards. Things that probably meant very little when we first received them, but somehow became more valuable with time.", "ar": "كتب قديمة. رسائل صغيرة. صور مدرسية. بطاقات أعياد ميلاد. أشياء ربما لم تكن تعني لنا الكثير وقتها، لكنها مع مرور السنوات أصبحت أغلى بكثير."}, "ab_p2": {"en": "You know that feeling when you find an old box at home and suddenly lose an hour going through it? You open a book you had as a child, see your name written inside, and suddenly remember a person, a moment, a feeling you had almost forgotten.", "ar": "تعرفون ذلك الشعور عندما تفتحون صندوقاً قديماً في البيت، ثم تكتشفون أن ساعة كاملة مرّت وأنتم تتصفّحون ما فيه؟ كتاب قديم يحمل اسمكم، صورة، ورقة صغيرة… وفجأة تعود إليكم ذكرى شخص، أو لحظة، أو شعور ظننتم أنكم نسيتموه."}, "ab_p3": {"en": "Wherever life takes us, those memories have a way of bringing us back to our families, to where we came from, and to the little moments that shaped us.", "ar": "مهما أخذتنا الحياة إلى أماكن مختلفة، هناك دائماً ذكريات تعيدنا إلى عائلتنا، إلى بداياتنا، وإلى التفاصيل الصغيرة التي صنعت جزءاً ممن نحن اليوم."}, "ab_p4": {"en": "That feeling is a big part of what <strong>Maison Jaber</strong> means to us.", "ar": "هذا الشعور هو جزء كبير مما تعنيه لنا <strong>Maison Jaber</strong>."}, "ab_p5": {"en": "And it is also where Hikaya began.", "ar": "ومن هنا بدأت أيضاً حكاية."}, "ab_p6": {"en": "We kept thinking about our children growing up today.", "ar": "بدأنا نفكر في أطفالنا وهم يكبرون اليوم."}, "ab_p7": {"en": "Their childhood is full of incredible things, but so much of it lives on a screen. Photos on phones. Videos in the cloud. Games, messages and moments that can disappear almost as quickly as they happened.", "ar": "طفولتهم مليئة بأشياء جميلة ومذهلة، لكن جزءاً كبيراً منها أصبح يعيش على شاشة. صور في الهاتف، فيديوهات في السحابة، ألعاب ورسائل ولحظات قد تختفي تقريباً بالسرعة نفسها التي جاءت بها."}, "ab_p8": {"en": "And we thought: <strong>they deserve something they can keep too.</strong>", "ar": "وفكرنا: <strong>هم أيضاً يستحقون شيئاً يبقى معهم.</strong>"}, "ab_p9": {"en": "We wanted to create books that belong completely to the child. Not simply because their name appears inside, but because they can actually see themselves in the story.", "ar": "أردنا أن نصنع كتباً يشعر الطفل أنها تخصّه فعلاً. ليس فقط لأن اسمه موجود داخلها، بل لأنه يرى نفسه في القصة."}, "ab_p10": {"en": "The visuals matter to us just as much as the words.", "ar": "ولهذا، الصورة عندنا مهمة بقدر الكلمة."}, "ab_p11": {"en": "We want a child to open a Hikaya book and see themselves exploring, solving problems, helping others, being brave, making mistakes and finding their way.", "ar": "نريد للطفل أن يفتح كتاباً من حكاية ويرى نفسه يستكشف، يحاول، يساعد، يخطئ، يتعلّم، يتحلّى بالشجاعة، ويجد طريقه بطريقته الخاصة."}, "ab_c0": {"en": "Because heroes do not always wear capes.", "ar": "لأن البطل لا يحتاج دائماً إلى رداء."}, "ab_c1": {"en": "Sometimes they are the child who tries again.", "ar": "أحياناً يكون البطل هو الطفل الذي يحاول من جديد."}, "ab_c2": {"en": "The child who tells the truth.", "ar": "أو الذي يقول الحقيقة."}, "ab_c3": {"en": "The child who helps someone.", "ar": "أو الذي يساعد شخصاً آخر."}, "ab_c4": {"en": "The child who is scared but still takes one more step.", "ar": "أو الذي يشعر بالخوف، لكنه يأخذ خطوة إضافية رغم ذلك."}, "ab_c5": {"en": "And yes, sometimes our heroes really do wear capes too.", "ar": "وأحياناً… نعم، أبطالنا يرتدون رداء البطل أيضاً."}, "ab_p12": {"en": "We want children to grow up seeing themselves that way.", "ar": "المهم بالنسبة لنا أن يرى الطفل نفسه بطلاً في قصته، بطريقته هو."}, "ab_p13": {"en": "And maybe one day, many years from now, they will find that same book on a shelf or inside an old box.", "ar": "وربما بعد سنوات طويلة، يجد نفس الكتاب على رف قديم أو داخل صندوق في البيت."}, "ab_p14": {"en": "They might smile at the pictures. Remember who used to read it with them. Remember the people around them and the moments they shared.", "ar": "ينظر إلى الصور ويبتسم. يتذكر من كان يقرأ له القصة. ويتذكر الأشخاص واللحظات التي عاشها معهم."}, "ab_p15": {"en": "That thought means a lot to us.", "ar": "هذه الفكرة تعني لنا الكثير."}, "ab_h2": {"en": "Made with care", "ar": "نصنعها بعناية"}, "ab_m1": {"en": "We use new technology to help us do something very old-fashioned: make a beautiful storybook worth keeping.", "ar": "نستخدم التقنيات الحديثة لنفعل شيئاً بسيطاً وقديماً جداً: نصنع كتاباً جميلاً يستحق أن يبقى."}, "ab_m2": {"en": "Every Hikaya story is written, edited and refined with care. We want the stories to be fun, but we also want something meaningful to sit quietly inside them — courage, kindness, curiosity, responsibility or confidence.", "ar": "كل قصة في حكاية تُكتب وتُراجع وتُطوّر بعناية. نريدها أن تكون ممتعة أولاً، لكننا نريد أيضاً أن تحمل في داخلها شيئاً له معنى — شجاعة، لطفاً، فضولاً، مسؤولية أو ثقة بالنفس."}, "ab_m3": {"en": "We never want the lesson to feel like a lesson.", "ar": "ولا نريد أبداً أن يشعر الطفل أن القصة تحاول أن تعطيه درساً."}, "ab_m4": {"en": "It should just feel like a really good story.", "ar": "نريدها فقط أن تكون قصة جميلة يحب أن يعود إليها مرة بعد مرة."}, "ab_h3": {"en": "From our family to yours", "ar": "من عائلتنا إلى عائلتكم"}, "ab_f1": {"en": "Hikaya is part of <strong>Maison Jaber</strong>, our family business.", "ar": "حكاية هي جزء من <strong>Maison Jaber</strong>، مشروعنا العائلي."}, "ab_f2": {"en": "For us, Maison Jaber is not only a name. It is about the things that keep a family connected even when life takes us to different places.", "ar": "بالنسبة لنا، Maison Jaber ليست مجرد اسم. هي عن الأشياء التي تبقي العائلة قريبة، حتى عندما تأخذ الحياة كل واحد منا إلى مكان مختلف."}, "ab_f3": {"en": "An old photograph. A familiar story. Something kept from childhood. Small things that somehow bring everyone back together again.", "ar": "صورة قديمة. قصة نعرفها جميعاً. شيء احتفظنا به منذ الطفولة. تفاصيل صغيرة لديها قدرة غريبة على جمعنا من جديد."}, "ab_f4": {"en": "That is what we want Maison Jaber to carry forward.", "ar": "وهذا ما نريد أن تحمله Maison Jaber معها."}, "ab_f5": {"en": "Things made with meaning.", "ar": "أشياء صُنعت بمعنى."}, "ab_f6": {"en": "Things worth keeping.", "ar": "أشياء تستحق أن نحتفظ بها."}, "ab_f7": {"en": "Things that one day become part of a family’s story.", "ar": "وأشياء تصبح، مع الوقت، جزءاً من قصة عائلة."}, "ab_f8": {"en": "Hikaya is our first way of doing that.", "ar": "وحكاية هي أول طريقة نعبّر بها عن ذلك."}, "ab_t4": {"en": "And hopefully, a memory your child keeps long after they have outgrown the book.", "ar": "وعلى أمل أن يبقى هذا الكتاب مع طفلكم… حتى بعد أن يكبر عنه."}, "ab_t5": {"en": "Let’s build their memories together.", "ar": "لنصنع ذكرياتهم معاً."}, "ab_t1": {"en": "A little imagination.", "ar": "قليل من الخيال."}, "ab_t2": {"en": "A little technology.", "ar": "قليل من التكنولوجيا."}, "ab_t3": {"en": "A lot of care.", "ar": "والكثير من الاهتمام."}, "ab_title": {"en": "Our Story — Hikaya by Maison Jaber", "ar": "قصتنا — حكاية من Maison Jaber"}};
+  document.addEventListener('DOMContentLoaded', function () {
+    var T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+    T.v2 = Object.assign(T.v2 || {}, STR);
+    var setTitle = function () { var l = (window.hikayaLang ? window.hikayaLang() : (localStorage.getItem('hikaya_lang') || 'en')); document.title = (STR.ab_title[l] || STR.ab_title.en); };
+    setTitle(); document.addEventListener('hikaya:langchange', setTitle);
+  });
+})();
 </script>
-
+<script src="/i18n.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="/v2/assets/v2.js" defer></script>
 </body>
 </html>
