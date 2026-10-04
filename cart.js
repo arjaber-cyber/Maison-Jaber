@@ -90,9 +90,50 @@ window.HIKAYA_BUNDLE_TIERS = [
     });
   }
 
+  /* ---- Story covers for cart / book-added / checkout ----
+     Items saved before covers were stored only carry the story title, so we
+     look the cover up from the live catalogue by slug, then by title. */
+  const LEGACY_SLUGS = { 'The Bravest Little One': 'bravest-little-one', 'The Cloud Ship': 'cloud-ship', "The Star Who Couldn't Sleep": 'star-who-couldnt-sleep' };
+  let storiesPromise = null;
+  function loadStories() {
+    if (!storiesPromise) {
+      storiesPromise = fetch('/.netlify/functions/get-stories', { headers: { Accept: 'application/json' } })
+        .then(r => r.json()).then(d => (Array.isArray(d) ? d : d.stories) || []).catch(() => []);
+    }
+    return storiesPromise;
+  }
+  async function storyFor(item) {
+    const all = await loadStories();
+    const slug = item.slug || LEGACY_SLUGS[item.story];
+    return all.find(s => slug && s.slug === slug) || all.find(s => s.title === item.story) || null;
+  }
+  async function coverFor(item) {
+    if (item.coverUrl) return item.coverUrl;
+    const s = await storyFor(item);
+    return (s && s.cover_image_url) || null;
+  }
+  // Puts the real cover inside a placeholder element; the gradient stays if there is no cover.
+  function paintCover(el, url) {
+    if (!el || !url) return;
+    const img = new Image();
+    img.alt = '';
+    img.decoding = 'async';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;';
+    img.onload = () => { el.textContent = ''; el.appendChild(img); el.classList.add('has-cover'); el.style.background = 'none'; };
+    img.src = url;
+  }
+  function paintCovers(root, selector) {
+    const cart = getCart();
+    (root || document).querySelectorAll(selector).forEach(el => {
+      const item = cart.find(i => i.id === el.dataset.itemId);
+      if (item) coverFor(item).then(url => paintCover(el, url));
+    });
+  }
+
   window.hikayaCart = {
     getCart, addToCart, removeFromCart, clearCart,
     bundleTierFor, computeCartPricing, updateCartBadges,
+    loadStories, storyFor, coverFor, paintCover, paintCovers,
   };
 
   document.addEventListener('DOMContentLoaded', updateCartBadges);

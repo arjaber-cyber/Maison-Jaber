@@ -20,9 +20,9 @@
     empty_d: { en: 'Try another age or theme, or clear the filters to see everything.', ar: 'جرّب عمرًا أو موضوعًا آخر، أو امسح الفلاتر لرؤية كل القصص.' },
     help_t: { en: 'Not sure where to start?', ar: 'لا تعرف من أين تبدأ؟' },
     help_d: { en: 'Explore by age to find the right story for them.', ar: 'تصفّح حسب العمر لتجد القصة المناسبة لهم.' },
-    ages_2_4: { en: 'Ages 2–4', ar: 'الأعمار 2–4' },
-    ages_4_6: { en: 'Ages 4–6', ar: 'الأعمار 4–6' },
-    ages_6_8: { en: 'Ages 6–8', ar: 'الأعمار 6–8' },
+    ages_2_4: { en: 'Ages 2–4', ar: 'من 2 إلى 4 سنوات' },
+    ages_4_6: { en: 'Ages 4–6', ar: 'من 4 إلى 6 سنوات' },
+    ages_6_8: { en: 'Ages 6–8', ar: 'من 6 إلى 8 سنوات' },
 
     // Theme groups
     tg_emotions: { en: 'Emotions', ar: 'المشاعر' },
@@ -140,7 +140,7 @@
     fq6: { en: "Can I make changes after ordering?", ar: "هل يمكنني التعديل بعد الطلب؟" },
     fa6: { en: "Contact us as soon as possible and we'll do our best to update the name, dedication or photo before production starts.", ar: "تواصل معنا بأسرع وقت وسنبذل جهدنا لتعديل الاسم أو الإهداء أو الصورة قبل بدء الإنتاج." },
     fq7: { en: "Which ages are the stories for?", ar: "لأي الأعمار هذه القصص؟" },
-    fa7: { en: "Our stories are made for ages 2–4, 4–6 and 6–8. You'll find the age on every story.", ar: "قصصنا مصمّمة للأعمار 2–4 و4–6 و6–8. ستجد العمر على كل قصة." },
+    fa7: { en: "Our stories are made for ages 2–4, 4–6 and 6–8. You'll find the age on every story.", ar: "قصصنا مصمّمة للأعمار من 2 إلى 4، ومن 4 إلى 6، ومن 6 إلى 8 سنوات. ستجد العمر المناسب على كل قصة." },
     fq8: { en: "Where do you deliver, and how much does it cost?", ar: "إلى أين توصلون، وكم تكلفة التوصيل؟" },
     fa8: { en: "We deliver across the UAE and the GCC. Delivery is free across the UAE. For Saudi Arabia, Qatar, Kuwait, Bahrain and Oman it's AED 30, shown in your local currency. Orders of two or more books ship free.", ar: "نوصل إلى الإمارات ودول الخليج. التوصيل مجاني داخل الإمارات، وللسعودية وقطر والكويت والبحرين وعُمان 30 درهمًا تُعرض بعملتك المحلية. الطلبات التي تضم كتابين أو أكثر توصيلها مجاني." },
     fq9: { en: "How long does delivery take?", ar: "كم يستغرق التوصيل؟" },
@@ -250,4 +250,91 @@
     nf_sub: { en: "The link may be old or mistyped. Let's get you back to the stories.", ar: "ربما الرابط قديم أو مكتوب بشكل خاطئ. لنعدك إلى القصص." },
     nf_home: { en: "Back to Hikaya", ar: "العودة إلى حكاية" },
   };
+})();
+
+/* QA fixes, Oct 2026: tracking, legal headers, accessible names, page titles,
+   age ranges and personalisation messages. EN + AR. */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.a11y = {
+    utility: { en: 'Delivery and region', ar: 'التوصيل والمنطقة' },
+    region: { en: 'Choose your country and currency', ar: 'اختر بلدك والعملة' },
+    home: { en: 'Hikaya by Maison Jaber, home', ar: 'حكاية من ميزون جابر، الصفحة الرئيسية' },
+    main_nav: { en: 'Main', ar: 'القائمة الرئيسية' },
+    mobile_nav: { en: 'Menu', ar: 'القائمة' },
+    search: { en: 'Search stories', ar: 'ابحث في القصص' },
+    account: { en: 'Account', ar: 'حسابي' },
+    cart: { en: 'Cart', ar: 'السلة' },
+    menu_open: { en: 'Open menu', ar: 'افتح القائمة' },
+    menu_close: { en: 'Close menu', ar: 'أغلق القائمة' },
+    suggestions: { en: 'Suggestions', ar: 'اقتراحات' },
+    // QA010: ranges read youngest-to-oldest in Arabic
+    age_range: { en: 'Ages {a}–{b}', ar: 'من {a} إلى {b} سنوات' },
+    band_words: { en: '{a}–{b}', ar: 'من {a} إلى {b} سنوات' },
+  };
+  T.ttl = {
+    index: { en: 'Hikaya by Maison Jaber | Personalised storybooks', ar: 'حكاية من ميزون جابر | كتب قصص مخصّصة لطفلك' },
+    stories: { en: 'Stories | Hikaya', ar: 'القصص | حكاية' },
+    story: { en: 'Story | Hikaya', ar: 'القصة | حكاية' },
+    age_groups: { en: 'Age Groups | Hikaya', ar: 'الفئات العمرية | حكاية' },
+    our_world: { en: 'Our World | Hikaya', ar: 'عالمنا | حكاية' },
+    about: { en: 'Our Story | Hikaya', ar: 'قصتنا | حكاية' },
+    help: { en: 'FAQs | Hikaya', ar: 'الأسئلة الشائعة | حكاية' },
+    contact: { en: 'Contact us | Hikaya', ar: 'تواصل معنا | حكاية' },
+    search: { en: 'Search | Hikaya', ar: 'البحث | حكاية' },
+    account: { en: 'My account | Hikaya', ar: 'حسابي | حكاية' },
+    login: { en: 'Sign in | Hikaya', ar: 'تسجيل الدخول | حكاية' },
+    cart: { en: 'Your cart | Hikaya', ar: 'السلة | حكاية' },
+    checkout: { en: 'Checkout | Hikaya', ar: 'إتمام الطلب | حكاية' },
+    book_added: { en: 'Added to your cart | Hikaya', ar: 'أُضيف إلى السلة | حكاية' },
+    personalize: { en: 'Create their story | Hikaya', ar: 'اصنع حكاية طفلك | حكاية' },
+    track_order: { en: 'Track your order | Hikaya', ar: 'تتبّع طلبك | حكاية' },
+    privacy: { en: 'Privacy Policy | Hikaya', ar: 'سياسة الخصوصية | حكاية' },
+    terms: { en: 'Terms of Service | Hikaya', ar: 'شروط الخدمة | حكاية' },
+    refund_policy: { en: 'Refund Policy | Hikaya', ar: 'سياسة الاسترداد | حكاية' },
+    '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
+  };
+  T.trk = {
+    title: { en: 'Track Your Order', ar: 'أين وصل طلبك؟' },
+    intro: { en: 'Enter your order number and the email you used at checkout.', ar: 'أدخل رقم الطلب والبريد الإلكتروني الذي استخدمته عند الشراء.' },
+    order_label: { en: 'Order Number', ar: 'رقم الطلب' },
+    email_label: { en: 'Email', ar: 'البريد الإلكتروني' },
+    action: { en: 'Track Order', ar: 'تتبّع الطلب' },
+    pending: { en: 'Checking…', ar: 'نبحث عن طلبك…' },
+    not_found: { en: 'We could not find that order. Double-check your order number and email, then try again.', ar: 'لم نجد طلبًا بهذه البيانات. تحقّق من رقم الطلب والبريد الإلكتروني، ثم جرّب مرة أخرى.' },
+    err_order: { en: 'Please enter your order number.', ar: 'يرجى إدخال رقم الطلب.' },
+    err_email_missing: { en: 'Please enter the email you used at checkout.', ar: 'يرجى إدخال البريد الإلكتروني الذي استخدمته عند الشراء.' },
+    err_email: { en: 'Please enter a valid email address, like name@example.com.', ar: 'يرجى إدخال بريد إلكتروني صحيح، مثل name@example.com.' },
+    err_generic: { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ ما. يرجى المحاولة مرة أخرى.' },
+    err_timeout: { en: 'This is taking longer than usual. Please try again.', ar: 'يستغرق الأمر وقتًا أطول من المعتاد. يرجى المحاولة مرة أخرى.' },
+    invoice: { en: 'View Invoice →', ar: 'عرض الفاتورة ←' },
+    item_for: { en: '{story} for {name}', ar: '{story} لـ{name}' },
+    st_received: { en: 'Order Received', ar: 'استلمنا طلبك' },
+    st_preparing: { en: 'Preparing the Book', ar: 'نجهّز الكتاب' },
+    st_awaiting_approval: { en: 'Awaiting Final Approval', ar: 'بانتظار الموافقة النهائية' },
+    st_sent_to_printing: { en: 'Sent to Printing', ar: 'أُرسل إلى الطباعة' },
+    st_received_from_printing: { en: 'Received from Printing', ar: 'وصل من المطبعة' },
+    st_shipped: { en: 'Shipped', ar: 'تم الشحن' },
+    st_delivered: { en: 'Delivered', ar: 'تم التوصيل' },
+  };
+  T.pz = {
+    age_err: { en: 'Please enter a whole-number age from {min} to {max} for this story.', ar: 'يرجى إدخال عمر ضمن الفئة المناسبة لهذه القصة (من {min} إلى {max} سنوات).' },
+    extra_q: { en: 'This story has a {name} character', ar: 'في هذه القصة شخصية إضافية: {name}' },
+    extra_sub: { en: 'Would you like to use a real photo of the {name_lc}, or keep it generated for you? Using a real photo adds AED {fee}.', ar: 'هل تريد استخدام صورة حقيقية لهذه الشخصية، أم نرسمها لك؟ استخدام صورة حقيقية يضيف {fee} درهم.' },
+    extra_yes: { en: 'Yes, use a real photo (+AED {fee})', ar: 'نعم، استخدموا صورة حقيقية (+{fee} درهم)' },
+    extra_no: { en: 'No, keep it generated', ar: 'لا، ارسموها لي' },
+  };
+  const P = T.pg = T.pg || {};
+  P.legal_eyebrow = { en: 'Legal', ar: 'الشؤون القانونية' };
+  P.legal_privacy_t = { en: 'Privacy Policy', ar: 'سياسة الخصوصية' };
+  P.legal_terms_t = { en: 'Terms of Service', ar: 'شروط الخدمة' };
+  P.legal_refund_t = { en: 'Refund Policy', ar: 'سياسة الاسترداد' };
+  P.legal_updated = { en: 'Last updated: October 2026', ar: 'آخر تحديث: أكتوبر 2026' };
+})();
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.home6 = T.home6 || {};
+  // Theme IDs the dashboard can assign that had no label of their own yet.
+  T.home6.th_emotions = T.home6.th_emotions || { en: 'Feelings', ar: 'المشاعر' };
+  T.home6.th_imagination = T.home6.th_imagination || { en: 'Imagination', ar: 'الخيال' };
 })();
