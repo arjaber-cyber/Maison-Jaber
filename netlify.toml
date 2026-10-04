@@ -4,3 +4,14 @@
 
 [functions."send-abandoned-reminders"]
   schedule = "0 */6 * * *"
+
+[[headers]]
+  for = "/.well-known/apple-developer-merchantid-domain-association"
+  [headers.values]
+    Content-Type = "text/plain"
+
+[[redirects]]
+  from = "https://www.maison-jaber.com/.well-known/apple-developer-merchantid-domain-association"
+  to = "/.well-known/apple-developer-merchantid-domain-association"
+  status = 200
+  force = true
