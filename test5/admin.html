@@ -193,7 +193,8 @@
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 </head>
 <body>
 
@@ -680,6 +681,35 @@
 
   // ---------- Site photos ----------
   const PHOTO_SLOTS = [
+    // --- 2026 redesign slots, named by Image Requirements asset ID ---
+    { filename: 'hom-hero-01.webp', label: 'Homepage — Hero desktop (HOM-HERO-01)', size: [2400, 1500], note: '16:10, child + book in right 55%' },
+    { filename: 'hom-hero-01-m.webp', label: 'Homepage — Hero mobile (HOM-HERO-01M)', size: [1080, 1350], note: '4:5 portrait, centred' },
+    { filename: 'hom-jrn-01.webp', label: 'Homepage — Step 1 choose a story (HOM-JRN-01)', size: [1200, 900], note: '4:3' },
+    { filename: 'hom-jrn-02.webp', label: 'Homepage — Step 2 sample child photo (HOM-JRN-02)', size: [600, 600], note: '1:1 face' },
+    { filename: 'hom-jrn-03.webp', label: 'Homepage — Step 3 finished book (HOM-JRN-03)', size: [1200, 1200], note: '1:1 closed book' },
+    { filename: 'hom-jrn-04.webp', label: 'Homepage — Step 4 packed box (HOM-JRN-04)', size: [1200, 900], note: '4:3' },
+    { filename: 'hom-pkg-01.webp', label: 'Homepage — Packaging banner (HOM-PKG-01)', size: [1800, 1200], note: '3:2, box in left 55%' },
+    { filename: 'hom-rev-01.webp', label: 'Homepage — Reviews photo (HOM-REV-01)', size: [1200, 1000], note: '6:5, subject right' },
+    { filename: 'hom-sty-01.webp', label: 'Homepage — More than a book (HOM-STY-01)', size: [2000, 1125], note: '16:9, child in left half' },
+    { filename: 'hom-cta-01.webp', label: 'Final CTA band (HOM-CTA-01)', size: [2000, 1125], note: '16:9, child in right 45%' },
+    { filename: 'col-hero-01.webp', label: 'Stories — Hero (COL-HERO-01)', size: [2000, 1333], note: '3:2, subject right 55%' },
+    { filename: 'col-help-01.webp', label: 'Stories — Not sure where to start (COL-HELP-01)', size: [1600, 1200], note: '4:3, subject right' },
+    { filename: 'age-hero-01.webp', label: 'Age Groups — Hero 2–4 (AGE-HERO-01)', size: [2000, 1333], note: '3:2, subject right' },
+    { filename: 'age-hero-02.webp', label: 'Age Groups — Hero 4–6 (AGE-HERO-02)', size: [2000, 1333], note: '3:2, subject right' },
+    { filename: 'age-hero-03.webp', label: 'Age Groups — Hero 6–8 (AGE-HERO-03)', size: [2000, 1333], note: '3:2, subject right' },
+    { filename: 'age-quote-01.webp', label: 'Age Groups — Quote band (AGE-QUOTE-01)', size: [1600, 1200], note: '4:3, subject left' },
+    { filename: 'sty-inside-01.webp', label: 'Story page — Inside the book fallback (STY-INSIDE-01)', size: [1800, 900], note: '2:1 open spread' },
+    { filename: 'abt-hero-01.webp', label: 'About — Hero (ABT-HERO-01)', size: [2000, 1333], note: '3:2, subject right' },
+    { filename: 'abt-why-01.webp', label: 'About — Why Hikaya (ABT-WHY-01)', size: [1600, 1200], note: '4:3, subject right' },
+    { filename: 'wld-tile-01.webp', label: 'Our World — Courage (WLD-TILE-01)', size: [1100, 756], note: '16:11' },
+    { filename: 'wld-tile-02.webp', label: 'Our World — Kindness (WLD-TILE-02)', size: [1100, 756], note: '16:11' },
+    { filename: 'wld-tile-03.webp', label: 'Our World — Emotions (WLD-TILE-03)', size: [1100, 756], note: '16:11' },
+    { filename: 'wld-tile-04.webp', label: 'Our World — Imagination (WLD-TILE-04)', size: [1100, 756], note: '16:11' },
+    { filename: 'wld-tile-05.webp', label: 'Our World — Family (WLD-TILE-05)', size: [1100, 756], note: '16:11' },
+    { filename: 'wld-tile-06.webp', label: 'Our World — Growing Up (WLD-TILE-06)', size: [1100, 756], note: '16:11' },
+    { filename: 'ord-hero-01.webp', label: 'Order confirmation — Hero (ORD-HERO-01)', size: [2400, 800], note: '3:1' },
+    { filename: 'faq-hero-01.webp', label: 'FAQs — Hero (FAQ-HERO-01)', size: [2400, 800], note: '3:1' },
+    { filename: 'nf-hero-01.webp', label: '404 page (NF-HERO-01)', size: [1200, 900], note: '4:3' },
     { filename: 'hero-bedroom-wide.jpg', label: 'Homepage Hero — Bedroom Scene', size: [1920, 1080], note: '16:9 landscape' },
     { filename: 'giftbox-open-pair.jpg', label: 'Gift Box, Open (Pair)', size: [1320, 1200], note: '11:10, almost square' },
     { filename: 'fantasy-night-scene.jpg', label: 'Fantasy Night Scene', size: [1536, 1024], note: '3:2 landscape' },

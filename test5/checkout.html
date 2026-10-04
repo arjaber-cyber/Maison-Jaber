@@ -228,16 +228,15 @@
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
 </head>
-<body>
+<body data-flow="checkout">
 
-<header class="site">
-  <div class="inner">
-    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <a class="exit" href="personalize.html">&larr; Edit personalization</a>
-  </div>
-</header>
+<div id="hk-top"></div>
+<h1 class="sr-only" id="co-h1" data-i18n="pg.co_title">Checkout</h1>
 
 <div class="mini-banner" id="mini-banner">
   <div class="mini-banner-track" id="mini-banner-track">
@@ -297,8 +296,6 @@
         <div class="field">
           <label class="field-label" for="country" data-i18n="checkout.country">Country</label>
           <select id="country">
-            <option value="Germany" data-i18n="checkout.germany">Germany &amp; Europe</option>
-            <option value="Syria" data-i18n="checkout.syria">Syria</option>
             <option value="UAE" data-i18n="checkout.uae">United Arab Emirates</option>
             <option value="Saudi" data-i18n="checkout.saudi">Saudi Arabia</option>
             <option value="Qatar" data-i18n="checkout.qatar">Qatar</option>
@@ -387,16 +384,22 @@
   </div>
 </div>
 
-<footer class="site">
+<section class="order-done" id="order-done" hidden aria-labelledby="od-title" tabindex="-1">
+  <div class="od-media"><img src="images/ord-hero-01.webp" srcset="images/ord-hero-01-900.webp 900w, images/ord-hero-01.webp 1343w" sizes="(max-width: 767px) 100vw, 60vw" alt="" /><span class="dev-tag">Stand-in · ORD-HERO-01</span></div>
   <div class="wrap">
-    <p>
-      <span data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</span>
-      &nbsp;·&nbsp; <a href="privacy.html" style="text-decoration:underline;">Privacy</a>
-      &nbsp;·&nbsp; <a href="terms.html" style="text-decoration:underline;">Terms</a>
-      &nbsp;·&nbsp; <a href="refund-policy.html" style="text-decoration:underline;">Refunds</a>
-    </p>
+    <h1 id="od-title" data-i18n="pg.od_title">Their story is officially on its way.</h1>
+    <p class="lede" id="od-sub"></p>
+    <div class="od-facts">
+      <div><small data-i18n="pg.od_number">Order number</small><b id="od-number">—</b></div>
+      <div><small data-i18n="pg.od_eta">Estimated delivery</small><b data-i18n="pg.od_eta_v">About a week</b></div>
+    </div>
+    <div class="od-ctas">
+      <a class="btn btn-primary" href="track-order.html" id="od-track" data-i18n="pg.od_track">Track Your Order</a>
+      <a class="btn btn-secondary" href="stories.html" data-i18n="pg.od_more">Explore More Stories</a>
+    </div>
   </div>
-</footer>
+</section>
+<div id="hk-foot"></div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -499,9 +502,9 @@
   function regionForCountryCode(code) {
     code = (code || '').toUpperCase();
     for (const key in REGIONS) {
-      if (REGIONS[key].countryCodes.includes(code)) return key;
+      if (REGIONS[key].zone === 'GCC' && REGIONS[key].countryCodes.includes(code)) return key;
     }
-    return 'Other';
+    return 'UAE'; // GCC-only launch: everyone else sees UAE pricing
   }
 
   const countrySelect = document.getElementById('country');
@@ -513,7 +516,7 @@
     // pill next to the language switcher), respect that instead of
     // re-detecting independently — keeps the whole site in sync.
     const stored = localStorage.getItem('hikaya_region');
-    if (stored && REGIONS[stored]) {
+    if (stored && REGIONS[stored] && REGIONS[stored].zone === 'GCC') {
       currentRegionKey = stored;
       countrySelect.value = stored;
       renderPaymentSection();
@@ -671,6 +674,7 @@
   let selectedPaymentMethod = null;
 
   const METHOD_META = {
+    ziina: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>', label: () => t('pg.pay_ziina', 'Pay securely') },
     card: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>', label: () => t('checkout.method_card', 'Card') },
     shamcash: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>', label: () => t('checkout.method_shamcash', 'Sham Cash') },
     cod: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>', label: () => t('checkout.method_cod', 'Cash on Delivery') },
@@ -706,7 +710,23 @@
     }
 
     let bodyHtml = '';
-    if (selectedPaymentMethod === 'card') {
+    if (selectedPaymentMethod === 'ziina') {
+      const fp = computeFinalPricing(region);
+      const rate = (window.HIKAYA_AED_RATES || {})[region.currency] || 1;
+      const aed = Math.round(fp.total * rate * 100) / 100;
+      const conv = region.currency === 'AED' ? '' : `<p class="ziina-conv">${t('pg.ziina_conv', "You'll be charged {aed} (about {local}).").replace('{aed}', 'AED ' + aed.toFixed(2)).replace('{local}', window.hikayaFormatPrice ? window.hikayaFormatPrice(fp.total, region) : fp.total.toFixed(2) + ' ' + region.currency)}</p>`;
+      bodyHtml = `
+        <div class="cod-box ziina-box">
+          ${METHOD_META.ziina.icon}
+          <div>
+            <h4>${t('pg.ziina_title', 'Pay securely with Ziina')}</h4>
+            <p>${t('pg.ziina_body', "Pay by card, Apple Pay or Google Pay on Ziina's secure page. We never see your card details.")}</p>
+            ${conv}
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('pg.ziina_btn', 'Continue to secure payment');
+    } else if (selectedPaymentMethod === 'card') {
       bodyHtml = `
         <div class="card-fields">
           <p class="paytabs-intro">${t('checkout.paytabs_intro', "You'll enter your card details securely on the next step — we never see or store them.")}</p>
@@ -717,7 +737,7 @@
         </div>
         <div class="card-fields-note">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          ${t('checkout.secure_note', 'Secure payment via Telr/PayTabs (connects once the merchant account is live), charged in')} ${region.currency}
+          ${t('checkout.secure_note', 'Secure card payment via PayTabs, charged in')} ${region.currency}
         </div>`;
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = t('checkout.place_order_btn', 'Place Order');
@@ -932,7 +952,7 @@
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
 
-    function finalizeOrderSuccess(message) {
+    function finalizeOrderSuccess(message, orderNumber) {
       successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
@@ -953,6 +973,30 @@
       }).catch(() => { /* best-effort only */ });
 
       if (window.hikayaCart) window.hikayaCart.clearCart();
+      if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber);
+    }
+
+    // Ziina: the server re-prices the cart, saves the order, and returns Ziina's payment page.
+    if (selectedPaymentMethod === 'ziina') {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const headers = { 'Content-Type': 'application/json' };
+        if (session) headers.Authorization = `Bearer ${session.access_token}`;
+        const res = await fetch('/.netlify/functions/create-ziina-payment', {
+          method: 'POST', headers, body: JSON.stringify({ ...order, returnPath: location.pathname }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
+        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, items: order.items, email: order.email })); } catch {}
+        placeOrderBtn.textContent = t('pg.ziina_redirect', 'Taking you to secure payment…');
+        window.location.href = data.redirectUrl;
+      } catch (err) {
+        errorBox.textContent = (err && err.message) || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
+        errorBox.style.display = 'block';
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.textContent = originalText;
+      }
+      return;
     }
 
     // Card payments go through PayTabs' hosted payment page, embedded as
@@ -1034,7 +1078,7 @@
         return;
       }
 
-      finalizeOrderSuccess(data.message);
+      finalizeOrderSuccess(data.message, data.orderNumber);
     } catch {
       errorBox.textContent = t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
       errorBox.style.display = 'block';
@@ -1044,5 +1088,57 @@
   });
 </script>
 
+<script>
+/* Order confirmation screen (2026 redesign): same success logic, new presentation. */
+window.hkShowOrderDone = function (order, orderNumber) {
+  var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
+  var names = (order.items || []).map(function (i) { return i.childName; }).filter(Boolean);
+  var who = names.length ? names.join(' & ') : '';
+  document.getElementById('od-sub').textContent = who ? t('pg.od_sub', 'Thank you for creating a Hikaya story for {name}.').replace('{name}', who) : t('pg.od_sub_plain', 'Thank you for creating a Hikaya story.');
+  document.getElementById('od-number').textContent = orderNumber || t('pg.od_number_email', 'Sent to your email');
+  if (orderNumber) document.getElementById('od-track').href = 'track-order.html?order=' + encodeURIComponent(orderNumber);
+  Array.prototype.forEach.call(document.body.children, function (el) { if (!el.matches('.utility, .site-header, #order-done, .site-footer, script, style, .skip')) el.hidden = true; });
+  var done = document.getElementById('order-done'); done.hidden = false; window.scrollTo(0, 0); done.focus();
+};
+</script>
+<script>
+/* Back from Ziina: confirm the payment with our server (which asks Ziina), then show the result. */
+document.addEventListener('DOMContentLoaded', function () {
+  var q = new URLSearchParams(location.search); var order = q.get('order'), pi = q.get('pi'), how = q.get('ziina');
+  if (!order || !pi || !how) return;
+  var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
+  var box = document.createElement('div'); box.className = 'ziina-return'; box.setAttribute('role', 'status');
+  var anchor = document.querySelector('.checkout-progress') || document.querySelector('main') || document.body.firstElementChild;
+  anchor.parentNode.insertBefore(box, anchor);
+  var pending = {}; try { pending = JSON.parse(sessionStorage.getItem('hk_pending_order') || '{}'); } catch (e) {}
+  function say(msg, kind) { box.className = 'ziina-return ' + (kind || ''); box.textContent = msg; }
+  function done() {
+    try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
+    if (window.hikayaCart) window.hikayaCart.clearCart();
+    fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
+    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'ziina' });
+    box.remove();
+    if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order);
+    history.replaceState(null, '', location.pathname);
+  }
+  if (how === 'cancel') { say(t('pg.ziina_cancelled', 'Payment cancelled. Your cart is still here whenever you are ready.'), 'warn'); history.replaceState(null, '', location.pathname); return; }
+  say(t('pg.ziina_confirming', 'Confirming your payment…'));
+  var tries = 0;
+  (function check() {
+    fetch('/.netlify/functions/ziina-order-status?order=' + encodeURIComponent(order) + '&pi=' + encodeURIComponent(pi), { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.paid) return done();
+        if (d.status === 'failed' || d.status === 'canceled') { say(t('pg.ziina_failed', "Your payment didn't go through, so you haven't been charged. Please try again."), 'warn'); return history.replaceState(null, '', location.pathname); }
+        if (++tries < 10) return setTimeout(check, 2000);
+        say(t('pg.ziina_slow', "We're still confirming your payment with the bank. We'll email you as soon as it's confirmed. Your reference is {order}.").replace('{order}', order));
+      })
+      .catch(function () { if (++tries < 10) setTimeout(check, 2000); else say(t('pg.ziina_slow', "We're still confirming your payment.").replace('{order}', order)); });
+  })();
+});
+</script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="chrome.js" defer></script>
 </body>
 </html>

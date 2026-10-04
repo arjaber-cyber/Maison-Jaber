@@ -243,21 +243,14 @@
 <script src="/cart.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
 </head>
-<body>
+<body data-flow="personalise">
 
-<header class="site">
-  <div class="wrap inner">
-    <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <div class="header-right">
-      <a class="lang-pill" href="#" data-i18n-skip>EN</a>
-      <a class="zone-pill" href="#">Europe</a>
-      <a href="cart.html" data-i18n-skip style="font-size:13px; font-weight:700; color:var(--ink); display:inline-flex; align-items:center;">Cart<span class="cart-badge">0</span></a>
-      <a class="exit" href="index.html">Save &amp; exit</a>
-    </div>
-  </div>
-</header>
+<div id="hk-top"></div>
 
 <div class="page-head wrap">
   <h1 data-i18n="personalize.page_title">Let's create their story</h1>
@@ -273,8 +266,10 @@
 
   <div class="order-layout">
     <div class="order-summary">
+      <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
       <div class="summary-cover empty" id="summary-cover">Pick a story to begin</div>
       <h3 id="summary-story-title">No story chosen yet</h3>
+      <button type="button" class="summary-change" id="summary-change-story" data-i18n="pg.change_story">Change story</button>
       <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
@@ -282,8 +277,8 @@
     </div>
 
     <div class="order-form-col">
-      <h2 data-i18n="personalize.order_title">Tell us about them</h2>
-      <div class="sub" data-i18n="personalize.order_sub">Just the essentials &mdash; you can always add more later.</div>
+      <h2 id="wizard-title">Tell us about them</h2>
+      <div class="sub" id="wizard-sub">Just the essentials &mdash; you can always add more later.</div>
 
       <!-- Step: Story -->
       <div class="wizard-step active" data-step="story" id="wizard-step-story">
@@ -317,7 +312,7 @@
           </div>
         </div>
         <div class="wizard-nav">
-          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled>Next &rarr;</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled data-i18n="pg.next">Next →</button>
         </div>
       </div>
 
@@ -344,7 +339,7 @@
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled>Next &rarr;</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled data-i18n="pg.next">Next →</button>
         </div>
       </div>
 
@@ -374,7 +369,7 @@
         <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled>Next &rarr;</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled data-i18n="pg.next">Next →</button>
         </div>
       </div>
 
@@ -398,22 +393,16 @@
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="extra">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled>Next &rarr;</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled data-i18n="pg.next">Next →</button>
         </div>
       </div>
 
       <!-- Step: Dedication -->
-      <div class="wizard-step" data-step="dedication" id="wizard-step-dedication">
-        <div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div>
-        <div class="wizard-nav">
-          <button type="button" class="btn-back" data-step-back="dedication">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="dedication">Next &rarr;</button>
-        </div>
-      </div>
 
       <!-- Step: Review -->
       <div class="wizard-step" data-step="review" id="wizard-step-review">
         <div id="review-summary"></div>
+        <div class="review-dedication"><div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div></div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="review">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
           <button type="button" class="btn-primary" id="continue-order-btn" style="flex:1; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
@@ -432,7 +421,7 @@
   </div>
 </div>
 
-<footer class="site"><div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div></footer>
+<div id="hk-foot"></div>
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -470,6 +459,27 @@
     "The Star Who Couldn't Sleep": 'lullaby',
   };
   const STORY_CATALOG = {}; // title -> full story record, once fetched
+  // Story pages link here with the story's slug (?story=cloud-ship); the wizard keys stories by title.
+  const SLUG_TO_TITLE = { 'bravest-little-one': 'The Bravest Little One', 'cloud-ship': 'The Cloud Ship', 'star-who-couldnt-sleep': "The Star Who Couldn't Sleep" };
+  function resolveStory(v) { if (!v) return null; if (STORY_THEMES[v]) return v; return SLUG_TO_TITLE[v] || null; }
+  // When the parent already chose a story on its page, skip the story step entirely.
+  let storyLocked = false;
+  function lockStory() {
+    storyLocked = true;
+    if (typeof currentStepName === 'undefined' || currentStepName === 'story') {
+      currentStepName = 'details';
+      document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+      document.getElementById('wizard-step-details').classList.add('active');
+    }
+    if (typeof renderWizardProgress === 'function') renderWizardProgress();
+    if (typeof renderStepHeading === 'function') renderStepHeading('details');
+  }
+  function unlockStory() {
+    storyLocked = false;
+    document.getElementById('story-chip').style.display = 'none';
+    document.getElementById('story-grid').style.display = 'grid';
+    showWizardStep('story');
+  }
 
   // Show a story's cover photo (uploaded in the admin dashboard) instead of the gradient.
   // The photo already carries the title, so the text overlay is hidden.
@@ -496,6 +506,7 @@
       (data.stories || []).forEach(story => {
         STORY_THEMES[story.title] = story.theme;
         STORY_CATALOG[story.title] = story;
+        if (story.slug) SLUG_TO_TITLE[story.slug] = story.title;
         const existing = [...document.querySelectorAll('#story-grid .story-pick')].find(c => c.dataset.value === story.title);
         if (existing) { applyCoverPhoto(existing.querySelector('.cover'), story); return; }
         {
@@ -518,9 +529,8 @@
       // only exists in the catalog (not the 3 built-ins), select it now
       // that we actually know about it.
       const urlStory = new URLSearchParams(window.location.search).get('story');
-      if (urlStory && STORY_THEMES[urlStory] && document.getElementById('story-input').value !== urlStory) {
-        selectStory(urlStory);
-      }
+      const pre = resolveStory(urlStory);
+      if (pre && document.getElementById('story-input').value !== pre) { selectStory(pre); lockStory(); }
     } catch {
       // Catalog fetch failed -- the 3 built-in stories still work fine.
     }
@@ -577,6 +587,7 @@
     card.addEventListener('click', () => selectStory(card.dataset.value));
   });
 
+  document.getElementById('summary-change-story').addEventListener('click', () => unlockStory());
   document.getElementById('change-story-btn').addEventListener('click', () => {
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
@@ -813,9 +824,9 @@
   // one, so the active step list is recomputed whenever the story changes.
   function activeSteps() {
     const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
-    const steps = ['story', 'details', 'photo'];
+    const steps = storyLocked ? ['details', 'photo'] : ['story', 'details', 'photo'];
     if (storyInfo && storyInfo.has_extra_character) steps.push('extra');
-    steps.push('dedication', 'review');
+    steps.push('review');
     return steps;
   }
   let currentStepName = 'story';
@@ -830,6 +841,8 @@
   };
 
   function renderWizardProgress() {
+    const firstBack = document.querySelector('[data-step-back="details"]');
+    if (firstBack) firstBack.style.visibility = storyLocked ? 'hidden' : '';
     const steps = activeSteps();
     const currentIndex = steps.indexOf(currentStepName);
     document.getElementById('wizard-progress').innerHTML = steps.map((s, i) => `
@@ -840,7 +853,22 @@
     `).join('');
   }
 
+  const STEP_HEADINGS = {
+    story: ['pg.wz_story_t', 'Choose their story', 'pg.wz_story_s', 'Pick the adventure you want to make theirs.'],
+    details: ['pg.wz_details_t', 'Tell us about them', 'pg.wz_details_s', 'Their first name, age, and how the story should talk about them.'],
+    photo: ['pg.wz_photo_t', 'Add a photo of them', 'pg.wz_photo_s', 'A clear, front-facing photo so we can illustrate them as the hero.'],
+    extra: ['pg.wz_extra_t', 'One more character', 'pg.wz_extra_s', 'This story has a special character you can add.'],
+    review: ['pg.wz_review_t', 'Check and add to cart', 'pg.wz_review_s', 'Make sure everything looks right. You can add a dedication too.'],
+  };
+  function renderStepHeading(stepName) {
+    const h = STEP_HEADINGS[stepName]; if (!h) return;
+    const tt = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
+    document.getElementById('wizard-title').textContent = tt(h[0], h[1]);
+    const sub = document.getElementById('wizard-sub'); if (sub) sub.textContent = tt(h[2], h[3]);
+  }
+  document.addEventListener('hikaya:langchange', () => renderStepHeading(currentStepName));
   function showWizardStep(stepName) {
+    renderStepHeading(stepName);
     currentStepName = stepName;
     document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
     const target = document.getElementById('wizard-step-' + stepName);
@@ -888,17 +916,17 @@
         : t('personalize.summary_extra_no', 'Generated for you');
       rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
     }
-    rows.push({ label: t('personalize.dedication_label', 'Dedication'), value: dedication || '—', step: 'dedication' });
 
     document.getElementById('review-summary').innerHTML = rows.map(r => `
       <div class="review-row"><span>${r.label}</span><span>${r.value}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
     `).join('');
     document.querySelectorAll('.review-edit').forEach(btn => {
-      btn.addEventListener('click', () => showWizardStep(btn.dataset.goto));
+      btn.addEventListener('click', () => btn.dataset.goto === 'story' ? unlockStory() : showWizardStep(btn.dataset.goto));
     });
   }
 
   renderWizardProgress();
+  renderStepHeading(currentStepName);
 
   // Pre-select story if the visitor arrived from a story page (?story=...).
   // Built-in stories are already known synchronously (STORY_THEMES has them
@@ -906,7 +934,8 @@
   // Admin-added stories aren't known until loadStoryCatalog()'s fetch
   // resolves, which has its own matching check to catch that case.
   const urlStory = new URLSearchParams(window.location.search).get('story');
-  if (urlStory && STORY_THEMES[urlStory]) selectStory(urlStory);
+  const preStory = resolveStory(urlStory);
+  if (preStory) { selectStory(preStory); lockStory(); }
 
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
@@ -1005,5 +1034,8 @@
   });
 </script>
 
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="chrome.js" defer></script>
 </body>
 </html>

@@ -1,404 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hikaya by Maison Jaber — More than a book, it's a memory for life.</title>
-<meta name="description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Hikaya by Maison Jaber — More than a book, it's a memory for life." />
-<meta property="og:description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
-<meta property="og:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
-<meta property="og:url" content="https://maison-jaber.com/test5/index.html" />
-<meta property="og:site_name" content="Hikaya by Maison Jaber" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Hikaya by Maison Jaber — More than a book, it's a memory for life." />
-<meta name="twitter:description" content="Personalized children's storybooks, beautifully illustrated and made to inspire a brighter tomorrow." />
-<meta name="twitter:image" content="https://maison-jaber.com/test5/images/hero-bedroom-wide.jpg" />
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
-  * { box-sizing: border-box; }
-  :root {
-    --ivory: #F8F2E8; --cream: #F3E8D8; --beige: #DFC9AE; --taupe: #B69675;
-    --caramel: #A67443; --brown: #563622; --near-black: #2E2018; --gold: #C8954D;
-    --radius: 16px; --radius-lg: 24px;
-  }
-  html, body { margin: 0; background: var(--ivory); color: var(--near-black); font-family: 'Inter', sans-serif; font-size: 15.5px; line-height: 1.6; }
-  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 56px; }
-  @media (max-width: 1000px) { .wrap { padding: 0 28px; } }
-  @media (max-width: 640px) { .wrap { padding: 0 18px; } }
-  a { text-decoration: none; color: inherit; }
-  img { max-width: 100%; display: block; }
-  h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
-  .script { font-family: 'Caveat', cursive; font-weight: 700; }
-  .eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--caramel); }
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hikaya by Maison Jaber — Personalised storybooks with your child as the hero</title>
+<meta name="description" content="Choose a story, add your child's name, age and photo, and we create, print and gift-box a hardcover storybook with them as the hero. Delivered across the UAE and GCC." />
+<link rel="canonical" href="https://maison-jaber.com/" />
+<meta property="og:title" content="Hikaya by Maison Jaber — Their name. Their story." />
+<meta property="og:description" content="Personalised hardcover storybooks, made for your child and delivered gift-boxed." />
+<meta property="og:image" content="images/hom-hero-01.webp" />
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="preload" as="image" href="images/hom-hero-01.webp" media="(min-width: 768px)" />
+<link rel="preload" as="image" href="images/hom-hero-01-m.webp" media="(max-width: 767px)" />
 
-  .btn-primary {
-    display: inline-flex; align-items: center; gap: 10px; background: var(--caramel); color: #fff;
-    padding: 14px 26px; border-radius: 999px; font-size: 14px; font-weight: 600; border: none; cursor: pointer;
-    box-shadow: 0 10px 30px rgba(70,45,25,0.16); transition: background 0.25s ease, transform 0.2s ease;
-  }
-  .btn-primary:hover { background: #8f5f34; transform: translateY(-1px); }
-  .btn-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; color: var(--brown); border-bottom: 1px solid var(--taupe); padding-bottom: 2px; }
+<link rel="stylesheet" href="hikaya.css" />
+</head>
 
-  /* subtle paper grain, very low opacity */
-  body::before {
-    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035; mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+<body>
+<div id="hk-top"></div>
 
-  /* Header */
-  header.site { position: sticky; top: 0; z-index: 20; padding: 18px 0; background: var(--ivory); border-bottom: 1px solid var(--beige); }
-  header.site .inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-  .wordmark img { height: 100px; width: auto; }
-  nav.main { display: flex; align-items: center; gap: 34px; }
-  nav.main a { font-size: 13.5px; font-weight: 600; color: var(--brown); }
-  nav.main a:hover { color: var(--caramel); }
-  .header-actions { display: flex; align-items: center; gap: 18px; }
-  .header-actions .icon-btn svg { width: 19px; height: 19px; stroke: var(--brown); fill: none; }
-  .icon-btn { position: relative; display: inline-flex; }
-  .cart-badge {
-    display: none; position: absolute; top: -7px; right: -8px; background: var(--coral); color: #fff;
-    font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 50%;
-    align-items: center; justify-content: center; padding: 0 3px; font-family: 'Inter', sans-serif;
-  }
-  .lang-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--brown); }
-  .lang-pill:hover { background: var(--cream); }
-  .zone-pill { font-size: 12.5px; font-weight: 700; padding: 9px 12px; border-radius: 100px; border: 1px solid var(--beige); background: transparent; color: var(--coral-deep); cursor: pointer; }
-  .zone-pill:hover { background: var(--cream); }
-  .hamburger, .mobile-cta-icon { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
-  .hamburger svg, .mobile-cta-icon svg { width: 22px; height: 22px; stroke: var(--brown); fill: none; }
-  .mobile-nav-panel { display: none; flex-direction: column; gap: 4px; background: var(--ivory); padding: 6px 28px 24px; }
-  .mobile-nav-panel.open { display: flex; }
-  .mobile-nav-panel a.nav-link { font-size: 15.5px; font-weight: 600; color: var(--brown); padding: 10px 0; border-bottom: 1px solid var(--beige); }
-  .mobile-nav-panel .btn-primary { margin-top: 16px; justify-content: center; }
+<main id="main">
 
-  @media (max-width: 900px) {
-    header.site { padding: 16px 0; }
-    header.site .inner { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; }
-    header.site .wordmark { grid-column: 2; justify-self: center; }
-    header.site .wordmark img { height: 62px; }
-    nav.main, .header-actions { display: none; }
-    .hamburger { grid-column: 1; display: flex; justify-self: start; }
-    .mobile-cta-icon { grid-column: 3; display: flex; justify-self: end; }
-  }
+<!-- 01 HERO -->
+<section class="hero" aria-labelledby="hero-title" data-sticky-after>
+  <div class="hero-media">
+    <span class="dev-tag">Stand-in · HOM-HERO-01</span>
+    <picture>
+      <source media="(max-width: 767px)" srcset="images/hom-hero-01-m.webp" />
+      <img src="images/hom-hero-01.webp" width="2400" height="1500" fetchpriority="high" alt="A child reading her personalised Hikaya hardcover, with her name on the cover" data-i18n-alt="home6.hero_alt" />
+    </picture>
+  </div>
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1 id="hero-title" data-i18n-html="home6.hero_h1">Their name.<br>Their story.<br>A memory they'll keep.</h1>
+      <p class="lede" data-i18n="home6.hero_sub">Beautifully crafted personalised storybooks that place your child at the heart of the adventure.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-secondary" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a>
+      </div>
+      <span class="hand" data-i18n="home6.hero_hand">Little stories. Big memories.</span>
+    </div>
+  </div>
+</section>
 
-  /* Hero */
-  .hero { position: relative; min-height: 760px; display: flex; align-items: center; overflow: hidden; }
-  .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-  .hero-bg .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
-  .hero-bg .slide.active { opacity: 1; }
-  .hero-bg .slide img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 40%; }
-  .hero-bg::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, var(--ivory) 0%, rgba(248,242,232,0.85) 24%, rgba(248,242,232,0.15) 46%, rgba(0,0,0,0) 62%); }
-  .hero-dots { position: absolute; z-index: 3; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
-  .hero-dots button { width: 7px; height: 7px; border-radius: 50%; background: rgba(86,54,34,0.3); border: none; cursor: pointer; padding: 0; transition: all 0.25s ease; }
-  .hero-dots button.active { background: var(--caramel); width: 20px; border-radius: 4px; }
-  @media (max-width: 900px) { .hero-dots { bottom: 14px; } }
-  .hero-inner { position: relative; z-index: 2; padding-top: 64px; padding-bottom: 60px; width: 100%; }
-  .hero-copy { max-width: 480px; }
-  .hero-copy .eyebrow { display: block; margin-bottom: 14px; }
-  .hero-copy h1 { font-size: clamp(40px, 4.6vw, 60px); line-height: 1.08; margin-bottom: 20px; }
-  .hero-copy h1 em { font-style: italic; color: var(--caramel); }
-  .hero-copy p.lede { font-size: 16.5px; color: #5b4a3d; max-width: 40ch; margin-bottom: 30px; }
-  .hero-trust { display: flex; gap: 26px; margin-top: 34px; flex-wrap: wrap; }
-  .hero-price { margin-top: 14px; font-size: 14px; font-weight: 600; color: var(--brown); }
-  .hero-price [data-hikaya-price] { color: var(--coral-deep); }
-  .hero-trust .item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600; color: var(--brown); }
-  .hero-trust svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; flex-shrink: 0; }
+<!-- 02 FROM A STORY TO THEIR STORY -->
+<section class="journey" id="how-it-works" aria-labelledby="journey-title">
+  <div class="wrap">
+    <h2 id="journey-title" data-i18n="home6.how_title">From a story to their story.</h2>
+    <ol class="steps">
+      <li class="step">
+        <div class="step-top"><span class="step-num">1</span><h3 data-i18n="home6.s1_t">Choose their story</h3></div>
+        <p data-i18n="home6.s1_d">Explore our collection and pick the adventure, theme or moment that feels right for your child.</p>
+        <div class="step-visual"><span class="dev-tag">Stand-in · HOM-JRN-01</span><img src="images/hom-jrn-01.webp" srcset="images/hom-jrn-01-900.webp 900w, images/hom-jrn-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="700" height="435" loading="lazy" alt="Hikaya storybooks on a shelf, ready to choose from" data-i18n-alt="home6.s1_alt" /></div>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">2</span><h3 data-i18n="home6.s2_t">Make it theirs</h3></div>
+        <p data-i18n="home6.s2_d">Add your child's name, age and a photo, so we can place them inside the story.</p>
+        <div class="step-visual" aria-hidden="true">
+          <div class="tablet"><div class="scr">
+            <span class="t-h" data-i18n="home6.f_title">Tell us about your child</span>
+            <div><span class="lbl" data-i18n="home6.f_name">Child's first name</span><div class="inp">Adam</div></div>
+            <div><span class="lbl" data-i18n="home6.f_age">Age</span><div class="ages"><span>2–4</span><span class="on">4–6</span><span>6–8</span></div></div>
+            <div><span class="lbl" data-i18n="home6.f_photo">Photo</span><div class="ph"><img src="images/hom-jrn-02.webp" alt="" loading="lazy" /><span data-i18n="home6.f_photo_ok">Photo added</span></div></div>
+          </div></div>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">3</span><h3 data-i18n="home6.s3_t">We create their story</h3></div>
+        <p data-i18n="home6.s3_d">We bring the story together with your child at the centre of the adventure.</p>
+        <div class="step-visual v-photo3"><span class="dev-tag">HOM-JRN-03</span><img src="images/hom-jrn-03.webp" srcset="images/hom-jrn-03-900.webp 900w, images/hom-jrn-03.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1200" loading="lazy" alt="A personalised Hikaya hardcover with the child's name and portrait on the cover" data-i18n-alt="home6.s3_alt" /></div>
+      </li>
+      <li class="step">
+        <div class="step-top"><span class="step-num">4</span><h3 data-i18n="home6.s4_t">Printed, packed and delivered</h3></div>
+        <p data-i18n="home6.s4_d">Printed as a hardcover book, packed in our signature gift box and delivered ready for their moment.</p>
+        <div class="step-visual"><span class="dev-tag">Stand-in · HOM-JRN-04</span><img src="images/hom-jrn-04.webp" width="700" height="639" loading="lazy" alt="An open Hikaya gift box with cream tissue and a gold star seal" data-i18n-alt="home6.s4_alt" /></div>
+      </li>
+    </ol>
+  </div>
+</section>
 
-  .hero-flourish { position: absolute; top: 40px; right: 64px; z-index: 3; text-align: right; }
-  .hero-flourish .script { font-size: 26px; line-height: 1.15; color: var(--brown); display: block; }
-  .hero-flourish .heart { font-size: 15px; color: var(--caramel); }
-  @media (max-width: 1100px) { .hero-flourish { display: none; } }
+<!-- 03 THEIR NEXT ADVENTURE -->
+<section class="shelf" id="stories" aria-labelledby="new-title">
+  <div class="wrap">
+    <div class="shelf-head">
+      <div>
+        <h2 id="new-title" data-i18n="home6.new_title">Their Next Adventure</h2>
+        <p class="sub" data-i18n="home6.new_sub">Fresh stories for little personalities, big feelings and everyday adventures.</p>
+      </div>
+      <div class="shelf-controls">
+        <a class="text-link" href="stories.html"><span data-i18n="home6.view_all">View all</span> <span class="arr" aria-hidden="true">→</span></a>
+        <button class="arrow-btn" data-dir="-1" aria-controls="track-new" aria-label="Previous stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="1" aria-controls="track-new" aria-label="Next stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title"></ul>
+  </div>
+</section>
 
-  .hero-flourish-mobile { display: none; }
+<!-- 04 BEST SELLERS -->
+<section class="shelf" aria-labelledby="best-title">
+  <div class="wrap">
+    <div class="shelf-head">
+      <div>
+        <h2 id="best-title" data-i18n="home6.best_title">Best Sellers</h2>
+        <p class="sub" data-i18n="home6.best_sub">Stories families keep coming back to.</p>
+      </div>
+      <div class="shelf-controls">
+        <a class="text-link" href="stories.html"><span data-i18n="home6.view_all">View all</span> <span class="arr" aria-hidden="true">→</span></a>
+        <button class="arrow-btn" data-dir="-1" aria-controls="track-best" aria-label="Previous stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="1" aria-controls="track-best" aria-label="Next stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <ul class="track" id="track-best" tabindex="0" aria-labelledby="best-title"></ul>
+  </div>
+</section>
 
-  @media (max-width: 900px) {
-    .hero { min-height: auto; padding-bottom: 40px; display: block; }
-    .hero-bg { position: relative; height: 52vh; min-height: 340px; }
-    .hero-bg::after { background: linear-gradient(0deg, var(--ivory) 0%, rgba(248,242,232,0.05) 30%); }
-    .hero-inner { padding-top: 0; }
-    .hero-copy { max-width: none; padding: 26px 0 0; }
-    .hero-copy p.lede { max-width: none; }
-    .hero-copy h1 br { display: none; }
-    .hero-copy h1 { font-size: 34px; }
-    .hero-flourish-mobile { display: flex; align-items: center; gap: 10px; margin-top: 22px; }
-    .hero-flourish-mobile .script { font-size: 20px; line-height: 1.15; color: var(--brown); }
-    .hero-flourish-mobile .heart { font-size: 14px; color: var(--caramel); }
-  }
+<!-- 05 PACKAGING -->
+<section id="packaging" aria-labelledby="pack-title">
+  <div class="wrap">
+    <div class="banner">
+      <div class="banner-media"><span class="dev-tag">Stand-in · HOM-PKG-01</span><img src="images/hom-pkg-01.webp" srcset="images/hom-pkg-01-900.webp 900w, images/hom-pkg-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1046" loading="lazy" alt="The Hikaya gift box tied with a caramel satin ribbon and a Hikaya tag" data-i18n-alt="home6.pkg_alt" /></div>
+      <div class="banner-copy">
+        <h2 id="pack-title" data-i18n="home6.pkg_title">Beautiful from story to doorstep.</h2>
+        <p data-i18n="home6.pkg_sub">Every Hikaya book comes beautifully presented in our signature gift packaging.</p>
+        <p class="note" data-i18n="home6.pkg_direct">Giving it to someone else? We can deliver it straight to them.</p>
+        <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
 
-  /* How it works */
-  .how-section { padding: 90px 0 70px; position: relative; }
-  .how-head { text-align: center; margin-bottom: 56px; }
-  .how-head h2 { font-size: clamp(30px, 3.4vw, 42px); margin-bottom: 10px; }
-  .how-head .eyebrow { display: block; }
-  .how-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
-  @media (max-width: 800px) { .how-grid { grid-template-columns: 1fr 1fr; gap: 34px 20px; } }
-  .how-step { padding: 0 26px; text-align: left; position: relative; }
-  .how-step:not(:last-child)::after { content: ''; position: absolute; top: 6px; right: 0; width: 1px; height: 70px; background: var(--beige); }
-  @media (max-width: 800px) { .how-step:not(:last-child)::after { display: none; } }
-  .how-step svg { width: 30px; height: 30px; stroke: var(--gold); fill: none; stroke-width: 1.4; margin-bottom: 16px; }
-  .how-step h4 { font-size: 19px; margin-bottom: 6px; }
-  .how-step p { font-size: 13.5px; color: #6b5a4c; margin: 0; max-width: 22ch; }
+<!-- 06 REVIEWS -->
+<section class="reviews dev-only" aria-labelledby="rev-title">
+  <div class="wrap">
+    <div class="rev-grid">
+      <h2 id="rev-title" data-i18n="home6.rev_title">Real stories. Real reactions.</h2>
+      <figure class="review">
+        <span class="dev-tag">Placeholder</span>
+        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote data-i18n="home6.r1">She asked for “her book” every night for a week, and kept pointing at her own name.</blockquote>
+        <figcaption><span class="avatar" aria-hidden="true">A</span><span><b data-i18n="home6.r1_who">Amira's mum</b><span data-i18n="home6.r1_city">Dubai</span></span></figcaption>
+      </figure>
+      <figure class="review">
+        <span class="dev-tag">Placeholder</span>
+        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote data-i18n="home6.r2">The box alone made his birthday. The book itself is properly made. It will last.</blockquote>
+        <figcaption><span class="avatar" aria-hidden="true">O</span><span><b data-i18n="home6.r2_who">Omar's dad</b><span data-i18n="home6.r2_city">Abu Dhabi</span></span></figcaption>
+      </figure>
+      <figure class="review">
+        <span class="dev-tag">Placeholder</span>
+        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
+        <blockquote data-i18n="home6.r3">We sent it straight to my niece in Riyadh. She recognised herself before she could read the title.</blockquote>
+        <figcaption><span class="avatar" aria-hidden="true">L</span><span><b data-i18n="home6.r3_who">Lela's mum</b><span data-i18n="home6.r3_city">Sharjah</span></span></figcaption>
+      </figure>
+      <div class="rev-photo"><span class="dev-tag">Stand-in · HOM-REV-01</span><img src="images/hom-rev-01.webp" width="900" height="750" loading="lazy" alt="Hikaya storybooks beside a soft toy and a note card" data-i18n-alt="home6.rev_alt" /></div>
+    </div>
+    <p class="dev-note" style="margin-top:12px;font-size:12.5px;color:var(--brand);font-weight:600">Development placeholders. Replace with real reviews before launch.</p>
+  </div>
+</section>
 
-  .how-decor { position: absolute; right: 40px; bottom: 0; text-align: center; display: none; }
-  @media (min-width: 1250px) { .how-decor { display: block; } }
-  .how-decor img { width: 90px; margin: 0 auto 8px; }
-  .how-decor .script { font-size: 19px; color: var(--brown); display: block; line-height: 1.2; }
+<!-- 07 MORE THAN A BOOK -->
+<section class="why section-gap" aria-labelledby="why-title">
+  <div class="wrap">
+    <div class="band">
+      <div class="band-media"><span class="dev-tag">Stand-in · HOM-STY-01</span><img src="images/hom-sty-01.webp" srcset="images/hom-sty-01-900.webp 900w, images/hom-sty-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="787" loading="lazy" alt="A child in bed reading her Hikaya book, with the gift box beside her" data-i18n-alt="home6.why_alt" /></div>
+      <div class="band-copy">
+        <h2 id="why-title"><span class="hand" data-i18n="home6.why_more">More</span> <span data-i18n="home6.why_t1">than a book.</span><span class="l2" data-i18n="home6.why_t2">A story they can see themselves in.</span></h2>
+        <p data-i18n="home6.why_p">Every Hikaya story helps children see themselves as brave, kind, curious and capable, through real moments like big feelings, screen time, family, friendship and growing up.</p>
+        <a class="btn btn-primary" href="about.html"><span data-i18n="home6.why_cta">Our Story</span> <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
 
-  /* Editorial cards */
-  .editorial-section { padding: 40px 0 90px; }
-  .editorial-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-  @media (max-width: 900px) { .editorial-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 560px) { .editorial-grid { grid-template-columns: 1fr; } }
-  .ed-card { position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 3/4; box-shadow: 0 10px 30px rgba(70,45,25,0.08); }
-  .ed-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-  .ed-card:hover img { transform: scale(1.04); }
-  .ed-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(46,32,24,0.75) 0%, rgba(46,32,24,0.05) 55%); }
-  .ed-card .txt { position: absolute; left: 20px; right: 20px; bottom: 20px; z-index: 2; color: #fff; }
-  .ed-card h3 { font-size: 22px; line-height: 1.15; color: #fff; margin-bottom: 10px; }
-  .ed-card .btn-link { color: #fff; border-color: rgba(255,255,255,0.5); }
+<!-- 08 FINAL CTA -->
+<section class="final" aria-labelledby="final-title" data-sticky-hide>
+  <div class="wrap">
+    <div class="band">
+      <div class="band-media"><span class="dev-tag">Stand-in · HOM-CTA-01</span><img src="images/hom-cta-01.webp" srcset="images/hom-cta-01-900.webp 900w, images/hom-cta-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="933" loading="lazy" alt="A child sitting outdoors with her soft toy, looking out over a glowing city" data-i18n-alt="home6.final_alt" /></div>
+      <div class="band-copy">
+        <h2 id="final-title" data-i18n-html="home6.final_title">Every child has a story.<br>Let's make theirs unforgettable.</h2>
+        <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
 
-  /* Purpose band */
-  .purpose-band { background: var(--cream); padding: 80px 0; margin-top: 20px; }
-  .purpose-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-  @media (max-width: 850px) { .purpose-grid { grid-template-columns: 1fr; gap: 30px; } }
-  .purpose-photo { border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 20px 50px rgba(70,45,25,0.12); }
-  .purpose-photo img { width: 100%; display: block; }
-  .purpose-copy .eyebrow { display: block; margin-bottom: 12px; }
-  .purpose-copy h2 { font-size: clamp(28px, 3vw, 38px); margin-bottom: 16px; max-width: 14ch; }
-  .purpose-copy p { color: #5b4a3d; max-width: 44ch; margin-bottom: 24px; }
+<div id="hk-foot"></div>
 
-  /* Footer */
-  footer.site { background: var(--near-black); color: #e8ddd0; padding: 50px 0 30px; margin-top: 0; }
-  .newsletter-box {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
-    background: rgba(255,255,255,0.06); border-radius: 20px; padding: 28px 32px; margin-bottom: 36px;
-  }
-  .newsletter-box h3 { font-size: 21px; color: #fff; margin-bottom: 4px; }
-  .newsletter-box p { font-size: 13.5px; color: #cbbba9; }
-  .newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; }
-  .newsletter-form input {
-    padding: 12px 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
-    color: #fff; font-size: 13.5px; min-width: 220px; font-family: 'Inter', sans-serif;
-  }
-  .newsletter-form input::placeholder { color: #a8998a; }
-  .newsletter-form input:focus { outline: none; border-color: var(--gold); }
-  .newsletter-form button {
-    padding: 12px 24px; border-radius: 100px; border: none; background: var(--coral, #A67443); color: #fff;
-    font-size: 13.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
-  }
-  .newsletter-form button:hover { background: var(--coral-deep, #563622); }
-  .newsletter-msg { text-align: center; font-size: 12.5px; font-weight: 600; color: #d8c9b0; margin: -24px 0 24px; min-height: 16px; }
-  @media (max-width: 640px) { .newsletter-box { flex-direction: column; align-items: stretch; text-align: center; } .newsletter-form { justify-content: center; } }
-  .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; }
-  footer.site .wordmark img { height: 70px; filter: brightness(0) invert(1) opacity(0.9); }
-  footer.site nav { display: flex; gap: 24px; flex-wrap: wrap; }
-  footer.site nav a { font-size: 13px; color: #cbbba9; }
-  footer.site nav a:hover { color: #fff; }
-  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 12px; color: #a8998a; text-align: center; }
-</style>
-<script src="/site-header.js" defer></script>
+<div class="sticky-cta" id="sticky-cta">
+  <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+</div>
+
 <script src="/i18n.js" defer></script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
-<script src="/search.js" defer></script>
-<link rel="icon" type="image/png" href="images/favicon.png">
-</head>
-<body>
-
-<div id="site-header-root"></div>
-
-<section class="hero">
-  <div class="hero-bg" id="hero-carousel">
-    <div class="slide active"><img src="images/hero-bedroom-wide.jpg" alt="Child reading a personalized Hikaya storybook in a cozy bedroom, with the Hikaya gift box beside her"></div>
-    <div class="slide"><img src="images/fantasy-night-scene.jpg" alt="A child imagining herself inside her personalized storybook's magical world"></div>
-    <div class="slide"><img src="images/giftbox-open-pair.jpg" alt="An open Hikaya gift box with gold-starred tissue paper"></div>
-    <div class="slide"><img src="images/bookshelf-scene.jpg" alt="A shelf of Hikaya storybooks alongside a keepsake plush and handwritten note"></div>
-    <div class="slide"><img src="images/book-flatlay.jpg" alt="A personalized Hikaya storybook cover, illustrated just for one child"></div>
-  </div>
-  <div class="hero-dots" id="hero-dots"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-copy">
-      <span class="eyebrow" data-i18n="home5.hero_eyebrow">Personalized Children's Storybooks</span>
-      <h1 data-i18n-html="home5.hero_h1">More than<br/> a book,<br/> <em>it's a memory<br/> for life.</em></h1>
-      <p class="lede" data-i18n="home5.hero_lede">Beautifully illustrated, personally crafted, and made to inspire a brighter tomorrow.</p>
-      <a class="btn-primary" href="./personalize.html" data-i18n="home5.create_book_arrow">Create Their Book &rarr;</a>
-      <div class="hero-price">
-        <span data-i18n="home5.price_from">From</span> <span data-hikaya-price>€34.90</span>
-      </div>
-      <div class="hero-trust">
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span data-i18n="home5.trust1">A meaningful gift</span></div>
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span data-i18n="home5.trust2">Beautifully illustrated</span></div>
-        <div class="item"><svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7-5.4-4.7 7.1-.6z"/></svg><span data-i18n="home5.trust3">Made just for them</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="how-section" id="how-it-works">
-  <div class="wrap">
-    <div class="how-head">
-      <span class="eyebrow" data-i18n="home5.how_eyebrow">A Simple Journey to a Truly Special Gift</span>
-      <h2 data-i18n="home5.how_title">How It Works</h2>
-    </div>
-    <div class="how-grid">
-      <div class="how-step">
-        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
-        <h4 data-i18n="home5.step1_title">1. Personalize</h4>
-        <p data-i18n="home5.step1_body">Add your child's name and a photo.</p>
-      </div>
-      <div class="how-step">
-        <svg viewBox="0 0 24 24"><path d="M15 4l1.5 3L20 8.5 16.5 10 15 13l-1.5-3L10 8.5 13.5 7z"/><path d="M5 15l.9 1.9L8 18l-2.1.9L5 21l-.9-2.1L2 18l2.1-1.1z"/></svg>
-        <h4 data-i18n="home5.step2_title">2. We Create</h4>
-        <p data-i18n="home5.step2_body">Our artists bring their story to life.</p>
-      </div>
-      <div class="how-step">
-        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <h4 data-i18n="home5.step3_title">3. We Print</h4>
-        <p data-i18n="home5.step3_body">A beautifully crafted book, made with care.</p>
-      </div>
-      <div class="how-step">
-        <svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12h18"/><path d="M12 8v13"/><path d="M12 8c-1.5-4-6-4-6-1s3 1 6 1z"/><path d="M12 8c1.5-4 6-4 6-1s-3 1-6 1z"/></svg>
-        <h4 data-i18n="home5.step4_title">4. We Deliver</h4>
-        <p data-i18n="home5.step4_body">Straight to your doorstep, ready to be treasured.</p>
-      </div>
-    </div>
-    <div class="how-decor">
-      <img src="images/bunny-card-books.jpg" alt="" style="border-radius:12px; object-fit:cover; height:70px; width:90px;">
-      <span class="script" data-i18n-html="home5.decor_script">Big imaginations<br/>start here &#9825;</span>
-    </div>
-  </div>
-</section>
-
-<section class="editorial-section" id="gifts">
-  <div class="wrap">
-    <div class="editorial-grid">
-      <a class="ed-card" href="./stories.html">
-        <img src="images/fantasy-night-scene.jpg" alt="A child imagining herself inside her personalized storybook's magical world">
-        <div class="txt"><h3 data-i18n="home5.card1_title">Stories for Braver Tomorrows</h3><span class="btn-link" data-i18n="home5.card1_cta">Explore Stories &rarr;</span></div>
-      </a>
-      <a class="ed-card" href="./personalize.html">
-        <img src="images/book-flatlay.jpg" alt="A personalized Hikaya storybook cover, illustrated just for one child">
-        <div class="txt"><h3 data-i18n="home5.card2_title">Beautifully Personalized</h3><span class="btn-link" data-i18n="home5.card2_cta">See the Magic &rarr;</span></div>
-      </a>
-      <a class="ed-card" href="#packaging">
-        <img src="images/giftbox-closeup.jpg" alt="The Hikaya premium gift box, tied with a caramel satin ribbon">
-        <div class="txt"><h3 data-i18n="home5.card3_title">A Gift They'll Always Remember</h3><span class="btn-link" data-i18n="home5.card3_cta">Our Packaging &rarr;</span></div>
-      </a>
-      <a class="ed-card" href="./about.html">
-        <img src="images/bookshelf-scene.jpg" alt="A shelf of Hikaya storybooks alongside a keepsake plush and handwritten note">
-        <div class="txt"><h3 data-i18n="home5.card4_title">Made with Love and Purpose</h3><span class="btn-link" data-i18n="home5.card4_cta">Our Story &rarr;</span></div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="purpose-band" id="packaging">
-  <div class="wrap purpose-grid">
-    <div class="purpose-photo"><img src="images/giftbox-open-pair.jpg" alt="An open Hikaya gift box with gold-starred tissue paper, beside the wrapped closed box and a personalized message card"></div>
-    <div class="purpose-copy">
-      <span class="eyebrow" data-i18n="home5.purpose_eyebrow">Timeless Stories, Made Just for Them</span>
-      <h2 data-i18n="home5.purpose_title">A keepsake, wrapped with care</h2>
-      <p data-i18n="home5.purpose_body">Every Hikaya book arrives in our signature gift box — cream, textured, tied with a satin ribbon, and finished with a handwritten note. Nothing about it feels ordinary, because the story inside isn't either.</p>
-      <a class="btn-primary" href="./personalize.html" data-i18n="home5.purpose_cta">Explore Gifting &rarr;</a>
-    </div>
-  </div>
-</section>
-
-<footer class="site">
-  <div class="wrap">
-    <div class="newsletter-box">
-      <div>
-        <h3 data-i18n="home5.newsletter_title">Stories in your inbox</h3>
-        <p data-i18n="home5.newsletter_sub">New stories, gifting ideas, and the occasional discount code — no spam.</p>
-      </div>
-      <form id="newsletter-form" class="newsletter-form">
-        <input type="email" id="newsletter-email" placeholder="you@email.com" data-i18n-placeholder="home5.newsletter_ph" required />
-        <button type="submit" data-i18n="home5.newsletter_btn">Subscribe</button>
-      </form>
-    </div>
-    <div id="newsletter-msg" class="newsletter-msg"></div>
-    <div class="footer-grid">
-      <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
-      <nav>
-        <a href="./stories.html" data-i18n="common.nav_stories">Our Stories</a>
-        <a href="#how-it-works" data-i18n="home5.nav_how">How It Works</a>
-        <a href="./about.html" data-i18n="common.nav_about">About</a>
-        <a href="./help.html" data-i18n="common.nav_help">Help</a>
-        <a href="./track-order.html" data-i18n="common.nav_track">Track Order</a>
-        <a href="./contact.html" data-i18n="common.nav_contact">Contact</a>
-        <a href="./account.html" data-i18n="home5.footer_account">Account</a>
-      </nav>
-    </div>
-    <div class="footer-bottom">
-      <span data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</span>
-      &nbsp;·&nbsp; <a href="privacy.html" style="color:#a8998a; text-decoration:underline;">Privacy</a>
-      &nbsp;·&nbsp; <a href="terms.html" style="color:#a8998a; text-decoration:underline;">Terms</a>
-      &nbsp;·&nbsp; <a href="refund-policy.html" style="color:#a8998a; text-decoration:underline;">Refunds</a>
-      &nbsp;·&nbsp; <a href="#" id="cookie-settings-link" style="color:#a8998a; text-decoration:underline;">Cookie Settings</a>
-    </div>
-  </div>
-</footer>
-
-<script>
-  (function () {
-    const track = document.getElementById('hero-carousel');
-    const slides = track.querySelectorAll('.slide');
-    const dotsWrap = document.getElementById('hero-dots');
-    let current = 0;
-
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.className = i === 0 ? 'active' : '';
-      dot.addEventListener('click', () => goTo(i));
-      dotsWrap.appendChild(dot);
-    });
-
-    function goTo(i) {
-      current = (i + slides.length) % slides.length;
-      slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
-      [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
-    }
-
-    setInterval(() => goTo(current + 1), 4500);
-  })();
-
-  document.getElementById('cookie-settings-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    if (window.hikayaOpenConsentSettings) window.hikayaOpenConsentSettings();
-  });
-
-  document.getElementById('newsletter-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const emailInput = document.getElementById('newsletter-email');
-    const msg = document.getElementById('newsletter-msg');
-    const btn = e.target.querySelector('button');
-    const email = emailInput.value.trim();
-    if (!email) return;
-    btn.disabled = true;
-    try {
-      const res = await fetch('/.netlify/functions/subscribe-newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      if (res.ok) {
-        msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_success') : "Thanks! You're on the list.";
-        emailInput.value = '';
-      } else {
-        const data = await res.json();
-        msg.textContent = data.error || (window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.');
-      }
-    } catch {
-      msg.textContent = window.hikayaT ? window.hikayaT('home5.newsletter_error') : 'Something went wrong. Please try again.';
-    }
-    btn.disabled = false;
-  });
-</script>
-
+<script src="chrome.js" defer></script>
+<script src="home6.js" defer></script>
 </body>
 </html>

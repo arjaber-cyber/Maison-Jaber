@@ -24,6 +24,8 @@ const BUCKET = 'site-photos';
 // The known set of filenames the site actually uses -- prevents uploading
 // to an arbitrary path even though the caller is already admin-verified.
 const KNOWN_FILENAMES = [
+  // 2026 redesign slots (Image Requirements asset IDs)
+  'hom-hero-01.webp', 'hom-hero-01-m.webp', 'hom-jrn-01.webp', 'hom-jrn-02.webp', 'hom-jrn-03.webp', 'hom-jrn-04.webp', 'hom-pkg-01.webp', 'hom-rev-01.webp', 'hom-sty-01.webp', 'hom-cta-01.webp', 'col-hero-01.webp', 'col-help-01.webp', 'age-hero-01.webp', 'age-hero-02.webp', 'age-hero-03.webp', 'age-quote-01.webp', 'sty-inside-01.webp', 'abt-hero-01.webp', 'abt-why-01.webp', 'wld-tile-01.webp', 'wld-tile-02.webp', 'wld-tile-03.webp', 'wld-tile-04.webp', 'wld-tile-05.webp', 'wld-tile-06.webp', 'ord-hero-01.webp', 'faq-hero-01.webp', 'nf-hero-01.webp',
   'hero-bedroom-wide.jpg', 'giftbox-closeup.jpg', 'child-reading-closeup.jpg',
   'book-flatlay.jpg', 'giftbox-open-pair.jpg', 'fantasy-night-scene.jpg',
   'bunny-card-books.jpg', 'giftbag-set.jpg', 'desk-flatlay-globe.jpg',

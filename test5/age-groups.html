@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Stories by age | Hikaya by Maison Jaber</title>
+<meta name="description" content="Personalised storybooks for ages 2–4, 4–6 and 6–8, made around real childhood moments." />
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
+</head>
+<body data-page="ages">
+<div id="hk-top"></div>
+<main id="main">
+
+<section class="page-hero" aria-labelledby="age-title">
+  <div class="hero-media"><span class="dev-tag" id="age-img-tag">Stand-in · AGE-HERO-02</span><img id="age-img" src="images/age-hero-02.webp" width="1300" height="866" fetchpriority="high" alt="" /></div>
+  <div class="wrap"><div class="hero-copy">
+    <h1 id="age-title">Stories for ages 4–6</h1>
+    <p class="lede" id="age-sub">Big imaginations, growing independence and plenty of questions.</p>
+    <nav class="pills" aria-label="Choose an age group" style="margin-top:24px">
+      <a class="pill" data-band="2-4" href="?age=2-4">2–4</a><a class="pill" data-band="4-6" href="?age=4-6" aria-current="page">4–6</a><a class="pill" data-band="6-8" href="?age=6-8">6–8</a>
+    </nav>
+  </div></div>
+</section>
+<section class="wrap" style="padding-top:12px" aria-label="Themes">
+  <ul class="tiles" id="tiles"></ul>
+</section>
+<section class="sec wrap" aria-labelledby="pop-title">
+  <div class="sec-head"><h2 id="pop-title" class="small" data-i18n="pg.age_popular">Popular in this age group</h2></div>
+  <ul class="sgrid" id="popular"></ul>
+</section>
+<section class="quote section-gap" style="padding-top:var(--sec)" aria-label="About this age">
+  <div class="wrap"><div class="band">
+    <div class="band-media"><span class="dev-tag">Stand-in · AGE-QUOTE-01</span><img src="images/age-quote-01.webp" srcset="images/age-quote-01-900.webp 900w, images/age-quote-01.webp 1600w" sizes="(max-width: 767px) 100vw, 60vw" width="1254" height="940" loading="lazy" alt="" /></div>
+    <div class="band-copy">
+      <blockquote id="age-quote"></blockquote>
+      <a class="btn btn-primary" id="age-cta" href="stories.html?age=4-6"><span>Browse all ages 4–6</span> <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </div></div>
+</section>
+
+</main>
+<div id="hk-foot"></div>
+<script src="/i18n.js" defer></script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="chrome.js" defer></script>
+<script src="browse.js" defer></script>
+</body>
+</html>

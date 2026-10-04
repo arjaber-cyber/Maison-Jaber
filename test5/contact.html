@@ -1,165 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Contact Us — Hikaya by Maison Jaber</title>
-<meta name="description" content="Get in touch with Hikaya by Maison Jaber — questions about an order, a photo, or delivery." />
-<link rel="icon" type="image/png" href="images/favicon.png">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap');
-  :root {
-    --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
-    --coral: #A67443; --coral-deep: #563622; --bg: #F8F2E8; --bg-soft: #F3E8D8; --radius: 16px;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; }
-  h1, h2 { font-family: 'Cormorant Garamond', serif; font-weight: 600; margin: 0; }
-  a { color: inherit; }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 32px; }
-  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
-
-  header.site { border-bottom: 1px solid var(--line-soft); }
-  header.site .inner { max-width: 1180px; margin: 0 auto; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
-  .site-logo { height: 56px; }
-  header.site nav a { font-size: 13px; font-weight: 700; color: var(--ink-soft); text-decoration: none; margin-left: 20px; }
-
-  .page-head { padding: 44px 0 8px; text-align: center; }
-  .page-head h1 { font-size: 30px; }
-  .page-head p { color: var(--ink-soft); font-weight: 600; font-size: 14px; margin-top: 8px; }
-
-  .contact-layout { display: grid; grid-template-columns: 1fr 1.3fr; gap: 40px; padding: 36px 0 80px; max-width: 900px; margin: 0 auto; }
-  @media (max-width: 760px) { .contact-layout { grid-template-columns: 1fr; padding: 24px 0 60px; } }
-
-  .contact-info h2 { font-size: 19px; margin-bottom: 14px; }
-  .contact-method { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; }
-  .contact-method svg { width: 18px; height: 18px; stroke: var(--coral); fill: none; flex-shrink: 0; margin-top: 2px; }
-  .contact-method a, .contact-method span { font-size: 14px; font-weight: 600; text-decoration: none; color: var(--ink); }
-  .contact-method .label { display: block; font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
-
-  .contact-form { background: #fff; border-radius: var(--radius); padding: 28px; }
-  .field { margin-bottom: 16px; }
-  .field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); margin-bottom: 6px; display: block; }
-  .field input, .field textarea {
-    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line-soft); font-size: 14px;
-    font-family: 'Inter', sans-serif; box-sizing: border-box; resize: vertical;
-  }
-  .field input:focus, .field textarea:focus { outline: none; border-color: var(--coral); }
-  .btn-primary {
-    width: 100%; padding: 14px; border-radius: 999px; border: none; background: var(--coral); color: #fff;
-    font-size: 14.5px; font-weight: 700; cursor: pointer;
-  }
-  .btn-primary:hover { background: var(--coral-deep); }
-  .form-msg { font-size: 13px; font-weight: 700; margin-top: 12px; text-align: center; min-height: 16px; }
-  .form-msg.success { color: #3d5a26; }
-  .form-msg.error { color: var(--coral-deep); }
-
-  footer.site { background: #2E2018; color: #e8ddd0; padding: 30px 0; text-align: center; margin-top: 20px; }
-  footer.site p { font-size: 12.5px; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Contact | Hikaya</title>
+<meta name="description" content="Questions about an order, a photo or delivery? Get in touch with Hikaya." />
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
 </head>
-<body>
+<body data-page="contact">
+<div id="hk-top"></div>
+<main id="main">
 
-<header class="site">
-  <div class="inner">
-    <a href="index.html"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="help.html">Help</a><a href="track-order.html">Track Order</a></nav>
-  </div>
-</header>
-
-<div class="wrap page-head">
-  <h1>Contact Us</h1>
-  <p>Have a question about an order, a photo, or delivery? We're happy to help.</p>
+<div class="wrap contact-grid">
+  <section aria-labelledby="ct-title">
+    <h1 id="ct-title" data-i18n="pg.ct_title">Get in touch</h1>
+    <p class="lede" data-i18n="pg.ct_sub"></p>
+    <form class="cform" id="cform" novalidate>
+      <label><span data-i18n="pg.ct_name">Name</span><input type="text" id="contact-name" autocomplete="name" required /></label>
+      <label><span data-i18n="pg.ct_email">Email</span><input type="email" id="contact-email" autocomplete="email" required /></label>
+      <label><span data-i18n="pg.ct_order">Order number (optional)</span><input type="text" id="contact-order" placeholder="HK-12345678" /></label>
+      <label><span data-i18n="pg.ct_message">Message</span><textarea id="contact-message" rows="6" required></textarea></label>
+      <button type="submit" class="btn btn-primary" id="contact-submit" data-i18n="pg.ct_send">Send Message</button>
+      <p class="form-msg" id="contact-msg" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+  <aside class="reach" aria-labelledby="reach-title">
+    <h2 id="reach-title" data-i18n="pg.ct_other">Other ways to reach us</h2>
+    <dl>
+      <div><dt data-i18n="pg.ct_email_l">Email</dt><dd><a href="mailto:hello@maison-jaber.com">hello@maison-jaber.com</a></dd></div>
+      <div><dt data-i18n="pg.ct_resp">Response time</dt><dd data-i18n="pg.ct_resp_v">Usually within a day</dd></div>
+      <div><dt data-i18n="pg.ct_based">Based in</dt><dd data-i18n="pg.ct_based_v">United Arab Emirates</dd></div>
+    </dl>
+    <p class="note"><span data-i18n="pg.ct_track">Checking on an order?</span> <a href="track-order.html" data-i18n="pg.ct_track_a">Track your order</a></p>
+  </aside>
 </div>
-
-<div class="wrap contact-layout">
-  <div class="contact-info">
-    <h2>Other ways to reach us</h2>
-    <div class="contact-method">
-      <svg viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-      <div><span class="label">Email</span><a href="mailto:hello@maison-jaber.com">hello@maison-jaber.com</a></div>
-    </div>
-    <div class="contact-method">
-      <svg viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      <div><span class="label">Response time</span><span>Usually within a day</span></div>
-    </div>
-    <div class="contact-method">
-      <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
-      <div><span class="label">Based in</span><span>United Arab Emirates</span></div>
-    </div>
-    <p style="font-size:13px; color:var(--ink-soft); margin-top:24px;">Already have an order and want to check its status instead? <a href="track-order.html" style="text-decoration:underline; font-weight:700;">Track your order</a>.</p>
-  </div>
-
-  <div class="contact-form">
-    <div class="field">
-      <label class="field-label" for="contact-name">Name</label>
-      <input type="text" id="contact-name" placeholder="Your name" />
-    </div>
-    <div class="field">
-      <label class="field-label" for="contact-email">Email</label>
-      <input type="email" id="contact-email" placeholder="you@email.com" />
-    </div>
-    <div class="field">
-      <label class="field-label" for="contact-order">Order Number (optional)</label>
-      <input type="text" id="contact-order" placeholder="HK-12345678" />
-    </div>
-    <div class="field">
-      <label class="field-label" for="contact-message">Message</label>
-      <textarea id="contact-message" rows="5" placeholder="How can we help?"></textarea>
-    </div>
-    <button type="button" class="btn-primary" id="contact-submit">Send Message</button>
-    <div class="form-msg" id="contact-msg"></div>
-  </div>
-</div>
-
-<footer class="site">
-  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
-</footer>
-
 <script>
-  document.getElementById('contact-submit').addEventListener('click', async () => {
-    const name = document.getElementById('contact-name').value.trim();
-    const email = document.getElementById('contact-email').value.trim();
-    const orderNumber = document.getElementById('contact-order').value.trim();
-    const message = document.getElementById('contact-message').value.trim();
-    const msgEl = document.getElementById('contact-msg');
-    const btn = document.getElementById('contact-submit');
-
-    msgEl.className = 'form-msg';
-    if (!name || !email || message.length < 5) {
-      msgEl.className = 'form-msg error';
-      msgEl.textContent = 'Please fill in your name, email, and a short message.';
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Sending…';
+/* Same contact-submit logic as before, now with EN/AR messages. */
+document.addEventListener('DOMContentLoaded', function () {
+  var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
+  document.getElementById('cform').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var name = document.getElementById('contact-name').value.trim(), email = document.getElementById('contact-email').value.trim();
+    var orderNumber = document.getElementById('contact-order').value.trim(), message = document.getElementById('contact-message').value.trim();
+    var msg = document.getElementById('contact-msg'), btn = document.getElementById('contact-submit');
+    msg.className = 'form-msg';
+    if (!name || !email || message.length < 5) { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_missing', 'Please fill in your name, email and a short message.'); return; }
+    btn.disabled = true; btn.textContent = t('pg.ct_sending', 'Sending…');
     try {
-      const res = await fetch('/.netlify/functions/contact-submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, orderNumber, message }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        msgEl.className = 'form-msg success';
-        msgEl.textContent = "Thanks! We'll get back to you soon.";
-        document.getElementById('contact-name').value = '';
-        document.getElementById('contact-email').value = '';
-        document.getElementById('contact-order').value = '';
-        document.getElementById('contact-message').value = '';
-      } else {
-        msgEl.className = 'form-msg error';
-        msgEl.textContent = data.error || 'Something went wrong. Please try again.';
-      }
-    } catch {
-      msgEl.className = 'form-msg error';
-      msgEl.textContent = 'Something went wrong. Please try again.';
-    }
-    btn.disabled = false;
-    btn.textContent = 'Send Message';
+      var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, orderNumber: orderNumber, message: message }) });
+      var data = await res.json();
+      if (res.ok) { msg.className = 'form-msg success'; msg.textContent = t('pg.ct_ok', "Thanks! We'll get back to you soon."); document.getElementById('cform').reset(); }
+      else { msg.className = 'form-msg error'; msg.textContent = data.error || t('pg.ct_err', 'Something went wrong. Please try again.'); }
+    } catch (_) { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again.'); }
+    btn.disabled = false; btn.textContent = t('pg.ct_send', 'Send Message');
   });
+});
 </script>
+</main>
+<div id="hk-foot"></div>
+<script src="/i18n.js" defer></script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="chrome.js" defer></script>
 
 </body>
 </html>

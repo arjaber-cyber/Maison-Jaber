@@ -6,7 +6,8 @@
 <title>Track Your Order — Hikaya by Maison Jaber</title>
 <meta name="description" content="Check the status of your Hikaya storybook order." />
 <meta name="robots" content="noindex, follow" />
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap');
   :root {
@@ -66,15 +67,12 @@
   footer.site { background: #2E2018; color: #e8ddd0; padding: 30px 0; text-align: center; margin-top: 40px; }
   footer.site p { font-size: 12.5px; }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
 </head>
-<body>
+<body data-flow="track">
 
-<header class="site">
-  <div class="inner">
-    <a href="index.html"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <nav><a href="help.html">Help</a></nav>
-  </div>
-</header>
+<div id="hk-top"></div>
 
 <div class="wrap page-head">
   <h1>Track Your Order</h1>
@@ -106,9 +104,7 @@
   </div>
 </div>
 
-<footer class="site">
-  <div class="wrap"><p>&copy; 2026 Maison Jaber. All rights reserved.</p></div>
-</footer>
+<div id="hk-foot"></div>
 
 <script>
   const STAGE_LABELS = {
@@ -177,5 +173,8 @@
   document.getElementById('track-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') trackOrder(); });
 </script>
 
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="chrome.js" defer></script>
 </body>
 </html>

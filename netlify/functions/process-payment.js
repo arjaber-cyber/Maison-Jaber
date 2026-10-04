@@ -62,6 +62,13 @@ exports.handler = async (event) => {
     } catch { /* fall through as guest */ }
   }
 
+  // GCC launch: all orders are paid online through Ziina (create-ziina-payment.js),
+  // which prices the order on the server. This older path trusted the browser's
+  // total, so it is closed for every region we currently sell in.
+  if (['UAE', 'Saudi', 'Qatar', 'Kuwait', 'Bahrain', 'Oman'].includes(country) || paymentMethod !== 'cod') {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Please pay online at checkout.' }) };
+  }
+
   // --- Cash on Delivery: works right now, no gateway needed ---
   if (paymentMethod === 'cod') {
     try {

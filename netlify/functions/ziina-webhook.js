@@ -9,6 +9,7 @@
 // Env: ZIINA_WEBHOOK_SECRET
 
 const crypto = require('crypto');
+const { settleFromZiina } = require('./_ziina');
 
 const ZIINA_IPS = ['3.29.184.186', '3.29.190.95', '20.233.47.127', '13.202.161.181'];
 
@@ -38,8 +39,12 @@ exports.handler = async (event) => {
 
   if (name === 'payment_intent.status.updated') {
     console.log(`ZIINA PAYMENT ${data.status}`, data.id, data.amount, data.currency_code);
-    // Next step: when wired into checkout, look up the order by data.id in
-    // Supabase and mark it paid here (same job paytabs-callback.js does).
+    // Re-read the payment from Ziina and settle the matching order (marks it
+    // paid + sends the confirmation email once; ignores test pings with no order).
+    if (data.id) {
+      try { await settleFromZiina(String(data.id)); }
+      catch (e) { console.error('ziina settle failed', e.message); return { statusCode: 500, body: 'retry' }; }
+    }
   } else if (name === 'refund.status.updated') {
     console.log('ZIINA REFUND', data.id, data.status);
   }

@@ -131,8 +131,8 @@ window.HIKAYA_TRANSLATIONS = {
     a1_2: { en: 'A clear, front-facing photo in good natural lighting, without filters or anything covering the face, works best for a recognizable result.', de: 'Ein klares Foto von vorne bei gutem natürlichem Licht, ohne Filter oder etwas, das das Gesicht verdeckt, ergibt das beste, erkennbarste Ergebnis.', ar: 'الصورة الواضحة الأمامية بإضاءة طبيعية جيدة، دون فلاتر أو أي شيء يغطي الوجه، تعطي أفضل نتيجة يمكن التعرف عليها.' },
     q1_3: { en: 'How closely will the illustration resemble my child?', de: 'Wie sehr wird die Illustration meinem Kind ähneln?', ar: 'إلى أي مدى ستشبه الرسمة طفلي؟' },
     a1_3: { en: "The illustration is a tasteful storybook interpretation — recognizable in likeness, but reimagined in Maison Jaber's illustration style rather than a photo pasted into the page.", de: 'Die Illustration ist eine geschmackvolle Bilderbuch-Interpretation — im Aussehen erkennbar, aber neu gestaltet im Illustrationsstil von Maison Jaber, statt eines eingefügten Fotos.', ar: 'الرسمة تفسير فني أنيق بأسلوب الكتب المصورة — يمكن التعرف على الشبه، لكن بإعادة تصور بأسلوب رسوم ميزون جابر، لا كصورة ملصقة على الصفحة.' },
-    q1_4: { en: "Can I preview the book before it's printed?", de: 'Kann ich das Buch vor dem Druck ansehen?', ar: 'هل يمكنني معاينة الكتاب قبل الطباعة؟' },
-    a1_4: { en: "We'll send a preview by email once your child's story is prepared, before it goes to print.", de: 'Wir senden Ihnen eine Vorschau per E-Mail, sobald die Geschichte Ihres Kindes fertig ist, bevor sie gedruckt wird.', ar: 'سنرسل معاينة عبر البريد الإلكتروني بمجرد تجهيز قصة طفلك، قبل إرسالها للطباعة.' },
+    q1_4: { en: "Can I see the book before it's printed?", de: 'Kann ich das Buch vor dem Druck sehen?', ar: 'هل يمكنني رؤية الكتاب قبل الطباعة؟' },
+    a1_4: { en: "Not at the moment. Once you place your order, we create your child's story, print it and pack it — so please double-check the name, age and photo before you check out.", de: 'Derzeit nicht. Nach Ihrer Bestellung erstellen, drucken und verpacken wir die Geschichte Ihres Kindes — bitte prüfen Sie Name, Alter und Foto vor dem Bezahlen.', ar: 'ليس حاليًا. بعد إتمام طلبك نُنشئ قصة طفلك ونطبعها ونغلّفها — لذا يرجى التأكد من الاسم والعمر والصورة قبل الدفع.' },
     q1_5: { en: 'Can I order for more than one child, or siblings?', de: 'Kann ich für mehrere Kinder oder Geschwister bestellen?', ar: 'هل يمكنني الطلب لأكثر من طفل، أو للإخوة؟' },
     a1_5: { en: 'Yes — submit a separate request for each child so each book can be personalized correctly.', de: 'Ja — reichen Sie für jedes Kind eine separate Anfrage ein, damit jedes Buch korrekt personalisiert werden kann.', ar: 'نعم — قدّم طلبًا منفصلًا لكل طفل حتى يتم تخصيص كل كتاب بشكل صحيح.' },
     q1_6: { en: 'Can I make changes after I submit my request?', de: 'Kann ich nach dem Absenden meiner Anfrage noch Änderungen vornehmen?', ar: 'هل يمكنني إجراء تغييرات بعد إرسال طلبي؟' },
@@ -229,7 +229,7 @@ window.HIKAYA_TRANSLATIONS = {
     err_card_cvc: { en: 'Please enter a valid CVC.', de: 'Bitte geben Sie einen gültigen CVC ein.', ar: 'يرجى إدخال رمز CVC صالح.' },
     payment_title: { en: 'Payment', de: 'Zahlung', ar: 'الدفع' },
     payment_placeholder: { en: "Payment isn't connected yet — this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.", de: 'Die Zahlung ist noch nicht verbunden — hier erscheint der Telr- oder PayTabs-Checkout, sobald das Händlerkonto aktiv ist. Bei Bestellungen aus Syrien wird stattdessen eine Nachnahme-Option angezeigt.', ar: 'لم يتم ربط الدفع بعد — هنا سيظهر الدفع عبر Telr أو PayTabs بمجرد تفعيل حساب التاجر. طلبات سوريا ستُظهر خيار الدفع عند الاستلام بدلاً من ذلك.' },
-    approval: { en: "I have checked the child's name, story, age edition, dedication, and preview.", de: 'Ich habe den Namen des Kindes, die Geschichte, die Altersausgabe, die Widmung und die Vorschau überprüft.', ar: 'لقد راجعت اسم الطفل والقصة والإصدار العمري والإهداء والمعاينة.' },
+    approval: { en: "I have checked the child's name, story, age edition and dedication.", de: 'Ich habe den Namen des Kindes, die Geschichte, die Altersausgabe und die Widmung überprüft.', ar: 'لقد راجعت اسم الطفل والقصة والإصدار العمري والإهداء.' },
     place_order: { en: 'Payment not yet available', de: 'Zahlung noch nicht verfügbar', ar: 'الدفع غير متاح بعد' },
     edit: { en: 'Edit', de: 'Bearbeiten', ar: 'تعديل' },
     book: { en: 'Book', de: 'Buch', ar: 'الكتاب' },
@@ -263,7 +263,7 @@ window.HIKAYA_TRANSLATIONS = {
     name_on_card: { en: 'Name on card', de: 'Name auf der Karte', ar: 'الاسم على البطاقة' },
     card_number: { en: 'Card number', de: 'Kartennummer', ar: 'رقم البطاقة' },
     expiry: { en: 'Expiry', de: 'Ablaufdatum', ar: 'تاريخ الانتهاء' },
-    secure_note: { en: 'Secure payment via Telr/PayTabs (connects once the merchant account is live), charged in', de: 'Sichere Zahlung über Telr/PayTabs (verbindet sich, sobald das Händlerkonto aktiv ist), abgerechnet in', ar: 'دفع آمن عبر Telr/PayTabs (يتم الربط بمجرد تفعيل حساب التاجر)، بعملة' },
+    secure_note: { en: 'Secure card payment via PayTabs, charged in', de: 'Sichere Kartenzahlung über PayTabs, belastet in', ar: 'دفع آمن بالبطاقة عبر PayTabs، بعملة' },
     paytabs_intro: { en: "You'll enter your card details securely on the next step — we never see or store them.", de: 'Sie geben Ihre Kartendaten im nächsten Schritt sicher ein — wir sehen oder speichern sie nie.', ar: 'ستُدخل بيانات بطاقتك بأمان في الخطوة التالية — نحن لا نراها أو نخزّنها أبدًا.' },
     paytabs_verifying: { en: 'Confirming your payment…', de: 'Ihre Zahlung wird bestätigt…', ar: 'جارٍ تأكيد دفعتك…' },
     paytabs_declined: { en: 'This payment was not approved. Please try again or use a different card.', de: 'Diese Zahlung wurde nicht genehmigt. Bitte versuchen Sie es erneut oder verwenden Sie eine andere Karte.', ar: 'لم تتم الموافقة على هذه الدفعة. يرجى المحاولة مرة أخرى أو استخدام بطاقة أخرى.' },
@@ -419,7 +419,7 @@ window.HIKAYA_TRANSLATIONS = {
     guest_note: { en: "Continuing as a guest — you won't be able to track this order later, so we recommend creating an account instead.", de: 'Sie fahren als Gast fort — Sie können diese Bestellung später nicht verfolgen, daher empfehlen wir stattdessen ein Konto zu erstellen.', ar: 'تتابع كضيف — لن تتمكن من تتبع هذا الطلب لاحقًا، لذا نوصي بإنشاء حساب بدلاً من ذلك.' },
     back_to_account: { en: "← Actually, I'll create an account", de: '← Eigentlich erstelle ich lieber ein Konto', ar: '← في الواقع، سأنشئ حسابًا' },
     success_title: { en: 'Your request has been sent!', de: 'Ihre Anfrage wurde gesendet!', ar: 'تم إرسال طلبك!' },
-    success_body: { en: "We're preparing their story now, and will email you a preview soon.", de: 'Wir bereiten die Geschichte jetzt vor und senden Ihnen bald eine Vorschau per E-Mail.', ar: 'نحن نُجهّز قصته الآن، وسنرسل لك معاينة قريبًا عبر البريد الإلكتروني.' },
+    success_body: { en: "We're creating their story now. We'll email you when it's printed and on its way.", de: 'Wir erstellen jetzt ihre Geschichte. Wir schreiben Ihnen, sobald sie gedruckt und unterwegs ist.', ar: 'نحن نُنشئ قصته الآن، وسنراسلك عند طباعتها وشحنها.' },
   },
   story1: {
     slide_body: { en: 'A story about finding courage in small, everyday moments.', de: 'Eine Geschichte darüber, Mut in kleinen, alltäglichen Momenten zu finden.', ar: 'قصة عن إيجاد الشجاعة في لحظات صغيرة من الحياة اليومية.' },
@@ -635,7 +635,8 @@ window.HIKAYA_TRANSLATIONS = {
   const LANG_LABELS = { en: 'English', de: 'Deutsch', ar: 'العربية' };
 
   function getLang() {
-    return localStorage.getItem(LANG_KEY) || 'en';
+    const l = localStorage.getItem(LANG_KEY);
+    return (l === 'en' || l === 'ar') ? l : 'en'; // DE hidden for GCC launch
   }
 
   function t(key) {
@@ -690,7 +691,7 @@ window.HIKAYA_TRANSLATIONS = {
       const menu = document.createElement('div');
       menu.className = 'lang-menu';
       menu.style.cssText = 'display:none; position:absolute; top:calc(100% + 8px); right:0; background:#fff; border:1px solid var(--line, #ddd); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.12); overflow:hidden; z-index:100; min-width:130px;';
-      ['en', 'de', 'ar'].forEach(code => {
+      ['en', 'ar'].forEach(code => { // DE hidden for GCC launch
         const item = document.createElement('button');
         item.type = 'button';
         item.textContent = LANG_LABELS[code];
@@ -720,6 +721,8 @@ window.HIKAYA_TRANSLATIONS = {
   }
 
   window.hikayaT = t;
+  window.hikayaSetLang = setLang;
+  window.hikayaApplyTranslations = applyTranslations;
   window.hikayaLang = getLang;
   document.addEventListener('DOMContentLoaded', () => {
     buildSwitcher();

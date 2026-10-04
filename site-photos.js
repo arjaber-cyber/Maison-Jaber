@@ -25,8 +25,15 @@
     document.querySelectorAll('img[src*="images/"]').forEach(img => {
       const filename = filenameFromPath(img.getAttribute('src') || '');
       if (filename && overrides[filename]) {
+        img.removeAttribute('srcset'); // srcset would otherwise win over the swapped src
         img.src = overrides[filename];
       }
+    });
+
+    // <picture><source srcset="images/x.webp"> (e.g. separate mobile crops)
+    document.querySelectorAll('source[srcset*="images/"]').forEach(src => {
+      const filename = filenameFromPath(src.getAttribute('srcset') || '');
+      if (filename && overrides[filename]) src.setAttribute('srcset', overrides[filename]);
     });
 
     document.querySelectorAll('[style*="images/"]').forEach(el => {

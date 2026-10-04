@@ -9,15 +9,20 @@
    other page should read prices from here rather than hardcoding their own.
 */
 
+/* DELIVERY (Oct 2026 launch): UAE free; every other GCC country pays the
+   equivalent of AED 30, converted with the same ratio as book prices
+   (AED 30 x bookNow / 149). 2+ book bundles still ship free (cart.js). */
+/* Ziina charges in AED: local price x rate (keep in sync with netlify/functions/_pricing.js). */
+window.HIKAYA_AED_RATES = { AED: 1, SAR: 0.97933, QAR: 1.00893, BHD: 9.76729, OMR: 9.55137, KWD: 11.95 };
 window.HIKAYA_REGIONS = {
   Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card', 'applepay', 'googlepay'], label: 'Germany & Europe', shortLabel: 'Europe' },
   Syria:    { zone: 'SY',  countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria', shortLabel: 'Syria' },
-  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'United Arab Emirates', shortLabel: 'UAE' },
-  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Saudi Arabia', shortLabel: 'KSA' },
-  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 25, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Qatar', shortLabel: 'Qatar' },
-  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.1, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Kuwait', shortLabel: 'Kuwait' },
-  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 2.6, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Bahrain', shortLabel: 'Bahrain' },
-  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 2.6, methods: ['card', 'applepay', 'googlepay', 'tabby', 'tamara'], label: 'Oman', shortLabel: 'Oman' }
+  UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 0, methods: ['ziina'], label: 'United Arab Emirates', shortLabel: 'UAE' },
+  Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 30, methods: ['ziina'], label: 'Saudi Arabia', shortLabel: 'KSA' },
+  Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 30, methods: ['ziina'], label: 'Qatar', shortLabel: 'Qatar' },
+  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 12.5, deliveryFee: 2.52, methods: ['ziina'], label: 'Kuwait', shortLabel: 'Kuwait' },
+  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 3.07, methods: ['ziina'], label: 'Bahrain', shortLabel: 'Bahrain' },
+  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 3.12, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
 };
 // Every visitor falls into one of exactly three markets: Europe, GCC, or
 // Syria. Anyone whose IP doesn't match a GCC country or Syria defaults to
@@ -39,11 +44,13 @@ window.HIKAYA_REGIONS = {
     for (const key in window.HIKAYA_REGIONS) {
       if (window.HIKAYA_REGIONS[key].countryCodes.includes(code)) return key;
     }
-    return 'Germany';
+    return 'UAE'; // GCC-only launch: non-GCC visitors default to UAE pricing
   }
 
   function currentRegionKey() {
-    return getStoredRegionKey() || 'Germany';
+    const k = getStoredRegionKey();
+    // GCC-only launch: ignore stored non-GCC picks from before (EU/Syria stay in the table, just hidden).
+    return (k && window.HIKAYA_REGIONS[k] && window.HIKAYA_REGIONS[k].zone === 'GCC') ? k : 'UAE';
   }
   function currentRegion() {
     return window.HIKAYA_REGIONS[currentRegionKey()];
@@ -62,7 +69,7 @@ window.HIKAYA_REGIONS = {
   function priceHtml(region) {
     region = region || currentRegion();
     if (region.bookWas > region.bookNow) {
-      return `<span style="text-decoration:line-through; opacity:0.55; margin-right:6px;">${fmtPrice(region.bookWas, region)}</span><strong>${fmtPrice(region.bookNow, region)}</strong>`;
+      return `<span class="was-price" style="text-decoration:line-through; color:#6B5A4E; margin-inline-end:6px;">${fmtPrice(region.bookWas, region)}</span><strong>${fmtPrice(region.bookNow, region)}</strong>`;
     }
     return `<strong>${fmtPrice(region.bookNow, region)}</strong>`;
   }
@@ -102,9 +109,10 @@ window.HIKAYA_REGIONS = {
   // Grouped so the list reads like "Europe: Germany" / "GCC: UAE, Saudi..."
   // rather than one flat alphabetical list.
   const ZONE_GROUPS = [
-    { zone: 'EU', label: 'Europe', regions: ['Germany'] },
+    // GCC-only launch. Re-enable these to bring Europe/Syria back:
+    // { zone: 'EU', label: 'Europe', regions: ['Germany'] },
     { zone: 'GCC', label: 'GCC', regions: ['UAE', 'Saudi', 'Qatar', 'Kuwait', 'Bahrain', 'Oman'] },
-    { zone: 'SY', label: 'Syria', regions: ['Syria'] },
+    // { zone: 'SY', label: 'Syria', regions: ['Syria'] },
   ];
 
   function buildSwitcher() {
@@ -178,6 +186,8 @@ window.HIKAYA_REGIONS = {
   }
 
   window.hikayaRegion = currentRegion;
+  window.hikayaPickRegion = pickRegion;
+  window.HIKAYA_ZONE_GROUPS = ZONE_GROUPS;
   window.hikayaRegionKey = currentRegionKey;
   window.hikayaZone = currentZone;
   window.hikayaFormatPrice = fmtPrice;

@@ -89,19 +89,14 @@
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
-<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="hikaya.css" />
 </head>
-<body>
+<body data-flow="cart">
 
-<header class="site">
-  <div class="wrap inner">
-    <a href="index.html"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" class="site-logo"></a>
-    <div class="header-right">
-      <a class="lang-pill" href="#" data-i18n-skip>EN</a>
-      <a class="zone-pill" href="#">Europe</a>
-    </div>
-  </div>
-</header>
+<div id="hk-top"></div>
 
 <div class="wrap page-head">
   <h1 data-i18n="cart.title">Your Cart</h1>
@@ -111,14 +106,17 @@
 <div class="wrap cart-layout">
   <div>
     <div id="upsell-banner-slot"></div>
+    <h2 class="sr-only" data-i18n="pg.cart_items">Stories in your cart</h2>
     <div id="cart-items"><!-- populated by JS --></div>
+<section class="sibling" id="sibling" hidden aria-labelledby="sib-title">
+      <h2 id="sib-title" data-i18n="pg.sib_title">Add another story for a sibling?</h2>
+      <ul class="sib-list" id="sib-list"></ul>
+    </section>
   </div>
   <div id="summary-slot"></div>
 </div>
 
-<footer class="site">
-  <div class="wrap"><p data-i18n="common.footer_copyright">&copy; 2026 Maison Jaber. All rights reserved.</p></div>
-</footer>
+<div id="hk-foot"></div>
 
 <script defer>
   const t = (key, fallback) => {
@@ -207,5 +205,26 @@
   }
 </script>
 
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="chrome.js" defer></script>
+<script>
+/* Cart: "Add another story for a sibling?" — links into the normal personalise flow (bundle pricing applies as usual). */
+document.addEventListener('DOMContentLoaded', async function () {
+  var H = window.Hikaya; if (!H) return;
+  async function render() {
+    var cart = (window.hikayaCart && window.hikayaCart.getCart) ? window.hikayaCart.getCart() : JSON.parse(localStorage.getItem('hikaya_cart_v1') || '[]');
+    var sec = document.getElementById('sibling'); if (!cart.length) { sec.hidden = true; return; }
+    var inCart = cart.map(function (i) { return i.story; });
+    var all = await H.loadCatalog();
+    var list = all.filter(function (s) { return inCart.indexOf(s.title) < 0; }).slice(0, 3);
+    document.getElementById('sib-list').innerHTML = list.map(function (s) {
+      return '<li><a href="' + H.esc(H.storyHref(s)) + '">' + H.coverHtml(s) + '<span><b>' + H.titleHtml(s) + '</b><small>' + H.esc(H.ageText(s.age_bands)) + '</small></span></a></li>';
+    }).join('');
+    sec.hidden = !list.length;
+  }
+  render(); document.addEventListener('hikaya:langchange', render); document.addEventListener('hikaya:cartchange', render);
+});
+</script>
 </body>
 </html>

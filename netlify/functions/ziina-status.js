@@ -7,7 +7,7 @@
 
 exports.handler = async (event) => {
   const pi = (event.queryStringParameters || {}).pi || '';
-  if (!/^[A-Za-z0-9-]{8,64}$/.test(pi)) {
+  if (!/^[A-Za-z0-9_-]{8,64}$/.test(pi)) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing or invalid payment id.' }) };
   }
   try {
