@@ -24,21 +24,21 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 const BUILT_IN_STORIES = [
   {
     slug: 'bravest-little-one', title: 'The Bravest Little One', theme: 'courage',
-    collection: 'Courage & Confidence', age_ranges: '2-4,5-7,8-10',
+    collection: 'Courage & Confidence', age_ranges: '2-4,4-6,6-8',
     description: 'For the child facing something new, and finding they are braver than they know.',
     cover_gradient: 'courage', has_extra_character: false, extra_character_name: null,
     extra_character_fee_aed: 0, detail_url: 'story-bravest-little-one.html', built_in: true,
   },
   {
     slug: 'cloud-ship', title: 'The Cloud Ship', theme: 'adventure',
-    collection: 'Adventure & Wonder', age_ranges: '2-4,5-7,8-10',
+    collection: 'Adventure & Wonder', age_ranges: '2-4,4-6,6-8',
     description: 'For the dreamer who wants to sail among the stars on a ship made of soft cloud.',
     cover_gradient: 'adventure', has_extra_character: false, extra_character_name: null,
     extra_character_fee_aed: 0, detail_url: 'story-cloud-ship.html', built_in: true,
   },
   {
     slug: 'star-who-couldnt-sleep', title: "The Star Who Couldn't Sleep", theme: 'lullaby',
-    collection: 'Bedtime & Comfort', age_ranges: '2-4,5-7,8-10',
+    collection: 'Bedtime & Comfort', age_ranges: '2-4,4-6,6-8',
     description: 'A gentle wind-down story for the very end of the day.',
     cover_gradient: 'lullaby', has_extra_character: false, extra_character_name: null,
     extra_character_fee_aed: 0, detail_url: 'story-star-who-couldnt-sleep.html', built_in: true,

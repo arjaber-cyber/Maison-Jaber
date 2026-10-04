@@ -14,6 +14,17 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
 const THEMES = ['courage', 'adventure', 'lullaby'];
+// Must match /story-themes.js (MOMENTS keys and AGE_GROUPS).
+const MOMENT_IDS = ['courage', 'confidence', 'new', 'kindness', 'friendship', 'emotions', 'honesty', 'imagination', 'adventure', 'bedtime', 'family', 'change', 'screen', 'responsibility', 'growing'];
+const AGE_GROUPS = ['2-4', '4-6', '6-8'];
+// Themes keep the order chosen in the dashboard (the first is the main theme); age groups go youngest first.
+const cleanList = (v, allowed) => Array.isArray(v) ? [...new Set(v)].filter(x => allowed.includes(x)) : null;
+const cleanAges = (v) => Array.isArray(v) ? AGE_GROUPS.filter(x => v.includes(x)) : null;
+function cardThemeFor(moments) {
+  if (moments.includes('bedtime')) return 'lullaby';
+  if (moments.some(m => ['courage', 'confidence', 'new'].includes(m))) return 'courage';
+  return 'adventure';
+}
 
 function slugify(title) {
   return title.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -34,9 +45,19 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request.' }) };
   }
 
-  const { title, theme, collection, ageRanges, description, coverGradient,
+  const { title, titleAr, moments: rawMoments, ageBands: rawAgeBands, theme: rawTheme, collection, ageRanges, description, descriptionAr, coverGradient,
     hasExtraCharacter, extraCharacterName, extraCharacterFeeAed, active, slug: existingSlug } = payload;
 
+  const moments = cleanList(rawMoments, MOMENT_IDS);
+  const ageBands = cleanAges(rawAgeBands);
+  // New dashboard sends themes; the card colour is derived from them. Older clients still send a theme.
+  const theme = moments && moments.length ? cardThemeFor(moments) : rawTheme;
+  if (moments && !moments.length) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Please tick at least one theme.' }) };
+  }
+  if (ageBands && !ageBands.length) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Please tick at least one age group.' }) };
+  }
   if (!title || !THEMES.includes(theme)) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please provide a title and a valid theme (courage, adventure, or lullaby).' }) };
   }
@@ -47,8 +68,14 @@ exports.handler = async (event) => {
   const slug = existingSlug || slugify(title);
   const row = {
     slug, title, theme,
-    collection: collection || '', age_ranges: ageRanges || '2-4,5-7,8-10',
+    // Only sent by the updated admin form; older clients leave the stored Arabic title alone.
+    ...(typeof titleAr === 'string' ? { title_ar: titleAr.trim() || null } : {}),
+    ...(moments ? { moments } : {}),
+    ...(ageBands ? { age_bands: ageBands } : {}),
+    collection: collection || '', age_ranges: (ageBands && ageBands.length) ? ageBands.join(',') : (ageRanges || '2-4,4-6,6-8'),
     description: description || '', cover_gradient: coverGradient || theme,
+    // The storefront shows "premise" on cards and story pages; keep it in step with what the dashboard edits.
+    ...(typeof descriptionAr === 'string' ? { premise: { en: description || '', ar: descriptionAr.trim() } } : {}),
     has_extra_character: !!hasExtraCharacter,
     extra_character_name: hasExtraCharacter ? extraCharacterName : null,
     extra_character_fee_aed: hasExtraCharacter ? Number(extraCharacterFeeAed) || 50 : 0,
