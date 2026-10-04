@@ -102,6 +102,13 @@
   .story-pick .theme { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-deep); margin-bottom: 3px; }
   .story-pick h3 { font-size: 14.5px; margin-bottom: 0; }
 
+  .story-pick { display: block; position: relative; }
+  .story-pick .pick-radio { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .story-pick:focus-within { outline: 3px solid var(--coral-deep, #563622); outline-offset: 3px; }
+  .story-pick.selected::after { content: "✓"; position: absolute; top: 8px; inset-inline-end: 8px; width: 26px; height: 26px; border-radius: 50%; background: var(--coral, #A67443); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .gender-btn:focus-visible, .extra-char-btn:focus-visible { outline: 3px solid var(--coral-deep, #563622); outline-offset: 2px; }
+  .field-error { margin: 6px 0 0; font-size: 13px; font-weight: 700; color: #9b2c1f; }
+  input[aria-invalid="true"] { border-color: #9b2c1f !important; }
   .gender-toggle { display: flex; gap: 12px; }
   .gender-btn {
     flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -251,6 +258,7 @@
 <body data-flow="personalise">
 
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 
 <div class="page-head wrap">
   <h1 data-i18n="personalize.page_title">Let's create their story</h1>
@@ -267,8 +275,8 @@
   <div class="order-layout">
     <div class="order-summary">
       <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
-      <div class="summary-cover empty" id="summary-cover">Pick a story to begin</div>
-      <h3 id="summary-story-title">No story chosen yet</h3>
+      <div class="summary-cover empty" id="summary-cover" data-i18n="personalize.summary_pick_story">Pick a story to begin</div>
+      <h3 id="summary-story-title" data-i18n="personalize.summary_no_story">No story chosen yet</h3>
       <button type="button" class="summary-change" id="summary-change-story" data-i18n="pg.change_story">Change story</button>
       <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
@@ -288,7 +296,7 @@
           <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
         </div>
 
-        <div class="story-grid" id="story-grid">
+        <div class="story-grid" id="story-grid" role="radiogroup" aria-labelledby="wizard-title">
           <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
             <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
             <div class="body">
@@ -321,15 +329,15 @@
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
           <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
-          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="1" max="12" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" /></div>
+          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
           <div class="field">
-            <label class="field-label" data-i18n="personalize.gender_label">Which pronouns should we use?</label>
-            <div class="gender-toggle">
-              <button type="button" class="gender-btn" data-value="boy">
+            <span class="field-label" id="gender-label" data-i18n="personalize.gender_label">Which pronouns should we use?</span>
+            <div class="gender-toggle" role="group" aria-labelledby="gender-label">
+              <button type="button" class="gender-btn" data-value="boy" aria-pressed="false">
                 <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="8" r="4.5"/><path d="M5 21c1.2-4.2 4-6.5 7-6.5s5.8 2.3 7 6.5"/></svg>
                 <span data-i18n="personalize.gender_boy">He / him</span>
               </button>
-              <button type="button" class="gender-btn" data-value="girl">
+              <button type="button" class="gender-btn" data-value="girl" aria-pressed="false">
                 <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="7.5" r="4.5"/><path d="M9 12.5l-3.5 8.5h13l-3.5-8.5"/><path d="M12 12.5v3"/></svg>
                 <span data-i18n="personalize.gender_girl">She / her</span>
               </button>
@@ -421,6 +429,7 @@
   </div>
 </div>
 
+</main>
 <div id="hk-foot"></div>
 
 <script type="module">
@@ -432,6 +441,7 @@
 
   let photoFiles = [];
   let extraPhotoFiles = [];
+  const ageInputEl = document.getElementById('child-age');
 
   // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
   const t = (key, fallback) => {
@@ -443,10 +453,48 @@
   let isSignedIn = false;
 
   // --- Birthday entry computes age edition, reveals stories ---
-  function editionForAge(years) {
-    if (years <= 4) return '2-4';
-    if (years <= 7) return '5-7';
-    return '8-10';
+  /* QA001/QA009: one age model everywhere — the age groups ticked for the story in the
+     dashboard (2–4 / 4–6 / 6–8) are also its printed editions. Ages outside them are rejected. */
+  const DEFAULT_EDITIONS = '2-4,4-6,6-8';
+  function editionsFor(storyName) {
+    const rec = STORY_CATALOG[storyName] || {};
+    const raw = (Array.isArray(rec.age_bands) && rec.age_bands.length) ? rec.age_bands.join(',') : DEFAULT_EDITIONS;
+    return String(raw).split(',').map(r => r.trim().split('-').map(Number)).filter(([a, b]) => Number.isInteger(a) && Number.isInteger(b) && a <= b);
+  }
+  function ageLimits(storyName) {
+    const eds = editionsFor(storyName);
+    return eds.length ? { min: Math.min(...eds.map(e => e[0])), max: Math.max(...eds.map(e => e[1])) } : { min: 2, max: 10 };
+  }
+  // Groups share their edge ages (4 and 6); an edge age goes to the older group (4 → 4–6, 6 → 6–8).
+  function editionForAge(years, storyName) {
+    const eds = editionsFor(storyName).filter(([a, b]) => years >= a && years <= b).sort((x, y) => y[0] - x[0]);
+    return eds.length ? eds[0][0] + '-' + eds[0][1] : '';
+  }
+  function ageState() {
+    const raw = String(ageInputEl.value || '').trim();
+    const storyName = document.getElementById('story-input').value;
+    const lim = ageLimits(storyName);
+    if (!raw) return { ok: false, empty: true, lim };
+    // Only whole numbers: rejects 5.5, 1e1, -3, "" and anything the browser lets through.
+    if (!/^\d{1,2}$/.test(raw)) return { ok: false, lim };
+    const years = Number(raw);
+    const edition = editionForAge(years, storyName);
+    return edition ? { ok: true, years, edition, lim } : { ok: false, years, lim };
+  }
+  function ageErrorText(lim) {
+    return t('pz.age_err', 'Please enter a whole-number age from {min} to {max} for this story.').replace('{min}', lim.min).replace('{max}', lim.max);
+  }
+  let ageTouched = false;
+  function renderAge(showError) {
+    const st = ageState();
+    ageInputEl.min = st.lim.min; ageInputEl.max = st.lim.max;
+    const errEl = document.getElementById('child-age-error');
+    document.getElementById('age-input').value = st.ok ? st.edition : '';
+    document.getElementById('summary-age').textContent = st.ok ? (window.Hikaya ? window.Hikaya.rangeText(...st.edition.split('-')) : 'Ages ' + st.edition) : '—';
+    const show = !st.ok && !st.empty && (showError || ageTouched);
+    errEl.hidden = !show; errEl.textContent = show ? ageErrorText(st.lim) : '';
+    if (show) ageInputEl.setAttribute('aria-invalid', 'true'); else ageInputEl.removeAttribute('aria-invalid');
+    return st;
   }
 
   // --- Story selection (either pre-picked via ?story= URL param, or chosen here) ---
@@ -479,6 +527,8 @@
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
     showWizardStep('story');
+    const cur = document.querySelector('#story-grid .pick-radio:checked') || document.querySelector('#story-grid .pick-radio');
+    if (cur) cur.focus({ preventScroll: true });
   }
 
   // Show a story's cover photo (uploaded in the admin dashboard) instead of the gradient.
@@ -489,6 +539,66 @@
     el.style.backgroundSize = 'cover';
     el.style.backgroundPosition = 'center';
     el.querySelectorAll('.t').forEach(t => { t.style.display = 'none'; });
+  }
+
+  /* QA006: every story card is a labelled native radio, so it is reachable with Tab,
+     arrow keys move between stories, and screen readers announce the selected state. */
+  let pickByPointer = false;
+  function upgradeCard(card) {
+    if (card.tagName === 'LABEL') return card;
+    const label = document.createElement('label');
+    label.className = card.className;
+    Object.keys(card.dataset).forEach(k => { label.dataset[k] = card.dataset[k]; });
+    while (card.firstChild) label.appendChild(card.firstChild);
+    const radio = document.createElement('input');
+    radio.type = 'radio'; radio.name = 'story_pick'; radio.className = 'pick-radio'; radio.value = label.dataset.value;
+    label.insertBefore(radio, label.firstChild);
+    label.addEventListener('pointerdown', () => { pickByPointer = true; });
+    // Clicking the story that is already chosen still confirms it (no change event fires).
+    label.addEventListener('click', e => {
+      if (e.target === radio) return;
+      if (radio.checked && document.getElementById('story-input').value === radio.value) { pickByPointer = false; selectStory(radio.value); }
+    });
+    radio.addEventListener('change', () => {
+      if (!radio.checked) return;
+      // Pointer picks collapse the grid (existing behaviour); arrow-key browsing keeps it open.
+      selectStory(radio.value, { keepGrid: !pickByPointer });
+      pickByPointer = false;
+    });
+    radio.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault(); radio.checked = true; selectStory(radio.value);
+        const next = document.getElementById('story-next-btn'); if (next) next.focus();
+      }
+    });
+    card.replaceWith(label);
+    return label;
+  }
+  function syncPickState(storyName) {
+    document.querySelectorAll('#story-grid .story-pick').forEach(c => {
+      const on = c.dataset.value === storyName;
+      c.classList.toggle('selected', on);
+      const r = c.querySelector('.pick-radio'); if (r) r.checked = on;
+    });
+  }
+
+  /* QA005: one place that turns a story key into what the customer sees, in the current language. */
+  const LEGACY_TITLE_KEYS = { 'The Bravest Little One': 'home.story1_title', 'The Cloud Ship': 'home.story2_title', "The Star Who Couldn't Sleep": 'home.story3_title' };
+  function storyDisplayName(name) {
+    const rec = STORY_CATALOG[name];
+    if (rec && window.Hikaya) return window.Hikaya.titlePlain(rec);
+    if (LEGACY_TITLE_KEYS[name]) return t(LEGACY_TITLE_KEYS[name], name);
+    return name || '';
+  }
+  function storyThemeLabel(rec) {
+    if (!rec || !window.Hikaya) return '';
+    return window.Hikaya.themeLabel((rec.moments || [])[0] || rec.theme) || '';
+  }
+  function renderCardText(card) {
+    const rec = STORY_CATALOG[card.dataset.value]; if (!rec) return;
+    const h = card.querySelector('h3'); if (h) { h.removeAttribute('data-i18n'); h.textContent = storyDisplayName(card.dataset.value); }
+    const th = card.querySelector('.theme'); if (th) { th.removeAttribute('data-i18n'); th.textContent = storyThemeLabel(rec); }
+    const cov = card.querySelector('.cover .t'); if (cov) { cov.removeAttribute('data-i18n-html'); cov.textContent = storyDisplayName(card.dataset.value); }
   }
 
   async function loadStoryCatalog() {
@@ -508,21 +618,22 @@
         STORY_CATALOG[story.title] = story;
         if (story.slug) SLUG_TO_TITLE[story.slug] = story.title;
         const existing = [...document.querySelectorAll('#story-grid .story-pick')].find(c => c.dataset.value === story.title);
-        if (existing) { applyCoverPhoto(existing.querySelector('.cover'), story); return; }
+        if (existing) { renderCardText(existing); applyCoverPhoto(existing.querySelector('.cover'), story); return; }
         {
-          const card = document.createElement('div');
+          let card = document.createElement('div');
           card.className = 'story-pick';
           card.dataset.value = story.title;
           card.dataset.theme = story.theme;
           card.innerHTML = `
-            <div class="cover ${story.theme}"><div class="t">${story.title}</div></div>
+            <div class="cover ${String(story.theme || '').replace(/[^a-z-]/gi, '')}"><div class="t"></div></div>
             <div class="body">
-              <div class="theme" style="color:var(--ink-soft);">${story.collection || ''}</div>
-              <h3>${story.title}</h3>
+              <div class="theme" style="color:var(--ink-soft);"></div>
+              <h3></h3>
             </div>`;
-          card.addEventListener('click', () => selectStory(story.title));
-          applyCoverPhoto(card.querySelector('.cover'), story);
           grid.appendChild(card);
+          card = upgradeCard(card);
+          renderCardText(card);
+          applyCoverPhoto(card.querySelector('.cover'), story);
         }
       });
       // If the page was pre-loaded with ?story= pointing at a story that
@@ -531,6 +642,8 @@
       const urlStory = new URLSearchParams(window.location.search).get('story');
       const pre = resolveStory(urlStory);
       if (pre && document.getElementById('story-input').value !== pre) { selectStory(pre); lockStory(); }
+      else if (document.getElementById('story-input').value) selectStory(document.getElementById('story-input').value, { keepGrid: document.getElementById('story-grid').style.display !== 'none', silent: true });
+      renderAll();
     } catch {
       // Catalog fetch failed -- the 3 built-in stories still work fine.
     }
@@ -539,80 +652,81 @@
 
   let extraCharChoice = null; // 'yes' | 'no' | null
 
-  function selectStory(storyName) {
+  function selectStory(storyName, opts) {
+    opts = opts || {};
+    const prevStory = document.getElementById('story-input').value;
     const theme = STORY_THEMES[storyName] || 'courage';
+    const shown = storyDisplayName(storyName);
     document.getElementById('story-input').value = storyName;
 
     // Summary sidebar
     document.getElementById('summary-cover').className = 'summary-cover ' + theme;
-    document.getElementById('summary-cover').innerHTML = `<div class="t">${storyName}</div>`;
+    document.getElementById('summary-cover').removeAttribute('data-i18n');
+    document.getElementById('summary-cover').innerHTML = '<div class="t"></div>';
+    document.getElementById('summary-cover').querySelector('.t').textContent = shown;
     document.getElementById('summary-cover').style.backgroundImage = '';
     applyCoverPhoto(document.getElementById('summary-cover'), STORY_CATALOG[storyName]);
     document.getElementById('story-chip-swatch').style.backgroundImage = '';
     applyCoverPhoto(document.getElementById('story-chip-swatch'), STORY_CATALOG[storyName]);
-    document.getElementById('summary-story-title').textContent = storyName;
+    document.getElementById('summary-story-title').removeAttribute('data-i18n');
+    document.getElementById('summary-story-title').textContent = shown;
 
     // Compact chip replaces the picker grid
     document.getElementById('story-chip-swatch').className = 'swatch ' + theme;
-    document.getElementById('story-chip-name').textContent = storyName;
-    document.getElementById('story-chip').style.display = 'flex';
-    document.getElementById('story-grid').style.display = 'none';
-
-    document.querySelectorAll('.story-pick').forEach(c => c.classList.toggle('selected', c.dataset.value === storyName));
+    document.getElementById('story-chip-name').textContent = shown;
+    if (!opts.keepGrid) {
+      document.getElementById('story-chip').style.display = 'flex';
+      document.getElementById('story-grid').style.display = 'none';
+    }
+    syncPickState(storyName);
 
     // Show the optional extra-character prompt if this story has one.
     const storyInfo = STORY_CATALOG[storyName];
     const extraBlock = document.getElementById('extra-char-block');
-    extraCharChoice = null;
-    document.getElementById('extra-char-upload-wrap').style.display = 'none';
-    extraPhotoFiles = [];
+    if (prevStory !== storyName) {
+      // Only a real change of story resets the extra-character answer (a language switch must not).
+      extraCharChoice = null;
+      document.getElementById('extra-char-upload-wrap').style.display = 'none';
+      extraPhotoFiles = [];
+    }
     if (storyInfo && storyInfo.has_extra_character) {
       const name = storyInfo.extra_character_name;
       const fee = storyInfo.extra_character_fee_aed;
-      document.getElementById('extra-char-question').textContent = `This story has a ${name} character`;
-      document.getElementById('extra-char-sub').textContent = `Would you like to use a real photo of the ${name.toLowerCase()}, or keep it generated for you? Using a real photo adds AED ${fee}.`;
-      document.getElementById('extra-char-yes').textContent = `Yes, use a real photo (+AED ${fee})`;
-      document.getElementById('extra-char-no').textContent = `No, keep it generated`;
-      document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
+      const fill = (k, fb) => t(k, fb).replace(/\{name\}/g, name).replace(/\{name_lc\}/g, String(name).toLowerCase()).replace(/\{fee\}/g, fee);
+      document.getElementById('extra-char-question').textContent = fill('pz.extra_q', 'This story has a {name} character');
+      document.getElementById('extra-char-sub').textContent = fill('pz.extra_sub', 'Would you like to use a real photo of the {name_lc}, or keep it generated for you? Using a real photo adds AED {fee}.');
+      document.getElementById('extra-char-yes').textContent = fill('pz.extra_yes', 'Yes, use a real photo (+AED {fee})');
+      document.getElementById('extra-char-no').textContent = fill('pz.extra_no', 'No, keep it generated');
+      document.querySelectorAll('.extra-char-btn').forEach(b => { const on = b.dataset.value === extraCharChoice; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', String(on)); });
       extraBlock.style.display = 'block';
     } else {
       extraBlock.style.display = 'none';
     }
 
+    renderAge(false);
     checkDetailsComplete();
     if (typeof renderWizardProgress === 'function') renderWizardProgress();
   }
 
-  document.querySelectorAll('.story-pick').forEach(card => {
-    card.addEventListener('click', () => selectStory(card.dataset.value));
-  });
+  document.querySelectorAll('#story-grid .story-pick').forEach(card => upgradeCard(card));
 
   document.getElementById('summary-change-story').addEventListener('click', () => unlockStory());
   document.getElementById('change-story-btn').addEventListener('click', () => {
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
+    const cur = document.querySelector('#story-grid .pick-radio:checked') || document.querySelector('#story-grid .pick-radio');
+    if (cur) cur.focus();
   });
 
   // --- Age (plain number, quietly maps to an edition behind the scenes) ---
-  const ageInputEl = document.getElementById('child-age');
-  ageInputEl.addEventListener('input', () => {
-    const years = parseInt(ageInputEl.value, 10);
-    if (years && years > 0) {
-      const edition = editionForAge(years);
-      document.getElementById('age-input').value = edition;
-      document.getElementById('summary-age').textContent = 'Ages ' + edition;
-    } else {
-      document.getElementById('age-input').value = '';
-      document.getElementById('summary-age').textContent = '—';
-    }
-    checkDetailsComplete();
-  });
+  ageInputEl.addEventListener('input', () => { renderAge(false); checkDetailsComplete(); });
+  ageInputEl.addEventListener('blur', () => { if (String(ageInputEl.value).trim()) ageTouched = true; renderAge(false); });
 
   // --- Gender toggle ---
   document.querySelectorAll('.gender-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+      document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('selected'); btn.setAttribute('aria-pressed', 'true');
       document.getElementById('child-gender').value = btn.dataset.value;
     });
   });
@@ -711,15 +825,15 @@
 
   document.getElementById('extra-char-yes').addEventListener('click', () => {
     extraCharChoice = 'yes';
-    document.getElementById('extra-char-yes').classList.add('selected');
-    document.getElementById('extra-char-no').classList.remove('selected');
+    document.getElementById('extra-char-yes').classList.add('selected'); document.getElementById('extra-char-yes').setAttribute('aria-pressed', 'true');
+    document.getElementById('extra-char-no').classList.remove('selected'); document.getElementById('extra-char-no').setAttribute('aria-pressed', 'false');
     document.getElementById('extra-char-upload-wrap').style.display = 'block';
     checkDetailsComplete();
   });
   document.getElementById('extra-char-no').addEventListener('click', () => {
     extraCharChoice = 'no';
-    document.getElementById('extra-char-no').classList.add('selected');
-    document.getElementById('extra-char-yes').classList.remove('selected');
+    document.getElementById('extra-char-no').classList.add('selected'); document.getElementById('extra-char-no').setAttribute('aria-pressed', 'true');
+    document.getElementById('extra-char-yes').classList.remove('selected'); document.getElementById('extra-char-yes').setAttribute('aria-pressed', 'false');
     document.getElementById('extra-char-upload-wrap').style.display = 'none';
     extraPhotoFiles = [];
     renderThumbs(extraPhotoFiles, extraPhotoThumbs, extraPhotoRetryNote, false);
@@ -797,7 +911,8 @@
     const storyNextBtn = document.getElementById('story-next-btn');
     if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
     const detailsNextBtn = document.getElementById('details-next-btn');
-    if (detailsNextBtn) detailsNextBtn.disabled = !(nameInput.value.trim() && ageInputEl.value.trim());
+    const ageOk = ageState().ok;
+    if (detailsNextBtn) detailsNextBtn.disabled = !(nameInput.value.trim() && ageOk);
     const photoNextBtn = document.getElementById('photo-next-btn');
     if (photoNextBtn) photoNextBtn.disabled = !hasVerifiedPhoto;
     const extraNextBtn = document.getElementById('extra-next-btn');
@@ -805,7 +920,7 @@
 
     const ready = storyChosen
       && nameInput.value.trim()
-      && ageInputEl.value.trim()
+      && ageOk
       && hasVerifiedPhoto
       && extraCharOk;
     continueBtn.disabled = !ready;
@@ -846,7 +961,7 @@
     const steps = activeSteps();
     const currentIndex = steps.indexOf(currentStepName);
     document.getElementById('wizard-progress').innerHTML = steps.map((s, i) => `
-      <div class="w-step ${i < currentIndex ? 'done' : i === currentIndex ? 'active' : ''}">
+      <div class="w-step ${i < currentIndex ? 'done' : i === currentIndex ? 'active' : ''}"${i === currentIndex ? ' aria-current="step"' : ''}>
         <span class="w-dot">${i < currentIndex ? '&#10003;' : i + 1}</span><span>${STEP_LABELS[s]()}</span>
       </div>
       ${i < steps.length - 1 ? '<div class="w-line"></div>' : ''}
@@ -866,7 +981,28 @@
     document.getElementById('wizard-title').textContent = tt(h[0], h[1]);
     const sub = document.getElementById('wizard-sub'); if (sub) sub.textContent = tt(h[2], h[3]);
   }
-  document.addEventListener('hikaya:langchange', () => renderStepHeading(currentStepName));
+  const escHtml = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  /* QA005: everything this page draws itself is redrawn whenever the language changes
+     (and once all translation files have loaded). Entered name, age, story, pronouns,
+     photos and dedication live in the form fields and are never touched here. */
+  function renderAll() {
+    document.querySelectorAll('#story-grid .story-pick').forEach(renderCardText);
+    const cur = document.getElementById('story-input').value;
+    if (cur) selectStory(cur, { keepGrid: document.getElementById('story-grid').style.display !== 'none' });
+    else {
+      document.getElementById('summary-cover').textContent = t('personalize.summary_pick_story', 'Pick a story to begin');
+      document.getElementById('summary-story-title').textContent = t('personalize.summary_no_story', 'No story chosen yet');
+    }
+    renderAge(false);
+    renderStepHeading(currentStepName);
+    renderWizardProgress();
+    if (currentStepName === 'review') renderReviewSummary();
+    checkDetailsComplete();
+  }
+  document.addEventListener('hikaya:langchange', renderAll);
+  // Page translation files load after this module; redraw once they are all in.
+  document.addEventListener('DOMContentLoaded', renderAll, { once: true });
+  window.addEventListener('load', renderAll, { once: true });
   function showWizardStep(stepName) {
     renderStepHeading(stepName);
     currentStepName = stepName;
@@ -880,6 +1016,13 @@
   }
 
   function goNext(fromStep) {
+    if (fromStep === 'details') {
+      // Belt and braces: never leave this step with an invalid age, even if Next was somehow enabled.
+      if (!nameInput.value.trim()) { nameInput.focus(); return; }
+      const st = renderAge(true);
+      if (!st.ok) { ageTouched = true; ageInputEl.focus(); return; }
+    }
+    if (fromStep === 'story' && !document.getElementById('story-input').value) return;
     const steps = activeSteps();
     const idx = steps.indexOf(fromStep);
     if (idx > -1 && idx < steps.length - 1) showWizardStep(steps[idx + 1]);
@@ -905,7 +1048,7 @@
     const dedication = document.getElementById('dedication').value.trim();
     const photoCount = photoFiles.filter(p => p.status === 'verified').length;
     const rows = [
-      { label: t('personalize.summary_story_label', 'Story'), value: storyName || '—', step: 'story' },
+      { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
       { label: t('personalize.summary_name', "Child's name"), value: name || '—', step: 'details' },
       { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
       { label: t('personalize.summary_photos', 'Photos'), value: photoCount, step: 'photo' },
@@ -918,7 +1061,7 @@
     }
 
     document.getElementById('review-summary').innerHTML = rows.map(r => `
-      <div class="review-row"><span>${r.label}</span><span>${r.value}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
+      <div class="review-row"><span>${escHtml(r.label)}</span><span>${escHtml(r.value)}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
     `).join('');
     document.querySelectorAll('.review-edit').forEach(btn => {
       btn.addEventListener('click', () => btn.dataset.goto === 'story' ? unlockStory() : showWizardStep(btn.dataset.goto));
@@ -943,6 +1086,8 @@
     const hasExtra = storyInfo && storyInfo.has_extra_character && extraCharChoice === 'yes';
     return {
       story: document.getElementById('story-input').value,
+      slug: (storyInfo && storyInfo.slug) || null,
+      coverUrl: (storyInfo && storyInfo.cover_image_url) || null,
       theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
       childName: nameInput.value.trim(),
       ageEdition: document.getElementById('age-input').value,
@@ -961,7 +1106,7 @@
     document.getElementById('age-input').value = '';
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
-    document.querySelectorAll('.story-pick').forEach(c => c.classList.remove('selected'));
+    syncPickState('');
     document.getElementById('summary-cover').className = 'summary-cover empty';
     document.getElementById('summary-cover').textContent = window.hikayaT ? window.hikayaT('personalize.summary_pick_story') : 'Pick a story to begin';
     document.getElementById('summary-story-title').textContent = window.hikayaT ? window.hikayaT('personalize.summary_no_story') : 'No story chosen yet';
@@ -971,8 +1116,9 @@
     nameInput.value = '';
     ageInputEl.value = '';
     document.getElementById('dedication').value = '';
-    document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
     document.getElementById('child-gender').value = '';
+    ageTouched = false; renderAge(false);
     photoFiles = [];
     renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
     extraPhotoFiles = [];

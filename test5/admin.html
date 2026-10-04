@@ -115,6 +115,19 @@
   .story-form-card { background: #fff; border-radius: var(--radius); padding: 24px; }
   .story-form-card h3 { font-size: 17px; margin-bottom: 16px; }
   .story-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .pick-set { border: 1px solid var(--line-soft, #ece1d1); border-radius: 12px; padding: 12px 14px 6px; margin: 0 0 14px; }
+  .pick-set legend { padding: 0 6px; }
+  .pick-note { font-weight: 500; text-transform: none; letter-spacing: 0; }
+  .pick-group { margin-bottom: 8px; }
+  .pick-group-title { font-size: 11.5px; font-weight: 800; color: var(--ink-soft, #7d6a5a); margin-bottom: 4px; }
+  .pick-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+  .pick-chip { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--line-soft, #ece1d1); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; }
+  .pick-chip:has(input:checked) { border-color: var(--coral, #A67443); background: var(--bg-soft, #F3E8D8); }
+  .pick-chip:focus-within { outline: 2px solid var(--coral-deep, #563622); outline-offset: 2px; }
+  .pick-chip .ar { color: var(--ink-soft, #7d6a5a); font-weight: 500; }
+  .pick-chip.auto::after { content: "auto"; font-size: 10px; font-weight: 800; color: var(--coral, #A67443); }
+  .story-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .story-tags span { font-size: 11px; font-weight: 700; background: var(--bg-soft, #F3E8D8); border-radius: 999px; padding: 2px 8px; }
   .field-label { display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); margin-bottom: 5px; }
   .story-form-card input[type="text"], .story-form-card input[type="number"], .story-form-card select, .story-form-card textarea {
     width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid var(--line, #ddd); font-size: 13.5px; font-family: inherit; box-sizing: border-box;
@@ -190,6 +203,7 @@
   @media (max-width:640px) { .om-head { grid-template-columns:1fr; } .om-right { text-align:left; } }
 </style>
 <script src="/i18n.js" defer></script>
+<script src="/story-themes.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
@@ -263,24 +277,32 @@
         <input type="text" id="story-title" placeholder="e.g. The Whispering Forest" />
       </div>
       <div>
-        <label class="field-label" data-i18n="admin.story_field_theme">Theme</label>
-        <select id="story-theme">
-          <option value="courage">Courage & Confidence</option>
-          <option value="adventure">Adventure & Wonder</option>
-          <option value="lullaby">Bedtime & Comfort</option>
-        </select>
+        <label class="field-label" for="story-title-ar">Arabic title (shown when the site is in Arabic)</label>
+        <input type="text" id="story-title-ar" dir="rtl" lang="ar" placeholder="مثال: الغابة الهامسة" />
       </div>
       <div>
-        <label class="field-label" data-i18n="admin.story_field_collection">Collection Label</label>
-        <input type="text" id="story-collection" placeholder="e.g. Family & Belonging" />
+        <label class="field-label" for="story-collection" data-i18n="admin.story_field_collection">Collection Label</label>
+        <input type="text" id="story-collection" placeholder="e.g. Courage & Confidence, or Family & Belonging" />
+        <div class="size-hint" id="story-collection-hint">Type the label in English or Arabic. The matching themes below are ticked for you, and the site shows them in both languages.</div>
       </div>
-      <div>
-        <label class="field-label" data-i18n="admin.story_field_ages">Age Ranges</label>
-        <input type="text" id="story-ages" value="2-4,5-7,8-10" />
-      </div>
+
     </div>
+    <input type="hidden" id="story-theme" value="courage" />
+    <input type="hidden" id="story-ages" value="2-4,4-6,6-8" />
+
+    <fieldset class="pick-set">
+      <legend class="field-label">Themes <span class="pick-note">(tick as many as fit)</span></legend>
+      <div id="story-themes-picker"></div>
+    </fieldset>
+    <fieldset class="pick-set">
+      <legend class="field-label">Age groups <span class="pick-note">(tick as many as fit; also the ages accepted when personalising)</span></legend>
+      <div class="pick-row" id="story-agegroups-picker"></div>
+    </fieldset>
     <label class="field-label" data-i18n="admin.story_field_desc">Description</label>
     <textarea id="story-description" rows="2" placeholder="A short line about the story..."></textarea>
+    <div class="size-hint" style="margin:-4px 0 10px;">This is the summary customers see on story cards and the story page. Update it whenever you rename or change a story.</div>
+    <label class="field-label" for="story-description-ar">Arabic description</label>
+    <textarea id="story-description-ar" rows="2" dir="rtl" lang="ar" placeholder="سطر قصير عن القصة..."></textarea>
 
     <div class="story-extra-toggle">
       <input type="checkbox" id="story-has-extra" />
@@ -879,7 +901,11 @@
                 ${s.has_extra_character ? `<span class="extra-tag">+ ${stEsc(s.extra_character_name)} (AED ${stEsc(s.extra_character_fee_aed)})</span>` : ''}
                 ${s.built_in ? '<span class="built-in-tag">Original</span>' : ''}
               </h4>
-              <p>${stEsc(THEME_LABELS[s.theme] || s.theme)}${s.collection ? ' · ' + stEsc(s.collection) : ''}${s.cover_image_url ? '' : ' · <em>no cover photo yet</em>'}</p>
+              <p>${s.collection ? stEsc(s.collection) : '<em>no collection label</em>'}${s.cover_image_url ? '' : ' · <em>no cover photo yet</em>'}</p>
+              <div class="story-tags">${(s.moments || []).length
+                ? (s.moments || []).map(m => { const M = window.HIKAYA_STORY_THEMES && window.HIKAYA_STORY_THEMES.MOMENTS[m]; return `<span>${stEsc(M ? M.en + ' · ' + M.ar : m)}</span>`; }).join('')
+                : '<span style="background:#fde8e3">No themes yet: edit to add</span>'}
+                ${(s.age_bands || []).map(b => `<span>Ages ${stEsc(String(b).replace('-', '–'))}</span>`).join('') || '<span style="background:#fde8e3">No age groups yet</span>'}</div>
             </div>
           </div>
           <div class="story-actions">
@@ -987,16 +1013,70 @@
     }
   }
 
+  /* ---------- Themes + age groups picked from the collection label ---------- */
+  const ST = () => window.HIKAYA_STORY_THEMES;
+  let autoTicked = new Set();     // ticked by the collection label, not by hand
+  function buildPickers() {
+    const T = ST(); if (!T || document.querySelector('#story-themes-picker .pick-chip')) return;
+    document.getElementById('story-themes-picker').innerHTML = T.GROUPS.map(g => `
+      <div class="pick-group"><div class="pick-group-title">${g.en} · <span dir="rtl" lang="ar">${g.ar}</span></div><div class="pick-row">
+        ${Object.keys(T.MOMENTS).filter(id => T.MOMENTS[id].group === g.id).map(id => `
+          <label class="pick-chip"><input type="checkbox" name="story-moment" value="${id}"><span>${T.MOMENTS[id].en}</span><span class="ar" dir="rtl" lang="ar">${T.MOMENTS[id].ar}</span></label>`).join('')}
+      </div></div>`).join('');
+    document.getElementById('story-agegroups-picker').innerHTML = T.AGE_GROUPS.map(b => `
+      <label class="pick-chip"><input type="checkbox" name="story-agegroup" value="${b}"><span>Ages ${b.replace('-', '–')}</span></label>`).join('');
+    document.querySelectorAll('input[name="story-moment"]').forEach(cb => cb.addEventListener('change', () => {
+      autoTicked.delete(cb.value); cb.closest('.pick-chip').classList.remove('auto');   // a hand choice always wins
+    }));
+  }
+  function setChecked(name, values) {
+    const v = new Set(values || []);
+    document.querySelectorAll(`input[name="${name}"]`).forEach(cb => { cb.checked = v.has(cb.value); cb.closest('.pick-chip').classList.remove('auto'); });
+  }
+  function getChecked(name) { return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value); }
+  function applyCollectionLabel() {
+    const T = ST(); if (!T) return;
+    buildPickers();
+    const found = new Set(T.detect(document.getElementById('story-collection').value));
+    // Undo earlier automatic ticks that the new label no longer supports, then add the new ones.
+    autoTicked.forEach(id => {
+      if (found.has(id)) return;
+      const cb = document.querySelector(`input[name="story-moment"][value="${id}"]`);
+      if (cb) { cb.checked = false; cb.closest('.pick-chip').classList.remove('auto'); }
+      autoTicked.delete(id);
+    });
+    found.forEach(id => {
+      const cb = document.querySelector(`input[name="story-moment"][value="${id}"]`);
+      if (cb && !cb.checked) { cb.checked = true; autoTicked.add(id); cb.closest('.pick-chip').classList.add('auto'); }
+    });
+    const hint = document.getElementById('story-collection-hint');
+    const label = document.getElementById('story-collection').value.trim();
+    if (!label) hint.textContent = 'Type the label in English or Arabic. The matching themes below are ticked for you, and the site shows them in both languages.';
+    else if (!found.size) hint.textContent = "No theme recognised in this label. Tick the themes below yourself.";
+    else hint.textContent = 'Recognised: ' + [...found].map(id => `${T.MOMENTS[id].en} / ${T.MOMENTS[id].ar}`).join(', ') + '. Untick anything that does not fit.';
+  }
+  document.getElementById('story-collection').addEventListener('input', applyCollectionLabel);
+  document.addEventListener('DOMContentLoaded', () => { buildPickers(); });
+  setTimeout(buildPickers, 0);
+
   function editStory(slug) {
     const story = storiesCache.find(s => s.slug === slug);
     if (!story) return;
     document.getElementById('story-form-title').textContent = 'Edit Story';
     document.getElementById('story-slug').value = story.slug;
     document.getElementById('story-title').value = story.title;
+    document.getElementById('story-title-ar').value = story.title_ar || '';
     document.getElementById('story-theme').value = story.theme;
     document.getElementById('story-collection').value = story.collection || '';
-    document.getElementById('story-ages').value = story.age_ranges || '2-4,5-7,8-10';
-    document.getElementById('story-description').value = story.description || '';
+    document.getElementById('story-ages').value = (story.age_bands || []).join(',') || '2-4,4-6,6-8';
+    buildPickers(); autoTicked = new Set();
+    setChecked('story-moment', story.moments || []);
+    setChecked('story-agegroup', story.age_bands || []);
+    // Older stories saved before themes existed: suggest them from the label.
+    if (!(story.moments || []).length) applyCollectionLabel();
+    const prem = (story.premise && typeof story.premise === 'object') ? story.premise : {};
+    document.getElementById('story-description').value = prem.en || story.description || '';
+    document.getElementById('story-description-ar').value = prem.ar || '';
     document.getElementById('story-has-extra').checked = !!story.has_extra_character;
     document.getElementById('story-extra-fields').style.display = story.has_extra_character ? 'grid' : 'none';
     document.getElementById('story-extra-name').value = story.extra_character_name || '';
@@ -1011,10 +1091,15 @@
     document.getElementById('story-form-title').textContent = '+ Add a New Story';
     document.getElementById('story-slug').value = '';
     document.getElementById('story-title').value = '';
+    document.getElementById('story-title-ar').value = '';
     document.getElementById('story-theme').value = 'courage';
     document.getElementById('story-collection').value = '';
-    document.getElementById('story-ages').value = '2-4,5-7,8-10';
+    document.getElementById('story-ages').value = '2-4,4-6,6-8';
+    buildPickers(); autoTicked = new Set();
+    setChecked('story-moment', []); setChecked('story-agegroup', []);
+    applyCollectionLabel();
     document.getElementById('story-description').value = '';
+    document.getElementById('story-description-ar').value = '';
     document.getElementById('story-has-extra').checked = false;
     document.getElementById('story-extra-fields').style.display = 'none';
     document.getElementById('story-extra-name').value = '';
@@ -1050,6 +1135,26 @@
       return;
     }
 
+    // Make sure the label has been read even if it was pasted without typing.
+    applyCollectionLabel();
+    // Main theme first: themes in the order they appear in the label, then any ticked by hand.
+    const fromLabel = ST().detect(document.getElementById('story-collection').value);
+    const ticked = getChecked('story-moment');
+    const moments = fromLabel.filter(id => ticked.includes(id)).concat(ticked.filter(id => !fromLabel.includes(id)));
+    const ageBands = getChecked('story-agegroup');
+    if (!moments.length) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = 'Please tick at least one theme (or type a collection label we recognise).';
+      return;
+    }
+    if (!ageBands.length) {
+      statusEl.className = 'upload-status error';
+      statusEl.textContent = 'Please tick at least one age group.';
+      return;
+    }
+    document.getElementById('story-theme').value = ST().cardTheme(moments);
+    document.getElementById('story-ages').value = ageBands.join(',');
+
     statusEl.className = 'upload-status';
     statusEl.textContent = 'Saving…';
     try {
@@ -1058,10 +1163,12 @@
         headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
         body: JSON.stringify({
           slug: document.getElementById('story-slug').value || null,
-          title, theme: document.getElementById('story-theme').value,
+          title, titleAr: document.getElementById('story-title-ar').value.trim(), theme: document.getElementById('story-theme').value,
           collection: document.getElementById('story-collection').value.trim(),
+          moments, ageBands,
           ageRanges: document.getElementById('story-ages').value.trim(),
           description: document.getElementById('story-description').value.trim(),
+          descriptionAr: document.getElementById('story-description-ar').value.trim(),
           hasExtraCharacter: hasExtra,
           extraCharacterName: document.getElementById('story-extra-name').value.trim(),
           extraCharacterFeeAed: document.getElementById('story-extra-fee').value,

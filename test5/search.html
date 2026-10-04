@@ -14,7 +14,7 @@
 </head>
 <body data-page="search">
 <div id="hk-top"></div>
-<main id="main">
+<main id="main" tabindex="-1">
 
 <div class="wrap" style="padding-block:30px 8px">
   <h1 style="font-size:clamp(2rem,3.2vw,2.8rem)" data-i18n="pg.srch_title">Search</h1>
@@ -23,12 +23,12 @@
     <input id="q" type="search" autocomplete="off" data-i18n-ph="pg.srch_ph" placeholder="Search stories, themes or ages" />
     <button class="btn btn-primary" type="submit" data-i18n="pg.srch_go">Search</button>
   </form>
-  <div class="chip-row" aria-label="Suggestions"><span class="sub" style="margin:0;align-self:center" data-i18n="pg.srch_try">Try:</span>
-    <button type="button" data-q="courage" data-i18n="home6.th_courage">Courage</button>
-    <button type="button" data-q="bedtime" data-i18n="home6.th_bedtime">Bedtime</button>
-    <button type="button" data-q="friendship" data-i18n="home6.th_friendship">Friendship</button>
-    <button type="button" data-q="family" data-i18n="home6.th_family">Family</button>
-    <button type="button" data-q="4-6">4–6</button>
+  <div class="chip-row" aria-label="Suggestions" data-i18n-aria="a11y.suggestions"><span class="sub" style="margin:0;align-self:center" data-i18n="pg.srch_try">Try:</span>
+    <button type="button" data-theme="courage" data-i18n="home6.th_courage">Courage</button>
+    <button type="button" data-theme="bedtime" data-i18n="home6.th_bedtime">Bedtime</button>
+    <button type="button" data-theme="friendship" data-i18n="home6.th_friendship">Friendship</button>
+    <button type="button" data-theme="family" data-i18n="home6.th_family">Family</button>
+    <button type="button" data-age="4-6" data-age-a="4" data-age-b="6"><bdi dir="ltr">4–6</bdi></button>
   </div>
 </div>
 <section class="sec wrap" style="padding-top:28px" aria-live="polite">
@@ -43,13 +43,40 @@ document.addEventListener('DOMContentLoaded', async function () {
   var H = window.Hikaya, t = H.t, esc = H.esc;
   var PAGES = [['stories.html','home6.nav_stories','stories browse collection all'],['age-groups.html','home6.nav_ages','age ages 2-4 4-6 6-8 toddler'],['our-world.html','home6.nav_world','themes moments courage kindness emotions family'],['about.html','home6.nav_about','about brand maison jaber'],['help.html','home6.nav_faq','faq help delivery shipping photo returns gift'],['contact.html','home6.foot_contact','contact email support'],['track-order.html','home6.foot_track','track order status'],['refund-policy.html','home6.foot_refund','refund return cancel']];
   var all = await H.loadCatalog(); var input = document.getElementById('q');
-  function norm(s) { return String(s || '').toLowerCase().replace(/[–—]/g, '-'); }
-  function hay(s) { return norm([s.title, s.ar, H.titlePlain(s), H.premise(s), (s.moments || []).map(function (m) { return m + ' ' + H.themeLabel(m); }).join(' '), (s.age_bands || []).join(' '), H.ageText(s.age_bands)].join(' ')); }
-  function run(q) {
-    q = (q || '').trim(); H.setQS(q ? '?q=' + encodeURIComponent(q) : '');
-    var words = norm(q).split(/\s+/).filter(Boolean);
-    var stories = words.length ? all.filter(function (s) { var h = hay(s); return words.every(function (w) { return h.indexOf(w) >= 0; }); }) : all;
-    var pages = words.length ? PAGES.filter(function (p) { var h = norm(t(p[1]) + ' ' + p[2]); return words.some(function (w) { return h.indexOf(w) >= 0; }); }) : [];
+  function norm(s) { return String(s || '').toLowerCase().replace(/[–—]/g, '-').replace(/[\u064B-\u0652\u0640]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي'); }
+  /* QA004: stories are matched on stable theme IDs plus their labels in BOTH languages,
+     so "courage", "Courage" and "الشجاعة" all find the same stories whatever the site language is. */
+  var THEME_KEYS = { courage: ['home6.th_courage', 'pg.w_courage'], bedtime: ['home6.th_bedtime'], friendship: ['home6.th_friendship'], family: ['home6.th_family', 'pg.w_family'], kindness: ['pg.w_kindness'], emotions: ['pg.w_emotions'], imagination: ['pg.w_imagination'], growing: ['pg.w_growing'], adventure: ['home6.th_adventure'] };
+  function both(key) { return H.tIn(key, 'en') + ' ' + H.tIn(key, 'ar'); }
+  function themeWords(m) {
+    var g = H.groupOf(m), out = [m];
+    if (g) { out.push(g, H.tIn('pg.w_' + g, 'en'), H.tIn('pg.w_' + g, 'ar')); (THEME_KEYS[g] || []).forEach(function (k) { out.push(both(k)); }); }
+    (THEME_KEYS[m] || []).forEach(function (k) { out.push(both(k)); });
+    out.push(both('home6.th_' + m));
+    return out.join(' ');
+  }
+  function hay(s) {
+    var p = s.premise && typeof s.premise === 'object' ? [s.premise.en, s.premise.ar].join(' ') : H.premise(s);
+    return norm([s.title, H.arTitle(s), H.titlePlain(s), p, s.description, s.collection, (s.moments || []).map(themeWords).join(' '), (s.age_bands || []).join(' ')].join(' '));
+  }
+  function themeQueryWords(id) { var w = [id]; (THEME_KEYS[id] || []).forEach(function (k) { w.push(H.tIn(k, 'en'), H.tIn(k, 'ar')); }); return w.map(norm).filter(Boolean); }
+  var current = { q: '', theme: null, age: null };
+  function run(q, opts) {
+    opts = opts || {};
+    q = (q || '').trim();
+    current = { q: q, theme: opts.theme || null, age: opts.age || null };
+    var qs = opts.theme ? '?theme=' + encodeURIComponent(opts.theme) : opts.age ? '?age=' + encodeURIComponent(opts.age) : (q ? '?q=' + encodeURIComponent(q) : '');
+    H.setQS(qs);
+    var stories, words = norm(q).split(/\s+/).filter(Boolean);
+    if (opts.theme) {
+      var alts = themeQueryWords(opts.theme);
+      stories = all.filter(function (s) { var h = hay(s); return alts.some(function (w) { return h.indexOf(w) >= 0; }); });
+    } else if (opts.age) {
+      stories = all.filter(function (s) { return H.inBand(s, opts.age); });
+    } else {
+      stories = words.length ? all.filter(function (s) { var h = hay(s); return words.every(function (w) { return h.indexOf(w) >= 0; }); }) : all;
+    }
+    var pages = words.length ? PAGES.filter(function (p) { var h = norm(H.tIn(p[1], 'en') + ' ' + H.tIn(p[1], 'ar') + ' ' + p[2]); return words.some(function (w) { return h.indexOf(w) >= 0; }); }) : [];
     document.getElementById('res-title').textContent = q ? t('pg.srch_results').replace('{q}', q) : t('pg.srch_stories');
     document.getElementById('res-stories').innerHTML = stories.map(function (s) { return H.cardHtml(s); }).join('');
     document.getElementById('res-none').hidden = stories.length > 0;
@@ -57,10 +84,25 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('res-pages-t').hidden = !pages.length;
     document.getElementById('res-pages').innerHTML = pages.map(function (p) { return '<li><a href="' + p[0] + '"><span>' + esc(t(p[1])) + '</span><small>' + H.ARR + '</small></a></li>'; }).join('');
   }
+  /* Chips show the localised label in the box and the heading; the search itself uses the stable ID. */
+  function chipLabel(b) { return b.dataset.theme ? (t(b.getAttribute('data-i18n')) || b.textContent.trim()) : H.rangeText(b.dataset.ageA, b.dataset.ageB); }
   document.getElementById('sform').addEventListener('submit', function (e) { e.preventDefault(); run(input.value); });
-  document.querySelectorAll('[data-q]').forEach(function (b) { b.addEventListener('click', function () { input.value = b.dataset.q; run(b.dataset.q); }); });
-  input.value = H.qs().get('q') || ''; run(input.value); input.focus();
-  document.addEventListener('hikaya:langchange', function () { run(input.value); });
+  document.querySelectorAll('.chip-row [data-theme], .chip-row [data-age]').forEach(function (b) { b.addEventListener('click', function () { var label = chipLabel(b); input.value = label; run(label, { theme: b.dataset.theme, age: b.dataset.age }); }); });
+  var qp = H.qs();
+  if (qp.get('theme') || qp.get('age')) {
+    var chip = document.querySelector(qp.get('theme') ? '.chip-row [data-theme="' + qp.get('theme') + '"]' : '.chip-row [data-age="' + qp.get('age') + '"]');
+    if (chip) { input.value = chipLabel(chip); run(input.value, { theme: chip.dataset.theme, age: chip.dataset.age }); }
+    else { input.value = ''; run(''); }
+  } else { input.value = qp.get('q') || ''; run(input.value); }
+  input.focus();
+  document.addEventListener('hikaya:langchange', function () {
+    /* Re-label a chip search in the new language; a typed query stays as the customer typed it. */
+    if (current.theme || current.age) {
+      var c = document.querySelector(current.theme ? '.chip-row [data-theme="' + current.theme + '"]' : '.chip-row [data-age="' + current.age + '"]');
+      if (c) input.value = chipLabel(c);
+      run(input.value, { theme: current.theme, age: current.age });
+    } else run(input.value);
+  });
 });
 </script>
 </main>

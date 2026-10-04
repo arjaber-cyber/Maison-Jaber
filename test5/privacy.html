@@ -55,21 +55,19 @@
 <body data-flow="legal">
 
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 
 <div class="wrap legal-head">
-  <span class="eyebrow">Legal</span>
-  <h1>Privacy Policy</h1>
-  <div class="updated">Last updated: September 2026</div>
+  <span class="eyebrow" data-i18n="pg.legal_eyebrow">Legal</span>
+  <h1 data-i18n="pg.legal_privacy_t">Privacy Policy</h1>
+  <div class="updated" data-i18n="pg.legal_updated">Last updated: October 2026</div>
 </div>
 
-<!-- INTERNAL NOTE (not shown to customers): this policy was drafted to reflect
-     how the site works today, not written or reviewed by a lawyer. Needs real
-     legal review before this can be relied on -- especially GDPR (Germany/EU
-     customers) and UAE data protection law -- before this page is treated as final. -->
+<!-- Draft written for UAE + GCC operations (Oct 2026). Have a UAE lawyer review it (incl. UAE PDPL and consumer-protection rules) before relying on it. -->
 
-<div class="wrap legal-body">
+<div class="wrap legal-body" lang="en" dir="ltr" data-lang-only="en">
   <h2>1. Who we are</h2>
-  <p>Hikaya by Maison Jaber ("Hikaya", "we", "us") creates personalized children's storybooks. Our platform is operated from the United Arab Emirates, with fulfillment partners in Germany and Syria. This policy explains what information we collect when you use our website, and how we use it.</p>
+  <p>Hikaya by Maison Jaber ("Hikaya", "we", "us") creates personalized children's storybooks. The website is operated by Maison Jaber FZ-LLC from the United Arab Emirates, and we currently deliver to the UAE and the other GCC countries. This policy explains what information we collect when you use our website, and how we use it.</p>
 
   <h2>2. Information we collect</h2>
   <p>We collect information you give us directly, including:</p>
@@ -83,7 +81,7 @@
 
   <h2>3. How we use your information</h2>
   <ul>
-    <li>To create, print, and ship your child's personalized storybook</li>
+    <li>To create, print, and deliver your child's personalized storybook</li>
     <li>To process payment and send order confirmations</li>
     <li>To contact you about your order, including reminders if you don't finish an order you started</li>
     <li>To improve the website, using aggregated, anonymized analytics</li>
@@ -94,31 +92,85 @@
   <p>We share information only where necessary to run our service:</p>
   <ul>
     <li><strong>Supabase</strong> (database hosting) and <strong>Netlify</strong> (website hosting) store order and account data on our behalf.</li>
-    <li><strong>Payment providers</strong> (Telr, PayTabs, Tabby, Tamara, Sham Cash, or Apple/Google Pay, depending on your region and choice) process your payment directly — we do not store your full card details ourselves.</li>
-    <li><strong>Google Analytics and Meta</strong> receive anonymized, aggregated usage data to help us understand how the site is used.</li>
-    <li>Our fulfillment partners in Germany and Syria receive the delivery and personalization details needed to print and ship your order.</li>
+    <li><strong>Ziina</strong>, our payment provider, processes card, Apple Pay and Google Pay payments on its secure page. We never see or store your full card details.</li>
+    <li><strong>Google Analytics and Meta</strong> receive anonymized, aggregated usage data, only if you allow analytics cookies.</li>
+    <li>The printing and delivery partners who make and deliver your book receive only the personalization and delivery details needed to do so.</li>
   </ul>
 
   <h2>5. Your rights</h2>
-  <p>Depending on where you live, you may have the right to access, correct, delete, or export the personal information we hold about you, and to object to certain uses of it. To exercise any of these rights, contact us using the details below.</p>
+  <p>You may ask to access, correct, delete, or export the personal information we hold about you, and to object to certain uses of it. To exercise any of these rights, contact us using the details below.</p>
 
   <h2>6. Data retention</h2>
   <p>We keep order and account information for as long as needed to fulfill your order, meet legal or accounting obligations, and resolve any disputes. You can ask us to delete your account and associated data at any time.</p>
 
   <h2>7. Cookies and tracking</h2>
-  <p>We use cookies and similar technologies for essential site functionality (like remembering your language and currency preference) and for analytics (Google Analytics, Meta Pixel). You can control cookies through your browser settings.</p>
+  <p>We use cookies and similar technologies for essential site functionality (like remembering your language and currency preference) and, only with your consent, for analytics (Google Analytics, Meta Pixel). You can change your choice at any time and control cookies through your browser settings.</p>
 
   <h2>8. Children's information</h2>
   <p>Our service is intended for use by parents and guardians on behalf of their children. We collect a child's first name, age, and photo only because a parent or guardian has chosen to provide it in order to create a personalized product for that child.</p>
 
   <h2>9. Contact us</h2>
-  <p>If you have questions about this policy or how your information is handled, please reach out through our <a href="help.html">Help page</a>.</p>
+  <p>If you have questions about this policy or how your information is handled, please reach out through our <a href="contact.html">Contact page</a>.</p>
+</div>
+<div class="wrap legal-body" lang="ar" dir="rtl" data-lang-only="ar">
+  <h2>1. من نحن</h2>
+  <p>«حكاية من ميزون جابر» («حكاية» أو «نحن») تصنع كتب قصص مخصّصة للأطفال. تُدير الموقع شركة ميزون جابر م.م.ح (Maison Jaber FZ-LLC) من دولة الإمارات العربية المتحدة، ونوصل طلباتنا حاليًا داخل الإمارات وبقية دول مجلس التعاون الخليجي. توضّح هذه السياسة المعلومات التي نجمعها عند استخدامك لموقعنا، وكيف نستخدمها.</p>
+
+  <h2>2. المعلومات التي نجمعها</h2>
+  <p>نجمع المعلومات التي تقدّمها لنا مباشرة، ومنها:</p>
+  <ul>
+    <li><strong>بيانات الحساب:</strong> الاسم والبريد الإلكتروني، إذا سجّلت الدخول عبر Google أو Facebook أو البريد الإلكتروني.</li>
+    <li><strong>بيانات الطلب:</strong> اسمك وبريدك الإلكتروني ورقم هاتفك وعنوان التوصيل وطريقة الدفع.</li>
+    <li><strong>بيانات التخصيص:</strong> الاسم الأول لطفلك وعمره وجنسه ورسالة الإهداء، وصورة أو أكثر ترفعها لنرسم قصته.</li>
+    <li><strong>بيانات الهدية:</strong> رسالة الهدية، إذا اخترت إرسال الكتاب هديةً.</li>
+  </ul>
+  <p>كما نجمع تلقائيًا بعض المعلومات التقنية، مثل موقعك التقريبي (ونستخدمه فقط لعرض العملة وخيارات التوصيل المناسبة)، وإحصاءات أساسية عن طريقة استخدامك للموقع.</p>
+
+  <h2>3. كيف نستخدم معلوماتك</h2>
+  <ul>
+    <li>لصنع كتاب قصة طفلك المخصّص وطباعته وتوصيله</li>
+    <li>لمعالجة الدفع وإرسال تأكيد الطلب</li>
+    <li>للتواصل معك بشأن طلبك، بما في ذلك تذكيرك إذا بدأت طلبًا ولم تُكمله</li>
+    <li>لتحسين الموقع، باستخدام إحصاءات مجمّعة لا تكشف هوية أحد</li>
+  </ul>
+  <p>لا نبيع معلوماتك الشخصية، ولا نستخدم صورة طفلك أو اسمه لأي غرض غير صنع طلبك.</p>
+
+  <h2>4. مع من نشارك المعلومات</h2>
+  <p>لا نشارك المعلومات إلا عند الحاجة لتقديم خدمتنا:</p>
+  <ul>
+    <li><strong>Supabase</strong> (استضافة قاعدة البيانات) و<strong>Netlify</strong> (استضافة الموقع) تحفظان بيانات الطلبات والحسابات نيابةً عنا.</li>
+    <li><strong>Ziina</strong>، مزوّد الدفع لدينا، يعالج الدفع بالبطاقة وApple Pay وGoogle Pay على صفحته الآمنة. لا نطّلع على بيانات بطاقتك كاملةً ولا نحفظها.</li>
+    <li><strong>Google Analytics وMeta</strong> تتلقّيان بيانات استخدام مجمّعة لا تكشف هوية أحد، وذلك فقط إذا سمحت بملفات تعريف الارتباط الخاصة بالتحليلات.</li>
+    <li>شركاء الطباعة والتوصيل الذين يصنعون كتابك ويوصلونه لا يتلقّون إلا بيانات التخصيص والتوصيل اللازمة لذلك.</li>
+  </ul>
+
+  <h2>5. حقوقك</h2>
+  <p>يمكنك أن تطلب الاطّلاع على معلوماتك الشخصية التي نحتفظ بها أو تصحيحها أو حذفها أو الحصول على نسخة منها، وأن تعترض على بعض استخداماتها. لممارسة أيٍّ من هذه الحقوق، تواصل معنا عبر الوسيلة المذكورة أدناه.</p>
+
+  <h2>6. مدة الاحتفاظ بالبيانات</h2>
+  <p>نحتفظ ببيانات الطلبات والحسابات طوال المدة اللازمة لتنفيذ طلبك والوفاء بالالتزامات القانونية والمحاسبية وحلّ أي خلاف. ويمكنك أن تطلب حذف حسابك وبياناته في أي وقت.</p>
+
+  <h2>7. ملفات تعريف الارتباط والتتبّع</h2>
+  <p>نستخدم ملفات تعريف الارتباط وتقنيات مشابهة لتشغيل الموقع (مثل تذكّر اللغة والعملة التي اخترتها)، ونستخدمها للتحليلات (Google Analytics وMeta Pixel) بموافقتك فقط. يمكنك تغيير اختيارك في أي وقت، والتحكّم في ملفات تعريف الارتباط من إعدادات متصفّحك.</p>
+
+  <h2>8. معلومات الأطفال</h2>
+  <p>خدمتنا موجّهة إلى الآباء والأمهات وأولياء الأمور نيابةً عن أطفالهم. لا نجمع الاسم الأول للطفل وعمره وصورته إلا لأن أحد والديه أو وليّ أمره اختار تقديمها لصنع منتج مخصّص لهذا الطفل.</p>
+
+  <h2>9. تواصل معنا</h2>
+  <p>إن كان لديك سؤال عن هذه السياسة أو عن طريقة التعامل مع معلوماتك، تواصل معنا عبر صفحة <a href="contact.html">تواصل معنا</a>.</p>
 </div>
 
+</main>
 <div id="hk-foot"></div>
 
+<script src="/i18n.js" defer></script>
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <script src="chrome.js" defer></script>
 </body>
 </html>

@@ -39,7 +39,7 @@
     display: flex; gap: 16px; background: #fff; border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
     box-shadow: 0 6px 18px rgba(50,44,36,0.06); align-items: center;
   }
-  .cart-item .cover { width: 64px; height: 84px; border-radius: 10px; flex-shrink: 0; }
+  .cart-item .cover { width: 76px; height: 76px; border-radius: 10px; flex-shrink: 0; overflow: hidden; background: linear-gradient(165deg, #D98868 0%, #B5563B 100%); }
   .cart-item .cover.courage { background: linear-gradient(165deg, #D98868 0%, #B5563B 100%); }
   .cart-item .cover.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
   .cart-item .cover.lullaby { background: linear-gradient(165deg, #a9829a 0%, #7d5a6b 100%); }
@@ -97,6 +97,7 @@
 <body data-flow="cart">
 
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 
 <div class="wrap page-head">
   <h1 data-i18n="cart.title">Your Cart</h1>
@@ -116,6 +117,7 @@
   <div id="summary-slot"></div>
 </div>
 
+</main>
 <div id="hk-foot"></div>
 
 <script defer>
@@ -172,7 +174,7 @@
 
     itemsWrap.innerHTML = cart.map(item => `
       <div class="cart-item" data-id="${item.id}">
-        <div class="cover ${item.theme}"></div>
+        <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
         <div class="info">
           <h3>${item.story}</h3>
           <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</div>
@@ -182,6 +184,8 @@
         <div class="price">${fmt(pricing.perBookDiscounted, region)}</div>
       </div>
     `).join('');
+
+    if (window.hikayaCart.paintCovers) window.hikayaCart.paintCovers(itemsWrap, '.cover[data-item-id]');
 
     itemsWrap.querySelectorAll('.remove-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -207,6 +211,7 @@
 
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
 <script src="chrome.js" defer></script>
 <script>
 /* Cart: "Add another story for a sibling?" — links into the normal personalise flow (bundle pricing applies as usual). */

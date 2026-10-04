@@ -36,11 +36,11 @@
     const li = nav.map(([h, k, fb]) => `<li><a href="${h}"${here === h ? ' aria-current="page"' : ''} data-i18n="home6.${k}">${fb}</a></li>`).join('');
     return `
 <a class="skip" href="#main" data-i18n="home6.skip">Skip to content</a>
-<div class="utility" role="region" aria-label="Delivery and region"><div class="wrap">
+<div class="utility" role="region" aria-label="Delivery and region" data-i18n-aria="a11y.utility"><div class="wrap">
   <p class="msg">${ICON.truck}<span id="delivery-msg">Free delivery across the UAE</span></p>
   <div class="controls">
     <div class="region">
-      <button class="util-btn" id="region-btn" aria-haspopup="true" aria-expanded="false" aria-controls="region-menu">${ICON.globe}<span id="region-label">UAE (AED)</span>${ICON.chev}</button>
+      <button class="util-btn" id="region-btn" aria-haspopup="true" aria-expanded="false" aria-controls="region-menu" data-i18n-aria="a11y.region">${ICON.globe}<span id="region-label">UAE (AED)</span>${ICON.chev}</button>
       <ul class="region-menu" id="region-menu" role="menu" hidden></ul>
     </div>
     <span class="util-sep" aria-hidden="true"></span>
@@ -50,17 +50,17 @@
   </div>
 </div></div>
 <header class="site-header"><div class="wrap">
-  <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home"><img src="${IMGSRC('logo-hikaya.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
-  <nav class="main-nav" aria-label="Main"><ul>${li}</ul></nav>
+  <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
+  <nav class="main-nav" aria-label="Main" data-i18n-aria="a11y.main_nav"><ul>${li}</ul></nav>
   <div class="header-actions">
-    <a class="icon-btn hide-tab" href="search.html" aria-label="Search stories">${ICON.search}</a>
-    <a class="icon-btn hide-tab" href="account.html" aria-label="Account">${ICON.user}</a>
-    <a class="icon-btn" href="cart.html" aria-label="Cart">${ICON.bag}<span class="cart-badge">0</span></a>
+    <a class="icon-btn hide-tab" href="search.html" aria-label="Search stories" data-i18n-aria="a11y.search">${ICON.search}</a>
+    <a class="icon-btn hide-tab" href="account.html" aria-label="Account" data-i18n-aria="a11y.account">${ICON.user}</a>
+    <a class="icon-btn" href="cart.html" aria-label="Cart" data-i18n-aria="a11y.cart">${ICON.bag}<span class="cart-badge">0</span></a>
     <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span></a>
     <button class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">${ICON.menu}</button>
   </div>
 </div>
-<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden><ul>
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" data-i18n-aria="a11y.mobile_nav" hidden><ul>
   ${li}
   <li><a href="help.html" data-i18n="home6.nav_faq">FAQs</a></li>
   <li><a href="search.html" data-i18n="home6.foot_search">Search</a></li>
@@ -75,7 +75,7 @@
 <footer class="site-footer"><div class="wrap">
   <div class="foot-grid">
     <div>
-      <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
+      <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
       <p class="about" data-i18n="home6.foot_about">Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.</p>
     </div>
     <div><h2 data-i18n="home6.foot_story">Our Story</h2><ul>
@@ -131,6 +131,9 @@
     if (msg) msg.textContent = deliveryText(k);
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     const menu = document.getElementById('region-menu');
+    const regionWrap = document.querySelector('.utility .region');
+    const available = GCC_KEYS.filter(key => regionObj(key));
+    if (regionWrap) regionWrap.hidden = !available.length;
     if (menu) menu.innerHTML = GCC_KEYS.filter(key => regionObj(key)).map(key => `<li role="none"><button role="menuitemradio" aria-checked="${key === k}" data-region="${key}"><span>${esc(countryName(key))}</span><span class="cur">${esc(regionObj(key).currency)}</span></button></li>`).join('');
   }
   function initRegion() {
@@ -138,7 +141,7 @@
     if (!btn || !menu) return;
     const close = () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
     btn.addEventListener('click', e => {
-      e.stopPropagation(); const open = menu.hidden; menu.hidden = !open; btn.setAttribute('aria-expanded', String(open));
+      e.stopPropagation(); if (!menu.children.length) renderRegion(); if (!menu.children.length) return; const open = menu.hidden; menu.hidden = !open; btn.setAttribute('aria-expanded', String(open));
       if (open) { const cur = menu.querySelector('[aria-checked="true"]') || menu.querySelector('button'); cur && cur.focus(); }
     });
     menu.addEventListener('click', e => {
@@ -158,14 +161,26 @@
   }
 
   /* ---------------- Language ---------------- */
+  const PAGE = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
+  const BASE_TITLE = document.title;
+  function menuLabel(open) { return open ? t('a11y.menu_close', 'Close menu') : t('a11y.menu_open', 'Open menu'); }
   function renderLang() {
     const l = lang();
+    document.documentElement.lang = l; document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => { const v = t(el.getAttribute('data-i18n-aria')); if (v) el.setAttribute('aria-label', v); });
+    const mb = document.getElementById('menu-btn'); if (mb) mb.setAttribute('aria-label', menuLabel(mb.getAttribute('aria-expanded') === 'true'));
+    const pt = t('ttl.' + PAGE.replace(/-/g, '_'), ''); document.title = (l === 'ar' && pt) ? pt : BASE_TITLE; // English titles stay exactly as authored (SEO)
     document.querySelectorAll('.util-btn[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
     document.querySelectorAll('[data-i18n-alt]').forEach(img => { const v = t(img.getAttribute('data-i18n-alt')); if (v) img.alt = v; });
     document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = t(el.getAttribute('data-i18n-ph')); if (v) el.placeholder = v; });
   }
   function initLang() {
-    document.querySelectorAll('.util-btn[data-lang]').forEach(b => b.addEventListener('click', () => { if (window.hikayaSetLang) window.hikayaSetLang(b.dataset.lang); }));
+    document.querySelectorAll('.util-btn[data-lang]').forEach(b => b.addEventListener('click', () => {
+      if (window.hikayaSetLang) { window.hikayaSetLang(b.dataset.lang); return; }
+      /* Safety net: if the translation engine failed to load, persist the choice and reload. */
+      try { localStorage.setItem('hikaya_lang', b.dataset.lang); } catch (_) {}
+      location.reload();
+    }));
     document.addEventListener('hikaya:langchange', () => { renderLang(); renderRegion(); });
   }
 
@@ -173,7 +188,7 @@
   function initNav() {
     const btn = document.getElementById('menu-btn'); const nav = document.getElementById('mobile-nav');
     if (!btn || !nav) return;
-    const set = open => { nav.hidden = !open; btn.setAttribute('aria-expanded', String(open)); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu'); };
+    const set = open => { nav.hidden = !open; btn.setAttribute('aria-expanded', String(open)); btn.setAttribute('aria-label', menuLabel(open)); };
     btn.addEventListener('click', () => set(nav.hidden));
     nav.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !nav.hidden) { set(false); btn.focus(); } });
@@ -237,9 +252,12 @@
   const groupLabel = g => t('pg.w_' + g, g.charAt(0).toUpperCase() + g.slice(1));
   const THEME_KEYS = { screen: 'th_screen', growing: 'th_growing' };
   function bandNums(bands) { return (bands || []).flatMap(b => String(b).split('-').map(Number)).filter(n => !isNaN(n)); }
-  function ageText(bands) { const n = bandNums(bands); return n.length ? `${t('home6.ages', 'Ages')} ${Math.min(...n)}–${Math.max(...n)}` : ''; }
+  function rangeText(a, b) { return t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', a).replace('{b}', b); }
+  function ageText(bands) { const n = bandNums(bands); return n.length ? rangeText(Math.min(...n), Math.max(...n)) : ''; }
   function themeLabel(m) { if (!m) return ''; const g = groupOf(m); return g ? groupLabel(g) : t('home6.' + (THEME_KEYS[m] || 'th_' + m), m.charAt(0).toUpperCase() + m.slice(1)); }
-  function title(s) { return (lang() === 'ar' && s.ar) ? s.ar : s.title; }
+  function arTitle(s) { return s.title_ar || (s.title_i18n && s.title_i18n.ar) || s.ar || ''; }
+  function title(s) { return (lang() === 'ar' && arTitle(s)) ? arTitle(s) : s.title; }
+  function tIn(key, l) { const [ns, k] = key.split('.'); const e = ((window.HIKAYA_TRANSLATIONS || {})[ns] || {})[k]; return e ? (e[l] || e.en || '') : ''; }
   function titleHtml(s) {
     const slot = `<span class="name-slot">${esc(t('home6.name_slot', 'Name'))}</span>`;
     return esc(title(s)).replace(/\[NAME\]/g, slot);
@@ -297,7 +315,7 @@
   function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
+  window.Hikaya = { tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
 
   /* ---------------- Boot ---------------- */
   mount();

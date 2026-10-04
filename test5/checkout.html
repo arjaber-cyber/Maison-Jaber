@@ -185,7 +185,7 @@
   .summary-book { display: flex; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line-soft); }
   .summary-book:last-child { border-bottom: none; }
   .summary-book .cover-mini {
-    width: 54px; height: 72px; border-radius: 12px; flex-shrink: 0;
+    width: 60px; height: 60px; border-radius: 12px; flex-shrink: 0; overflow: hidden;
     background: linear-gradient(165deg, #D98868 0%, #B5563B 100%);
   }
   .summary-book .cover-mini.adventure { background: linear-gradient(165deg, #DEB06B 0%, #C08A3E 100%); }
@@ -236,6 +236,7 @@
 <body data-flow="checkout">
 
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 <h1 class="sr-only" id="co-h1" data-i18n="pg.co_title">Checkout</h1>
 
 <div class="mini-banner" id="mini-banner">
@@ -399,6 +400,7 @@
     </div>
   </div>
 </section>
+</main>
 <div id="hk-foot"></div>
 
 <script type="module">
@@ -615,7 +617,7 @@
 
     itemsWrap.innerHTML = cart.map(item => `
       <div class="summary-book">
-        <div class="cover-mini ${item.theme}"></div>
+        <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>
           <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</p>
@@ -624,6 +626,8 @@
         </div>
       </div>
     `).join('');
+
+    if (window.hikayaCart && window.hikayaCart.paintCovers) window.hikayaCart.paintCovers(itemsWrap, '.cover-mini[data-item-id]');
 
     itemsWrap.querySelectorAll('.remove-item').forEach(btn => {
       btn.addEventListener('click', () => {

@@ -6,7 +6,8 @@
   const page = document.body.dataset.page;
   const qs = H.qs();
   const BANDS = ['2-4', '4-6', '6-8'];
-  const bandLabel = b => b.replace('-', '–');
+  /* QA010: ranges read youngest-to-oldest in Arabic ("من 2 إلى 4 سنوات"), unchanged in English. */
+  const bandLabel = b => { const [a, z] = String(b).split('-'); return t('a11y.band_words', '{a}–{b}').replace('{a}', a).replace('{b}', z); };
   const tpl = (s, o) => Object.keys(o).reduce((a, k) => a.replace('{' + k + '}', o[k]), s);
 
   const THEME_GROUPS = H.THEMES;
@@ -44,7 +45,7 @@
     const grid = document.getElementById('grid'), count = document.getElementById('count'), empty = document.getElementById('empty');
     function options() {
       const a = ageSel.value || qs.get('age') || '', th = themeSel.value || qs.get('theme') || '', so = sortSel.value || qs.get('sort') || 'featured';
-      ageSel.innerHTML = `<option value="">${esc(t('pg.f_all_ages', 'All ages'))}</option>` + BANDS.map(b => `<option value="${b}">${esc(t('home6.ages', 'Ages'))} ${bandLabel(b)}</option>`).join('');
+      ageSel.innerHTML = `<option value="">${esc(t('pg.f_all_ages', 'All ages'))}</option>` + BANDS.map(b => `<option value="${b}">${esc(H.rangeText(...b.split('-')))}</option>`).join('');
       themeSel.innerHTML = `<option value="">${esc(t('pg.f_all_themes', 'All themes'))}</option>` + Object.keys(THEME_GROUPS).map(g => `<option value="${g}">${esc(H.groupLabel(g))}</option>`).join('');
       sortSel.innerHTML = [['featured', 's_featured'], ['newest', 's_newest'], ['az', 's_az']].map(([v, k]) => `<option value="${v}">${esc(t('pg.' + k, v))}</option>`).join('');
       ageSel.value = BANDS.includes(a) ? a : ''; themeSel.value = THEME_GROUPS[th] ? th : ''; sortSel.value = so;
@@ -114,12 +115,12 @@
     }
     function render() {
       const plain = H.titlePlain(s);
-      document.title = `${plain} | Hikaya`;
+      document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
       const md = document.querySelector('meta[name="description"]'); if (md) md.content = H.premise(s) || md.content;
       document.getElementById('crumb-title').textContent = plain;
       document.getElementById('st-title').innerHTML = H.titleHtml(s);
       document.getElementById('st-ages').textContent = [H.ageText(s.age_bands), s.page_count ? tpl(t('pg.pages', '{n} pages'), { n: s.page_count }) : ''].filter(Boolean).join(' · ');
-      document.getElementById('st-chips').innerHTML = [...new Set((s.moments || []).map(m => H.themeLabel(m)))].map(l => `<li>${esc(l)}</li>`).join('');
+      document.getElementById('st-chips').innerHTML = [...new Set((s.moments || []).map(m => t('home6.th_' + m, '') || H.themeLabel(m)))].map(l => `<li>${esc(l)}</li>`).join('');
       document.getElementById('st-premise').textContent = H.premise(s);
       renderPrice();
       document.getElementById('st-cta').href = s.placeholder ? 'personalize.html' : 'personalize.html?story=' + encodeURIComponent(s.slug);
@@ -132,7 +133,11 @@
       th.hidden = shots.length < 2;
       th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${i === 0 ? 'Cover' : 'Sample page ' + i}" data-i="${i}"><img src="${esc(u || s.cover || s.sampleCover)}" alt=""></button></li>`).join('');
       // what happens
-      document.getElementById('st-happens').textContent = s.description && s.description !== H.premise(s) ? s.description : H.premise(s);
+      /* QA005: the admin "description" is English-only, so Arabic shows the Arabic synopsis instead of mixing languages. */
+      const arMode = H.lang() === 'ar';
+      document.getElementById('st-happens').textContent = arMode
+        ? (H.localized(s.synopsis) || s.description_ar || H.premise(s))
+        : (H.localized(s.synopsis) || (s.description && s.description !== H.premise(s) ? s.description : H.premise(s)));
       // learns
       document.getElementById('st-learns').innerHTML = [...new Set((s.moments || []).map(m => H.groupOf(m) || 'courage'))].slice(0, 4).map(g => `<li>${ico(g)}<span>${esc(H.groupLabel(g))}</span></li>`).join('');
       document.getElementById('learns-sec').hidden = !(s.moments || []).length;

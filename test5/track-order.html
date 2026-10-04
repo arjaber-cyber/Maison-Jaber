@@ -73,108 +73,145 @@
 <body data-flow="track">
 
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 
 <div class="wrap page-head">
-  <h1>Track Your Order</h1>
-  <p>Enter your order number and the email you used at checkout.</p>
+  <h1 data-i18n="trk.title">Track Your Order</h1>
+  <p data-i18n="trk.intro">Enter your order number and the email you used at checkout.</p>
 </div>
 
 <div class="wrap">
-  <div class="lookup-card">
+  <form class="lookup-card" id="track-form" novalidate>
     <div class="field">
-      <label class="field-label" for="order-number">Order Number</label>
-      <input type="text" id="order-number" placeholder="HK-12345678" />
+      <label class="field-label" for="order-number" data-i18n="trk.order_label">Order Number</label>
+      <input type="text" id="order-number" placeholder="HK-12345678" autocomplete="off" dir="ltr" required />
     </div>
     <div class="field">
-      <label class="field-label" for="track-email">Email</label>
-      <input type="email" id="track-email" placeholder="you@email.com" />
+      <label class="field-label" for="track-email" data-i18n="trk.email_label">Email</label>
+      <input type="email" id="track-email" placeholder="you@email.com" autocomplete="email" dir="ltr" required aria-describedby="lookup-error" />
     </div>
-    <button type="button" class="btn-primary" id="track-btn">Track Order</button>
-    <div class="lookup-error" id="lookup-error"></div>
-  </div>
+    <button type="submit" class="btn-primary" id="track-btn" data-i18n="trk.action">Track Order</button>
+    <div class="lookup-error" id="lookup-error" role="alert" aria-live="assertive"></div>
+  </form>
 
-  <div class="result-card" id="result-card">
+  <div class="result-card" id="result-card" tabindex="-1">
     <div class="result-header">
-      <h2 id="result-order-number"></h2>
+      <h2 id="result-order-number" dir="ltr"></h2>
       <span id="result-date"></span>
     </div>
     <div class="result-items" id="result-items"></div>
     <div class="timeline" id="timeline"></div>
-    <a class="invoice-link" id="invoice-link" href="#">View Invoice &rarr;</a>
+    <a class="invoice-link" id="invoice-link" href="#" data-i18n="trk.invoice">View Invoice →</a>
   </div>
 </div>
-
+</main>
 <div id="hk-foot"></div>
 
 <script>
-  const STAGE_LABELS = {
+/* QA003: validate before calling the lookup, and always restore the button
+   (not found, server error, timeout, network failure, success). */
+(function () {
+  const tr = (k, fb) => (window.hikayaT && window.hikayaT(k)) || fb;
+  const STAGE_FB = {
     received: 'Order Received', preparing: 'Preparing the Book', awaiting_approval: 'Awaiting Final Approval',
     sent_to_printing: 'Sent to Printing', received_from_printing: 'Received from Printing',
     shipped: 'Shipped', delivered: 'Delivered',
   };
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const form = document.getElementById('track-form');
+  const btn = document.getElementById('track-btn');
+  const numEl = document.getElementById('order-number');
+  const emailEl = document.getElementById('track-email');
+  const errorEl = document.getElementById('lookup-error');
+  const resultCard = document.getElementById('result-card');
+  let busy = false, lastData = null, lastEmail = '';
+
+  function setBusy(on) {
+    busy = on; btn.disabled = on; btn.setAttribute('aria-busy', String(on));
+    btn.textContent = on ? tr('trk.pending', 'Checking…') : tr('trk.action', 'Track Order');
+  }
+  function showError(msg, field) {
+    errorEl.textContent = msg; errorEl.style.display = 'block';
+    [numEl, emailEl].forEach(el => el.removeAttribute('aria-invalid'));
+    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
+  }
+  function clearError() { errorEl.textContent = ''; errorEl.style.display = 'none'; [numEl, emailEl].forEach(el => el.removeAttribute('aria-invalid')); }
+  [numEl, emailEl].forEach(el => el.addEventListener('input', clearError));
+
+  function renderResult() {
+    const data = lastData; if (!data) return;
+    const loc = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar-AE' : 'en-GB';
+    document.getElementById('result-order-number').textContent = data.orderNumber;
+    document.getElementById('result-date').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString(loc) : '';
+    document.getElementById('result-items').textContent = (data.items || []).map(i => i.childName ? tr('trk.item_for', '{story} for {name}').replace('{story}', i.story).replace('{name}', i.childName) : i.story).join(' · ');
+    const timeline = document.getElementById('timeline');
+    timeline.innerHTML = '';
+    (data.stages || []).forEach((stage, i) => {
+      const row = document.createElement('div');
+      row.className = 'tl-step ' + (i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : '');
+      if (i === data.stageIndex) row.setAttribute('aria-current', 'step');
+      row.innerHTML = '<div class="marker-col"><div class="marker"><svg viewBox="0 0 24 24" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></div><div class="bar"></div></div><div class="label"></div>';
+      row.querySelector('.label').textContent = tr('trk.st_' + stage, STAGE_FB[stage] || stage);
+      timeline.appendChild(row);
+    });
+    document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(lastEmail)}`;
+  }
 
   async function trackOrder() {
-    const orderNumber = document.getElementById('order-number').value.trim();
-    const email = document.getElementById('track-email').value.trim();
-    const errorEl = document.getElementById('lookup-error');
-    const resultCard = document.getElementById('result-card');
-    errorEl.style.display = 'none';
+    if (busy) return;
+    clearError();
     resultCard.style.display = 'none';
-    if (!orderNumber || !email) {
-      errorEl.textContent = 'Please enter both your order number and email.';
-      errorEl.style.display = 'block';
-      return;
-    }
+    const orderNumber = numEl.value.trim();
+    const email = emailEl.value.trim();
+    if (!orderNumber) return showError(tr('trk.err_order', 'Please enter your order number.'), numEl);
+    if (!email) return showError(tr('trk.err_email_missing', 'Please enter the email you used at checkout.'), emailEl);
+    if (!EMAIL_RE.test(email)) return showError(tr('trk.err_email', 'Please enter a valid email address, like name@example.com.'), emailEl);
 
-    const btn = document.getElementById('track-btn');
-    btn.disabled = true;
-    btn.textContent = 'Checking…';
-
+    setBusy(true);
+    const ctrl = ('AbortController' in window) ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), 15000) : null;
     try {
       const res = await fetch('/.netlify/functions/track-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderNumber, email }),
+        signal: ctrl ? ctrl.signal : undefined,
       });
-      const data = await res.json();
-      if (!res.ok || !data.orderNumber) {
-        errorEl.textContent = data.error || 'Something went wrong. Please try again.';
-        errorEl.style.display = 'block';
+      let data = {};
+      try { data = await res.json(); } catch (_) { data = {}; }
+      if (res.status === 404 || (res.ok && !data.orderNumber)) {
+        showError(tr('trk.not_found', 'We could not find that order. Double-check your order number and email, then try again.'));
         return;
       }
-
-      document.getElementById('result-order-number').textContent = data.orderNumber;
-      document.getElementById('result-date').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '';
-      document.getElementById('result-items').textContent = data.items.map(i => i.story + (i.childName ? ' for ' + i.childName : '')).join(' · ');
-
-      const timeline = document.getElementById('timeline');
-      timeline.innerHTML = data.stages.map((stage, i) => `
-        <div class="tl-step ${i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : ''}">
-          <div class="marker-col">
-            <div class="marker"><svg viewBox="0 0 24 24" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></div>
-            <div class="bar"></div>
-          </div>
-          <div class="label">${STAGE_LABELS[stage] || stage}</div>
-        </div>
-      `).join('');
-
-      document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(email)}`;
+      if (!res.ok) { showError(tr('trk.err_generic', 'Something went wrong. Please try again.')); return; }
+      lastData = data; lastEmail = email;
+      renderResult();
       resultCard.style.display = 'block';
       resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch {
-      errorEl.textContent = 'Something went wrong. Please try again.';
-      errorEl.style.display = 'block';
+      resultCard.focus({ preventScroll: true });
+    } catch (err) {
+      showError(err && err.name === 'AbortError'
+        ? tr('trk.err_timeout', 'This is taking longer than usual. Please try again.')
+        : tr('trk.err_generic', 'Something went wrong. Please try again.'));
+    } finally {
+      if (timer) clearTimeout(timer);
+      setBusy(false);
     }
-    btn.disabled = false;
-    btn.textContent = 'Track Order';
   }
 
-  document.getElementById('track-btn').addEventListener('click', trackOrder);
-  document.getElementById('track-email').addEventListener('keydown', (e) => { if (e.key === 'Enter') trackOrder(); });
+  form.addEventListener('submit', e => { e.preventDefault(); trackOrder(); });
+  document.addEventListener('hikaya:langchange', () => { if (!busy) setBusy(false); if (lastData) renderResult(); });
+})();
 </script>
 
+<script src="/i18n.js" defer></script>
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
+<script src="/site-photos.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
 <script src="chrome.js" defer></script>
 </body>
 </html>

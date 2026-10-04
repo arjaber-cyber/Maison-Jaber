@@ -49,7 +49,8 @@
     display: flex; align-items: center; gap: 14px; background: var(--bg-soft); border-radius: 14px;
     padding: 14px 18px; margin-bottom: 28px; text-align: left;
   }
-  .item-chip .swatch { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; }
+  .item-chip .swatch { width: 64px; height: 64px; border-radius: 10px; flex-shrink: 0; overflow: hidden; background: linear-gradient(160deg, #f0c9a0, #B5563B); }
+  .cross-sell-card .thumb.has-cover { padding: 0; aspect-ratio: 1 / 1; overflow: hidden; }
   .item-chip .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
   .item-chip .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
   .item-chip .swatch.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
@@ -94,6 +95,7 @@
 </head>
 <body data-flow="added">
 <div id="hk-top"></div>
+<main id="main" tabindex="-1">
 
 <div class="page">
   <div class="page-bg" id="page-bg" style="background-image:url('images/giftbox-open-pair.jpg');"></div>
@@ -142,7 +144,9 @@
     }
     const last = cart[cart.length - 1];
 
-    document.getElementById('item-swatch').className = 'swatch ' + (last.theme || 'courage');
+    const swatch = document.getElementById('item-swatch');
+    swatch.className = 'swatch ' + (last.theme || 'courage');
+    window.hikayaCart.coverFor(last).then(url => window.hikayaCart.paintCover(swatch, url));
     document.getElementById('item-name').textContent = last.story || 'Your story';
     document.getElementById('item-meta').textContent = [last.childName, last.ageEdition ? 'Ages ' + last.ageEdition : null].filter(Boolean).join(' · ');
 
@@ -160,29 +164,36 @@
       window.location.href = 'personalize.html?new=1';
     });
 
-    // Cross-sell: suggest whichever stories aren't already in the cart.
-    const ALL_STORIES = [
-      { story: 'The Bravest Little One', theme: 'courage', label: 'The Bravest<br>Little One' },
-      { story: 'The Cloud Ship', theme: 'adventure', label: 'The Cloud<br>Ship' },
-      { story: "The Star Who Couldn't Sleep", theme: 'lullaby', label: "The Star Who<br>Couldn't Sleep" },
-    ];
-    const inCart = new Set(cart.map(i => i.story));
-    const suggestions = ALL_STORIES.filter(s => !inCart.has(s.story));
-    if (suggestions.length > 0) {
+    // Cross-sell: stories from the live catalogue that aren't already in the cart (with their real covers).
+    Promise.all([window.hikayaCart.loadStories(), Promise.all(cart.map(i => window.hikayaCart.storyFor(i)))]).then(([all, cartStories]) => {
+      // Match by slug so a story that was renamed since it was added still counts as "in the cart".
+      const inCart = new Set(cart.map(i => i.slug).concat(cartStories.map(s => s && s.slug)).filter(Boolean));
+      const inCartTitles = new Set(cart.map(i => i.story));
+      const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const nameOf = s => (window.Hikaya ? window.Hikaya.titlePlain(s) : s.title);
+      const suggestions = all.filter(s => s.active !== false && !inCart.has(s.slug) && !inCartTitles.has(s.title)).slice(0, 3);
+      if (!suggestions.length) return;
       document.getElementById('cross-sell').style.display = 'block';
-      document.getElementById('cross-sell-grid').innerHTML = suggestions.map(s => `
-        <a class="cross-sell-card" href="personalize.html?story=${encodeURIComponent(s.story)}">
-          <div class="thumb ${s.theme}"><span>${s.label}</span></div>
-          <div class="label">${s.story}</div>
+      const grid = document.getElementById('cross-sell-grid');
+      grid.innerHTML = suggestions.map(s => `
+        <a class="cross-sell-card" href="personalize.html?story=${encodeURIComponent(s.slug)}">
+          <div class="thumb ${esc(s.theme || 'courage')}" data-cover="${esc(s.cover_image_url || '')}"><span>${esc(nameOf(s))}</span></div>
+          <div class="label">${esc(nameOf(s))}</div>
         </a>
       `).join('');
-    }
+      grid.querySelectorAll('.thumb[data-cover]').forEach(el => { if (el.dataset.cover) window.hikayaCart.paintCover(el, el.dataset.cover); });
+    });
   });
 </script>
 
+</main>
 <div id="hk-foot"></div>
+<script src="/i18n.js" defer></script>
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
 <script src="chrome.js" defer></script>
 </body>
 </html>
