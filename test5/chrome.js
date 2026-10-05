@@ -207,9 +207,9 @@
   const SAMPLE_COVERS = window.PREVIEW_COVERS || Array.from({ length: 9 }, (_, i) => `images/cover-sample-${i + 1}.webp`);
   const FALLBACK_STORIES = [
     { slug: 'door-of-a-thousand-stars', title: 'Door of a Thousand Stars', age_bands: ['2-4', '4-6'], moments: ['adventure'], featured: true, page_count: 22, card_note: { en: 'A big adventure', ar: 'مغامرة كبيرة' } },
-    { slug: 'bravest-little-one', title: 'The Bravest Little One', age_bands: ['2-4', '4-6', '6-8'], moments: ['confidence', 'new'], premise: { en: "For the child facing something new and a little scary — and discovering they're braver than they knew.", ar: 'لطفلك الذي يواجه شيئًا جديدًا ومخيفًا قليلًا — ويكتشف أنه أشجع مما كان يظن.' } },
-    { slug: 'cloud-ship', title: 'The Cloud Ship', age_bands: ['2-4', '4-6', '6-8'], moments: ['adventure'], premise: { en: 'For the dreamer who wants to sail among the stars on a ship made of soft cloud.', ar: 'للحالم الذي يريد الإبحار بين النجوم على سفينة من الغيوم الناعمة.' } },
-    { slug: 'star-who-couldnt-sleep', title: "The Star Who Couldn't Sleep", age_bands: ['2-4', '4-6', '6-8'], moments: ['bedtime'], premise: { en: 'A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.', ar: 'قصة هادئة لختام اليوم يعلّم فيها طفلك نجمة نعسانة حيلته الخاصة في النوم.' } },
+    { slug: 'bravest-little-one', title: 'The Bravest Little One', age_bands: ['2-4', '4-6', '6-8'], moments: ['confidence', 'new'], premise: { en: "For the child facing something new and a little scary — and discovering they're braver than they knew.", ar: 'لطفلك الذي يواجه شيئًا جديدًا ومخيفًا قليلًا — ويكتشف أنه أشجع مما كان يظن' } },
+    { slug: 'cloud-ship', title: 'The Cloud Ship', age_bands: ['2-4', '4-6', '6-8'], moments: ['adventure'], premise: { en: 'For the dreamer who wants to sail among the stars on a ship made of soft cloud.', ar: 'للحالم الذي يريد الإبحار بين النجوم على سفينة من الغيوم الناعمة' } },
+    { slug: 'star-who-couldnt-sleep', title: "The Star Who Couldn't Sleep", age_bands: ['2-4', '4-6', '6-8'], moments: ['bedtime'], premise: { en: 'A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.', ar: 'قصة هادئة لختام اليوم يعلّم فيها طفلك نجمة نعسانة حيلته الخاصة في النوم' } },
   ];
   const PLACEHOLDERS = [
     ['Maya Can Help Too!', 'مايا تستطيع المساعدة أيضًا!', ['2-4'], ['kindness'], 'new', 'For the little helper who wants to join in with the grown-ups, and discovers how much they can do.'],
