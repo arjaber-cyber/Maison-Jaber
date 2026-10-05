@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -19,14 +20,14 @@
 <main id="main" tabindex="-1">
 
 <section class="page-hero" aria-labelledby="col-title">
-  <div class="hero-media"><span class="dev-tag">Stand-in · COL-HERO-01</span><img src="images/col-hero-01.webp" srcset="images/col-hero-01-900.webp 900w, images/col-hero-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1254" height="878" fetchpriority="high" alt="" /></div>
+  <div class="hero-media"><img src="images/col-hero-01.webp" srcset="images/col-hero-01-900.webp 900w, images/col-hero-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1254" height="878" fetchpriority="high" alt="" /></div>
   <div class="wrap"><div class="hero-copy">
     <h1 id="col-title" data-i18n="pg.col_title">Find their next story.</h1>
     <p class="lede" data-i18n="pg.col_sub">Explore adventures created around childhood moments, big feelings and little milestones.</p>
   </div></div>
 </section>
 <section class="wrap" aria-label="Story collection">
-  <div class="filters" role="group" aria-label="Filter stories">
+  <div class="filters" role="group" aria-label="Filter stories" data-i18n-aria="lx.filter_aria">
     <label class="select"><span class="sr-only" data-i18n="pg.f_age">Age</span><select id="f-age"></select></label>
     <label class="select"><span class="sr-only" data-i18n="pg.f_theme">Theme</span><select id="f-theme"></select></label>
     <label class="select"><span class="sr-only" data-i18n="pg.f_sort">Sort by</span><select id="f-sort"></select></label>
@@ -34,16 +35,16 @@
     <span class="count" id="count" aria-live="polite"></span>
   </div>
   <h2 class="sr-only" data-i18n="pg.srch_stories">Stories</h2>
-  <ul class="sgrid" id="grid"></ul>
+  <ul class="sgrid" id="grid" aria-busy="true"><li class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></li><li class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></li><li class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></li><li class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></li></ul>
   <div class="empty-state" id="empty" hidden>
-    <h2 data-i18n="pg.empty_t">No stories match yet</h2>
+    <h2 data-i18n="lx.empty_t">No stories match these filters</h2>
     <p data-i18n="pg.empty_d">Try another age or theme, or clear the filters to see everything.</p>
     <p style="margin-top:18px"><button class="btn btn-secondary" type="button" data-reset data-i18n="pg.f_reset">Clear filters</button></p>
   </div>
 </section>
 <section class="help section-gap" aria-labelledby="help-title" style="padding-top:var(--sec)">
   <div class="wrap"><div class="band">
-    <div class="band-media"><span class="dev-tag">Stand-in · COL-HELP-01</span><img src="images/col-help-01.webp" srcset="images/col-help-01-900.webp 900w, images/col-help-01.webp 1600w" sizes="(max-width: 767px) 100vw, 60vw" width="1036" height="941" loading="lazy" alt="" /></div>
+    <div class="band-media"><img src="images/col-help-01.webp" srcset="images/col-help-01-900.webp 900w, images/col-help-01.webp 1600w" sizes="(max-width: 767px) 100vw, 60vw" width="1036" height="941" loading="lazy" alt="" /></div>
     <div class="band-copy">
       <h2 id="help-title" data-i18n="pg.help_t">Not sure where to start?</h2>
       <p data-i18n="pg.help_d">Explore by age to find the right story for them.</p>

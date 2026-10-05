@@ -5,6 +5,49 @@
 [functions."send-abandoned-reminders"]
   schedule = "0 */6 * * *"
 
+# Deletes uploaded child photos older than 15 days (our promise to parents).
+[functions."purge-child-photos"]
+  schedule = "30 2 * * *"
+
+# Staging copies of the site must never be indexed by search engines.
+[[headers]]
+  for = "/test5/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/test/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/test2/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/test3/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/test4/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Old fixed story pages (stale titles and EUR prices) now point to the live story page.
+[[redirects]]
+  from = "/test5/story-bravest-little-one.html"
+  to = "/test5/story.html?s=bravest-little-one"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/test5/story-cloud-ship.html"
+  to = "/test5/story.html?s=cloud-ship"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/test5/story-star-who-couldnt-sleep.html"
+  to = "/test5/story.html?s=star-who-couldnt-sleep"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/.well-known/apple-developer-merchantid-domain-association"
   [headers.values]

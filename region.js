@@ -1,7 +1,7 @@
 /* Hikaya by Maison Jaber — shared region & pricing system.
    Include with: <script src="/region.js" defer></script>
-   Provides a "zone" pill (next to the language pill) letting visitors pick
-   Europe / GCC / Syria, auto-detects via IP by default, and exposes helpers
+   Provides the GCC country picker (UAE, KSA, Qatar, Kuwait, Bahrain, Oman),
+   auto-detects via IP by default, and exposes helpers
    any page can use to show the right currency and price.
 
    Pricing is FIXED here (not a live FX feed) — update it every month or so
@@ -15,8 +15,6 @@
 /* Ziina charges in AED: local price x rate (keep in sync with netlify/functions/_pricing.js). */
 window.HIKAYA_AED_RATES = { AED: 1, SAR: 0.97933, QAR: 1.00893, BHD: 9.76729, OMR: 9.55137, KWD: 11.95 };
 window.HIKAYA_REGIONS = {
-  Germany:  { zone: 'EU',  countryCodes: ['DE','AT','FR','NL','BE','IT','ES','PT','PL','SE','DK','FI','IE','LU','CH'], currency: 'EUR', symbol: '€', bookWas: 44.90, bookNow: 34.90, deliveryFee: 4.90, methods: ['card', 'applepay', 'googlepay'], label: 'Germany & Europe', shortLabel: 'Europe' },
-  Syria:    { zone: 'SY',  countryCodes: ['SY'], currency: 'USD', symbol: '$', bookWas: 19.90, bookNow: 19.90, deliveryFee: 4, methods: ['card', 'shamcash', 'cod'], label: 'Syria', shortLabel: 'Syria' },
   UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 149, deliveryFee: 0, methods: ['ziina'], label: 'United Arab Emirates', shortLabel: 'UAE' },
   Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 149, deliveryFee: 30, methods: ['ziina'], label: 'Saudi Arabia', shortLabel: 'KSA' },
   Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 149, deliveryFee: 30, methods: ['ziina'], label: 'Qatar', shortLabel: 'Qatar' },
@@ -24,11 +22,7 @@ window.HIKAYA_REGIONS = {
   Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 15.25, deliveryFee: 3.07, methods: ['ziina'], label: 'Bahrain', shortLabel: 'Bahrain' },
   Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 15.5, deliveryFee: 3.12, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
 };
-// Every visitor falls into one of exactly three markets: Europe, GCC, or
-// Syria. Anyone whose IP doesn't match a GCC country or Syria defaults to
-// Europe/EUR pricing — there is no separate "Other" bucket.
-// Default region shown for each zone when we haven't (or can't) resolve a
-// specific country — e.g. visitor picks "GCC" manually with no IP match.
+// GCC-only launch: visitors outside the GCC default to UAE (AED) pricing.
 
 (function () {
   const REGION_KEY = 'hikaya_region';
@@ -49,7 +43,7 @@ window.HIKAYA_REGIONS = {
 
   function currentRegionKey() {
     const k = getStoredRegionKey();
-    // GCC-only launch: ignore stored non-GCC picks from before (EU/Syria stay in the table, just hidden).
+    // GCC-only launch: any stored pick that is not a GCC country falls back to the UAE.
     return (k && window.HIKAYA_REGIONS[k] && window.HIKAYA_REGIONS[k].zone === 'GCC') ? k : 'UAE';
   }
   function currentRegion() {
@@ -59,9 +53,12 @@ window.HIKAYA_REGIONS = {
     return currentRegion().zone;
   }
 
+  /* One price format everywhere: currency code first, no decimals for whole amounts ("AED 149", "KWD 12.50"). */
   function fmtPrice(amount, region) {
     region = region || currentRegion();
-    return region.symbol.length > 1 ? `${amount.toFixed(2)} ${region.symbol}` : `${region.symbol}${amount.toFixed(2)}`;
+    const n = Number(amount) || 0;
+    const num = Math.abs(n - Math.round(n)) < 0.005 ? String(Math.round(n)) : n.toFixed(2);
+    return `${region.symbol} ${num}`;
   }
 
   // Returns an HTML snippet: struck-through "was" price + bold "now" price,
@@ -69,9 +66,9 @@ window.HIKAYA_REGIONS = {
   function priceHtml(region) {
     region = region || currentRegion();
     if (region.bookWas > region.bookNow) {
-      return `<span class="was-price" style="text-decoration:line-through; color:#6B5A4E; margin-inline-end:6px;">${fmtPrice(region.bookWas, region)}</span><strong>${fmtPrice(region.bookNow, region)}</strong>`;
+      return `<bdi class="was-price" style="text-decoration:line-through; color:#6B5A4E; margin-inline-end:6px;">${fmtPrice(region.bookWas, region)}</bdi><strong><bdi>${fmtPrice(region.bookNow, region)}</bdi></strong>`;
     }
-    return `<strong>${fmtPrice(region.bookNow, region)}</strong>`;
+    return `<strong><bdi>${fmtPrice(region.bookNow, region)}</bdi></strong>`;
   }
 
   async function detectAndApplyRegion() {
@@ -85,7 +82,7 @@ window.HIKAYA_REGIONS = {
       setStoredRegionKey(key);
       applyToPage();
     } catch {
-      // No network / blocked — default (Germany/EUR) stays in place.
+      // No network / blocked — the UAE (AED) default stays in place.
     }
   }
 
@@ -106,13 +103,8 @@ window.HIKAYA_REGIONS = {
     document.dispatchEvent(new CustomEvent('hikaya:regionchange', { detail: { regionKey: currentRegionKey(), region } }));
   }
 
-  // Grouped so the list reads like "Europe: Germany" / "GCC: UAE, Saudi..."
-  // rather than one flat alphabetical list.
   const ZONE_GROUPS = [
-    // GCC-only launch. Re-enable these to bring Europe/Syria back:
-    // { zone: 'EU', label: 'Europe', regions: ['Germany'] },
     { zone: 'GCC', label: 'GCC', regions: ['UAE', 'Saudi', 'Qatar', 'Kuwait', 'Bahrain', 'Oman'] },
-    // { zone: 'SY', label: 'Syria', regions: ['Syria'] },
   ];
 
   function buildSwitcher() {

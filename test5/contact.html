@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -21,10 +22,10 @@
 <div class="wrap contact-grid">
   <section aria-labelledby="ct-title">
     <h1 id="ct-title" data-i18n="pg.ct_title">Get in touch</h1>
-    <p class="lede" data-i18n="pg.ct_sub"></p>
+    <p class="lede" data-i18n="pg.ct_sub">Questions about an order, a photo or delivery? We're here to help.</p>
     <form class="cform" id="cform" novalidate>
       <label><span data-i18n="pg.ct_name">Name</span><input type="text" id="contact-name" autocomplete="name" required /></label>
-      <label><span data-i18n="pg.ct_email">Email</span><input type="email" id="contact-email" autocomplete="email" required /></label>
+      <label><span data-i18n="pg.ct_email">Email</span><input type="email" id="contact-email" autocomplete="email" inputmode="email" dir="ltr" required /></label>
       <label><span data-i18n="pg.ct_order">Order number (optional)</span><input type="text" id="contact-order" placeholder="HK-12345678" /></label>
       <label><span data-i18n="pg.ct_message">Message</span><textarea id="contact-message" rows="6" required></textarea></label>
       <button type="submit" class="btn btn-primary" id="contact-submit" data-i18n="pg.ct_send">Send Message</button>
@@ -42,24 +43,42 @@
   </aside>
 </div>
 <script>
-/* Same contact-submit logic as before, now with EN/AR messages. */
+/* Contact form: field-by-field validation, friendly messages, no duplicate sends. */
 document.addEventListener('DOMContentLoaded', function () {
   var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
-  document.getElementById('cform').addEventListener('submit', async function (e) {
+  var form = document.getElementById('cform'), btn = document.getElementById('contact-submit'), msg = document.getElementById('contact-msg');
+  var F = { name: document.getElementById('contact-name'), email: document.getElementById('contact-email'), order: document.getElementById('contact-order'), message: document.getElementById('contact-message') };
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var busy = false, lastSent = '';
+  function fieldError(el, text) {
+    var id = el.id + '-err', e = document.getElementById(id);
+    if (!e) { e = document.createElement('span'); e.id = id; e.className = 'field-err'; el.insertAdjacentElement('afterend', e); }
+    e.textContent = text || ''; e.hidden = !text;
+    if (text) { el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', id); } else { el.removeAttribute('aria-invalid'); }
+  }
+  Object.keys(F).forEach(function (k) { F[k].addEventListener('input', function () { fieldError(F[k], ''); msg.textContent = ''; msg.className = 'form-msg'; }); });
+  var pre = new URLSearchParams(location.search).get('order'); if (pre && /^HK-\d{4,12}$/i.test(pre)) F.order.value = pre.toUpperCase();
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    var name = document.getElementById('contact-name').value.trim(), email = document.getElementById('contact-email').value.trim();
-    var orderNumber = document.getElementById('contact-order').value.trim(), message = document.getElementById('contact-message').value.trim();
-    var msg = document.getElementById('contact-msg'), btn = document.getElementById('contact-submit');
-    msg.className = 'form-msg';
-    if (!name || !email || message.length < 5) { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_missing', 'Please fill in your name, email and a short message.'); return; }
-    btn.disabled = true; btn.textContent = t('pg.ct_sending', 'Sending…');
+    if (busy) return;
+    var name = F.name.value.trim(), email = F.email.value.trim(), orderNumber = F.order.value.trim(), message = F.message.value.trim();
+    var first = null;
+    function check(ok, el, text) { fieldError(el, ok ? '' : text); if (!ok && !first) first = el; }
+    check(name.length >= 2, F.name, t('lx.ct_err_name', 'Please tell us your name.'));
+    check(EMAIL_RE.test(email), F.email, t('lx.ct_err_email', 'Please enter a valid email so we can reply, like name@example.com.'));
+    check(message.length >= 10, F.message, t('lx.ct_err_msg', 'Please write a short message (at least 10 characters).'));
+    if (first) { first.focus(); return; }
+    var sig = [name, email, orderNumber, message].join('|');
+    if (sig === lastSent) { msg.className = 'form-msg success'; msg.textContent = t('lx.ct_ok', "Thank you, your message is with us. We'll reply by email, usually within a day."); return; }
+    busy = true; btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.textContent = t('pg.ct_sending', 'Sending…');
+    msg.className = 'form-msg'; msg.textContent = '';
     try {
       var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, orderNumber: orderNumber, message: message }) });
-      var data = await res.json();
-      if (res.ok) { msg.className = 'form-msg success'; msg.textContent = t('pg.ct_ok', "Thanks! We'll get back to you soon."); document.getElementById('cform').reset(); }
-      else { msg.className = 'form-msg error'; msg.textContent = data.error || t('pg.ct_err', 'Something went wrong. Please try again.'); }
-    } catch (_) { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again.'); }
-    btn.disabled = false; btn.textContent = t('pg.ct_send', 'Send Message');
+      var data = {}; try { data = await res.json(); } catch (_) {}
+      if (res.ok) { lastSent = sig; msg.className = 'form-msg success'; msg.textContent = t('lx.ct_ok', "Thank you, your message is with us. We'll reply by email, usually within a day."); form.reset(); lastSent = ''; }
+      else { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again, or email hello@maison-jaber.com.'); }
+    } catch (_) { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again, or email hello@maison-jaber.com.'); }
+    busy = false; btn.disabled = false; btn.removeAttribute('aria-busy'); btn.textContent = t('pg.ct_send', 'Send Message');
   });
 });
 </script>

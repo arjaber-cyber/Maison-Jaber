@@ -45,9 +45,13 @@ exports.handler = async (event) => {
     } catch {}
   }
 
+  // Photos are stored privately by upload-child-photo.js; the order keeps only their storage paths.
+  const PHOTO_PATH = /^\d{4}-\d{2}-\d{2}\/[0-9a-f]{32}\.(jpg|png|webp)$/;
+  const paths = list => (Array.isArray(list) ? list : []).map(String).filter(p => PHOTO_PATH.test(p)).slice(0, 5);
   const cleanItems = o.items.map(i => ({
-    story: String(i.story || ''), childName: String(i.childName || '').slice(0, 60), ageEdition: String(i.ageEdition || ''),
-    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
+    story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
+    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
+    photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
   }));
   const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
 

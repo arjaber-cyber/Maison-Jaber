@@ -84,7 +84,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // Single entry point the rest of the site calls -- fires to whichever
   // of GA / Pixel are actually configured AND consented to; silently
   // no-ops otherwise.
-  // Usage: window.hikayaTrackEvent('begin_checkout', { value: 34.90, currency: 'EUR' })
+  // Usage: window.hikayaTrackEvent('begin_checkout', { value: 149, currency: 'AED' })
   window.hikayaTrackEvent = function (eventName, params) {
     params = params || {};
     if (gaLoaded && window.gtag) window.gtag('event', eventName, params);

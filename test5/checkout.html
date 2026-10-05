@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -241,19 +242,6 @@
 <main id="main" tabindex="-1">
 <h1 class="sr-only" id="co-h1" data-i18n="pg.co_title">Checkout</h1>
 
-<div class="mini-banner" id="mini-banner">
-  <div class="mini-banner-track" id="mini-banner-track">
-    <div class="mini-slide active" style="background-image:url('images/hero-bedroom-wide.jpg')"></div>
-    <div class="mini-slide" style="background-image:url('images/fantasy-night-scene.jpg')"></div>
-    <div class="mini-slide" style="background-image:url('images/giftbox-open-pair.jpg')"></div>
-    <div class="mini-slide" style="background-image:url('images/bookshelf-scene.jpg')"></div>
-    <div class="mini-slide" style="background-image:url('images/book-flatlay.jpg')"></div>
-  </div>
-  <div class="mini-banner-lang-wrap"><a class="lang-pill" href="#" data-i18n-skip>EN</a></div>
-  <div class="mini-banner-dots" id="mini-banner-dots"></div>
-</div>
-
-<div class="preview-banner" data-i18n="checkout.preview_banner">This is a checkout preview. Payment isn't connected yet, so orders can't be placed here just yet.</div>
 
 <div class="wrap checkout-progress" id="checkout-progress">
   <div class="progress-step active" id="progress-step-1"><span class="dot">1</span><span data-i18n="checkout.progress_account">Your Info</span></div>
@@ -292,10 +280,10 @@
       <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
       <div class="req-note"><span class="req-mark">*</span> <span data-i18n="checkout.required_note">Required</span></div>
       <div class="form-grid">
-        <div class="field"><label class="field-label" for="full-name"><span data-i18n="checkout.full_name">Full name</span><span class="req-mark">*</span></label><input type="text" id="full-name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
-        <div class="field"><label class="field-label" for="email"><span data-i18n="checkout.email">Email</span><span class="req-mark">*</span></label><input type="text" id="email" placeholder="you@email.com" /></div>
-        <div class="field full"><label class="field-label" for="address"><span data-i18n="checkout.address">Address</span><span class="req-mark">*</span></label><input type="text" id="address" placeholder="Street, building, apartment" data-i18n-placeholder="checkout.address_ph" /></div>
-        <div class="field"><label class="field-label" for="city"><span data-i18n="checkout.city">City</span><span class="req-mark">*</span></label><input type="text" id="city" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
+        <div class="field"><label class="field-label" for="full-name"><span data-i18n="checkout.full_name">Full name</span><span class="req-mark">*</span></label><input type="text" id="full-name" autocomplete="name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
+        <div class="field"><label class="field-label" for="email"><span data-i18n="checkout.email">Email</span><span class="req-mark">*</span></label><input type="email" id="email" placeholder="you@email.com" autocomplete="email" inputmode="email" dir="ltr" /></div>
+        <div class="field full"><label class="field-label" for="address"><span data-i18n="checkout.address">Address</span><span class="req-mark">*</span></label><input type="text" id="address" autocomplete="street-address" placeholder="Street, building, apartment" data-i18n-placeholder="checkout.address_ph" /></div>
+        <div class="field"><label class="field-label" for="city"><span data-i18n="checkout.city">City</span><span class="req-mark">*</span></label><input type="text" id="city" autocomplete="address-level2" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
         <div class="field">
           <label class="field-label" for="country" data-i18n="checkout.country">Country</label>
           <select id="country">
@@ -321,7 +309,7 @@
           </div>
           <div class="map-hint" data-i18n="checkout.map_hint">The pin updates automatically as you type your address — check it lands in the right spot.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="text" id="phone" placeholder="For delivery updates" data-i18n-placeholder="checkout.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" placeholder="For delivery updates" autocomplete="tel" inputmode="tel" data-i18n-placeholder="checkout.phone_ph" /></div>
         <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option value="no" data-i18n="checkout.no">No</option><option value="yes" data-i18n="checkout.yes">Yes</option></select></div>
         <div class="field full" id="gift-message-field" style="display:none;">
           <label class="field-label" for="gift-message"><span data-i18n="checkout.gift_message_label">Gift message</span> <span class="req-mark">*</span></label>
@@ -340,16 +328,16 @@
     <div class="form-block">
       <h2><span class="step-num">2</span> <span data-i18n="checkout.payment_title">Payment</span></h2>
       <div id="payment-area">
-        <div class="payment-placeholder" data-i18n="checkout.payment_placeholder">Payment isn't connected yet &mdash; this is where Telr or PayTabs checkout will appear once the merchant account is live. Syria orders will show a cash-on-delivery option here instead.</div>
+        <div class="payment-placeholder" data-i18n="lx.pay_loading">Loading secure payment options…</div>
       </div>
     </div>
 
     <div class="approval">
       <input type="checkbox" id="final-approval" />
-      <label for="final-approval" data-i18n="checkout.approval">I have checked the child's name, story, age edition, dedication, and preview.</label>
+      <label for="final-approval" data-i18n="lx.approval">I have checked the story, my child's name, age, photo and dedication. I understand the book goes straight to production after payment.</label>
     </div>
 
-    <button class="btn-primary" id="place-order" disabled>Payment not yet available</button>
+    <button class="btn-primary" id="place-order" disabled data-i18n="pg.ziina_btn">Continue to secure payment</button>
     <div class="payment-error" id="payment-error"></div>
     <div class="payment-success" id="payment-success"></div>
 
@@ -383,19 +371,30 @@
       <div class="price-row" id="extra-char-row" style="display:none;"><span data-i18n="cart.extra_character_fee">Extra character photo</span><span class="note" id="extra-char-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
+      <p class="summary-eta" data-hk-eta>Delivery to UAE: about 5 working days</p>
+      <ul class="summary-trust">
+        <li data-i18n="lx.tr_secure">Secure payment</li>
+        <li><a href="#" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a></li>
+        <li data-i18n="lx.tr_box">Gift packaging included</li>
+      </ul>
     </div>
   </div>
 </div>
 
 <section class="order-done" id="order-done" hidden aria-labelledby="od-title" tabindex="-1">
-  <div class="od-media"><img src="images/ord-hero-01.webp" srcset="images/ord-hero-01-900.webp 900w, images/ord-hero-01.webp 1343w" sizes="(max-width: 767px) 100vw, 60vw" alt="" /><span class="dev-tag">Stand-in · ORD-HERO-01</span></div>
+  <div class="od-media"><img src="images/ord-hero-01.webp" srcset="images/ord-hero-01-900.webp 900w, images/ord-hero-01.webp 1343w" sizes="(max-width: 767px) 100vw, 60vw" alt="" loading="lazy" /></div>
   <div class="wrap">
     <h1 id="od-title" data-i18n="pg.od_title">Their story is officially on its way.</h1>
     <p class="lede" id="od-sub"></p>
     <div class="od-facts">
       <div><small data-i18n="pg.od_number">Order number</small><b id="od-number">—</b></div>
-      <div><small data-i18n="pg.od_eta">Estimated delivery</small><b data-i18n="pg.od_eta_v">About a week</b></div>
+      <div><small data-i18n="pg.od_eta">Estimated delivery</small><b id="od-eta" data-hk-eta-short>About 5 working days</b></div>
     </div>
+    <ol class="od-next" aria-label="What happens next" data-i18n-aria="lx.next_t">
+      <li><b data-i18n="lx.od_n1_t">Payment confirmed</b><span data-i18n="lx.od_n1">We've emailed your confirmation. Keep your order number handy.</span></li>
+      <li><b data-i18n="lx.od_n2_t">We create and print their book</b><span data-i18n="lx.od_n2">Our team illustrates your child into the story and prints the hardcover. Need a change? Contact us quickly, before production starts.</span></li>
+      <li><b data-i18n="lx.od_n3_t">Packed and delivered</b><span data-i18n="lx.od_n3">Gift-boxed and delivered to your door. Track progress any time with your order number and email.</span></li>
+    </ol>
     <div class="od-ctas">
       <a class="btn btn-primary" href="track-order.html" id="od-track" data-i18n="pg.od_track">Track Your Order</a>
       <a class="btn btn-secondary" href="stories.html" data-i18n="pg.od_more">Explore More Stories</a>
@@ -470,26 +469,6 @@
     refreshAuthUI();
   });
 
-  // ---------- Mini rotating banner ----------
-  (function () {
-    const track = document.getElementById('mini-banner-track');
-    const slides = track.querySelectorAll('.mini-slide');
-    const dotsWrap = document.getElementById('mini-banner-dots');
-    let current = 0;
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.className = i === 0 ? 'active' : '';
-      dot.addEventListener('click', () => goTo(i));
-      dotsWrap.appendChild(dot);
-    });
-    function goTo(i) {
-      current = (i + slides.length) % slides.length;
-      slides.forEach((s, idx) => s.classList.toggle('active', idx === current));
-      [...dotsWrap.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
-    }
-    setInterval(() => goTo(current + 1), 4000);
-  })();
-
   // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
   const t = (key, fallback) => {
     try {
@@ -513,7 +492,7 @@
 
   const countrySelect = document.getElementById('country');
   const locationNote = document.getElementById('location-note');
-  let currentRegionKey = 'Germany';
+  let currentRegionKey = 'UAE';
 
   async function detectLocation() {
     // If the visitor already picked a region elsewhere on the site (the
@@ -538,7 +517,7 @@
       locationNote.innerHTML = `&#128205; ${t('checkout.detected_as', 'Detected your location as')} <strong>${data.country_name || REGIONS[regionKey].label}</strong> — ${t('checkout.change_below', 'change below if needed')}.`;
       renderPaymentSection();
     } catch {
-      // Silent fail — defaults to Germany/EUR, visitor can still change manually.
+      // Silent fail — the UAE stays selected; the visitor can still change it.
     }
   }
 
@@ -638,7 +617,7 @@
       });
     });
 
-    const fmt = (n) => region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
+    const fmt = (n) => window.hikayaFormatPrice ? window.hikayaFormatPrice(n, region) : `${region.symbol} ${n}`;
     const final = computeFinalPricing(region);
 
     const discountRow = document.getElementById('bundle-discount-row');
@@ -934,7 +913,7 @@
       isGift: giftSelect.value === 'yes',
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      items: cart.map(item => ({ story: item.story, childName: item.childName, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
+      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
       bundleDiscountPct: finalPricing.tier.discountPct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,
@@ -1103,7 +1082,10 @@ window.hkShowOrderDone = function (order, orderNumber) {
   document.getElementById('od-sub').textContent = who ? t('pg.od_sub', 'Thank you for creating a Hikaya story for {name}.').replace('{name}', who) : t('pg.od_sub_plain', 'Thank you for creating a Hikaya story.');
   document.getElementById('od-number').textContent = orderNumber || t('pg.od_number_email', 'Sent to your email');
   if (orderNumber) document.getElementById('od-track').href = 'track-order.html?order=' + encodeURIComponent(orderNumber);
-  Array.prototype.forEach.call(document.body.children, function (el) { if (!el.matches('.utility, .site-header, #order-done, .site-footer, script, style, .skip')) el.hidden = true; });
+  /* Show only the confirmation inside <main> (the site header and footer stay). */
+  var main = document.getElementById('main');
+  Array.prototype.forEach.call(main.children, function (el) { if (el.id !== 'order-done') el.hidden = true; });
+  Array.prototype.forEach.call(document.body.children, function (el) { if (el !== main && !el.matches('.utility, .site-header, .site-footer, script, style, .skip, dialog')) el.hidden = true; });
   var done = document.getElementById('order-done'); done.hidden = false; window.scrollTo(0, 0); done.focus();
 };
 </script>

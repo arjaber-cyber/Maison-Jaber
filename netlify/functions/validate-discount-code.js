@@ -9,7 +9,7 @@
 //   discount_codes (
 //     code text primary key,          -- stored uppercase, e.g. 'WELCOME10'
 //     type text,                      -- 'percent' | 'fixed' | 'free_shipping'
-//     value numeric,                  -- 10 for 10%, or a fixed amount in EUR
+//     value numeric,                  -- 10 for 10%, or a fixed amount in the order currency (AED for the UAE)
 //     max_uses integer,               -- null = unlimited
 //     uses_count integer default 0,
 //     expires_at timestamptz,         -- null = never expires

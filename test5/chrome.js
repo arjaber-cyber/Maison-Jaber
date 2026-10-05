@@ -7,10 +7,6 @@
   'use strict';
 
   const qsStr = () => window.__PREVIEW_QS != null ? window.__PREVIEW_QS : location.search;
-  const params = new URLSearchParams(qsStr());
-  if (params.get('dev') === '1') document.body.classList.add('dev');
-  /* Sample stories from the brief only appear in development (?dev=1); the live site shows real stories only. */
-  const DEV_PLACEHOLDERS = params.get('dev') === '1' || !!window.PREVIEW_IMAGES;
 
   const t = (key, fb) => (window.hikayaT && window.hikayaT(key)) || fb || '';
   const lang = () => (window.hikayaLang ? window.hikayaLang() : 'en');
@@ -77,6 +73,7 @@
     <div>
       <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
       <p class="about" data-i18n="home6.foot_about">Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.</p>
+      <p class="about foot-contact"><a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a><br><span data-i18n="lx.foot_team">A real team, based in the UAE</span></p>
     </div>
     <div><h2 data-i18n="home6.foot_story">Our Story</h2><ul>
       <li><a href="about.html" data-i18n="home6.nav_about">Our Story</a></li>
@@ -100,7 +97,6 @@
     <span data-i18n="home6.foot_copy">© 2026 Maison Jaber. All rights reserved.</span>
     <span class="powered" data-i18n="pg.powered">Powered by Maison Jaber FZ-LLC</span>
     <span><a href="privacy.html" data-i18n="home6.foot_privacy">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" data-i18n="home6.foot_terms">Terms</a></span>
-    <span class="dev-note">Development build: add ?dev=1 to show stand-in tags.</span>
   </div>
 </div></footer>`;
   }
@@ -117,7 +113,12 @@
   const regionKey = () => (window.hikayaRegionKey ? window.hikayaRegionKey() : 'UAE');
   const regionObj = k => (window.HIKAYA_REGIONS || {})[k || regionKey()];
   const countryName = k => t('home6_regions.' + k, k);
-  const fmt = (amount, r) => window.hikayaFormatPrice ? window.hikayaFormatPrice(amount, r) : `${Number(amount).toFixed(2)} ${r ? r.symbol : 'AED'}`;
+  const fmt = (amount, r) => window.hikayaFormatPrice ? window.hikayaFormatPrice(amount, r) : `${r ? r.symbol : 'AED'} ${Number(amount)}`;
+  /* Delivery estimate per country (working days): UAE and KSA about 5, the rest of the GCC about 7. */
+  const ETA_DAYS = { UAE: 5, Saudi: 5, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
+  function etaDays(k) { return ETA_DAYS[k || regionKey()] || 7; }
+  function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)); }
+  function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)); }
   function deliveryText(k) {
     const r = regionObj(k);
     if ((k || regionKey()) === 'UAE' || !r || !r.deliveryFee) return t('home6.del_uae', 'Free delivery across the UAE');
@@ -130,6 +131,10 @@
     const msg = document.getElementById('delivery-msg');
     if (msg) msg.textContent = deliveryText(k);
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
+    document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
+    document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
+    document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.textContent = priceNow(); });
+    document.querySelectorAll('[data-hk-price-line]').forEach(el => { el.textContent = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').replace('{price}', priceNow()); });
     const menu = document.getElementById('region-menu');
     const regionWrap = document.querySelector('.utility .region');
     const available = GCC_KEYS.filter(key => regionObj(key));
@@ -203,25 +208,54 @@
     update();
   }
 
-  /* ---------------- Catalog + story cards ---------------- */
-  const SAMPLE_COVERS = window.PREVIEW_COVERS || Array.from({ length: 9 }, (_, i) => `images/cover-sample-${i + 1}.webp`);
-  const FALLBACK_STORIES = [
-    { slug: 'door-of-a-thousand-stars', title: 'Door of a Thousand Stars', age_bands: ['2-4', '4-6'], moments: ['adventure'], featured: true, page_count: 22, card_note: { en: 'A big adventure', ar: 'مغامرة كبيرة' } },
-    { slug: 'bravest-little-one', title: 'The Bravest Little One', age_bands: ['2-4', '4-6', '6-8'], moments: ['confidence', 'new'], premise: { en: "For the child facing something new and a little scary — and discovering they're braver than they knew.", ar: 'لطفلك الذي يواجه شيئًا جديدًا ومخيفًا قليلًا — ويكتشف أنه أشجع مما كان يظن' } },
-    { slug: 'cloud-ship', title: 'The Cloud Ship', age_bands: ['2-4', '4-6', '6-8'], moments: ['adventure'], premise: { en: 'For the dreamer who wants to sail among the stars on a ship made of soft cloud.', ar: 'للحالم الذي يريد الإبحار بين النجوم على سفينة من الغيوم الناعمة' } },
-    { slug: 'star-who-couldnt-sleep', title: "The Star Who Couldn't Sleep", age_bands: ['2-4', '4-6', '6-8'], moments: ['bedtime'], premise: { en: 'A gentle wind-down story where your child teaches a sleepy star their own bedtime trick.', ar: 'قصة هادئة لختام اليوم يعلّم فيها طفلك نجمة نعسانة حيلته الخاصة في النوم' } },
+  /* ---------------- Photo privacy (modal) ---------------- */
+  const PRIV_ROWS = [
+    ['why', 'Why we ask for a photo', 'We need one clear photo so we can illustrate your child as the hero of their book. That is the only reason we ask for it.'],
+    ['use', 'How the photo is used', 'It is used to create the illustrations for the book you order. Each photo gets an automatic check that a face is visible and the image is suitable, and we use trusted service providers to create the illustrations and print the book. They only receive what is needed to make your book.'],
+    ['who', 'Who can see it', 'Only the Maison Jaber team preparing your order, plus those service providers. Your child’s photo is never shared with anyone else.'],
+    ['public', 'Never public without your permission', 'We never use your child’s photo or book in advertising, on social media or in a public gallery unless you have given us written permission.'],
+    ['keep', 'How long we keep it', 'Uploaded photos are deleted within 15 days. You can ask us to delete them sooner at any time.'],
+    ['guardian', 'Who should upload', 'Only a parent or legal guardian, using a photo they have the right to share.'],
   ];
-  const PLACEHOLDERS = [
-    ['Maya Can Help Too!', 'مايا تستطيع المساعدة أيضًا!', ['2-4'], ['kindness'], 'new', 'For the little helper who wants to join in with the grown-ups, and discovers how much they can do.'],
-    ['Captain [NAME] and the Storm Above the City', 'الكابتن [NAME] والعاصفة فوق المدينة', ['4-6'], ['courage'], 'new', 'When a storm rolls over the city, a brave young captain keeps everyone safe.'],
-    ['Salma and the Last Box', 'سلمى والصندوق الأخير', ['4-6'], ['change'], 'new', 'A gentle story about moving house, saying goodbye and finding home again.'],
-    ['Just One More Video', 'فيديو واحد بعد', ['4-6'], ['screen'], 'new', 'A funny, kind story about screen time and the adventures waiting off-screen.'],
-    ["[NAME] and Grandpa's Wild Safari", '[NAME] ورحلة السفاري مع جدّو', ['6-8'], ['family'], 'new', 'A wild day out with Grandpa, full of animals, questions and big laughs.'],
-    ['Joining In', 'هيا نلعب معًا', ['4-6'], ['friendship'], 'new', 'For the child who watches from the side, and finds the courage to join the game.'],
-    ["Tom & Teddy's Night Adventure", 'مغامرة توم وتيدي الليلية', ['2-4'], ['bedtime'], 'best', 'A cosy night-time adventure with a very brave teddy.'],
-    ['[NAME] and the Cracked Blue Vase', '[NAME] والمزهرية الزرقاء المكسورة', ['4-6'], ['honesty'], 'best', 'A heartfelt story about mistakes, honesty and finding the courage to make things right.'],
-    ['[NAME] and the House of Missing Things', '[NAME] وبيت الأشياء الضائعة', ['6-8'], ['responsibility'], 'best', 'Where do lost things go? A curious search that ends with a lesson in looking after what we love.'],
-  ].map(([title, ar, age_bands, moments, shelf, premise], i) => ({ slug: 'sample-' + (i + 1), title, ar, age_bands, moments, shelf, premise: { en: premise }, placeholder: true, cover: SAMPLE_COVERS[(i + 2) % SAMPLE_COVERS.length] }));
+  function privacyHtml() {
+    return `<div class="pv-dialog-inner">
+      <button type="button" class="pv-x" data-pv-close aria-label="${esc(t('lx.close', 'Close'))}">×</button>
+      <h2 id="pv-title">${esc(t('lx.pv_title', 'How we protect your child’s photo'))}</h2>
+      <p class="pv-lede">${esc(t('lx.pv_lede', 'You are trusting us with something precious. Here is exactly what happens to the photo you upload.'))}</p>
+      <dl>${PRIV_ROWS.map(([k, h, b]) => `<div><dt>${esc(t('lx.pv_' + k + '_t', h))}</dt><dd>${esc(t('lx.pv_' + k, b))}</dd></div>`).join('')}</dl>
+      <p class="pv-contact">${esc(t('lx.pv_contact', 'Questions, or want a photo deleted now? Email us and a real person will reply, usually within a day.'))} <a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a></p>
+      <p class="pv-more"><a href="privacy.html">${esc(t('lx.pv_policy', 'Read our full privacy policy'))}</a></p>
+    </div>`;
+  }
+  let lastFocus = null;
+  function openPrivacy() {
+    let dlg = document.getElementById('pv-dialog');
+    if (!dlg) {
+      dlg = document.createElement('dialog'); dlg.id = 'pv-dialog'; dlg.className = 'pv-dialog'; dlg.setAttribute('aria-labelledby', 'pv-title');
+      document.body.appendChild(dlg);
+      dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('[data-pv-close]')) dlg.close(); });
+      dlg.addEventListener('close', () => { document.documentElement.classList.remove('pv-open'); if (lastFocus) lastFocus.focus(); });
+    }
+    dlg.innerHTML = privacyHtml();
+    lastFocus = document.activeElement;
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+    document.documentElement.classList.add('pv-open');
+    const x = dlg.querySelector('.pv-x'); if (x) x.focus();
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('[data-photo-privacy]');
+    if (!a) return; e.preventDefault(); openPrivacy();
+  });
+
+  /* ---------------- Catalog + story cards ---------------- */
+  /* Used only if the live catalogue cannot be reached. Mirrors the active stories in the dashboard (Oct 2026). */
+  const SB = 'https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/public/site-photos/stories/';
+  const FALLBACK_STORIES = [
+    { slug: 'bravest-little-one', title: 'Door of a Thousand Stars', title_ar: 'باب الألف نجمة', age_bands: ['2-4', '4-6', '6-8'], moments: ['courage', 'confidence', 'growing', 'imagination', 'adventure'], cover_image_url: SB + 'bravest-little-one-1791128047538.jpg', premise: { en: 'A talking star, a magical doorway and an adventure beyond the clouds! Help your child discover the courage to take one more step—even when a new beginning feels scary.', ar: 'نجمة تتكلّم، وباب سحري، ومغامرة فوق الغيوم! قصة تساعد طفلك على اكتشاف شجاعته ليخطو خطوة أخرى، حتى حين تبدو البداية الجديدة مخيفة' } },
+    { slug: 'cloud-ship', title: 'Why Is Baby Looking At Me', title_ar: 'لماذا ينظر إليّ المولود الصغير؟', age_bands: ['2-4', '4-6', '6-8'], moments: ['family', 'emotions', 'kindness', 'growing'], cover_image_url: SB + 'cloud-ship-1791128246472.jpg', premise: { en: 'A new baby brings big changes—and lots of questions! A warm, playful story about finding your place, sharing little moments and discovering the joy of being an older sibling.', ar: 'مولود جديد يعني تغييرات كبيرة وأسئلة كثيرة! قصة دافئة ومرحة عن إيجاد مكانك في العائلة، ومشاركة اللحظات الصغيرة، واكتشاف فرحة أن تصبح الأخ الأكبر أو الأخت الكبرى' } },
+    { slug: 'star-who-couldnt-sleep', title: 'To The Rescue', title_ar: 'إلى الإنقاذ!', age_bands: ['2-4', '4-6', '6-8'], moments: ['kindness', 'courage', 'family'], cover_image_url: SB + 'star-who-couldnt-sleep-1791128371859.jpg', premise: { en: 'A missing ball, a stuck kite and little chances to help! A cheerful adventure showing your child how curious minds, kind hearts and small hands can make a big difference.', ar: 'كرة ضائعة، وطائرة ورقية عالقة، وفرص صغيرة للمساعدة! مغامرة مبهجة تُري طفلك كيف يصنع العقل الفضولي والقلب الطيب واليدان الصغيرتان فرقًا كبيرًا' } },
+    { slug: 'the-silver-wingmission', title: 'The Silver WingMission', title_ar: 'مهمة الجناح الفضي', age_bands: ['2-4', '4-6', '6-8'], moments: ['kindness', 'courage', 'emotions', 'imagination', 'growing'], cover_image_url: SB + 'the-silver-wingmission-1791128461892.jpg', premise: { en: 'A spaceship, a playground mission and one brave choice. An exciting school adventure about standing beside a friend, welcoming others and discovering how kindness can change the day.', ar: 'سفينة فضاء، ومهمة في ساحة اللعب، وقرار شجاع واحد، مغامرة مدرسية مشوّقة عن الوقوف إلى جانب صديق، والترحيب بالآخرين، واكتشاف كيف يغيّر اللطف يومًا كاملًا' } },
+  ];
 
   let catalogPromise = null;
   function loadCatalog() {
@@ -232,8 +266,7 @@
         const res = await fetch('/.netlify/functions/get-stories', { headers: { Accept: 'application/json' } });
         if (res.ok) { const data = await res.json(); const r = Array.isArray(data) ? data : data.stories; if (Array.isArray(r) && r.length) rows = r.filter(s => s.active !== false); }
       } catch (_) { /* fallback */ }
-      const real = rows.map((s, i) => ({ ...s, cover: s.cover_image_url || null, sampleCover: s.cover_image_url ? null : SAMPLE_COVERS[i % SAMPLE_COVERS.length] }));
-      return DEV_PLACEHOLDERS ? real.concat(PLACEHOLDERS) : real;
+      return rows.map(s => ({ ...s, cover: s.cover_image_url || null }));
     })();
     return catalogPromise;
   }
@@ -264,22 +297,35 @@
   }
   function titlePlain(s) { return title(s).replace(/\[NAME\]/g, t('home6.name_slot', 'Name')); }
   function localized(v) { if (!v) return ''; if (typeof v === 'string') return v; return v[lang()] || v.en || ''; }
-  function premise(s) { return localized(s.premise) || s.description || localized(s.card_note) || ''; }
-  function storyHref(s) { return s.placeholder ? `story.html?s=${encodeURIComponent(s.slug)}` : (s.detail_url && !/^story-/.test(s.detail_url) ? s.detail_url : `story.html?s=${encodeURIComponent(s.slug)}`); }
-  function coverHtml(s, extraClass) {
-    const isSample = !s.cover_image_url;
-    return `<div class="cover${extraClass ? ' ' + extraClass : ''}">
-      ${isSample ? `<span class="dev-tag" style="top:auto;bottom:8px">${s.placeholder ? 'Placeholder story' : 'Sample cover'}</span>` : ''}
-      <img src="${esc(s.cover || s.sampleCover)}" alt="" loading="lazy" width="560" height="560" />
-      ${isSample ? `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>` : ''}
-    </div>`;
+  /* Brand rule: no full stops in Arabic copy (dashboard text included). */
+  function arPunct(v) { return lang() === 'ar' ? String(v).replace(/([\u0600-\u06FF)»])\.\s+(?=[\u0600-\u06FF«])/g, '$1، ').replace(/\.\s*$/, '') : v; }
+  function premise(s) { return arPunct(localized(s.premise) || s.description || localized(s.card_note) || ''); }
+  function storyHref(s) { return `story.html?s=${encodeURIComponent(s.slug)}`; }
+  function personaliseHref(s) { return `personalize.html?story=${encodeURIComponent(s.slug)}`; }
+  /* One short emotional line for cards: the first sentence of the story's premise. */
+  function oneLiner(s) {
+    const p = premise(s); if (!p) return '';
+    const m = p.match(/^.+?[.!?؟](?=\s|$)/); return (m ? m[0] : p).replace(/[.]$/, lang() === 'ar' ? '' : '.');
   }
+  function coverHtml(s, extraClass, opts) {
+    opts = opts || {};
+    const alt = opts.alt ? esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) })) : '';
+    const img = s.cover ? `<img src="${esc(s.cover)}" alt="${alt}"${opts.eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async" width="560" height="560" />` : '';
+    return `<div class="cover${extraClass ? ' ' + extraClass : ''}">${img}${s.cover ? '' : `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>`}</div>`;
+  }
+  function tpl(str, o) { return Object.keys(o).reduce((a, k) => a.split('{' + k + '}').join(o[k]), str); }
   function cardHtml(s, tag) {
-    const age = ageText(s.age_bands); const th = themeLabel((s.moments || [])[0]);
-    return `<${tag || 'li'} class="story-card">${coverHtml(s)}
+    const age = ageText(s.age_bands); const th = themeLabel((s.moments || [])[0]); const line = oneLiner(s);
+    tag = tag || 'li';
+    return `<${tag} class="story-card">${coverHtml(s)}
       <div class="body"><h3><a href="${esc(storyHref(s))}">${titleHtml(s)}</a></h3>
-      <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}</div></div></${tag || 'li'}>`;
+      <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}</div>
+      ${line ? `<p class="line">${esc(line)}</p>` : ''}
+      <p class="card-price"><bdi data-hk-price-now>${esc(priceNow())}</bdi></p>
+      <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'See inside'))}</a></div>
+      </div></${tag}>`;
   }
+  function skeletonHtml(n, tag) { tag = tag || 'li'; return Array.from({ length: n }, () => `<${tag} class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></${tag}>`).join(''); }
   function inBand(s, band) {
     if (!band) return true;
     const [lo, hi] = band.split('-').map(Number);
@@ -311,11 +357,11 @@
   window.addEventListener('resize', () => document.querySelectorAll('.track').forEach(updateArrows));
 
   /* ---------------- Price helpers ---------------- */
-  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : '149.00 AED'; }
+  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 149'; }
   function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
+  window.Hikaya = { arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
 
   /* ---------------- Boot ---------------- */
   mount();
@@ -323,6 +369,8 @@
     initRegion(); initLang(); initNav(); initSticky(); initCarousels();
     renderLang(); renderRegion();
     if (window.hikayaApplyRegion) window.hikayaApplyRegion();
+    /* Arabic visitors: translations are now applied, so reveal the page (instead of waiting for the 2.5 s safety timeout). */
+    requestAnimationFrame(() => document.documentElement.classList.remove('i18n-wait'));
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

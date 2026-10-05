@@ -39,6 +39,20 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: JSON.stringify({ orders: [], tableReady: false }) };
     }
     const rows = await res.json();
+    // Child photos live in the private "order-photos" bucket: for a single order, hand the
+    // dashboard short-lived signed links (1 hour) in the same shape it already displays.
+    async function signed(paths) {
+      if (!paths.length || !process.env.SUPABASE_SERVICE_ROLE_KEY) return {};
+      try {
+        const r = await fetch(`${SUPABASE_URL}/storage/v1/object/sign/order-photos`, {
+          method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ expiresIn: 3600, paths }),
+        });
+        if (!r.ok) { console.error('get-orders: sign failed', r.status); return {}; }
+        const out = {}; (await r.json()).forEach(x => { if (x.signedURL) out[x.path] = `${SUPABASE_URL}/storage/v1${x.signedURL}`; });
+        return out;
+      } catch (e) { console.error('get-orders: sign error', e); return {}; }
+    }
     const strip = (list) => (list || []).map(p => ({ name: p.name, type: p.type }));
     const orders = rows.map(row => {
       let items = [];
@@ -46,6 +60,17 @@ exports.handler = async (event) => {
       if (!one) items = items.map(it => ({ ...it, photos: strip(it.photos), extraCharacterPhotos: strip(it.extraCharacterPhotos) }));
       return { ...row, items };
     });
+    if (one) {
+      for (const o of orders) {
+        const all = o.items.flatMap(it => [...(it.photoPaths || []), ...(it.extraCharacterPhotoPaths || [])]);
+        const urls = await signed(all);
+        o.items = o.items.map(it => ({
+          ...it,
+          photos: [...(it.photos || []), ...(it.photoPaths || []).filter(p => urls[p]).map((p, k) => ({ name: `photo-${k + 1}`, type: 'image/jpeg', dataUrl: urls[p] }))],
+          extraCharacterPhotos: [...(it.extraCharacterPhotos || []), ...(it.extraCharacterPhotoPaths || []).filter(p => urls[p]).map((p, k) => ({ name: `extra-${k + 1}`, type: 'image/jpeg', dataUrl: urls[p] }))],
+        }));
+      }
+    }
     return { statusCode: 200, body: JSON.stringify({ orders, tableReady: true }) };
   } catch (err) {
     console.error('get-orders error:', err);

@@ -36,11 +36,15 @@
   const ico = k => `<span class="ico" aria-hidden="true">${SVG[k] || SVG.confidence}</span>`;
   const groupOf = H.groupOf;
   const inGroup = (s, g) => !g || (s.moments || []).some(m => THEME_GROUPS[g].includes(m));
-  const sortFeatured = list => [...list].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.placeholder ? 1 : 0) - (b.placeholder ? 1 : 0));
+  const sortFeatured = list => [...list].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0));
 
   /* ================= Stories collection ================= */
   async function stories() {
+    const gridEl = document.getElementById('grid');
+    gridEl.setAttribute('aria-busy', 'true');
+    if (!gridEl.children.length) gridEl.innerHTML = H.skeletonHtml(4);
     const all = await H.loadCatalog();
+    gridEl.removeAttribute('aria-busy');
     const ageSel = document.getElementById('f-age'), themeSel = document.getElementById('f-theme'), sortSel = document.getElementById('f-sort');
     const grid = document.getElementById('grid'), count = document.getElementById('count'), empty = document.getElementById('empty');
     function options() {
@@ -54,11 +58,13 @@
       const a = ageSel.value, th = themeSel.value, so = sortSel.value;
       let list = all.filter(s => H.inBand(s, a) && inGroup(s, th));
       if (so === 'featured') list = sortFeatured(list);
-      if (so === 'newest') list = [...list.filter(s => !s.placeholder)].reverse().concat(list.filter(s => s.placeholder));
+      if (so === 'newest') list = [...list].sort((x, y) => String(y.created_at || '').localeCompare(String(x.created_at || '')) || (y.sort_order || 0) - (x.sort_order || 0));
       if (so === 'az') list = [...list].sort((x, y) => H.titlePlain(x).localeCompare(H.titlePlain(y), H.lang()));
       grid.innerHTML = list.map(s => H.cardHtml(s)).join('');
       count.textContent = list.length === 1 ? t('pg.count_one', '1 story') : tpl(t('pg.count', '{n} stories'), { n: list.length });
-      empty.hidden = list.length > 0;
+      /* The empty state only appears when the visitor has chosen filters that match nothing. */
+      empty.hidden = list.length > 0 || !(a || th);
+      if (!list.length && !(a || th)) grid.innerHTML = `<li class="catalog-note">${esc(t('lx.catalog_wait', 'New stories are on their way. Please check back soon.'))}</li>`;
       document.getElementById('reset').hidden = !(a || th);
       const p = new URLSearchParams(); if (a) p.set('age', a); if (th) p.set('theme', th); if (so !== 'featured') p.set('sort', so);
       H.setQS(p.toString() ? '?' + p : '');
@@ -82,7 +88,6 @@
       const file = { '2-4': 'age-hero-01.webp', '4-6': 'age-hero-02.webp', '6-8': 'age-hero-03.webp' }[band];
       img.src = window.PREVIEW_IMAGES ? window.PREVIEW_IMAGES[file] : 'images/' + file;
       if (!window.PREVIEW_IMAGES && window.innerWidth < 768) img.src = 'images/' + file.replace('.webp', '-900.webp');
-      document.getElementById('age-img-tag').textContent = 'Stand-in · AGE-HERO-0' + (BANDS.indexOf(band) + 1);
       document.querySelectorAll('[data-band]').forEach(p => p.setAttribute('aria-current', p.dataset.band === band ? 'page' : 'false'));
       document.getElementById('tiles').innerHTML = Object.keys(THEME_GROUPS).map(g => `<li><a class="tile" href="stories.html?age=${band}&theme=${g}">${ico(g)}<span>${esc(H.groupLabel(g))}</span><small>${esc(t('pg.w_' + g + '_d', ''))}</small></a></li>`).join('');
       const list = sortFeatured(all.filter(s => H.inBand(s, band))).slice(0, 8);
@@ -121,22 +126,23 @@
       document.getElementById('st-title').innerHTML = H.titleHtml(s);
       document.getElementById('st-ages').textContent = [H.ageText(s.age_bands), s.page_count ? tpl(t('pg.pages', '{n} pages'), { n: s.page_count }) : ''].filter(Boolean).join(' · ');
       document.getElementById('st-chips').innerHTML = [...new Set((s.moments || []).map(m => t('home6.th_' + m, '') || H.themeLabel(m)))].map(l => `<li>${esc(l)}</li>`).join('');
-      document.getElementById('st-premise').textContent = H.premise(s);
+      document.getElementById('st-premise').textContent = H.oneLiner(s) || H.premise(s);
       renderPrice();
-      document.getElementById('st-cta').href = s.placeholder ? 'personalize.html' : 'personalize.html?story=' + encodeURIComponent(s.slug);
+      document.getElementById('st-cta').href = H.personaliseHref(s);
+      document.querySelectorAll('[data-st-cta]').forEach(a => { a.href = H.personaliseHref(s); });
       // gallery
       const pv = images();
       const main = document.getElementById('st-main');
       const shots = [null].concat(pv);
-      main.innerHTML = current === 0 || !pv[current - 1] ? H.coverHtml(s) : `<div class="cover"><img src="${esc(pv[current - 1])}" alt="" style="object-fit:contain;background:var(--white)"></div>`;
+      main.innerHTML = current === 0 || !pv[current - 1] ? H.coverHtml(s, '', { alt: true, eager: true }) : `<div class="cover"><img src="${esc(pv[current - 1])}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: current, title: plain }))}" style="object-fit:contain;background:var(--white)"></div>`;
       const th = document.getElementById('st-thumbs');
       th.hidden = shots.length < 2;
-      th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${i === 0 ? 'Cover' : 'Sample page ' + i}" data-i="${i}"><img src="${esc(u || s.cover || s.sampleCover)}" alt=""></button></li>`).join('');
+      th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${esc(i === 0 ? t('lx.cover', 'Cover') : tpl(t('lx.sample_n', 'Sample page {n}'), { n: i }))}" data-i="${i}"><img src="${esc(u || s.cover || '')}" alt=""></button></li>`).join('');
       // what happens
       /* QA005: the admin "description" is English-only, so Arabic shows the Arabic synopsis instead of mixing languages. */
       const arMode = H.lang() === 'ar';
       document.getElementById('st-happens').textContent = arMode
-        ? (H.localized(s.synopsis) || s.description_ar || H.premise(s))
+        ? H.arPunct(H.localized(s.synopsis) || s.description_ar || H.premise(s))
         : (H.localized(s.synopsis) || (s.description && s.description !== H.premise(s) ? s.description : H.premise(s)));
       // learns
       document.getElementById('st-learns').innerHTML = [...new Set((s.moments || []).map(m => H.groupOf(m) || 'courage'))].slice(0, 4).map(g => `<li>${ico(g)}<span>${esc(H.groupLabel(g))}</span></li>`).join('');
@@ -149,11 +155,19 @@
       // inside the book
       const inside = document.getElementById('st-inside');
       if (pv.length) {
-        inside.innerHTML = `<div class="pv-grid">${pv.slice(0, 4).map((u, i) => `<button type="button" data-lb="${i}" aria-label="Open sample page ${i + 1}"><img src="${esc(u)}" alt="" loading="lazy"></button>`).join('')}</div><p class="note">${esc(t('pg.inside_note'))}</p>`;
+        inside.innerHTML = `<div class="pv-grid">${pv.slice(0, 4).map((u, i) => `<button type="button" data-lb="${i}" aria-label="${esc(tpl(t('lx.open_sample', 'Open sample page {n}'), { n: i + 1 }))}"><img src="${esc(u)}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i + 1, title: plain }))}" loading="lazy"></button>`).join('')}</div><p class="note">${esc(t('pg.inside_note'))}</p>`;
       } else {
+        /* No approved sample pages for this story yet: show a Hikaya spread, honestly labelled as an example. */
         const src = window.PREVIEW_IMAGES ? window.PREVIEW_IMAGES['sty-inside-01.webp'] : 'images/sty-inside-01.webp';
-        inside.innerHTML = `<span class="dev-tag">Stand-in · STY-INSIDE-01</span><img src="${src}" alt="" loading="lazy"><p class="note">${esc(t('pg.inside_note'))}</p>`;
+        inside.innerHTML = `<img src="${src}" srcset="images/sty-inside-01-900.webp 900w, images/sty-inside-01.webp 1800w" sizes="(max-width: 899px) 100vw, 50vw" alt="${esc(t('lx.example_alt', 'An open Hikaya book showing an illustrated spread'))}" loading="lazy"><p class="note">${esc(t('lx.inside_example', 'An example of a Hikaya spread. Your book is illustrated with your child as the hero.'))}</p>`;
       }
+      // structured data (Product) for this story
+      try {
+        const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 149 };
+        let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
+        ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
+          offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: location.origin + location.pathname + '?s=' + encodeURIComponent(s.slug) } });
+      } catch (_) {}
       // they may also love
       const band = (s.age_bands || [])[0];
       const more = sortFeatured(all.filter(x => x.slug !== s.slug && (!band || H.inBand(x, band)))).slice(0, 10);
@@ -162,7 +176,8 @@
     }
     function renderPrice() {
       const was = H.priceWas();
-      document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was">${esc(was)}</span>` : ''}`;
+      document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
+      document.querySelectorAll('[data-st-price]').forEach(el => { el.textContent = H.priceNow(); });
     }
     document.getElementById('st-thumbs').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b) return; current = Number(b.dataset.i); render(); });
     document.getElementById('st-inside').addEventListener('click', e => {

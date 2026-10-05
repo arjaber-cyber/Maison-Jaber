@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -353,7 +354,7 @@
     { key: 'delivered', label: window.hikayaT('admin.stage_delivered') }
   ];
 
-  const BOOK_PRICE = 35;
+  const BOOK_PRICE = (window.HIKAYA_REGIONS && window.HIKAYA_REGIONS.UAE && window.HIKAYA_REGIONS.UAE.bookNow) || 149; // from region.js (AED)
 
   function renderStats(submissions) {
     const statsRow = document.getElementById('stats-row');
@@ -393,7 +394,7 @@
         <div class="lbl">This Week</div>
       </div>
       <div class="stat-card">
-        <div class="num">€${estRevenue.toLocaleString()}</div>
+        <div class="num">AED ${estRevenue.toLocaleString()}</div>
         <div class="lbl">Estimated Value</div>
       </div>
       <div class="stat-card">
@@ -587,9 +588,9 @@
             <div data-items>${items.map((it, n) => `
               <div class="om-item">
                 <strong>${omEsc(it.story || '—')}</strong><br>
-                <span style="font-size:12.5px; color:var(--ink-soft); font-weight:600;">${omEsc(it.childName || '—')}${it.ageEdition ? ' · Ages ' + omEsc(it.ageEdition) : ''}${it.gender ? ' · ' + omEsc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + omEsc(it.extraCharacterName) : ''}</span>
+                <span style="font-size:12.5px; color:var(--ink-soft); font-weight:600;">${omEsc(it.childName || '—')}${it.ageEdition ? ' · Ages ' + omEsc(it.ageEdition) : ''}${it.gender ? ' · ' + omEsc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + omEsc(it.extraCharacterName) : ''}${it.childAge ? ' · Age ' + omEsc(it.childAge) : ''}${it.bookLanguage ? ' · ' + (it.bookLanguage === 'ar' ? 'Arabic book' : 'English book') : ''}</span>
                 ${it.dedication ? `<div class="om-quote">“${omEsc(it.dedication)}”</div>` : ''}
-                <div class="om-photos" data-photos="${n}">${(it.photos || []).length ? `<span class="om-note">${(it.photos || []).length} photo(s) — loading…</span>` : '<span class="om-note">No photos</span>'}</div>
+                <div class="om-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length) ? `<span class="om-note">${(it.photos || []).length + (it.photoPaths || []).length} photo(s) — loading…</span>` : '<span class="om-note">No photos</span>'}</div>
               </div>`).join('')}</div>
           </div>
           <div class="om-box">
@@ -651,7 +652,7 @@
   }
 
   async function omLoadPhotos(o, el) {
-    const needs = (o.items || []).some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length);
+    const needs = (o.items || []).some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length);
     if (!needs) return;
     let items = omFull.get(o.id);
     if (!items) {
@@ -665,7 +666,7 @@
     items.forEach((it, n) => {
       const box = el.querySelector(`[data-photos="${n}"]`);
       if (!box) return;
-      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' }))].filter(p => p.dataUrl && /^data:image\//.test(p.dataUrl));
+      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' }))].filter(p => p.dataUrl && (/^data:image\//.test(p.dataUrl) || p.dataUrl.indexOf('https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/sign/') === 0));
       box.innerHTML = pics.length
         ? pics.map((p, k) => `<a href="${p.dataUrl}" download="${omEsc((o.order_number || 'order') + '-' + p.who + '-' + (k + 1))}" title="${omEsc(p.who)} — click to download"><img src="${p.dataUrl}" alt="${omEsc(p.who)}"></a>`).join('')
         : '<span class="om-note">No photos</span>';
@@ -1291,5 +1292,6 @@
   }
 </script>
 
+<script>document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(function(){document.documentElement.classList.remove('i18n-wait')})});</script>
 </body>
 </html>

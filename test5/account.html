@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -253,8 +254,8 @@
   }
 
   const STAGE_LABELS = {
-    received: 'Order Received', preparing: 'Preparing the Book', awaiting_approval: 'Awaiting Final Approval',
-    sent_to_printing: 'Sent to Printing', received_from_printing: 'Received from Printing',
+    received: 'Order received', preparing: 'Personalisation in progress', awaiting_approval: 'Final checks',
+    sent_to_printing: 'Printing', received_from_printing: 'Packed',
     shipped: 'Shipped', delivered: 'Delivered',
   };
   const THEME_CLASS = { courage: 'linear-gradient(165deg, #D98868, #B5563B)', adventure: 'linear-gradient(165deg, #DEB06B, #C08A3E)', lullaby: 'linear-gradient(165deg, #a9829a, #7d5a6b)' };

@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -10,7 +11,7 @@
 <link rel="canonical" href="https://maison-jaber.com/" />
 <meta property="og:title" content="Hikaya by Maison Jaber — Their name. Their story." />
 <meta property="og:description" content="Personalised hardcover storybooks, made for your child and delivered gift-boxed." />
-<meta property="og:image" content="images/hom-hero-01.webp" />
+<meta property="og:image" content="https://maison-jaber.com/test5/images/hom-hero-01.webp" />
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,6 +21,7 @@
 <link rel="preload" as="image" href="images/hom-hero-01-m.webp" media="(max-width: 767px)" />
 
 <link rel="stylesheet" href="hikaya.css" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Hikaya by Maison Jaber","legalName":"Maison Jaber FZ-LLC","url":"https://maison-jaber.com/","email":"hello@maison-jaber.com","logo":"https://maison-jaber.com/test5/images/logo-hikaya.webp","areaServed":["AE","SA","QA","KW","BH","OM"]}</script>
 </head>
 
 <body>
@@ -30,7 +32,7 @@
 <!-- 01 HERO -->
 <section class="hero" aria-labelledby="hero-title" data-sticky-after>
   <div class="hero-media">
-    <span class="dev-tag">Stand-in · HOM-HERO-01</span>
+    
     <picture>
       <source media="(max-width: 767px)" srcset="images/hom-hero-01-m.webp" />
       <img src="images/hom-hero-01.webp" width="2400" height="1500" fetchpriority="high" alt="A child reading her personalised Hikaya hardcover, with her name on the cover" data-i18n-alt="home6.hero_alt" />
@@ -44,6 +46,7 @@
         <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
         <a class="btn btn-secondary" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a>
       </div>
+      <p class="hero-assure" data-hk-price-line>Personalised hardcover · AED 149 · Gift packaging included</p>
       <span class="hand" data-i18n="home6.hero_hand">Little stories. Big memories.</span>
     </div>
   </div>
@@ -54,12 +57,12 @@
   <div class="wrap">
     <h2 id="journey-title" data-i18n="home6.how_title">From a story to their story.</h2>
     <ol class="steps">
-      <li class="step"><a class="step-link" href="stories.html" aria-label="Start: browse stories">
+      <li class="step"><a class="step-link" href="stories.html">
         <div class="step-top"><span class="step-num">1</span><h3 data-i18n="home6.s1_t">Choose their story</h3></div>
         <p data-i18n="home6.s1_d">Explore our collection and pick the adventure, theme or moment that feels right for your child.</p>
-        <div class="step-visual"><span class="dev-tag">Stand-in · HOM-JRN-01</span><img src="images/hom-jrn-01.webp" srcset="images/hom-jrn-01-900.webp 900w, images/hom-jrn-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="700" height="435" loading="lazy" alt="Hikaya storybooks on a shelf, ready to choose from" data-i18n-alt="home6.s1_alt" /></div>
+        <div class="step-visual"><img src="images/hom-jrn-01.webp" srcset="images/hom-jrn-01-900.webp 900w, images/hom-jrn-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="700" height="435" loading="lazy" alt="Hikaya storybooks on a shelf, ready to choose from" data-i18n-alt="home6.s1_alt" /></div>
       </a></li>
-      <li class="step"><a class="step-link" href="stories.html" aria-label="Start: browse stories">
+      <li class="step"><a class="step-link" href="stories.html">
         <div class="step-top"><span class="step-num">2</span><h3 data-i18n="home6.s2_t">Make it theirs</h3></div>
         <p data-i18n="home6.s2_d">Add your child's name, age and a photo, so we can place them inside the story.</p>
         <div class="step-visual" aria-hidden="true">
@@ -71,15 +74,16 @@
           </div></div>
         </div>
       </a></li>
-      <li class="step"><a class="step-link" href="stories.html" aria-label="Start: browse stories">
+      <li class="step"><a class="step-link" href="stories.html">
         <div class="step-top"><span class="step-num">3</span><h3 data-i18n="home6.s3_t">We create their story</h3></div>
         <p data-i18n="home6.s3_d">We bring the story together with your child at the centre of the adventure.</p>
-        <div class="step-visual v-photo3"><span class="dev-tag">HOM-JRN-03</span><img src="images/hom-jrn-03.webp" srcset="images/hom-jrn-03-900.webp 900w, images/hom-jrn-03.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1200" loading="lazy" alt="A personalised Hikaya hardcover with the child's name and portrait on the cover" data-i18n-alt="home6.s3_alt" /></div>
+        <div class="step-visual v-photo3"><img src="images/hom-jrn-03.webp" srcset="images/hom-jrn-03-900.webp 900w, images/hom-jrn-03.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1200" loading="lazy" alt="A personalised Hikaya hardcover with the child's name and portrait on the cover" data-i18n-alt="home6.s3_alt" /></div>
       </a></li>
-      <li class="step"><a class="step-link" href="stories.html" aria-label="Start: browse stories">
+      <li class="step"><a class="step-link" href="stories.html">
         <div class="step-top"><span class="step-num">4</span><h3 data-i18n="home6.s4_t">Printed, packed and delivered</h3></div>
         <p data-i18n="home6.s4_d">Printed as a hardcover book, packed in our signature gift box and delivered ready for their moment.</p>
-        <div class="step-visual"><span class="dev-tag">Stand-in · HOM-JRN-04</span><img src="images/hom-jrn-04.webp" width="700" height="639" loading="lazy" alt="An open Hikaya gift box with cream tissue and a gold star seal" data-i18n-alt="home6.s4_alt" /></div>
+        <p class="step-eta" data-hk-eta-short>About 5 working days</p>
+        <div class="step-visual"><img src="images/hom-jrn-04.webp" width="700" height="639" loading="lazy" alt="An open Hikaya gift box with cream tissue and a gold star seal" data-i18n-alt="home6.s4_alt" /></div>
       </a></li>
     </ol>
   </div>
@@ -125,7 +129,7 @@
 <section id="packaging" aria-labelledby="pack-title">
   <div class="wrap">
     <div class="banner">
-      <div class="banner-media"><span class="dev-tag">Stand-in · HOM-PKG-01</span><img src="images/hom-pkg-01.webp" srcset="images/hom-pkg-01-900.webp 900w, images/hom-pkg-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1046" loading="lazy" alt="The Hikaya gift box tied with a caramel satin ribbon and a Hikaya tag" data-i18n-alt="home6.pkg_alt" /></div>
+      <div class="banner-media"><img src="images/hom-pkg-01.webp" srcset="images/hom-pkg-01-900.webp 900w, images/hom-pkg-01.webp 1200w" sizes="(max-width: 767px) 100vw, 60vw" width="1200" height="1046" loading="lazy" alt="The Hikaya gift box tied with a caramel satin ribbon and a Hikaya tag" data-i18n-alt="home6.pkg_alt" /></div>
       <div class="banner-copy">
         <h2 id="pack-title" data-i18n="home6.pkg_title">Beautiful from story to doorstep.</h2>
         <p data-i18n="home6.pkg_sub">Every Hikaya book comes beautifully presented in our signature gift packaging.</p>
@@ -136,40 +140,11 @@
   </div>
 </section>
 
-<!-- 06 REVIEWS -->
-<section class="reviews dev-only" aria-labelledby="rev-title">
-  <div class="wrap">
-    <div class="rev-grid">
-      <h2 id="rev-title" data-i18n="home6.rev_title">Real stories. Real reactions.</h2>
-      <figure class="review">
-        <span class="dev-tag">Placeholder</span>
-        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote data-i18n="home6.r1">She asked for “her book” every night for a week, and kept pointing at her own name.</blockquote>
-        <figcaption><span class="avatar" aria-hidden="true">A</span><span><b data-i18n="home6.r1_who">Amira's mum</b><span data-i18n="home6.r1_city">Dubai</span></span></figcaption>
-      </figure>
-      <figure class="review">
-        <span class="dev-tag">Placeholder</span>
-        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote data-i18n="home6.r2">The box alone made his birthday. The book itself is properly made. It will last.</blockquote>
-        <figcaption><span class="avatar" aria-hidden="true">O</span><span><b data-i18n="home6.r2_who">Omar's dad</b><span data-i18n="home6.r2_city">Abu Dhabi</span></span></figcaption>
-      </figure>
-      <figure class="review">
-        <span class="dev-tag">Placeholder</span>
-        <div class="stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-        <blockquote data-i18n="home6.r3">We sent it straight to my niece in Riyadh. She recognised herself before she could read the title.</blockquote>
-        <figcaption><span class="avatar" aria-hidden="true">L</span><span><b data-i18n="home6.r3_who">Lela's mum</b><span data-i18n="home6.r3_city">Sharjah</span></span></figcaption>
-      </figure>
-      <div class="rev-photo"><span class="dev-tag">Stand-in · HOM-REV-01</span><img src="images/hom-rev-01.webp" width="900" height="750" loading="lazy" alt="Hikaya storybooks beside a soft toy and a note card" data-i18n-alt="home6.rev_alt" /></div>
-    </div>
-    <p class="dev-note" style="margin-top:12px;font-size:12.5px;color:var(--brand);font-weight:600">Development placeholders. Replace with real reviews before launch.</p>
-  </div>
-</section>
-
 <!-- 07 MORE THAN A BOOK -->
 <section class="why section-gap" aria-labelledby="why-title">
   <div class="wrap">
     <div class="band">
-      <div class="band-media"><span class="dev-tag">Stand-in · HOM-STY-01</span><img src="images/hom-sty-01.webp" srcset="images/hom-sty-01-900.webp 900w, images/hom-sty-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="787" loading="lazy" alt="A child in bed reading her Hikaya book, with the gift box beside her" data-i18n-alt="home6.why_alt" /></div>
+      <div class="band-media"><img src="images/hom-sty-01.webp" srcset="images/hom-sty-01-900.webp 900w, images/hom-sty-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="787" loading="lazy" alt="A child in bed reading her Hikaya book, with the gift box beside her" data-i18n-alt="home6.why_alt" /></div>
       <div class="band-copy">
         <h2 id="why-title"><span class="hand" data-i18n="home6.why_more">More</span> <span data-i18n="home6.why_t1">than a book.</span><span class="l2" data-i18n="home6.why_t2">A story they can see themselves in.</span></h2>
         <p data-i18n="home6.why_p">Every Hikaya story helps children see themselves as brave, kind, curious and capable, through real moments like big feelings, screen time, family, friendship and growing up.</p>
@@ -179,11 +154,26 @@
   </div>
 </section>
 
+<!-- 07b QUIET TRUST -->
+<section class="trust-quiet" aria-labelledby="trust-title">
+  <div class="wrap">
+    <h2 id="trust-title" class="sr-only" data-i18n="lx.trust_t">Why parents trust Hikaya</h2>
+    <ul class="trust-list">
+      <li data-i18n="lx.tr_book">Personalised hardcover</li>
+      <li><a href="#" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a></li>
+      <li data-i18n="lx.tr_secure">Secure payment</li>
+      <li data-i18n="lx.tr_box">Gift packaging included</li>
+      <li data-i18n="lx.tr_gcc">Delivered across the UAE &amp; GCC</li>
+      <li><a href="contact.html" data-i18n="lx.tr_team">Support from a real UAE-based team</a></li>
+    </ul>
+  </div>
+</section>
+
 <!-- 08 FINAL CTA -->
 <section class="final" aria-labelledby="final-title" data-sticky-hide>
   <div class="wrap">
     <div class="band">
-      <div class="band-media"><span class="dev-tag">Stand-in · HOM-CTA-01</span><img src="images/hom-cta-01.webp" srcset="images/hom-cta-01-900.webp 900w, images/hom-cta-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="933" loading="lazy" alt="A child sitting outdoors with her soft toy, looking out over a glowing city" data-i18n-alt="home6.final_alt" /></div>
+      <div class="band-media"><img src="images/hom-cta-01.webp" srcset="images/hom-cta-01-900.webp 900w, images/hom-cta-01.webp 2000w" sizes="(max-width: 767px) 100vw, 60vw" width="1400" height="933" loading="lazy" alt="A child sitting outdoors with her soft toy, looking out over a glowing city" data-i18n-alt="home6.final_alt" /></div>
       <div class="band-copy">
         <h2 id="final-title" data-i18n-html="home6.final_title">Every child has a story.<br>Let's make theirs unforgettable.</h2>
         <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>

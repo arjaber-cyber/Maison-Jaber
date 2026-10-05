@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -267,7 +268,8 @@
   <p data-i18n="personalize.page_sub_v2">Add their name, age, and photo &mdash; we'll take it from there.</p>
 </div>
 
-<div class="wizard-progress wrap" id="wizard-progress"></div>
+<div class="wizard-progress wrap" id="wizard-progress" aria-hidden="true"></div>
+<p class="wizard-count" id="wizard-count" aria-live="polite"></p>
 
 <form id="request-form" name="book-request" method="POST" data-netlify="true" enctype="multipart/form-data">
   <input type="hidden" name="form-name" value="book-request" />
@@ -276,6 +278,10 @@
 
   <div class="order-layout">
     <div class="order-summary">
+      <button type="button" class="summary-bar" id="summary-bar" aria-expanded="false" aria-controls="summary-body">
+        <span class="sb-story" id="sb-story" data-i18n="lx.summary_t">Your book</span><span class="sb-name" id="sb-name"></span><span class="sb-price" data-hk-price-now>AED 149</span><span class="sb-chev" aria-hidden="true"></span>
+      </button>
+      <div class="summary-body" id="summary-body">
       <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
       <div class="summary-cover empty" id="summary-cover" data-i18n="personalize.summary_pick_story">Pick a story to begin</div>
       <h3 id="summary-story-title" data-i18n="personalize.summary_no_story">No story chosen yet</h3>
@@ -283,7 +289,10 @@
       <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
-      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price>€34.90</span></div>
+      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price><strong><bdi>AED 149</bdi></strong></span></div>
+      <p class="summary-incl" data-i18n="pg.incl_box">Includes our signature gift packaging</p>
+      <p class="summary-incl" data-hk-eta>Delivery to UAE: about 5 working days</p>
+      </div>
     </div>
 
     <div class="order-form-col">
@@ -298,31 +307,11 @@
           <button type="button" id="change-story-btn" data-i18n="personalize.change_story">Change</button>
         </div>
 
-        <div class="story-grid" id="story-grid" role="radiogroup" aria-labelledby="wizard-title">
-          <div class="story-pick" data-value="The Bravest Little One" data-theme="courage">
-            <div class="cover courage"><div class="t" data-i18n-html="stories.card1_covertitle">The Bravest<br/>Little One</div></div>
-            <div class="body">
-              <div class="theme" data-i18n="common.theme_courage" style="color:#B5563B;">Courage</div>
-              <h3 data-i18n="home.story1_title">The Bravest Little One</h3>
-            </div>
-          </div>
-          <div class="story-pick" data-value="The Cloud Ship" data-theme="adventure">
-            <div class="cover adventure"><div class="t" data-i18n-html="stories.card2_covertitle">The Cloud<br/>Ship</div></div>
-            <div class="body">
-              <div class="theme" data-i18n="common.theme_adventure" style="color:#C08A3E;">Adventure</div>
-              <h3 data-i18n="home.story2_title">The Cloud Ship</h3>
-            </div>
-          </div>
-          <div class="story-pick" data-value="The Star Who Couldn't Sleep" data-theme="lullaby">
-            <div class="cover lullaby"><div class="t" data-i18n-html="stories.card3_covertitle">The Star Who<br/>Couldn't Sleep</div></div>
-            <div class="body">
-              <div class="theme" data-i18n="common.theme_bedtime" style="color:#7d5a6b;">Bedtime</div>
-              <h3 data-i18n="home.story3_title">The Star Who Couldn't Sleep</h3>
-            </div>
-          </div>
+        <div class="story-grid" id="story-grid" role="radiogroup" aria-labelledby="wizard-title" aria-busy="true">
+          <div class="story-pick-sk" aria-hidden="true"></div><div class="story-pick-sk" aria-hidden="true"></div><div class="story-pick-sk" aria-hidden="true"></div>
         </div>
         <div class="wizard-nav">
-          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled data-i18n="pg.next">Next →</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled data-i18n="pg.next">Continue →</button>
         </div>
       </div>
 
@@ -349,7 +338,7 @@
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled data-i18n="pg.next">Next →</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="details" id="details-next-btn" disabled data-i18n="pg.next">Continue →</button>
         </div>
       </div>
 
@@ -358,7 +347,7 @@
         <label class="field-label" style="display:block; margin-bottom:8px;"><span data-i18n="personalize.photos_label">Photo(s) of your child</span><span class="req-mark">*</span></label>
         <div class="trust-note">
           <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <span data-i18n="personalize.photo_trust">Their photo stays private — used only to create their book, never for advertising or public galleries. <a href="help.html">How we protect your child's photo</a></span>
+          <span data-i18n="personalize.photo_trust">Their photo stays private — used only to create their book, never for advertising or public galleries. <a href="help.html#fg-privacy" data-photo-privacy>How we protect your child's photo</a></span>
         </div>
         <div class="photo-guidance">
           <span data-i18n="personalize.photo_guidance_intro">For the best result, please make sure the photo:</span>
@@ -371,15 +360,16 @@
           </ul>
         </div>
         <div class="photo-upload" id="photo-upload">
-          <input type="file" id="child-photos" accept="image/*" multiple />
-          <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
-          <div class="hint-sub" data-i18n="personalize.add_more_photos">You can add more than one for a better result</div>
+          <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" />
+          <svg class="up-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>
+          <div class="hint-main" data-i18n="lx.photo_tap">Tap to add a photo</div>
+          <div class="hint-sub" data-i18n="lx.photo_more">One clear photo is enough. You can add a second for a better likeness.</div>
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
         <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled data-i18n="pg.next">Next →</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled data-i18n="pg.next">Continue →</button>
         </div>
       </div>
 
@@ -403,7 +393,7 @@
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="extra">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
-          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled data-i18n="pg.next">Next →</button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="extra" id="extra-next-btn" disabled data-i18n="pg.next">Continue →</button>
         </div>
       </div>
 
@@ -413,6 +403,20 @@
       <div class="wizard-step" data-step="review" id="wizard-step-review">
         <div id="review-summary"></div>
         <div class="review-dedication"><div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div></div>
+        <div class="field full book-lang">
+          <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
+          <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
+        </div>
+        <div class="next-box" aria-labelledby="nx-title">
+          <h3 id="nx-title" data-i18n="lx.nx_t">What happens next</h3>
+          <ol>
+            <li data-i18n="lx.nx1">Checkout: pay securely by card, Apple Pay or Google Pay. Your order is confirmed once payment goes through.</li>
+            <li id="nx2">We create and print: our team illustrates your child into the story and prints the hardcover.</li>
+            <li id="nx3">Delivered gift-boxed: about 5 working days.</li>
+          </ol>
+          <p class="check-note" data-i18n="lx.check_note">There is no preview step, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.</p>
+        </div>
+        <div class="upload-status" id="upload-status" role="status" aria-live="polite" hidden><div class="up-bar"><span id="up-fill"></span></div><p id="up-text"></p></div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="review">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
           <button type="button" class="btn-primary" id="continue-order-btn" style="flex:1; justify-content:center;" disabled data-i18n="personalize.continue_btn">Fill in the details above to continue</button>
@@ -423,13 +427,6 @@
 
 </form>
 
-<div class="wrap">
-  <div class="success-panel" id="success-panel">
-    <div class="mark">&#127881;</div>
-    <h3 data-i18n="personalize.success_title">Your request has been sent!</h3>
-    <p data-i18n="personalize.success_body">We're preparing their story now, and will email you a preview soon.</p>
-  </div>
-</div>
 
 </main>
 <div id="hk-foot"></div>
@@ -503,14 +500,10 @@
   // STORY_THEMES starts with the 3 built-in stories so the page works
   // immediately; loadStoryCatalog() below fills in any admin-added ones
   // (and their extra-character info) once fetched, without blocking the page.
-  const STORY_THEMES = {
-    'The Bravest Little One': 'courage',
-    'The Cloud Ship': 'adventure',
-    "The Star Who Couldn't Sleep": 'lullaby',
-  };
+  const STORY_THEMES = {}; // filled from the live catalogue (see loadStoryCatalog)
   const STORY_CATALOG = {}; // title -> full story record, once fetched
   // Story pages link here with the story's slug (?story=cloud-ship); the wizard keys stories by title.
-  const SLUG_TO_TITLE = { 'bravest-little-one': 'The Bravest Little One', 'cloud-ship': 'The Cloud Ship', 'star-who-couldnt-sleep': "The Star Who Couldn't Sleep" };
+  const SLUG_TO_TITLE = {};
   function resolveStory(v) { if (!v) return null; if (STORY_THEMES[v]) return v; return SLUG_TO_TITLE[v] || null; }
   // When the parent already chose a story on its page, skip the story step entirely.
   let storyLocked = false;
@@ -603,11 +596,26 @@
     const cov = card.querySelector('.cover .t'); if (cov) { cov.removeAttribute('data-i18n-html'); cov.textContent = storyDisplayName(card.dataset.value); }
   }
 
-  async function loadStoryCatalog() {
+  async function fetchCatalog() {
     try {
       const res = await fetch('/.netlify/functions/get-stories');
+      if (!res.ok) throw new Error('catalog ' + res.status);
       const data = await res.json();
+      if (!Array.isArray(data.stories) || !data.stories.length) throw new Error('empty catalog');
+      return data;
+    } catch (_) {
+      // Fall back to the shared catalogue (chrome.js), which retries and has an up-to-date offline list.
+      if (!window.Hikaya) await new Promise(r => document.readyState === 'complete' ? r() : window.addEventListener('load', r, { once: true }));
+      const stories = window.Hikaya ? await window.Hikaya.loadCatalog() : [];
+      return { stories, tableReady: true };
+    }
+  }
+  async function loadStoryCatalog() {
+    try {
+      const data = await fetchCatalog();
       const grid = document.getElementById('story-grid');
+      grid.querySelectorAll('.story-pick-sk').forEach(el => el.remove());
+      grid.removeAttribute('aria-busy');
       const catalogTitles = new Set((data.stories || []).map(st => st.title));
       if (data.tableReady) {
         // Stories deleted in the admin dashboard disappear from the picker.
@@ -672,6 +680,7 @@
     applyCoverPhoto(document.getElementById('story-chip-swatch'), STORY_CATALOG[storyName]);
     document.getElementById('summary-story-title').removeAttribute('data-i18n');
     document.getElementById('summary-story-title').textContent = shown;
+    const sbStory = document.getElementById('sb-story'); if (sbStory) { sbStory.removeAttribute('data-i18n'); sbStory.textContent = shown; }
 
     // Compact chip replaces the picker grid
     document.getElementById('story-chip-swatch').className = 'swatch ' + theme;
@@ -713,6 +722,10 @@
   document.querySelectorAll('#story-grid .story-pick').forEach(card => upgradeCard(card));
 
   document.getElementById('summary-change-story').addEventListener('click', () => unlockStory());
+  document.getElementById('summary-bar').addEventListener('click', e => {
+    const b = e.currentTarget; b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'));
+  });
+  document.getElementById('book-language').addEventListener('change', e => { e.target.dataset.touched = '1'; });
   document.getElementById('change-story-btn').addEventListener('click', () => {
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
@@ -866,7 +879,7 @@
         if (entry.status === 'checking') badge = `<div class="status-badge checking"><span class="spinner"></span>${t('personalize.photo_checking', 'Checking')}</div>`;
         else if (entry.status === 'verified') badge = `<div class="status-badge verified">${t('personalize.photo_ok', '✓ OK')}</div>`;
         else if (entry.status === 'failed') badge = `<div class="status-badge failed">${t('personalize.photo_failed', 'Try another')}</div>`;
-        div.innerHTML = `<img src="${e.target.result}" />${badge}<button type="button" class="remove-photo" data-i="${i}">&times;</button>`;
+        div.innerHTML = `<img src="${e.target.result}" alt="" />${badge}<button type="button" class="remove-photo" data-i="${i}" aria-label="${t('lx.remove_photo', 'Remove photo')}">&times;</button>`;
         div.querySelector('.remove-photo').addEventListener('click', (ev) => {
           ev.preventDefault();
           files.splice(i, 1);
@@ -893,6 +906,7 @@
   const nameInput = document.getElementById('child-name');
   nameInput.addEventListener('input', () => {
     document.getElementById('summary-name').textContent = nameInput.value || '—';
+    document.getElementById('sb-name').textContent = nameInput.value.trim();
     checkDetailsComplete();
   });
 
@@ -910,6 +924,7 @@
     }
 
     // Per-step Next button gating.
+    const changeLink = document.getElementById('summary-change-story'); if (changeLink) changeLink.hidden = !storyChosen;
     const storyNextBtn = document.getElementById('story-next-btn');
     if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
     const detailsNextBtn = document.getElementById('details-next-btn');
@@ -929,8 +944,9 @@
     if (stillChecking) {
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
     } else {
+      const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 149';
       continueBtn.textContent = ready
-        ? t('personalize.continue_ready', 'Continue')
+        ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
         : t('personalize.continue_btn', 'Fill in the details above to continue');
     }
   }
@@ -949,12 +965,11 @@
   let currentStepName = 'story';
 
   const STEP_LABELS = {
-    story: () => t('personalize.wizard_step_story', 'Story'),
-    details: () => t('personalize.wizard_step_details', 'About Them'),
-    photo: () => t('personalize.wizard_step_photo', 'Photo'),
-    extra: () => t('personalize.wizard_step_extra', 'Extra Character'),
-    dedication: () => t('personalize.wizard_step_dedication', 'Dedication'),
-    review: () => t('personalize.wizard_step_review', 'Review'),
+    story: () => t('lx.st_story', 'Story'),
+    details: () => t('lx.st_child', 'Child'),
+    photo: () => t('lx.st_photo', 'Photo'),
+    extra: () => t('lx.st_extra', 'Extra character'),
+    review: () => t('lx.st_review', 'Review'),
   };
 
   function renderWizardProgress() {
@@ -968,6 +983,8 @@
       </div>
       ${i < steps.length - 1 ? '<div class="w-line"></div>' : ''}
     `).join('');
+    const cnt = document.getElementById('wizard-count');
+    if (cnt) cnt.textContent = t('lx.step_of', 'Step {n} of {total}').replace('{n}', currentIndex + 1).replace('{total}', steps.length) + ' · ' + STEP_LABELS[currentStepName]();
   }
 
   const STEP_HEADINGS = {
@@ -1062,6 +1079,11 @@
       rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
     }
 
+    const langSel = document.getElementById('book-language');
+    if (langSel && !langSel.dataset.touched) langSel.value = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', name || t('lx.st_child', 'your child'));
+    const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
+    document.getElementById('nx3').textContent = t('lx.nx3', 'Delivered gift-boxed: {eta}.').replace('{eta}', eta.charAt(0).toLowerCase() === eta.charAt(0) ? eta : eta.charAt(0).toLowerCase() + eta.slice(1));
     document.getElementById('review-summary').innerHTML = rows.map(r => `
       <div class="review-row"><span>${escHtml(r.label)}</span><span>${escHtml(r.value)}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
     `).join('');
@@ -1096,6 +1118,7 @@
       childAge: ageInputEl.value,
       gender: document.getElementById('child-gender').value,
       dedication: document.getElementById('dedication').value.trim(),
+      bookLanguage: document.getElementById('book-language').value || 'en',
       photoCount: photoFiles.filter(p => p.status === 'verified').length,
       extraCharacterName: hasExtra ? storyInfo.extra_character_name : null,
       extraCharacterFeeAed: hasExtra ? storyInfo.extra_character_fee_aed : 0,
@@ -1131,53 +1154,77 @@
     if (typeof showWizardStep === 'function') showWizardStep('story');
   }
 
+  /* ---------- Saving photos and adding to cart ----------
+     Each verified photo is resized in the browser (keeps uploads quick on mobile data), saved to
+     our private photo storage with a visible progress bar, and only then is the book added to the
+     cart. The cart keeps the private storage path, never the image itself. */
+  function resizePhoto(file, maxSide, quality) {
+    return new Promise(resolve => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(img.naturalWidth * scale)); c.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => resolve(b || file), 'image/jpeg', quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+  const blobToBase64 = blob => new Promise((resolve, reject) => { const r = new FileReader(); r.onload = () => resolve(String(r.result).split(',')[1]); r.onerror = reject; r.readAsDataURL(blob); });
+  function uploadOne(blob, onProgress) {
+    return blobToBase64(blob).then(base64Data => new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/.netlify/functions/upload-child-photo');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.timeout = 60000;
+      xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded / e.total); };
+      xhr.onload = () => { let d = {}; try { d = JSON.parse(xhr.responseText || '{}'); } catch (_) {} if (xhr.status === 200 && d.path) resolve(d.path); else reject(new Error(d.error || 'upload failed')); };
+      xhr.onerror = xhr.ontimeout = () => reject(new Error('network'));
+      xhr.send(JSON.stringify({ base64Data, mimeType: blob.type || 'image/jpeg' }));
+    }));
+  }
+  const upBox = document.getElementById('upload-status'), upFill = document.getElementById('up-fill'), upText = document.getElementById('up-text');
+  function showUpload(pct, failed) {
+    upBox.hidden = false; upBox.classList.toggle('failed', !!failed);
+    upFill.style.width = Math.round(pct * 100) + '%';
+    upText.textContent = failed ? t('lx.upload_fail', "We couldn't save your photo. Please check your connection and try again. Nothing has been charged.") : t('lx.uploading', 'Saving your photo securely… {pct}%').replace('{pct}', Math.round(pct * 100));
+  }
+  let saving = false;
   continueBtn.addEventListener('click', async () => {
+    if (saving || continueBtn.disabled) return;
+    saving = true; continueBtn.disabled = true; continueBtn.setAttribute('aria-busy', 'true');
     const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
-    const verifiedExtraPhotos = extraPhotoFiles.filter(p => p.status === 'verified');
-    if (window.hikayaCart) {
-      const item = buildCartItemFromForm();
-      // Photos are converted to base64 so they survive a full page navigation
-      // to checkout.html (the cart lives in localStorage, not memory).
-      try {
-        item.photos = await Promise.all(verifiedPhotos.map(entry => new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
-          reader.readAsDataURL(entry.file);
-        })));
-      } catch { item.photos = []; }
-      if (item.extraCharacterName) {
-        try {
-          item.extraCharacterPhotos = await Promise.all(verifiedExtraPhotos.map(entry => new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve({ name: entry.file.name, type: entry.file.type, dataUrl: reader.result });
-            reader.readAsDataURL(entry.file);
-          })));
-        } catch { item.extraCharacterPhotos = []; }
-      }
-      window.hikayaCart.addToCart(item);
-    }
-
-    // Fire the underlying Netlify Forms submission in the background so the
-    // admin dashboard still sees this request come in (best-effort; never
-    // blocks the cart flow even if it fails).
+    const item = buildCartItemFromForm();
+    const verifiedExtraPhotos = item.extraCharacterName ? extraPhotoFiles.filter(p => p.status === 'verified') : [];
+    const all = verifiedPhotos.concat(verifiedExtraPhotos);
     try {
-      const formData = new FormData(document.getElementById('request-form'));
-      verifiedPhotos.forEach((entry, i) => formData.append(`photo_${i + 1}`, entry.file, entry.file.name));
-      verifiedExtraPhotos.forEach((entry, i) => formData.append(`extra_photo_${i + 1}`, entry.file, entry.file.name));
-      fetch('/', { method: 'POST', body: formData }).catch(() => {});
-    } catch { /* best-effort only */ }
-
-    if (window.hikayaTrackEvent) {
-      window.hikayaTrackEvent('add_to_cart', {
-        story: document.getElementById('story-input').value,
-        age_edition: document.getElementById('age-input').value,
-      });
-      window.hikayaTrackEvent('begin_checkout', {
-        story: document.getElementById('story-input').value,
-        age_edition: document.getElementById('age-input').value,
-      });
+      const blobs = await Promise.all(all.map(e => resizePhoto(e.file, 2400, 0.9)));
+      const done = new Array(blobs.length).fill(0);
+      showUpload(0);
+      const paths = await Promise.all(blobs.map((b, i) => uploadOne(b, f => { done[i] = f; showUpload(done.reduce((a, x) => a + x, 0) / blobs.length); })));
+      showUpload(1);
+      item.photoPaths = paths.slice(0, verifiedPhotos.length);
+      item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length);
+      // A small thumbnail so the cart can show the photo on this device (well within storage limits).
+      try { const th = await resizePhoto(verifiedPhotos[0].file, 240, 0.8); item.photoThumb = 'data:image/jpeg;base64,' + await blobToBase64(th); } catch (_) {}
+    } catch (err) {
+      showUpload(0, true);
+      saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete();
+      return;
     }
-
+    try {
+      if (window.hikayaCart) window.hikayaCart.addToCart(item);
+    } catch (_) {
+      // Storage full on this device: keep the order details, drop the thumbnail, try once more.
+      try { delete item.photoThumb; window.hikayaCart.addToCart(item); } catch (e2) { showUpload(0, true); saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete(); return; }
+    }
+    if (window.hikayaTrackEvent) {
+      window.hikayaTrackEvent('add_to_cart', { story: item.slug || item.story, age_edition: item.ageEdition });
+    }
     window.location.href = 'book-added.html';
   });
 </script>

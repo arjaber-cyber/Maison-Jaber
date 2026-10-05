@@ -57,6 +57,8 @@ exports.handler = async (event) => {
         orderNumber: row.order_number, items, amount: row.amount, currency: row.currency,
         createdAt: row.created_at, orderStatus: currentStage, stageIndex: stageIndex === -1 ? 0 : stageIndex,
         stages: STAGE_ORDER, city: row.city, country: row.country,
+        // Unpaid online orders must not look like confirmed orders to the customer.
+        awaitingPayment: row.payment_method === 'ziina' && row.payment_status !== 'paid',
       })
     };
   } catch (err) {

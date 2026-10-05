@@ -8,7 +8,7 @@
 
     // Utility bar ({country} and {fee} are filled in by home6.js)
     del_uae: { en: 'Free delivery across the UAE', ar: 'توصيل مجاني لجميع أنحاء الإمارات' },
-    del_gcc: { en: 'Delivery to {country}: {fee}. Free on 2 or more books', ar: 'التوصيل إلى {country}: {fee}. مجاني عند طلب كتابين أو أكثر' },
+    del_gcc: { en: 'Delivery to {country}: {fee}. Free on 2 or more books', ar: 'التوصيل إلى {country}: {fee}، مجاني عند طلب كتابين أو أكثر' },
 
     nav_stories: { en: 'Stories', ar: 'القصص' },
     nav_ages: { en: 'Age Groups', ar: 'الفئات العمرية' },
@@ -23,7 +23,7 @@
 
     // Hero
     hero_h1: { en: 'Their name.<br>Their story.<br>A memory they\'ll keep.', ar: 'اسمهم<br>قصتهم<br>ذكرى تبقى معهم' },
-    hero_sub: { en: 'Personalised hardcover storybooks with your child at the heart of the adventure. You choose the story, we make it theirs, then print it, gift-box it and deliver it.', ar: 'كتب قصص بغلاف فاخر يكون طفلك فيها بطل المغامرة. أنت تختار القصة، ونحن نجعلها له، ثم نطبعها ونغلّفها في علبة هدية ونوصلها إليك' },
+    hero_sub: { en: 'Personalised hardcover storybooks with your child at the heart of the adventure. You choose the story, we make it theirs, then print it, gift-box it and deliver it.', ar: 'كتب قصص بغلاف فاخر يكون طفلك فيها بطل المغامرة، أنت تختار القصة، ونحن نجعلها له، ثم نطبعها ونغلّفها في علبة هدية ونوصلها إليك' },
     hero_alt: { en: 'A child reading her personalised Hikaya hardcover, with her name on the cover', ar: 'طفلة تقرأ كتاب حكاية المخصّص لها واسمها على الغلاف' },
     fact_hardcover: { en: 'Premium hardcover', ar: 'غلاف مقوّى فاخر' },
     fact_child: { en: 'Your child as the hero', ar: 'طفلك هو البطل' },
@@ -99,15 +99,15 @@
     rev_alt: { en: 'Hikaya storybooks stacked beside a soft toy and a note card', ar: 'كتب حكاية بجانب دمية ناعمة وبطاقة' },
     r1: { en: 'She asked for “her book” every night for a week, and kept pointing at her own name.', ar: 'طلبت «كتابها» كل ليلة لأسبوع كامل، وكانت تشير إلى اسمها كل مرة' },
     r1_who: { en: 'Layla\'s mum, Dubai', ar: 'والدة ليلى، دبي' },
-    r2: { en: 'The box alone made his birthday. The book itself is properly made. It will last.', ar: 'العلبة وحدها صنعت عيد ميلاده. والكتاب نفسه متقن الصنع وسيدوم طويلًا' },
+    r2: { en: 'The box alone made his birthday. The book itself is properly made. It will last.', ar: 'العلبة وحدها صنعت عيد ميلاده، والكتاب نفسه متقن الصنع وسيدوم طويلًا' },
     r2_who: { en: 'Omar\'s dad, Abu Dhabi', ar: 'والد عمر، أبوظبي' },
-    r3: { en: 'We sent it straight to my niece in Riyadh. She recognised herself before she could read the title.', ar: 'أرسلناه مباشرة إلى ابنة أختي في الرياض. تعرّفت على نفسها قبل أن تقرأ العنوان' },
+    r3: { en: 'We sent it straight to my niece in Riyadh. She recognised herself before she could read the title.', ar: 'أرسلناه مباشرة إلى ابنة أختي في الرياض، تعرّفت على نفسها قبل أن تقرأ العنوان' },
     r3_who: { en: 'Noor, Sharjah', ar: 'نور، الشارقة' },
 
     // Our story
     why_t1: { en: 'More than a book.', ar: 'أكثر من كتاب' },
     why_t2: { en: 'A story they can see themselves in.', ar: 'قصة يرون أنفسهم فيها' },
-    why_p: { en: 'Children connect differently when they recognise themselves inside a story. Hikaya puts your child on the page, so they can see themselves as', ar: 'يتفاعل الأطفال بشكل مختلف عندما يرون أنفسهم داخل القصة. حكاية تضع طفلك على الصفحة ليرى نفسه' },
+    why_p: { en: 'Children connect differently when they recognise themselves inside a story. Hikaya puts your child on the page, so they can see themselves as', ar: 'يتفاعل الأطفال بشكل مختلف عندما يرون أنفسهم داخل القصة، حكاية تضع طفلك على الصفحة ليرى نفسه' },
     tr_brave: { en: 'brave', ar: 'شجاعًا' },
     tr_capable: { en: 'capable', ar: 'قادرًا' },
     tr_curious: { en: 'curious', ar: 'فضوليًا' },
@@ -119,8 +119,8 @@
     why_alt: { en: 'A shelf of Hikaya storybooks with an open book on the desk', ar: 'رف من كتب حكاية مع كتاب مفتوح على المكتب' },
 
     // Final CTA
-    final_title: { en: 'Every child has a story. Let\'s make theirs.', ar: 'لكل طفل قصة. لنصنع قصته' },
-    final_sub: { en: 'Pick a story, add their name, age and photo. We\'ll take it from there.', ar: 'اختر قصة، وأضف الاسم والعمر والصورة. والباقي علينا' },
+    final_title: { en: 'Every child has a story. Let\'s make theirs.', ar: 'لكل طفل قصة، لنصنع قصته' },
+    final_sub: { en: 'Pick a story, add their name, age and photo. We\'ll take it from there.', ar: 'اختر قصة، وأضف الاسم والعمر والصورة، والباقي علينا' },
     final_hand: { en: 'Their story starts here.', ar: 'قصتهم تبدأ من هنا' },
     final_alt: { en: 'A Hikaya book and card on a warm desk', ar: 'كتاب وبطاقة من حكاية على مكتب دافئ' },
 
@@ -136,12 +136,12 @@
     foot_cart: { en: 'Cart', ar: 'السلة' },
     foot_privacy: { en: 'Privacy', ar: 'الخصوصية' },
     foot_terms: { en: 'Terms', ar: 'الشروط' },
-    foot_copy: { en: '© 2026 Maison Jaber. All rights reserved.', ar: '© 2026 ميزون جابر. جميع الحقوق محفوظة' },
+    foot_copy: { en: '© 2026 Maison Jaber. All rights reserved.', ar: '© 2026 ميزون جابر، جميع الحقوق محفوظة' },
   };
 
   // --- v2 (matches approved mockup) ---
   T.home6.hero_sub = { en: "Beautifully crafted personalised storybooks that place your child at the heart of the adventure.", ar: "كتب قصص مخصّصة مصنوعة بعناية، تضع طفلك في قلب المغامرة" };
-  T.home6.hero_hand = { en: "Little stories. Big memories.", ar: "قصص صغيرة. ذكريات كبيرة" };
+  T.home6.hero_hand = { en: "Little stories. Big memories.", ar: "قصص صغيرة، ذكريات كبيرة" };
   T.home6.how_title = { en: "From a story to their story.", ar: "من قصة… إلى قصتهم" };
   T.home6.s1_alt = { en: "Hikaya storybooks on a shelf, ready to choose from", ar: "كتب حكاية على الرف جاهزة للاختيار" };
   T.home6.s4_t = { en: "Printed, packed and delivered", ar: "نطبع ونغلّف ونوصل" };

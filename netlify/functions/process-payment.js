@@ -9,7 +9,7 @@ const { sendEmail, emailShell } = require('./_email');
 //     actually works right now. The order is saved to Supabase and marked
 //     as confirmed immediately.
 //
-//   - Card payment (Germany & wider Europe): needs a real merchant account.
+//   - Card payment (legacy PayTabs path, not used for the GCC launch): needs a real merchant account.
 //     SETUP (one-time, once you have a Telr or PayTabs merchant account):
 //       1. In Netlify: Site settings > Environment variables, add:
 //            PAYMENT_PROVIDER   = telr   (or "paytabs")
@@ -84,7 +84,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({
           order_number: orderNumber,
           full_name: fullName, email: userEmail || email, address, city, country, phone,
-          payment_method: 'cod', amount, currency: currency || 'EUR',
+          payment_method: 'cod', amount, currency: currency || 'AED',
           is_gift: !!isGift, gift_message: giftMessage || null,
           items: JSON.stringify(items), bundle_discount_pct: bundleDiscountPct || 0, promo_code: promoCode || null,
           payment_status: 'pending_cod', order_status: 'received',
@@ -109,7 +109,7 @@ exports.handler = async (event) => {
             ${itemsListHtml}
           </ul>
           <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">
-            It ships to <strong>${address}, ${city}</strong>. You pay <strong>${amount} ${currency || 'EUR'}</strong> in cash when it arrives.
+            It ships to <strong>${address}, ${city}</strong>. You pay <strong>${amount} ${currency || 'AED'}</strong> in cash when it arrives.
           </p>
           <div style="background:#F3E8D8; border-radius:10px; padding:14px 16px; margin:18px 0; font-size:13px;">
             <strong>Order reference:</strong> ${orderNumber}
@@ -229,7 +229,7 @@ exports.handler = async (event) => {
     //     headers: { 'Content-Type': 'application/json' },
     //     body: JSON.stringify({
     //       method: 'create', store: storeId, authkey: apiKey,
-    //       order: { cartid: orderId, test: '0', amount, currency: currency || 'EUR', description: 'Hikaya storybook order' },
+    //       order: { cartid: orderId, test: '0', amount, currency: currency || 'AED', description: 'Hikaya storybook order' },
     //       return: { authorised: successUrl, declined: failUrl, cancelled: cancelUrl }
     //     })
     //   });

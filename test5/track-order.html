@@ -102,6 +102,7 @@
       <span id="result-date"></span>
     </div>
     <div class="result-items" id="result-items"></div>
+    <p class="lookup-note" id="result-note" role="status" hidden></p>
     <div class="timeline" id="timeline"></div>
     <a class="invoice-link" id="invoice-link" href="#" data-i18n="trk.invoice">View Invoice →</a>
   </div>
@@ -114,11 +115,14 @@
    (not found, server error, timeout, network failure, success). */
 (function () {
   const tr = (k, fb) => (window.hikayaT && window.hikayaT(k)) || fb;
+  /* Customer-facing names for the fulfilment stages the dashboard uses.
+     "awaiting_approval" is an internal step (there is no customer preview), so it is only shown if an order is actually in it. */
   const STAGE_FB = {
-    received: 'Order Received', preparing: 'Preparing the Book', awaiting_approval: 'Awaiting Final Approval',
-    sent_to_printing: 'Sent to Printing', received_from_printing: 'Received from Printing',
+    received: 'Order received', preparing: 'Personalisation in progress', awaiting_approval: 'Final checks',
+    sent_to_printing: 'Printing', received_from_printing: 'Packed',
     shipped: 'Shipped', delivered: 'Delivered',
   };
+  const STAGE_KEY = { received: 'trk_c.received', preparing: 'trk_c.preparing', awaiting_approval: 'trk_c.checks', sent_to_printing: 'trk_c.printing', received_from_printing: 'trk_c.packed', shipped: 'trk.st_shipped', delivered: 'trk.st_delivered' };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const form = document.getElementById('track-form');
   const btn = document.getElementById('track-btn');
@@ -148,12 +152,20 @@
     document.getElementById('result-items').textContent = (data.items || []).map(i => i.childName ? tr('trk.item_for', '{story} for {name}').replace('{story}', i.story).replace('{name}', i.childName) : i.story).join(' · ');
     const timeline = document.getElementById('timeline');
     timeline.innerHTML = '';
-    (data.stages || []).forEach((stage, i) => {
+    const note = document.getElementById('result-note');
+    note.hidden = !data.awaitingPayment;
+    note.textContent = data.awaitingPayment ? tr('lx.trk_unpaid', 'We have your order, but payment has not been confirmed yet.') : '';
+    document.getElementById('invoice-link').hidden = !!data.awaitingPayment;
+    if (data.awaitingPayment) return;
+    const current = (data.stages || [])[data.stageIndex];
+    const shown = (data.stages || []).filter(st => st !== 'awaiting_approval' || st === current);
+    shown.forEach((stage) => {
+      const i = data.stages.indexOf(stage);
       const row = document.createElement('div');
       row.className = 'tl-step ' + (i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : '');
       if (i === data.stageIndex) row.setAttribute('aria-current', 'step');
       row.innerHTML = '<div class="marker-col"><div class="marker"><svg viewBox="0 0 24 24" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></div><div class="bar"></div></div><div class="label"></div>';
-      row.querySelector('.label').textContent = tr('trk.st_' + stage, STAGE_FB[stage] || stage);
+      row.querySelector('.label').textContent = tr(STAGE_KEY[stage] || ('trk.st_' + stage), STAGE_FB[stage] || stage);
       timeline.appendChild(row);
     });
     document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(lastEmail)}`;
@@ -202,6 +214,9 @@
   }
 
   form.addEventListener('submit', e => { e.preventDefault(); trackOrder(); });
+  /* Arriving from the order confirmation: the order number is filled in for you. */
+  const pre = new URLSearchParams(location.search).get('order');
+  if (pre && /^HK-\d{4,12}$/i.test(pre)) numEl.value = pre.toUpperCase();
   document.addEventListener('hikaya:langchange', () => { if (!busy) setBusy(false); if (lastData) renderResult(); });
 })();
 </script>

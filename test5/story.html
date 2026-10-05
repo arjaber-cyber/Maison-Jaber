@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
+<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -24,7 +25,7 @@
     <li aria-current="page" id="crumb-title"></li>
   </ol></nav>
   <div id="not-found" class="empty-state" hidden>
-    <h2 style="font-size:2rem" data-i18n="pg.not_found_t">We couldn't find that story</h2>
+    <h1 style="font-size:2rem" data-i18n="pg.not_found_t">We couldn't find that story</h1>
     <p data-i18n="pg.not_found_d">It may have moved. Browse the full collection instead.</p>
     <p style="margin-top:18px"><a class="btn btn-primary" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a></p>
   </div>
@@ -40,9 +41,14 @@
         <ul class="chips" id="st-chips"></ul>
         <p class="premise" id="st-premise"></p>
         <div class="pdp-price" id="st-price"></div>
-        <p class="incl" data-i18n="pg.incl_box">Includes our signature gift packaging</p>
-        <a class="btn btn-primary" id="st-cta" href="personalize.html"><span data-i18n="pg.create_this">Create This Story</span> <span class="arr" aria-hidden="true">→</span></a>
+        <ul class="buy-facts">
+          <li data-i18n="lx.fact_format">Personalised square hardcover</li>
+          <li data-i18n="pg.incl_box">Includes our signature gift packaging</li>
+          <li data-hk-eta>Delivery to UAE: about 5 working days</li>
+        </ul>
+        <a class="btn btn-primary" id="st-cta" href="personalize.html"><span data-i18n="lx.personalise">Personalise this story</span> <span class="arr" aria-hidden="true">→</span></a>
         <p class="ship"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h11v10H2zM13 9h4.5L21 12.5V16h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span data-hk-delivery></span></p>
+        <p class="buy-trust"><a href="#" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a> · <span data-i18n="lx.tr_secure">Secure payment</span> · <span data-i18n="lx.tr_box">Gift packaging included</span></p>
         <p class="bundle" data-i18n="pg.bundle">Ordering for siblings? 2 books get 10% off each and free delivery. 3 or more get 20% off.</p>
       </div>
     </section>
@@ -60,7 +66,7 @@
         <ul class="plist" id="st-personal"></ul>
       </div>
       <div>
-        <h2 class="small" style="margin-bottom:16px" data-i18n="pg.inside">Inside the book</h2>
+        <h2 class="small" id="inside" style="margin-bottom:16px" data-i18n="pg.inside">Inside the book</h2>
         <div class="inside" id="st-inside"></div>
       </div>
     </section>
@@ -91,7 +97,7 @@
 
 </main>
 <div id="hk-foot"></div>
-<div class="sticky-cta" id="sticky-cta"><a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a></div>
+<div class="sticky-cta" id="sticky-cta"><a class="btn btn-primary" href="personalize.html" data-st-cta><span data-i18n="lx.personalise">Personalise this story</span> · <bdi data-st-price>AED 149</bdi></a></div>
 <script src="/i18n.js" defer></script>
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>

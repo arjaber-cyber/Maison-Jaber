@@ -134,7 +134,7 @@
   });
 
   function fmt(n, region) {
-    return region.symbol.length > 1 ? `${n.toFixed(2)} ${region.symbol}` : `${region.symbol}${n.toFixed(2)}`;
+    return window.hikayaFormatPrice ? window.hikayaFormatPrice(n, region) : `${region.symbol} ${n}`;
   }
 
   function render() {
@@ -202,7 +202,8 @@
         <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.perBookFull * pricing.itemCount, region)}</span></div>
         ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')}</span><span>-${pricing.tier.discountPct}%</span></div>` : ''}
         ${pricing.extraCharacterFee > 0 ? `<div class="summary-row"><span>${t('cart.extra_character_fee', 'Extra character photo')}</span><span>${fmt(pricing.extraCharacterFee, region)}</span></div>` : ''}
-        <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${pricing.tier.freeDelivery ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>
+        <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${(pricing.tier.freeDelivery || !pricing.deliveryFee) ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>
+        <p class="summary-eta">${window.Hikaya ? window.Hikaya.etaText() : ''}</p>
         <div class="summary-row total"><span>${t('checkout.est_total', 'Estimated total')}</span><span>${fmt(pricing.total, region)}</span></div>
         <a class="btn-primary" href="checkout.html">${t('cart.checkout_btn', 'Proceed to Checkout →')}</a>
         <a class="continue-shopping" href="stories.html">${t('cart.continue_shopping', '← Continue Shopping')}</a>
