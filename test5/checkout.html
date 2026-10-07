@@ -597,7 +597,7 @@
     }
 
     itemsWrap.innerHTML = cart.map(item => `
-      <div class="summary-book">
+      <div class="summary-book" data-clarity-mask="true">
         <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>

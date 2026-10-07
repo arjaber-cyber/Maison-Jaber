@@ -175,7 +175,7 @@
     upsellSlot.innerHTML = upsellHtml;
 
     itemsWrap.innerHTML = cart.map(item => `
-      <div class="cart-item" data-id="${item.id}">
+      <div class="cart-item" data-id="${item.id}" data-clarity-mask="true">
         <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
         <div class="info">
           <h3>${item.story}</h3>

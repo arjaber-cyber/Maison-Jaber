@@ -6,7 +6,7 @@
    Categories:
    - essential: always on, not a real choice (site can't function without it
      -- things like remembering your language/region/cart)
-   - analytics: Google Analytics
+   - analytics: Google Analytics + Microsoft Clarity (heatmaps, recordings)
    - marketing: Meta Pixel
 
    Nothing analytics/marketing-related fires until the visitor actually
@@ -66,7 +66,7 @@
     banner.setAttribute('aria-label', 'Cookie preferences');
     banner.innerHTML = `
         <div id="hikaya-consent-simple">
-          <p>We use essential cookies, and, only with your OK, analytics to improve the site. <a href="privacy.html">Privacy Policy</a></p>
+          <p>We use essential cookies, and, only with your OK, analytics (Google Analytics and Microsoft Clarity) to improve the site. <a href="privacy.html">Privacy Policy</a></p>
           <div class="hc-row">
             <button type="button" id="hikaya-consent-accept" class="hc-primary">Accept All</button>
             <button type="button" id="hikaya-consent-reject">Reject</button>
@@ -76,7 +76,7 @@
         <div id="hikaya-consent-detail" style="display:none;">
           <p style="font-weight:700;">Choose what you're comfortable with:</p>
           <label style="opacity:0.7;"><input type="checkbox" checked disabled /> Essential (always on: cart, language, region)</label>
-          <label><input type="checkbox" id="hikaya-consent-analytics" /> Analytics (Google Analytics)</label>
+          <label><input type="checkbox" id="hikaya-consent-analytics" /> Analytics (Google Analytics, Microsoft Clarity)</label>
           <label style="margin-bottom:12px;"><input type="checkbox" id="hikaya-consent-marketing" /> Marketing (Meta Pixel)</label>
           <button type="button" id="hikaya-consent-save" class="hc-primary">Save Preferences</button>
         </div>`;
