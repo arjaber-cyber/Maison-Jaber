@@ -5,6 +5,8 @@
 //   { slug, action: 'add', base64Data, mimeType }   -> uploads + appends
 //   { slug, action: 'remove', url }                  -> removes (and deletes the file)
 //   { slug, action: 'move', url, dir: -1 | 1 }        -> reorders
+//   { slug, action: 'set-open-book', base64Data, mimeType } -> sets the "open book" photo (2 pages)
+//   { slug, action: 'remove-open-book' }             -> removes the open book photo
 // Images live in the public "site-photos" bucket under stories/previews/.
 // The ordered list is stored in stories.preview_images (JSON array of URLs).
 
@@ -33,11 +35,45 @@ exports.handler = async (event) => {
   // Current list
   let list;
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=preview_images`, { headers });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=preview_images,open_book_image_url`, { headers });
     const rows = await r.json();
     if (!Array.isArray(rows) || !rows[0]) return json(404, { error: 'Save the story first, then add previews.' });
     list = Array.isArray(rows[0].preview_images) ? rows[0].preview_images : [];
+    var openBook = rows[0].open_book_image_url || null;
   } catch { return json(502, { error: 'Could not read the story.' }); }
+
+  async function deleteFile(url) {
+    const m = url && url.match(/\/object\/public\/site-photos\/([^?]+)/);
+    if (!m) return;
+    await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}`, {
+      method: 'DELETE', headers: { ...headers, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prefixes: [decodeURIComponent(m[1])] }),
+    }).catch(() => {});
+  }
+
+  // Open book photo (one per story): a photo of the printed book lying open on two pages.
+  if (action === 'set-open-book' || action === 'remove-open-book') {
+    let url = null;
+    if (action === 'set-open-book') {
+      const { base64Data, mimeType } = p;
+      if (!base64Data || !TYPES[mimeType]) return json(400, { error: 'Please choose a JPG, PNG or WebP image.' });
+      const buf = Buffer.from(base64Data, 'base64');
+      if (!buf.length || buf.length > 5 * 1024 * 1024) return json(400, { error: 'Image must be under 5 MB.' });
+      const path = `stories/open-book/${slug}-${Date.now()}.${TYPES[mimeType]}`;
+      const up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`, {
+        method: 'POST', headers: { ...headers, 'Content-Type': mimeType, 'x-upsert': 'true' }, body: buf,
+      });
+      if (!up.ok) { console.error('open-book upload error:', await up.text()); return json(502, { error: 'Could not upload the image. Please try again.' }); }
+      url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+    }
+    const r2 = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}`, {
+      method: 'PATCH', headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ open_book_image_url: url, updated_at: new Date().toISOString() }),
+    });
+    if (!r2.ok) return json(502, { error: 'Could not save the change.' });
+    if (openBook) await deleteFile(openBook);
+    return json(200, { success: true, openBookImageUrl: url });
+  }
 
   let removedUrl = null;
   if (action === 'add') {

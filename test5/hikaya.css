@@ -1011,3 +1011,7 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
 .hk-was { text-decoration: line-through; color: var(--ink-soft); font-weight: 500; opacity: .75; margin-inline-end: 2px; }
 .hk-now { font-weight: 700; }
 .btn .hk-was, .btn-primary .hk-was { color: inherit; opacity: .7; }
+/* Open book photo (2-page spread) on the story page */
+.inside .ob-spread { all: unset; display: block; cursor: zoom-in; background: var(--white); }
+.inside .ob-spread img { display: block; width: 100%; height: auto; max-height: 520px; object-fit: contain; }
+.inside .ob-spread + .pv-grid { padding-top: 8px; }

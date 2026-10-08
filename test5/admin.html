@@ -104,6 +104,8 @@
   .preview-thumb .pt-actions button { font: 700 11.5px Inter, sans-serif; background: none; border: 0; cursor: pointer; color: var(--ink-soft); padding: 2px 4px; }
   .preview-thumb .pt-actions button.danger { color: #a3402b; text-decoration: underline; }
   .preview-thumb .pt-actions button:disabled { opacity: .3; cursor: default; }
+  .open-book-thumb { width: 320px; }
+  .open-book-thumb img { width: 320px; height: 160px; }
   .cover-preview { width: 110px; height: 110px; border-radius: 10px; background: var(--bg-soft) center/cover no-repeat; border: 1px dashed var(--line); flex-shrink: 0; }
   .story-card .swatch.courage { background: linear-gradient(160deg, #f0c9a0, #B5563B); }
   .story-card .swatch.adventure { background: linear-gradient(160deg, #e8d5a8, #C08A3E); }
@@ -914,13 +916,20 @@
           <div class="story-actions">
             <button type="button" data-act="edit">Edit</button>
             <button type="button" data-act="photo">${s.cover_image_url ? 'Change photo' : 'Add photo'}</button>
-            <button type="button" data-act="previews">Previews (${(s.preview_images || []).length})</button>
+            <button type="button" data-act="previews">Inside photos (${(s.preview_images || []).length + (s.open_book_image_url ? 1 : 0)})</button>
             ${s.cover_image_url ? '<button type="button" data-act="nophoto">Remove photo</button>' : ''}
             <button type="button" class="danger" data-act="delete">Delete</button>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-file>
           </div>
           <div class="story-status" data-status></div>
           <div class="preview-panel" data-previews style="display:${openPreviewSlugs.has(s.slug) ? 'block' : 'none'};">
+            <div class="size-hint"><strong>Open book photo</strong> — a photo of the printed book lying open, showing 2 pages. It's shown wide at the top of "Inside the book" on the story page and as the 2nd gallery image. Best: <strong>landscape, about 2400 × 1200 px</strong> (2:1).</div>
+            <div class="open-book-slot">${s.open_book_image_url
+              ? `<div class="preview-thumb open-book-thumb"><img src="${stEsc(s.open_book_image_url)}" alt="Open book" loading="lazy">
+                  <div class="pt-actions"><button type="button" data-ob="replace">Replace</button><button type="button" data-ob="remove" class="danger">Remove</button></div></div>`
+              : `<button type="button" class="upload-btn" data-ob="add">+ Add open book photo (2 pages)</button>`}</div>
+            <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-ob-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
             <div class="size-hint"><strong>Preview images</strong> appear as "A glimpse inside" on the story's page. Any shape works; they're always shown in full, never cropped. Best: <strong>at least 1600 px wide</strong> (e.g. a page 1600 × 1600 px or a spread 2400 × 1200 px).</div>
             <div class="preview-thumbs">${(s.preview_images || []).map((u, i, arr) => `
               <div class="preview-thumb">
@@ -948,6 +957,32 @@
           const open = panel.style.display === 'none';
           panel.style.display = open ? 'block' : 'none';
           if (open) openPreviewSlugs.add(slug); else openPreviewSlugs.delete(slug);
+        };
+        const obFile = panel.querySelector('[data-ob-file]');
+        panel.querySelectorAll('[data-ob="add"],[data-ob="replace"]').forEach(b => b.onclick = () => obFile.click());
+        obFile.onchange = async () => {
+          const f = obFile.files[0]; if (!f) return;
+          try {
+            const d = await imageSize(f);
+            if (d && d.h > d.w && !confirm(`"${f.name}" is portrait (${d.w} × ${d.h}). An open book showing 2 pages is usually landscape. Upload it anyway?`)) { obFile.value = ''; return; }
+            if (d && d.w < 1200 && !confirm(`"${f.name}" is only ${d.w} px wide, so it may look blurry. Upload it anyway?`)) { obFile.value = ''; return; }
+            status.textContent = 'Uploading open book photo…';
+            const img = await resizeImage(f, 2400);
+            const r = await storyPreviewAction({ slug, action: 'set-open-book', base64Data: img.base64Data, mimeType: img.mimeType });
+            if (r.error) { status.textContent = r.error; return; }
+          } catch (e) { status.textContent = e.message; return; }
+          openPreviewSlugs.add(slug);
+          status.textContent = 'Open book photo saved';
+          loadStories(adminPassword);
+        };
+        const obRm = panel.querySelector('[data-ob="remove"]');
+        if (obRm) obRm.onclick = async () => {
+          if (!confirm('Remove the open book photo?')) return;
+          status.textContent = 'Removing…';
+          const r = await storyPreviewAction({ slug, action: 'remove-open-book' });
+          if (r.error) { status.textContent = r.error; return; }
+          openPreviewSlugs.add(slug);
+          loadStories(adminPassword);
         };
         const pvFile = panel.querySelector('[data-pv-file]');
         panel.querySelector('[data-pv="add"]').onclick = () => pvFile.click();

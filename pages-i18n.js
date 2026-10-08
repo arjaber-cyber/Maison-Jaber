@@ -347,6 +347,8 @@
     cover: { en: 'Cover', ar: 'الغلاف' },
     sample_n: { en: 'Sample page {n}', ar: 'صفحة نموذجية {n}' },
     open_sample: { en: 'Open sample page {n}', ar: 'افتح الصفحة النموذجية {n}' },
+    open_book: { en: 'Open the book photo', ar: 'افتح صورة الكتاب' },
+    open_book_alt: { en: '{title}, open to a two-page spread', ar: 'قصة {title} مفتوحة على صفحتين' },
     page_alt: { en: 'Sample page {n} from {title}', ar: 'صفحة نموذجية {n} من قصة {title}' },
     example_alt: { en: 'An open Hikaya book showing an illustrated spread', ar: 'كتاب من حكاية مفتوح على صفحتين مرسومتين' },
     inside_example: { en: 'An example of a Hikaya spread. Your book is illustrated with your child as the hero.', ar: 'مثال على صفحتين من كتب حكاية، وكتابك يُرسم وطفلك بطل القصة' },

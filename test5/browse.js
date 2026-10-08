@@ -116,7 +116,7 @@
     let current = 0;
     function images() {
       const pv = Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : [];
-      return pv;
+      return s.open_book_image_url ? [s.open_book_image_url].concat(pv) : pv;
     }
     function render() {
       const plain = H.titlePlain(s);
@@ -132,12 +132,13 @@
       document.querySelectorAll('[data-st-cta]').forEach(a => { a.href = H.personaliseHref(s); });
       // gallery
       const pv = images();
+      const ob = s.open_book_image_url || null;
       const main = document.getElementById('st-main');
       const shots = [null].concat(pv);
       main.innerHTML = current === 0 || !pv[current - 1] ? H.coverHtml(s, '', { alt: true, eager: true }) : `<div class="cover"><img src="${esc(pv[current - 1])}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: current, title: plain }))}" style="object-fit:contain;background:var(--white)"></div>`;
       const th = document.getElementById('st-thumbs');
       th.hidden = shots.length < 2;
-      th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${esc(i === 0 ? t('lx.cover', 'Cover') : tpl(t('lx.sample_n', 'Sample page {n}'), { n: i }))}" data-i="${i}"><img src="${esc(u || s.cover || '')}" alt=""></button></li>`).join('');
+      th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${esc(i === 0 ? t('lx.cover', 'Cover') : (ob && i === 1) ? t('lx.open_book', 'Open the book photo') : tpl(t('lx.sample_n', 'Sample page {n}'), { n: ob ? i - 1 : i }))}" data-i="${i}"><img src="${esc(u || s.cover || '')}" alt=""></button></li>`).join('');
       // what happens
       /* QA005: the admin "description" is English-only, so Arabic shows the Arabic synopsis instead of mixing languages. */
       const arMode = H.lang() === 'ar';
@@ -155,7 +156,10 @@
       // inside the book
       const inside = document.getElementById('st-inside');
       if (pv.length) {
-        inside.innerHTML = `<div class="pv-grid">${pv.slice(0, 4).map((u, i) => `<button type="button" data-lb="${i}" aria-label="${esc(tpl(t('lx.open_sample', 'Open sample page {n}'), { n: i + 1 }))}"><img src="${esc(u)}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i + 1, title: plain }))}" loading="lazy"></button>`).join('')}</div><p class="note">${esc(t('pg.inside_note'))}</p>`;
+        const pages = ob ? pv.slice(1) : pv;
+        const spread = ob ? `<button type="button" class="ob-spread" data-lb="0" aria-label="${esc(t('lx.open_book', 'Open the book photo'))}"><img src="${esc(ob)}" alt="${esc(tpl(t('lx.open_book_alt', '{title}, open to a two-page spread'), { title: plain }))}" loading="lazy"></button>` : '';
+        const off = ob ? 1 : 0;
+        inside.innerHTML = spread + (pages.length ? `<div class="pv-grid">${pages.slice(0, 4).map((u, j) => ({ u, i: j + off })).map(({ u, i }) => `<button type="button" data-lb="${i}" aria-label="${esc(tpl(t('lx.open_sample', 'Open sample page {n}'), { n: i + 1 - off }))}"><img src="${esc(u)}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i + 1 - off, title: plain }))}" loading="lazy"></button>`).join('')}</div>` : '') + `<p class="note">${esc(t('pg.inside_note'))}</p>`;
       } else {
         /* No approved sample pages for this story yet: show a Hikaya spread, honestly labelled as an example. */
         const src = window.PREVIEW_IMAGES ? window.PREVIEW_IMAGES['sty-inside-01.webp'] : 'images/sty-inside-01.webp';
