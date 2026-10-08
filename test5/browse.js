@@ -177,7 +177,7 @@
     function renderPrice() {
       const was = H.priceWas();
       document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
-      document.querySelectorAll('[data-st-price]').forEach(el => { el.textContent = H.priceNow(); });
+      document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(); });
     }
     document.getElementById('st-thumbs').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b) return; current = Number(b.dataset.i); render(); });
     document.getElementById('st-inside').addEventListener('click', e => {

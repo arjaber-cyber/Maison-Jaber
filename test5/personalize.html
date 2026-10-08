@@ -279,7 +279,7 @@
   <div class="order-layout">
     <div class="order-summary">
       <button type="button" class="summary-bar" id="summary-bar" aria-expanded="false" aria-controls="summary-body">
-        <span class="sb-story" id="sb-story" data-i18n="lx.summary_t">Your book</span><span class="sb-name" id="sb-name"></span><span class="sb-price" data-hk-price-now>AED 149</span><span class="sb-chev" aria-hidden="true"></span>
+        <span class="sb-story" id="sb-story" data-i18n="lx.summary_t">Your book</span><span class="sb-name" id="sb-name"></span><span class="sb-price" data-hk-price-now><s class="hk-was">AED 199</s> <span class="hk-now">AED 149</span></span><span class="sb-chev" aria-hidden="true"></span>
       </button>
       <div class="summary-body" id="summary-body">
       <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
@@ -944,10 +944,14 @@
     if (stillChecking) {
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
     } else {
-      const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 149';
-      continueBtn.textContent = ready
-        ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
-        : t('personalize.continue_btn', 'Fill in the details above to continue');
+      if (ready && window.Hikaya && window.Hikaya.priceHtml) {
+        continueBtn.innerHTML = t('lx.add_cart', 'Add to cart · {price}').split('{price}').map(window.Hikaya.esc).join(window.Hikaya.priceHtml());
+      } else {
+        const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 149';
+        continueBtn.textContent = ready
+          ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
+          : t('personalize.continue_btn', 'Fill in the details above to continue');
+      }
     }
   }
   checkDetailsComplete();

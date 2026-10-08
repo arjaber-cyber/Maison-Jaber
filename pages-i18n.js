@@ -351,6 +351,7 @@
     example_alt: { en: 'An open Hikaya book showing an illustrated spread', ar: 'كتاب من حكاية مفتوح على صفحتين مرسومتين' },
     inside_example: { en: 'An example of a Hikaya spread. Your book is illustrated with your child as the hero.', ar: 'مثال على صفحتين من كتب حكاية، وكتابك يُرسم وطفلك بطل القصة' },
     was: { en: 'Was', ar: 'كان' },
+    now: { en: 'now', ar: 'الآن' },
     personalise: { en: 'Personalise this story', ar: 'خصّص هذه القصة' },
     see_inside: { en: 'See inside', ar: 'نظرة إلى الداخل' },
     price_line: { en: 'Personalised hardcover · {price} · Gift packaging included', ar: 'كتاب مخصّص بغلاف مقوّى · {price} · يشمل تغليف الهدية' },
@@ -517,8 +518,8 @@
   "ar": "كم سعر الكتاب؟"
  },
  "a10": {
-  "en": "AED 149 in the UAE, SAR 149 in Saudi Arabia and QAR 149 in Qatar, with the equivalent shown in your local currency in Kuwait, Bahrain and Oman. Gift packaging is always included. Ordering for siblings? 2 books get 10% off each plus free delivery, and 3 or more get 20% off.",
-  "ar": "149 درهمًا في الإمارات، و149 ريالًا في السعودية، و149 ريالًا قطريًا في قطر، ويظهر السعر المعادل بعملتك المحلية في الكويت والبحرين وعُمان، وتغليف الهدية مشمول دائمًا، وعند الطلب للإخوة يحصل كتابان على خصم 10% لكل كتاب مع توصيل مجاني، و3 كتب أو أكثر على خصم 20%"
+  "en": "Books are on offer: was AED 199, now AED 149 in the UAE (was SAR 199, now SAR 149 in Saudi Arabia and was QAR 199, now QAR 149 in Qatar). In Kuwait it is KWD 12.50 (was KWD 16.75), in Bahrain BHD 15.25 (was BHD 20.50) and in Oman OMR 15.50 (was OMR 21). Gift packaging is always included. Ordering for siblings? 2 books get 10% off each plus free delivery, and 3 or more get 20% off.",
+  "ar": "الكتب بسعر العرض: كان 199 درهمًا والآن 149 درهمًا في الإمارات (كان 199 ريالًا والآن 149 ريالًا في السعودية، وكان 199 ريالًا قطريًا والآن 149 في قطر)، وفي الكويت 12.50 دينار (كان 16.75)، وفي البحرين 15.25 دينار (كان 20.50)، وفي عُمان 15.50 ريال (كان 21)، وتغليف الهدية مشمول دائمًا، وعند الطلب للإخوة يحصل كتابان على خصم 10% لكل كتاب مع توصيل مجاني، و3 كتب أو أكثر على خصم 20%"
  },
  "q11": {
   "en": "Is gift packaging included?",

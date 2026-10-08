@@ -133,8 +133,8 @@
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
-    document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.textContent = priceNow(); });
-    document.querySelectorAll('[data-hk-price-line]').forEach(el => { el.textContent = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').replace('{price}', priceNow()); });
+    document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(); });
+    document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
     const regionWrap = document.querySelector('.utility .region');
     const available = GCC_KEYS.filter(key => regionObj(key));
@@ -321,7 +321,7 @@
       <div class="body"><h3><a href="${esc(storyHref(s))}">${titleHtml(s)}</a></h3>
       <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}</div>
       ${line ? `<p class="line">${esc(line)}</p>` : ''}
-      <p class="card-price"><bdi data-hk-price-now>${esc(priceNow())}</bdi></p>
+      <p class="card-price" data-hk-price-now>${priceHtml()}</p>
       <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'See inside'))}</a></div>
       </div></${tag}>`;
   }
@@ -359,9 +359,14 @@
   /* ---------------- Price helpers ---------------- */
   function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 149'; }
   function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
+  /* "Was X, now Y" markup used everywhere a book price is shown (struck-through was + bold now). */
+  function priceHtml() {
+    const was = priceWas(), now = priceNow();
+    return was ? `<s class="hk-was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span><bdi>${esc(was)}</bdi></s> <span class="hk-now"><span class="sr-only">${esc(t('lx.now', 'now'))} </span><bdi>${esc(now)}</bdi></span>` : `<span class="hk-now"><bdi>${esc(now)}</bdi></span>`;
+  }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
+  window.Hikaya = { priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
 
   /* ---------------- Boot ---------------- */
   mount();

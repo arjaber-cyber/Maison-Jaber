@@ -48,7 +48,8 @@
   .cart-item .info { flex: 1; min-width: 0; }
   .cart-item .info h3 { font-size: 17px; margin-bottom: 4px; }
   .cart-item .info .meta { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
-  .cart-item .price { font-weight: 800; font-size: 15px; white-space: nowrap; }
+  .cart-item .price { font-weight: 800; font-size: 15px; white-space: nowrap; text-align: end; }
+  .cart-item .price .hk-was { display: block; font-size: 12.5px; }
   .cart-item .remove-btn {
     background: none; border: none; cursor: pointer; color: var(--ink-soft); font-size: 12px; font-weight: 700;
     text-decoration: underline; margin-top: 6px; padding: 0;
@@ -183,7 +184,7 @@
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
         </div>
-        <div class="price">${fmt(pricing.perBookDiscounted, region)}</div>
+        <div class="price">${region.bookWas > pricing.perBookDiscounted ? `<s class="hk-was">${fmt(region.bookWas, region)}</s>` : ''}${fmt(pricing.perBookDiscounted, region)}</div>
       </div>
     `).join('');
 
