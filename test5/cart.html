@@ -356,6 +356,14 @@
     }).join('');
 
     if (window.hikayaCart.paintCovers) window.hikayaCart.paintCovers(itemsWrap, '.cover[data-item-id]');
+    /* Show each story's title in the visitor's language (the cart stores the English title). */
+    if (H && H.loadCatalog) H.loadCatalog().then(all => {
+      cart.forEach(item => {
+        const s = all.find(x => item.slug && x.slug === item.slug) || all.find(x => x.title === item.story);
+        const el = itemsWrap.querySelector(`.cart-item[data-id="${CSS.escape(item.id)}"] h3`);
+        if (s && el) el.textContent = H.titlePlain(s);
+      });
+    });
     itemsWrap.querySelectorAll('.remove-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const row = btn.closest('.cart-item');

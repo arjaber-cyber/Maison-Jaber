@@ -108,9 +108,9 @@
     <div class="check-ring">
       <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
     </div>
-    <span class="script-note">Lovely choice ♡</span>
-    <h1>Added to your cart</h1>
-    <p class="sub">This book is saved and ready. Add another child's story, or head to checkout whenever you're ready.</p>
+    <span class="script-note" data-i18n="ex.ba_note">Lovely choice ♡</span>
+    <h1 data-i18n="ex.ba_title">Added to your cart</h1>
+    <p class="sub" data-i18n="ex.ba_sub">This book is saved and ready. Add another child's story, or head to checkout whenever you're ready.</p>
 
     <div class="item-chip" id="item-chip">
       <div class="swatch" id="item-swatch"></div>
@@ -123,14 +123,14 @@
     <div class="cart-count" id="cart-count-note"></div>
 
     <button type="button" class="btn-secondary" id="add-another-btn">+ Add Another Book</button>
-    <a class="btn-secondary" href="cart.html" style="display:block; margin-bottom:12px;">View Cart</a>
+    <a class="btn-secondary" href="cart.html" style="display:block; margin-bottom:12px;" data-i18n="ex.ba_view_cart">View Cart</a>
     <a class="btn-primary" href="checkout.html" id="checkout-link">Continue to Checkout &rarr;</a>
   </div>
 
-  <a href="personalize.html" class="back-link">&larr; Back to edit details</a>
+  <a href="personalize.html" class="back-link" data-i18n="ex.ba_back">&larr; Back to edit details</a>
 
   <div class="cross-sell" id="cross-sell" style="display:none;">
-    <div class="cross-sell-title" id="cross-sell-title">You might also like</div>
+    <div class="cross-sell-title" id="cross-sell-title" data-i18n="ex.ba_also">You might also like</div>
     <div class="cross-sell-grid" id="cross-sell-grid"></div>
   </div>
 </div>
@@ -149,18 +149,32 @@
     const swatch = document.getElementById('item-swatch');
     swatch.className = 'swatch ' + (last.theme || 'courage');
     window.hikayaCart.coverFor(last).then(url => window.hikayaCart.paintCover(swatch, url));
-    document.getElementById('item-name').textContent = last.story || 'Your story';
-    document.getElementById('item-meta').textContent = [last.childName, last.ageEdition ? 'Ages ' + last.ageEdition : null].filter(Boolean).join(' · ');
-
+    const tr = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
     const count = cart.length;
     const countNote = document.getElementById('cart-count-note');
     const checkoutLink = document.getElementById('checkout-link');
-    if (count > 1) {
-      countNote.innerHTML = `You now have <strong>${count} books</strong> in your cart.`;
-      checkoutLink.innerHTML = `Continue to Checkout (${count}) &rarr;`;
-    } else {
-      countNote.textContent = '';
+    const addBtn = document.getElementById('add-another-btn');
+    let lastStory = null;
+    function paintText() {
+      const H = window.Hikaya;
+      document.getElementById('item-name').textContent = (lastStory && H) ? H.titlePlain(lastStory) : (last.story || tr('ex.ba_your_story', 'Your story'));
+      document.getElementById('item-meta').textContent = [last.childName, last.ageEdition ? tr('cart.ages', 'Ages') + ' ' + last.ageEdition : null].filter(Boolean).join(' · ');
+      const next = (window.HIKAYA_BUNDLE_TIERS || []).find(x => x.minItems === count + 1);
+      addBtn.textContent = next ? tr('ex.ba_add_save', '+ Add another book — save {pct}%').replace('{pct}', next.discountPct) : tr('ex.ba_add', '+ Add Another Book');
+      if (count > 1) {
+        countNote.innerHTML = tr('ex.ba_count', 'You now have {n} books in your cart').replace('{n}', `<strong>${count}</strong>`);
+        checkoutLink.innerHTML = tr('ex.ba_checkout_n', 'Continue to Checkout ({n})').replace('{n}', count) + ' <span aria-hidden="true">→</span>';
+      } else {
+        countNote.textContent = '';
+        checkoutLink.innerHTML = tr('ex.ba_checkout', 'Continue to Checkout') + ' <span aria-hidden="true">→</span>';
+      }
     }
+    paintText();
+    document.addEventListener('hikaya:langchange', paintText);
+    window.addEventListener('load', paintText);
+    if (window.Hikaya && window.Hikaya.loadCatalog) window.Hikaya.loadCatalog().then(all => {
+      lastStory = all.find(s => last.slug && s.slug === last.slug) || all.find(s => s.title === last.story) || null; paintText();
+    });
 
     document.getElementById('add-another-btn').addEventListener('click', () => {
       window.location.href = 'personalize.html?new=1';

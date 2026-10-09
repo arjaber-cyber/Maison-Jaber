@@ -203,5 +203,17 @@
     wa_cta: { en: 'Need help?', ar: 'تحتاج مساعدة؟' },
     wa_label: { en: 'Need help? Chat with us on WhatsApp', ar: 'تحتاج مساعدة؟ تحدّث معنا عبر واتساب' },
     wa_msg: { en: 'Hi Hikaya! I have a question about a personalised book.', ar: 'مرحبًا حكاية، لدي سؤال عن كتاب مخصص' },
+    ba_note: { en: 'Lovely choice ♡', ar: 'اختيار رائع ♡' },
+    ba_title: { en: 'Added to your cart', ar: 'أُضيف إلى سلتك' },
+    ba_sub: { en: "This book is saved and ready. Add another child's story, or head to checkout whenever you're ready.", ar: 'كتابك محفوظ وجاهز، أضف قصة لطفل آخر أو انتقل إلى الدفع متى شئت' },
+    ba_view_cart: { en: 'View Cart', ar: 'عرض السلة' },
+    ba_back: { en: '← Back to edit details', ar: 'العودة لتعديل التفاصيل ←' },
+    ba_also: { en: 'You might also like', ar: 'قد يعجبك أيضًا' },
+    ba_your_story: { en: 'Your story', ar: 'قصتك' },
+    ba_add: { en: '+ Add Another Book', ar: '+ أضف كتابًا آخر' },
+    ba_add_save: { en: '+ Add another book — save {pct}%', ar: '+ أضف كتابًا آخر ووفّر {pct}%' },
+    ba_count: { en: 'You now have {n} books in your cart', ar: 'لديك الآن {n} كتب في سلتك' },
+    ba_checkout: { en: 'Continue to Checkout', ar: 'المتابعة إلى الدفع' },
+    ba_checkout_n: { en: 'Continue to Checkout ({n})', ar: 'المتابعة إلى الدفع ({n})' },
   };
 })();
