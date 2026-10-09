@@ -1049,14 +1049,15 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
 
 .occasions { padding-block: var(--sec); text-align: center; }
 .occasions .sub { margin-bottom: 26px; }
-.occ-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.occ-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+.occ-list li { flex: 0 1 calc((100% - 6 * 14px) / 7); min-width: 0; }
 .occ-tile { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 24px 12px 20px; height: 100%; background: var(--white); border: 1px solid rgba(216,197,179,.6); border-radius: 18px; text-decoration: none; font-weight: 700; font-size: 14.5px; color: var(--ink); transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .2s; }
 .occ-tile:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 18px 34px -18px rgba(38,28,23,.3); }
 .occ-ic { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(140deg, #FBF4E6, #F0E1C6); transition: transform .35s var(--ease); }
 .occ-tile:hover .occ-ic { transform: scale(1.08) rotate(-6deg); }
 .occ-ic svg { width: 28px; height: 28px; fill: none; stroke: var(--brand); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-@media (max-width: 1000px) { .occ-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .occ-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .occ-tile { padding: 18px 10px 16px; font-size: 13.5px; } }
+@media (max-width: 1000px) { .occ-list li { flex-basis: calc((100% - 3 * 14px) / 4); } }
+@media (max-width: 520px) { .occ-list { gap: 10px; } .occ-list li { flex-basis: calc((100% - 10px) / 2); } .occ-tile { padding: 18px 10px 16px; font-size: 13.5px; } }
 
 .hk-wa { position: fixed; z-index: 80; inset-inline-end: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px 12px 14px; border-radius: 99px; background: #1F8F5A; color: #fff; font-weight: 700; font-size: 14px; text-decoration: none; box-shadow: 0 12px 28px -10px rgba(20,80,50,.55); transition: transform .2s var(--ease), box-shadow .2s; }
 .hk-wa:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -10px rgba(20,80,50,.6); }

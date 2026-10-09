@@ -373,6 +373,7 @@
   const OCCASIONS = {
     birthday:     { moments: 'all',                                                   en: 'Birthday',          ar: 'عيد ميلاد' },
     eid:          { moments: 'all',                                                   en: 'Eid & Ramadan',     ar: 'العيد ورمضان' },
+    christmas:    { moments: 'all',                                                   en: 'Christmas',         ar: 'عيد الميلاد المجيد' },
     sibling:      { moments: ['family'],                                              en: 'New baby sibling',  ar: 'مولود جديد في العائلة' },
     school:       { moments: ['new', 'growing', 'courage', 'confidence', 'friendship'], en: 'First day at school', ar: 'أول يوم في المدرسة' },
     bedtime:      { moments: ['bedtime', 'emotions'],                                 en: 'Bedtime gift',      ar: 'هدية وقت النوم' },
