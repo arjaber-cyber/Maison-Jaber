@@ -7,7 +7,7 @@
 //
 // SUPABASE TABLE SHAPE (once the migration goes through):
 //   discount_codes (
-//     code text primary key,          -- stored uppercase, e.g. 'WELCOME10'
+//     code text primary key,          -- stored uppercase, e.g. 'EID15'
 //     type text,                      -- 'percent' | 'fixed' | 'free_shipping'
 //     value numeric,                  -- 10 for 10%, or a fixed amount in the order currency (AED for the UAE)
 //     max_uses integer,               -- null = unlimited
@@ -31,7 +31,6 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 // Starter codes -- remove these once the real Supabase table is live and
 // populated, so codes are managed from the database instead of code.
 const FALLBACK_CODES = {
-  WELCOME10: { type: 'percent', value: 10, maxUses: null, expiresAt: null },
   FREESHIP: { type: 'free_shipping', value: 0, maxUses: null, expiresAt: null },
 };
 

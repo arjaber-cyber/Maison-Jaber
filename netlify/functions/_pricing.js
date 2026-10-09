@@ -41,7 +41,6 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 const BUILT_IN_STORIES = ['The Bravest Little One', 'The Cloud Ship', "The Star Who Couldn't Sleep"];
 
 const FALLBACK_CODES = {
-  WELCOME10: { type: 'percent', value: 10 },
   FREESHIP: { type: 'free_shipping', value: 0 },
 };
 
