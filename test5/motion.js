@@ -44,6 +44,7 @@
     '.step', '.story-card', '.tile', '.world-grid a', '.sib-list li', '.scard',
     '.why li', '.trust-quiet li', '.final .wrap > *', '.page-hero > *',
     '.faq-a', 'details', '.cart-item', '.summary-box', '.hk-progress', '.hk-trust > *', '.hk-add-more',
+    '.magic-copy > *', '.magic-box', '.occ-list li',
   ].join(',');
   var SKIP = 'header, footer, form, .sticky-cta, .zone-menu, .summary-bar, [data-no-motion]';
 

@@ -183,4 +183,25 @@
     Bahrain: { en: 'Bahrain', ar: 'البحرين' },
     Oman: { en: 'Oman', ar: 'عُمان' },
   };
+
+  /* Photo -> story reveal, occasions, WhatsApp help (Oct 2026). Arabic without full stops. */
+  T.ex = {
+    magic_eyebrow: { en: 'The Hikaya magic', ar: 'سحر حكاية' },
+    magic_title: { en: 'See them step inside the story', ar: 'شاهدهم يدخلون إلى القصة' },
+    magic_sub: { en: 'Share one clear photo. Our illustrators bring your child into every page, recognisably them, drawn in the Hikaya style.', ar: 'شارك صورة واضحة واحدة، وسنرسم طفلك في كل صفحة بأسلوب حكاية، ليبقى هو نفسه بملامحه' },
+    magic_hint: { en: 'Move across the picture to see the change', ar: 'مرّر فوق الصورة لترى التحوّل' },
+    magic_tag_photo: { en: 'Their photo', ar: 'صورتهم' },
+    magic_tag_art: { en: 'Inside their story', ar: 'داخل قصتهم' },
+    magic_photo_alt: { en: 'A photo of a smiling child', ar: 'صورة لطفلة مبتسمة' },
+    magic_art_alt: { en: 'The same child illustrated inside a Hikaya story', ar: 'الطفلة نفسها مرسومة داخل قصة من حكاية' },
+    magic_aria: { en: 'Compare photo and illustration', ar: 'قارن بين الصورة والرسم' },
+    occ_title: { en: 'A story for every moment', ar: 'قصة لكل مناسبة' },
+    occ_sub: { en: 'Looking for a gift? Start with the occasion.', ar: 'تبحث عن هدية؟ ابدأ بالمناسبة' },
+    occ_heading: { en: 'Gift ideas: {occasion}', ar: 'أفكار هدايا: {occasion}' },
+    f_occasion: { en: 'Occasion', ar: 'المناسبة' },
+    f_all_occasions: { en: 'Any occasion', ar: 'كل المناسبات' },
+    wa_cta: { en: 'Need help?', ar: 'تحتاج مساعدة؟' },
+    wa_label: { en: 'Need help? Chat with us on WhatsApp', ar: 'تحتاج مساعدة؟ تحدّث معنا عبر واتساب' },
+    wa_msg: { en: 'Hi Hikaya! I have a question about a personalised book.', ar: 'مرحبًا حكاية، لدي سؤال عن كتاب مخصص' },
+  };
 })();

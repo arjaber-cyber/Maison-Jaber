@@ -366,7 +366,27 @@
   }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
+  /* ---------------- Occasions (gift finder) ----------------
+     Stories aren't written per occasion, so each occasion maps to the story
+     themes ("moments") that suit it. A story can also list occasions directly
+     (s.occasions = ['eid', ...]) and that always counts. "all" = every story. */
+  const OCCASIONS = {
+    birthday:     { moments: 'all',                                                   en: 'Birthday',          ar: 'عيد ميلاد' },
+    eid:          { moments: 'all',                                                   en: 'Eid & Ramadan',     ar: 'العيد ورمضان' },
+    sibling:      { moments: ['family'],                                              en: 'New baby sibling',  ar: 'مولود جديد في العائلة' },
+    school:       { moments: ['new', 'growing', 'courage', 'confidence', 'friendship'], en: 'First day at school', ar: 'أول يوم في المدرسة' },
+    bedtime:      { moments: ['bedtime', 'emotions'],                                 en: 'Bedtime gift',      ar: 'هدية وقت النوم' },
+    grandparents: { moments: ['family', 'kindness'],                                  en: 'From grandparents', ar: 'هدية من الأجداد' },
+  };
+  function inOccasion(s, occ) {
+    const o = OCCASIONS[occ]; if (!occ || !o) return true;
+    if (Array.isArray(s.occasions) && s.occasions.includes(occ)) return true;
+    if (o.moments === 'all') return true;
+    return (s.moments || []).some(m => o.moments.includes(m));
+  }
+  function occasionLabel(occ) { const o = OCCASIONS[occ]; return o ? (lang() === 'ar' ? o.ar : o.en) : ''; }
+
+  window.Hikaya = { OCCASIONS, inOccasion, occasionLabel, priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
 
   /* ---------------- Boot ---------------- */
   mount();
@@ -382,3 +402,5 @@
 
 /* Gentle page motion (scroll reveal, hover lift). Remove this line to turn it off. */
 (function () { var s = document.createElement('script'); s.src = 'motion.js'; s.defer = true; document.head.appendChild(s); })();
+/* Homepage "photo -> story" slider, occasion tiles and the WhatsApp help button. */
+(function () { var s = document.createElement('script'); s.src = 'extras.js'; s.defer = true; document.head.appendChild(s); })();

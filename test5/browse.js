@@ -46,32 +46,39 @@
     const all = await H.loadCatalog();
     gridEl.removeAttribute('aria-busy');
     const ageSel = document.getElementById('f-age'), themeSel = document.getElementById('f-theme'), sortSel = document.getElementById('f-sort');
+    const occSel = document.getElementById('f-occ') || { value: '', addEventListener() {}, set innerHTML(v) {} };
+    const OCC = H.OCCASIONS || {};
+    const heroTitle = document.getElementById('col-title'), heroTitleDefault = heroTitle ? heroTitle.innerHTML : '';
     const grid = document.getElementById('grid'), count = document.getElementById('count'), empty = document.getElementById('empty');
     function options() {
-      const a = ageSel.value || qs.get('age') || '', th = themeSel.value || qs.get('theme') || '', so = sortSel.value || qs.get('sort') || 'featured';
+      const a = ageSel.value || qs.get('age') || '', th = themeSel.value || qs.get('theme') || '', so = sortSel.value || qs.get('sort') || 'featured', oc = occSel.value || qs.get('occasion') || '';
+      occSel.innerHTML = `<option value="">${esc(t('ex.f_all_occasions', 'Any occasion'))}</option>` + Object.keys(OCC).map(k => `<option value="${k}">${esc(H.occasionLabel(k))}</option>`).join('');
+      occSel.value = OCC[oc] ? oc : '';
       ageSel.innerHTML = `<option value="">${esc(t('pg.f_all_ages', 'All ages'))}</option>` + BANDS.map(b => `<option value="${b}">${esc(H.rangeText(...b.split('-')))}</option>`).join('');
       themeSel.innerHTML = `<option value="">${esc(t('pg.f_all_themes', 'All themes'))}</option>` + Object.keys(THEME_GROUPS).map(g => `<option value="${g}">${esc(H.groupLabel(g))}</option>`).join('');
       sortSel.innerHTML = [['featured', 's_featured'], ['newest', 's_newest'], ['az', 's_az']].map(([v, k]) => `<option value="${v}">${esc(t('pg.' + k, v))}</option>`).join('');
       ageSel.value = BANDS.includes(a) ? a : ''; themeSel.value = THEME_GROUPS[th] ? th : ''; sortSel.value = so;
     }
     function render() {
-      const a = ageSel.value, th = themeSel.value, so = sortSel.value;
-      let list = all.filter(s => H.inBand(s, a) && inGroup(s, th));
+      const a = ageSel.value, th = themeSel.value, so = sortSel.value, oc = occSel.value;
+      let list = all.filter(s => H.inBand(s, a) && inGroup(s, th) && (!H.inOccasion || H.inOccasion(s, oc)));
+      /* An occasion turns the page heading into a gift-finder heading ("Stories for a Birthday"). */
+      if (heroTitle) { if (oc) { heroTitle.removeAttribute('data-i18n'); heroTitle.textContent = tpl(t('ex.occ_heading', 'Gift ideas: {occasion}'), { occasion: H.occasionLabel(oc) }); } else if (!heroTitle.hasAttribute('data-i18n')) { heroTitle.setAttribute('data-i18n', 'pg.col_title'); heroTitle.innerHTML = t('pg.col_title', '') || heroTitleDefault; } }
       if (so === 'featured') list = sortFeatured(list);
       if (so === 'newest') list = [...list].sort((x, y) => String(y.created_at || '').localeCompare(String(x.created_at || '')) || (y.sort_order || 0) - (x.sort_order || 0));
       if (so === 'az') list = [...list].sort((x, y) => H.titlePlain(x).localeCompare(H.titlePlain(y), H.lang()));
       grid.innerHTML = list.map(s => H.cardHtml(s)).join('');
       count.textContent = list.length === 1 ? t('pg.count_one', '1 story') : tpl(t('pg.count', '{n} stories'), { n: list.length });
       /* The empty state only appears when the visitor has chosen filters that match nothing. */
-      empty.hidden = list.length > 0 || !(a || th);
-      if (!list.length && !(a || th)) grid.innerHTML = `<li class="catalog-note">${esc(t('lx.catalog_wait', 'New stories are on their way. Please check back soon.'))}</li>`;
-      document.getElementById('reset').hidden = !(a || th);
-      const p = new URLSearchParams(); if (a) p.set('age', a); if (th) p.set('theme', th); if (so !== 'featured') p.set('sort', so);
+      empty.hidden = list.length > 0 || !(a || th || oc);
+      if (!list.length && !(a || th || oc)) grid.innerHTML = `<li class="catalog-note">${esc(t('lx.catalog_wait', 'New stories are on their way. Please check back soon.'))}</li>`;
+      document.getElementById('reset').hidden = !(a || th || oc);
+      const p = new URLSearchParams(); if (a) p.set('age', a); if (th) p.set('theme', th); if (oc) p.set('occasion', oc); if (so !== 'featured') p.set('sort', so);
       H.setQS(p.toString() ? '?' + p : '');
     }
-    [ageSel, themeSel, sortSel].forEach(el => el.addEventListener('change', render));
-    document.getElementById('reset').addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; render(); });
-    document.querySelectorAll('[data-reset]').forEach(b => b.addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; render(); }));
+    [ageSel, themeSel, sortSel, occSel].forEach(el => el.addEventListener('change', render));
+    document.getElementById('reset').addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; occSel.value = ''; render(); });
+    document.querySelectorAll('[data-reset]').forEach(b => b.addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; occSel.value = ''; render(); }));
     options(); render();
     document.addEventListener('hikaya:langchange', () => { options(); render(); });
   }
