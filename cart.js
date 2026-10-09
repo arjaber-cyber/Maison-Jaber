@@ -5,18 +5,16 @@
    parent can order for more than one child in a single checkout, and
    applies bundle pricing based on how many books are in the cart.
 
-   BUNDLE TIERS (placeholder — adjust to whatever margin makes sense):
+   BUNDLE TIERS (confirmed Oct 2026; keep in sync with netlify/functions/_pricing.js):
      1 book  -> full price, standard delivery fee
      2 books -> 10% off each book + free delivery
-     3+ books -> 20% off each book + free delivery
-   These percentages are a starting guess, not something the business
-   confirmed — treat as a placeholder to tune once real numbers exist.
+     3+ books -> 15% off each book + free delivery
 */
 
 window.HIKAYA_BUNDLE_TIERS = [
   { minItems: 1, discountPct: 0, freeDelivery: false },
   { minItems: 2, discountPct: 10, freeDelivery: true },
-  { minItems: 3, discountPct: 20, freeDelivery: true },
+  { minItems: 3, discountPct: 15, freeDelivery: true },
 ];
 
 (function () {

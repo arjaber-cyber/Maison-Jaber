@@ -167,7 +167,7 @@
       }
       // structured data (Product) for this story
       try {
-        const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 149 };
+        const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };
         let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
         ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
           offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: location.origin + location.pathname + '?s=' + encodeURIComponent(s.slug) } });

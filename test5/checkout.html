@@ -560,6 +560,15 @@
     renderCartSummary();
   });
 
+  /* A code applied on the cart page carries over here and is re-checked automatically. */
+  try {
+    const carried = JSON.parse(localStorage.getItem('hikaya_promo') || 'null');
+    if (carried && carried.code) {
+      document.getElementById('promo-code-input').value = carried.code;
+      setTimeout(() => document.getElementById('promo-apply-btn').click(), 0);
+    }
+  } catch (_) {}
+
   function computeFinalPricing(region) {
     const pricing = window.hikayaCart.computeCartPricing(region);
     let deliveryFee = pricing.tier.freeDelivery ? 0 : pricing.deliveryFee;
@@ -957,7 +966,7 @@
         body: JSON.stringify({ email: order.email }),
       }).catch(() => { /* best-effort only */ });
 
-      if (window.hikayaCart) window.hikayaCart.clearCart();
+      if (window.hikayaCart) window.hikayaCart.clearCart(); try { localStorage.removeItem('hikaya_promo'); } catch (_) {}
       if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber);
     }
 
@@ -1102,7 +1111,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function say(msg, kind) { box.className = 'ziina-return ' + (kind || ''); box.textContent = msg; }
   function done() {
     try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
-    if (window.hikayaCart) window.hikayaCart.clearCart();
+    if (window.hikayaCart) window.hikayaCart.clearCart(); try { localStorage.removeItem('hikaya_promo'); } catch (_) {}
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
     if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'ziina' });
     box.remove();

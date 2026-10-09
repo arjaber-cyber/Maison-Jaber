@@ -279,7 +279,7 @@
   <div class="order-layout">
     <div class="order-summary">
       <button type="button" class="summary-bar" id="summary-bar" aria-expanded="false" aria-controls="summary-body">
-        <span class="sb-story" id="sb-story" data-i18n="lx.summary_t">Your book</span><span class="sb-name" id="sb-name"></span><span class="sb-price" data-hk-price-now><s class="hk-was">AED 199</s> <span class="hk-now">AED 149</span></span><span class="sb-chev" aria-hidden="true"></span>
+        <span class="sb-story" id="sb-story" data-i18n="lx.summary_t">Your book</span><span class="sb-name" id="sb-name"></span><span class="sb-price" data-hk-price-now><s class="hk-was">AED 199</s> <span class="hk-now">AED 169</span></span><span class="sb-chev" aria-hidden="true"></span>
       </button>
       <div class="summary-body" id="summary-body">
       <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
@@ -289,7 +289,7 @@
       <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
-      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price><strong><bdi>AED 149</bdi></strong></span></div>
+      <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price><strong><bdi>AED 169</bdi></strong></span></div>
       <p class="summary-incl" data-i18n="pg.incl_box">Includes our signature gift packaging</p>
       <p class="summary-incl" data-hk-eta>Delivery to UAE: about 5 working days</p>
       </div>
@@ -947,7 +947,7 @@
       if (ready && window.Hikaya && window.Hikaya.priceHtml) {
         continueBtn.innerHTML = t('lx.add_cart', 'Add to cart · {price}').split('{price}').map(window.Hikaya.esc).join(window.Hikaya.priceHtml());
       } else {
-        const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 149';
+        const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 169';
         continueBtn.textContent = ready
           ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
           : t('personalize.continue_btn', 'Fill in the details above to continue');

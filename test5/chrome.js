@@ -357,7 +357,7 @@
   window.addEventListener('resize', () => document.querySelectorAll('.track').forEach(updateArrows));
 
   /* ---------------- Price helpers ---------------- */
-  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 149'; }
+  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 169'; }
   function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
   /* "Was X, now Y" markup used everywhere a book price is shown (struck-through was + bold now). */
   function priceHtml() {
@@ -379,3 +379,6 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
+
+/* Gentle page motion (scroll reveal, hover lift). Remove this line to turn it off. */
+(function () { var s = document.createElement('script'); s.src = 'motion.js'; s.defer = true; document.head.appendChild(s); })();
