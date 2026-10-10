@@ -389,7 +389,8 @@
   /* ---------------- WhatsApp help ---------------- */
   /* Business WhatsApp number in international format, digits only (e.g. '9715XXXXXXXX').
      Leave empty and the WhatsApp button stays hidden everywhere. */
-  const WHATSAPP_NUMBER = '';
+  const WHATSAPP_NUMBER = '971508011769';
+  const WHATSAPP_DISPLAY = '+971 50 801 1769';
   const WA_SKIP = ['admin', 'login', 'invoice'];
   function waHref() {
     const h1 = document.querySelector('main h1');
@@ -411,7 +412,7 @@
     /* Pages can also offer it inline (e.g. Contact us): <div data-hk-whatsapp hidden>…</div> */
     document.querySelectorAll('[data-hk-whatsapp]').forEach(el => {
       el.hidden = false;
-      el.innerHTML = `<dt>${esc(t('wa.label', 'WhatsApp'))}</dt><dd><a href="${esc(waHref())}" target="_blank" rel="noopener" dir="ltr">+${esc(WHATSAPP_NUMBER)}</a><br><small>${esc(t('wa.hours', 'A real person replies, usually within a few hours'))}</small></dd>`;
+      el.innerHTML = `<dt>${esc(t('wa.label', 'WhatsApp'))}</dt><dd><a href="${esc(waHref())}" target="_blank" rel="noopener" dir="ltr">${esc(WHATSAPP_DISPLAY)}</a><br><small>${esc(t('wa.hours', 'A real person replies, usually within a few hours'))}</small></dd>`;
     });
   }
 
