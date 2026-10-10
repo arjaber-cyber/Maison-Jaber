@@ -6,7 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
-const { orderConfirmed } = require('./_templates');
+const { orderConfirmed, paymentNotCompleted } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -65,6 +65,11 @@ async function settleFromZiina(pi) {
   if (intent.status === 'failed' || intent.status === 'canceled') {
     const moved = await transition(order.id, 'awaiting_payment', { payment_status: intent.status, status_updated_at: new Date().toISOString() });
     if (moved && moved.promo_code) await settleDiscount(moved.id, false);
+    // Let the customer know they weren't charged and their book is saved (sent once: only the caller that moved the order sends it).
+    if (moved && moved.email) {
+      const m = paymentNotCompleted(moved);
+      await sendEmail({ to: moved.email, subject: m.subject, html: m.html }).catch(e => console.error('payment-not-completed email failed', e));
+    }
     return { found: true, paid: false, status: intent.status, order };
   }
   return { found: true, paid: false, status: intent.status || 'pending', order };

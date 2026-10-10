@@ -11,7 +11,7 @@
 const { isAdminRequest } = require('./_admin-check');
 const { STAGES, normalizeStage } = require('./_stages');
 const { sendEmail } = require('./_email');
-const { orderShipped, orderDelivered } = require('./_templates');
+const { orderShipped, orderDelivered, orderPrinting, orderCancelled } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -26,9 +26,13 @@ const json = (code, body) => ({ statusCode: code, body: JSON.stringify(body) });
 const clip = (v, n) => (v == null ? null : String(v).trim().slice(0, n) || null);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// Customer emails for the shipping and delivered stages (English or Arabic, see _templates.js).
-function customerEmail(order, stage) {
-  const m = stage === 'with_courier' ? orderShipped(order) : orderDelivered(order);
+// Customer emails for stage changes (English or Arabic, see _templates.js).
+function customerEmail(order, stage, refunded) {
+  if (refunded) return orderCancelled(order, true);
+  const m = stage === 'printing' ? orderPrinting(order)
+    : stage === 'with_courier' ? orderShipped(order)
+    : stage === 'cancelled' ? orderCancelled(order, false)
+    : orderDelivered(order);
   return { subject: m.subject, html: m.html };
 }
 
@@ -104,8 +108,9 @@ exports.handler = async (event) => {
     const { items, ...order } = rows[0];
 
     let emailed = false;
-    if (notifyCustomer && patch.order_status && ['with_courier', 'delivered'].includes(patch.order_status) && order.email) {
-      try { const m = customerEmail(rows[0], patch.order_status); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
+    const refundNow = patch.payment_status === 'refunded';
+    if (notifyCustomer && order.email && (refundNow || (patch.order_status && ['printing', 'with_courier', 'delivered', 'cancelled'].includes(patch.order_status)))) {
+      try { const m = customerEmail(rows[0], patch.order_status, refundNow); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
       catch (e) { console.error('update-order email failed:', e); }
     }
     return json(200, { order, emailed });

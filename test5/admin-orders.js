@@ -280,7 +280,8 @@
         <label><span>Tracking number <small>(optional)</small></span><input data-tno value="${esc(o.tracking_number || '')}" placeholder="e.g. 3487 2210 77"></label>
         <label class="wide"><span>Tracking link <small>(optional)</small></span><input data-turl type="url" value="${esc(o.tracking_url || '')}" placeholder="https://…"></label>
       </div>` : '';
-    const notify = (nk === 'with_courier' || nk === 'delivered') && o.email ? `<label class="op-check"><input type="checkbox" data-notify checked> Email the customer${nk === 'with_courier' ? ' that it’s on its way' : ' that it’s delivered'}</label>` : '';
+    const NOTIFY_TXT = { printing: ' that it’s being printed', with_courier: ' that it’s on its way', delivered: ' that it’s delivered' };
+    const notify = NOTIFY_TXT[nk] && o.email ? `<label class="op-check"><input type="checkbox" data-notify checked> Email the customer${NOTIFY_TXT[nk]}</label>` : '';
     return `<div class="op-next ${isLate(o) ? 'late' : ''}">
       <div class="op-next-copy"><span class="op-now">Now: ${esc(cur.label)} · ${esc(ago(sinceStage(o)))}${isLate(o) ? ' · <em>over the usual ' + cur.sla + ' day' + (cur.sla > 1 ? 's' : '') + '</em>' : ''}</span><p>${esc(cur.hint)}</p>
         ${unpaid ? '<p class="op-warn">Payment is not confirmed yet. Check before starting production.</p>' : ''}</div>
@@ -389,8 +390,12 @@
       move(o, target, {});
     });
     const rs = el.querySelector('[data-restore]'); if (rs) rs.onclick = () => move(o, 'received', {}, 'Order restored');
-    el.querySelectorAll('[data-pay]').forEach(b => b.onclick = () => save(o, { paymentStatus: b.dataset.pay }, `Marked ${PAY[b.dataset.pay][0].toLowerCase()}`));
-    const c = el.querySelector('[data-cancel]'); if (c) c.onclick = () => { if (confirm(`Cancel order ${o.order_number || ''}? You can restore it later.`)) move(o, 'cancelled', {}, 'Order cancelled'); };
+    el.querySelectorAll('[data-pay]').forEach(b => b.onclick = () => {
+      const p = { paymentStatus: b.dataset.pay };
+      if (b.dataset.pay === 'refunded' && o.email) p.notifyCustomer = confirm(`Email ${o.email} that the refund has been issued?`);
+      save(o, p, `Marked ${PAY[b.dataset.pay][0].toLowerCase()}`);
+    });
+    const c = el.querySelector('[data-cancel]'); if (c) c.onclick = () => { if (confirm(`Cancel order ${o.order_number || ''}? You can restore it later.`)) move(o, 'cancelled', o.email ? { notifyCustomer: confirm(`Email ${o.email} that the order is cancelled?`) } : {}, 'Order cancelled'); };
     const ts = el.querySelector('[data-otype-save]');
     if (ts) ts.onclick = () => {
       const t = el.querySelector('[data-otype]').value, note = el.querySelector('[data-otype-note]').value.trim();

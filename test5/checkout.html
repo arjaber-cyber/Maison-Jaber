@@ -417,6 +417,7 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { maybeSendWelcome } from './welcome.js';
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -444,6 +445,7 @@
       accountStep.style.display = 'none';
       signedInBar.style.display = 'block';
       signedInEmail.textContent = session.user.email;
+      maybeSendWelcome(session);
       // Prefill known details
       const fullName = session.user.user_metadata?.full_name;
       if (fullName) document.getElementById('full-name').value = fullName;
