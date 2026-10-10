@@ -17,7 +17,7 @@
 
 const crypto = require('crypto');
 const { isAdminRequest } = require('./_admin-check');
-const { sendEmail, emailShell } = require('./_email');
+const { sendEmail, emailShell, ui, C } = require('./_email');
 const { SUPABASE_URL, SUPABASE_KEY } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -61,17 +61,19 @@ function codeEmail(c, name) {
   }[c.tag] || 'Here is a little something from us.';
   return {
     subject: c.type === 'free_order' ? 'A Hikaya book, on us' : `Your Hikaya code: ${offerText(c).replace(' your Hikaya order', '')}`,
-    html: emailShell(`
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Hi ${first},</p>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">${esc(intro)} Your code gives you <strong>${esc(offerText(c))}</strong>.</p>
-      <div style="background:#F3E8D8; border-radius:12px; padding:18px; margin:18px 0; text-align:center;">
-        <div style="font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#7d6a5a;">Your code</div>
-        <div style="font-family:Menlo,Consolas,monospace; font-size:24px; font-weight:700; letter-spacing:.08em; color:#2E2018; margin-top:6px;">${esc(c.code)}</div>
-        ${until ? `<div style="font-size:12.5px; color:#7d6a5a; margin-top:8px;">Valid until ${esc(until)}</div>` : ''}
-      </div>
-      <p style="font-size:13px; line-height:1.6; color:#7d6a5a;">Enter it at checkout.${c.email ? ' It works with this email address only.' : ''}${c.max_uses === 1 ? ' It can be used once.' : ''} One discount applies per order.</p>
-      <p><a href="${esc(SHOP_URL)}" style="display:inline-block; background:#2E2018; color:#fff; text-decoration:none; padding:11px 22px; border-radius:100px; font-weight:700; font-size:14px;">Choose a story</a></p>
-      <p style="font-size:13px; color:#7d6a5a;">With love,<br>The Hikaya team at Maison Jaber</p>`, { preheader: `Your code ${c.code}: ${offerText(c)}.` }),
+    html: emailShell([
+      ui.eyebrow(c.type === 'free_order' ? 'A gift from us' : 'Your Hikaya code'),
+      ui.h(`Hi ${first},`),
+      ui.p(`${esc(intro)} Your code gives you <strong>${esc(offerText(c))}</strong>.`),
+      `<div style="background:${C.card}; border:1.5px dashed ${C.taupe}; border-radius:14px; padding:20px; margin:4px 0 16px; text-align:center;">
+        <div style="font-family:Manrope,Arial,sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:${C.brand};">Your code</div>
+        <div style="font-family:Menlo,Consolas,monospace; font-size:26px; font-weight:700; letter-spacing:.1em; color:${C.ink}; margin-top:8px;">${esc(c.code)}</div>
+        ${until ? `<div style="font-family:Manrope,Arial,sans-serif; font-size:13px; color:${C.mute}; margin-top:8px;">Valid until ${esc(until)}</div>` : ''}
+      </div>`,
+      ui.p(`Enter it at checkout.${c.email ? ' It works with this email address only.' : ''}${c.max_uses === 1 ? ' It can be used once.' : ''} One discount applies per order.`, 'en', true),
+      ui.button(SHOP_URL, 'Choose a story &rarr;'),
+      ui.sign('en'),
+    ].join(''), { preheader: `Your code ${c.code}: ${offerText(c)}.` }),
   };
 }
 

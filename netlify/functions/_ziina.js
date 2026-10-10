@@ -6,7 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
-const { orderConfirmed, orderLang } = require('./_templates');
+const { orderConfirmed } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -75,15 +75,17 @@ async function sendConfirmation(order) {
   try { items = JSON.parse(order.items || '[]'); } catch {}
   const waived = order.payment_status === 'waived';
   const localLine = !waived && order.currency && order.currency !== 'AED' ? ` (${order.amount} ${order.currency})` : '';
-  // Arabic story titles for Arabic-language emails (best effort; English titles otherwise).
-  let arTitles = null;
-  if (orderLang(order) === 'ar') {
-    try {
-      const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug,title_ar`, { headers: H });
-      if (r.ok) arTitles = Object.fromEntries((await r.json()).filter(x => x.slug && x.title_ar).map(x => [x.slug, x.title_ar]));
-    } catch {}
-  }
-  const mail = orderConfirmed(order, arTitles);
+  // Story covers (and Arabic titles for Arabic emails) from the catalogue, best effort.
+  let arTitles = null, covers = null;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug,title_ar,cover_image_url`, { headers: H });
+    if (r.ok) {
+      const rows = await r.json();
+      arTitles = Object.fromEntries(rows.filter(x => x.slug && x.title_ar).map(x => [x.slug, x.title_ar]));
+      covers = Object.fromEntries(rows.filter(x => x.slug && x.cover_image_url).map(x => [x.slug, x.cover_image_url]));
+    }
+  } catch {}
+  const mail = orderConfirmed(order, arTitles, covers);
   await sendEmail({ to: order.email, subject: mail.subject, html: mail.html });
   /* New-order alert for the team (info@). */
   const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.ageEdition ? ' · ages ' + esc(i.ageEdition) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}${i.dedication ? '<br><em>Dedication:</em> ' + esc(i.dedication) : ''}</li>`).join('');

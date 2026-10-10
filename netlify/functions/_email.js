@@ -84,61 +84,87 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
   }
 }
 
-/* ---------- Template building blocks (inline styles only: email clients ignore stylesheets) ---------- */
-const C = { ink: '#2E2018', soft: '#5b4a3d', mute: '#7d6a5a', gold: '#C8954D', cream: '#F8F2E8', sand: '#F3E8D8', brown: '#8A5638' };
-const FONT_AR = "Tahoma,'Segoe UI',Arial,sans-serif";
-const font = lang => (lang === 'ar' ? FONT_AR : 'Georgia,serif');
-const bodyFont = lang => (lang === 'ar' ? FONT_AR : "'Helvetica Neue',Arial,sans-serif");
+/* ---------- Template building blocks ----------
+   Same design system as the website (test5/hikaya.css): ivory background, brand-brown
+   buttons, Cormorant Garamond headings, Manrope body, Caveat accents, dark-brown footer.
+   Inline styles only, because email clients ignore stylesheets. Web fonts load in Apple
+   Mail / iOS; Gmail and Outlook fall back to Georgia and Arial. */
+const ASSETS = (process.env.EMAIL_ASSET_URL || 'https://maison-jaber.com/email/').replace(/\/?$/, '/');
+const C = {
+  ivory: '#F7F1E8', sand: '#EEE4D6', card: '#F3EADF', white: '#FFFCF7',
+  ink: '#261C17', soft: '#5E4A3D', brand: '#8A5638', brandDark: '#573624',
+  taupe: '#D8C5B3', gold: '#C7A56C', footText: '#E6D6C2', footSoft: '#D2BCA2', footHead: '#FFF8EE',
+  mute: '#7A6555',
+};
+const SERIF = { en: "'Cormorant Garamond',Georgia,'Times New Roman',serif", ar: "Amiri,'Traditional Arabic',Tahoma,serif" };
+const SANS = { en: "Manrope,'Helvetica Neue',Arial,sans-serif", ar: "Cairo,Tahoma,'Segoe UI',Arial,sans-serif" };
+const HAND = { en: "Caveat,'Segoe Print','Bradley Hand',cursive", ar: "Amiri,Tahoma,serif" };
+const L = lang => (lang === 'ar' ? 'ar' : 'en');
 
 const ui = {
-  h(text, lang) { return `<h2 style="font-family:${font(lang)}; font-size:21px; line-height:1.35; margin:0 0 14px; color:${C.ink}; font-weight:normal;">${text}</h2>`; },
-  p(text, lang, small) { return `<p style="font-family:${bodyFont(lang)}; font-size:${small ? 13 : 15}px; line-height:1.65; color:${small ? C.mute : C.soft}; margin:0 0 14px;">${text}</p>`; },
-  box(inner) { return `<div style="background:${C.sand}; border-radius:12px; padding:16px 18px; margin:6px 0 18px;">${inner}</div>`; },
+  eyebrow(text, lang) { return `<p style="margin:0 0 10px; font-family:${SANS[L(lang)]}; font-size:11.5px; font-weight:700; letter-spacing:${lang === 'ar' ? '0' : '.14em'}; text-transform:uppercase; color:${C.brand};">${text}</p>`; },
+  h(text, lang) { return `<h1 style="margin:0 0 14px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 26 : 32}px; line-height:${lang === 'ar' ? 1.45 : 1.12}; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink}; letter-spacing:${lang === 'ar' ? '0' : '-.01em'};">${text}</h1>`; },
+  h3(text, lang) { return `<h3 style="margin:0 0 4px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 18 : 21}px; line-height:1.25; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h3>`; },
+  p(text, lang, small) { return `<p style="margin:0 0 14px; font-family:${SANS[L(lang)]}; font-size:${small ? 13.5 : 15.5}px; line-height:1.65; color:${small ? C.mute : C.soft};">${text}</p>`; },
+  hand(text, lang) { return `<p style="margin:4px 0 6px; font-family:${HAND[L(lang)]}; font-size:${lang === 'ar' ? 20 : 27}px; line-height:1.1; color:${C.brand};">${text}</p>`; },
+  box(inner) { return `<div style="background:${C.card}; border-radius:14px; padding:16px 18px; margin:0 0 14px;">${inner}</div>`; },
+  /* A story line with its square cover, like the cart on the website. */
+  storyCard(title, meta, cover, lang) {
+    const img = cover ? `<td width="76" style="width:76px; vertical-align:top; padding-${lang === 'ar' ? 'left' : 'right'}:14px;"><img src="${esc(cover)}" width="76" height="76" alt="" style="display:block; width:76px; height:76px; border-radius:10px; object-fit:cover; border:0;"></td>` : '';
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.card}; border-radius:14px; margin:0 0 12px;"><tr><td style="padding:14px 16px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${img}<td style="vertical-align:middle;">${ui.h3(title, lang)}<p style="margin:0; font-family:${SANS[L(lang)]}; font-size:13.5px; line-height:1.5; color:${C.soft};">${meta}</p></td></tr></table></td></tr></table>`;
+  },
   button(href, label, lang) {
-    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 20px;"><tr><td style="background:${C.ink}; border-radius:100px;"><a href="${esc(href)}" style="display:inline-block; padding:13px 28px; font-family:${bodyFont(lang)}; font-size:14px; font-weight:bold; color:#ffffff; text-decoration:none;">${label}</a></td></tr></table>`;
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0 22px;"><tr><td style="background:${C.brand}; border-radius:28px;"><a href="${esc(href)}" style="display:inline-block; padding:15px 30px; font-family:${SANS[L(lang)]}; font-size:15px; font-weight:700; line-height:20px; color:${C.white}; text-decoration:none; border-radius:28px;">${label}</a></td></tr></table>`;
   },
   row(label, value, lang) {
-    return `<tr><td style="padding:5px 0; font-family:${bodyFont(lang)}; font-size:13px; color:${C.mute}; vertical-align:top; width:42%;">${label}</td><td style="padding:5px 0; font-family:${bodyFont(lang)}; font-size:14px; color:${C.ink}; font-weight:bold; vertical-align:top;">${value}</td></tr>`;
+    return `<tr><td style="padding:9px 0; border-bottom:1px solid ${C.sand}; font-family:${SANS[L(lang)]}; font-size:13.5px; color:${C.mute}; vertical-align:top; width:40%;">${label}</td><td style="padding:9px 0; border-bottom:1px solid ${C.sand}; font-family:${SANS[L(lang)]}; font-size:14.5px; line-height:1.5; color:${C.ink}; font-weight:700; vertical-align:top;">${value}</td></tr>`;
   },
-  rows(list, lang) { return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${list.map(([l, v]) => ui.row(l, v, lang)).join('')}</table>`; },
-  sign(lang) { return ui.p(lang === 'ar' ? 'مع الحب،<br>فريق حكاية من ميزون جابر' : 'With love,<br>The Hikaya team at Maison Jaber', lang); },
+  rows(list, lang) { return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 18px;">${list.map(([l, v]) => ui.row(l, v, lang)).join('')}</table>`; },
+  sign(lang) {
+    return ui.hand(lang === 'ar' ? 'قصص صغيرة، ذكريات كبيرة' : 'Little stories. Big memories.', lang)
+      + ui.p(lang === 'ar' ? 'مع الحب، فريق حكاية' : 'With love, the Hikaya team', lang, true);
+  },
 };
 
-// Shared branded wrapper so every email looks consistent.
+// Shared branded wrapper so every email looks like the website.
 // emailShell(bodyHtml)                      -- English, no preheader (older callers)
 // emailShell(bodyHtml, { lang, preheader }) -- lang 'ar' switches to right-to-left
 function emailShell(bodyHtml, opts) {
   const o = opts || {};
-  const lang = o.lang === 'ar' ? 'ar' : 'en';
+  const lang = L(o.lang);
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
   const align = lang === 'ar' ? 'right' : 'left';
-  const pre = o.preheader ? `<div data-preheader style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:${C.cream}; opacity:0;">${esc(o.preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>` : '';
-  const help = lang === 'ar'
-    ? `هل تحتاج مساعدة؟ ردّ على هذا البريد، أو راسلنا على <a href="https://wa.me/${WHATSAPP}" style="color:${C.brown};">واتساب</a> <span dir="ltr">${WHATSAPP_DISPLAY}</span>`
-    : `Need help? Just reply to this email, or message us on <a href="https://wa.me/${WHATSAPP}" style="color:${C.brown};">WhatsApp</a> (${WHATSAPP_DISPLAY}).`;
-  return `<!doctype html><html lang="${lang}" dir="${dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head>
-  <body style="margin:0; padding:0; background:${C.cream};">${pre}
-  <div dir="${dir}" style="background:${C.cream}; padding:32px 14px; text-align:${align};">
-    <div style="max-width:520px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden;">
-      <div style="background:${C.ink}; padding:24px; text-align:center;">
-        <a href="${SITE_URL}" style="text-decoration:none;">
-          <span style="color:${C.gold}; font-size:22px;">&#10022;</span>
-          <div style="color:${C.cream}; font-size:24px; font-family:Georgia,serif; margin-top:4px;">Hikaya</div>
-          <div style="color:#B69675; font-size:11px; letter-spacing:1px; text-transform:uppercase; margin-top:2px; font-family:Georgia,serif;">by Maison Jaber</div>
-        </a>
-      </div>
-      <div style="padding:30px 26px 14px; color:${C.ink};">
-        ${bodyHtml}
-      </div>
-      <div style="padding:0 26px 22px;">
-        <p style="font-family:${bodyFont(lang)}; font-size:12.5px; line-height:1.6; color:${C.mute}; margin:0; border-top:1px solid ${C.sand}; padding-top:16px;">${help}</p>
-      </div>
-      <div style="padding:16px 24px; background:${C.sand}; text-align:center; font-family:${bodyFont('en')}; font-size:11px; line-height:1.6; color:${C.mute};">
-        Hikaya by Maison Jaber &middot; Maison Jaber FZ-LLC, United Arab Emirates<br>
-        <a href="${SITE_URL}" style="color:${C.mute};">maison-jaber.com</a> &middot; <a href="mailto:${CUSTOMER_EMAIL}" style="color:${C.mute};">${CUSTOMER_EMAIL}</a>
-      </div>
-    </div>
-  </div></body></html>`;
+  const T = (en, ar) => (lang === 'ar' ? ar : en);
+  const pre = o.preheader ? `<div data-preheader style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:${C.ivory}; opacity:0;">${esc(o.preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>` : '';
+  const help = T(
+    `Need help? Reply to this email, or message us on <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700;">WhatsApp</a> at <span style="white-space:nowrap;">${WHATSAPP_DISPLAY}</span>. A real person in the UAE will answer.`,
+    `تحتاج مساعدة؟ ردّ على هذا البريد، أو راسلنا على <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700;">واتساب</a> <span dir="ltr" style="white-space:nowrap; unicode-bidi:isolate;">&#8294;${WHATSAPP_DISPLAY}&#8297;</span>، وسيردّ عليك شخص من فريقنا في الإمارات`);
+  const link = (href, text) => `<a href="${href}" style="color:${C.footText}; text-decoration:none;">${text}</a>`;
+  const sep = `<span style="color:${C.footSoft};">&nbsp;&middot;&nbsp;</span>`;
+  return `<!doctype html><html lang="${lang}" dir="${dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700&family=Caveat:wght@500&family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>a{color:${C.brand};} @media (max-width:520px){ .hk-pad{padding-left:22px !important; padding-right:22px !important;} }</style></head>
+<body style="margin:0; padding:0; background:${C.ivory}; -webkit-text-size-adjust:100%;">${pre}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.ivory};"><tr><td align="center" style="padding:28px 12px 36px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" style="max-width:560px; text-align:${align};">
+    <tr><td style="background:${C.brandDark}; border-radius:14px 14px 0 0; padding:9px 20px; text-align:center; font-family:${SANS[lang]}; font-size:12px; color:#F2E6D6;">${T('Personalised hardcover storybooks &middot; Gift-boxed &middot; UAE &amp; GCC', 'كتب قصص مخصّصة بغلاف مقوّى &middot; في علبة هدية &middot; الإمارات والخليج')}</td></tr>
+    <tr><td style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; border-bottom:1px solid ${C.sand}; padding:22px 20px 18px; text-align:center;">
+      <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo.png" width="132" height="103" alt="Hikaya by Maison Jaber" style="display:inline-block; width:132px; height:auto; border:0;"></a>
+    </td></tr>
+    <tr><td class="hk-pad" style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; padding:32px 36px 8px; color:${C.ink};">
+      ${bodyHtml}
+    </td></tr>
+    <tr><td class="hk-pad" style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; padding:4px 36px 28px;">
+      <p style="margin:0; padding-top:18px; border-top:1px solid ${C.sand}; font-family:${SANS[lang]}; font-size:13px; line-height:1.65; color:${C.mute};">${help}</p>
+    </td></tr>
+    <tr><td style="background:${C.brandDark}; border-radius:0 0 14px 14px; padding:28px 24px 24px; text-align:center;">
+      <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo-cream.png" width="104" height="81" alt="Hikaya by Maison Jaber" style="display:inline-block; width:104px; height:auto; border:0;"></a>
+      <p style="margin:14px auto 16px; max-width:360px; font-family:${SANS[lang]}; font-size:12.5px; line-height:1.6; color:${C.footSoft};">${T('Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.', 'كتب قصص مخصّصة بغلاف مقوّى، تُصنع لكل طفل على حدة وتصل في علبة هدية إلى الإمارات ودول الخليج')}</p>
+      <p style="margin:0 0 14px; font-family:${SANS[lang]}; font-size:13px; font-weight:700;">${link(SITE_URL + 'stories.html', T('Stories', 'القصص'))}${sep}${link(SITE_URL + 'track-order.html', T('Track your order', 'تتبّع طلبك'))}${sep}${link(SITE_URL + 'help.html', T('Help', 'المساعدة'))}</p>
+      <p style="margin:0; font-family:${SANS.en}; font-size:11px; line-height:1.6; color:${C.footSoft};">Maison Jaber FZ-LLC &middot; United Arab Emirates<br>${link('mailto:' + CUSTOMER_EMAIL, CUSTOMER_EMAIL)}</p>
+    </td></tr>
+  </table>
+</td></tr></table></body></html>`;
 }
 
-module.exports = { sendEmail, emailShell, htmlToText, ui, esc, etaDays, OWNER_INBOX, CUSTOMER_EMAIL, SITE_URL, WHATSAPP, WHATSAPP_DISPLAY };
+module.exports = { sendEmail, emailShell, htmlToText, ui, esc, etaDays, C, OWNER_INBOX, CUSTOMER_EMAIL, SITE_URL, WHATSAPP, WHATSAPP_DISPLAY };

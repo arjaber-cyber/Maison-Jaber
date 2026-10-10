@@ -44,15 +44,16 @@ function storyTitle(item, lang, arTitles) {
   return item.story || tr(lang, 'Your Hikaya story', 'قصة حكاية');
 }
 
-function itemsBlock(items, lang, arTitles) {
+function itemsBlock(items, lang, arTitles, covers) {
   return items.map(i => {
-    const meta = [i.childName ? tr(lang, 'For ', 'لـ ') + esc(i.childName) : '', ageText(i.ageEdition, lang), bookLangText(i.bookLanguage, lang)].filter(Boolean).join(' &middot; ');
-    return ui.box(`<div style="font-family:Georgia,serif; font-size:16px; color:#2E2018; margin-bottom:4px;">${esc(storyTitle(i, lang, arTitles))}</div><div style="font-size:13px; color:#5b4a3d; font-family:${lang === 'ar' ? 'Tahoma,Arial,sans-serif' : 'Arial,sans-serif'};">${meta}</div>`);
+    const meta = [i.childName ? tr(lang, 'For ', 'لـ ') + '<strong>' + esc(i.childName) + '</strong>' : '', ageText(i.ageEdition, lang), bookLangText(i.bookLanguage, lang)].filter(Boolean).join(' &middot; ');
+    const cover = (covers && i.slug && covers[i.slug]) || i.coverUrl || null;
+    return ui.storyCard(esc(storyTitle(i, lang, arTitles)), meta, cover, lang);
   }).join('');
 }
 
 /* ---------------- Order confirmed (after payment, or a free order via code) ---------------- */
-function orderConfirmed(order, arTitles) {
+function orderConfirmed(order, arTitles, covers) {
   const lang = orderLang(order);
   const items = parseItems(order);
   const first = esc(firstName(order.full_name, lang));
@@ -78,11 +79,12 @@ function orderConfirmed(order, arTitles) {
     `بدأنا العمل على كتاب ${who ? names[0] : 'طفلك'} الآن، والتوصيل خلال ${days} أيام عمل تقريبًا`);
 
   const body = [
+    ui.eyebrow(tr(lang, 'Order confirmed', 'تم تأكيد الطلب'), lang),
     ui.h(tr(lang, `Thank you, ${first}!`, `شكرًا لك${first ? ' يا ' + first : ''}!`), lang),
     ui.p(tr(lang,
       `${waived ? 'Your order is confirmed' : 'Your payment went through'} and we're starting on ${who ? `<strong>${who}</strong>'s` : 'their'} storybook now.`,
       `${waived ? 'تم تأكيد طلبك' : 'تمّ الدفع بنجاح'}، وبدأنا العمل على كتاب ${who ? `<strong>${who}</strong>` : 'طفلك'} الآن`), lang),
-    itemsBlock(items, lang, arTitles),
+    itemsBlock(items, lang, arTitles, covers),
     ui.rows([
       [tr(lang, 'Order number', 'رقم الطلب'), `<span dir="ltr">${no}</span>`],
       [tr(lang, waived ? 'Total' : 'Paid', waived ? 'الإجمالي' : 'المبلغ المدفوع'), paid],
@@ -109,6 +111,7 @@ function orderShipped(order) {
   if (order.tracking_number) trackBits.push([tr(lang, 'Tracking number', 'رقم التتبع'), `<span dir="ltr">${esc(order.tracking_number)}</span>`]);
   if (order.courier) trackBits.push([tr(lang, 'Courier', 'شركة التوصيل'), courier]);
   const body = [
+    ui.eyebrow(tr(lang, 'On its way', 'في الطريق إليك'), lang),
     ui.h(tr(lang, `It's on its way, ${first}!`, `كتابك في الطريق${first ? ' يا ' + first : ''}!`), lang),
     ui.p(tr(lang,
       `Your personalised Hikaya book (order <strong dir="ltr">${no}</strong>) is gift-boxed and now with ${courier}. It should reach you within a few working days.`,
@@ -131,6 +134,7 @@ function orderDelivered(order) {
   const first = esc(firstName(order.full_name, lang));
   const no = esc(order.order_number || '');
   const body = [
+    ui.eyebrow(tr(lang, 'Delivered', 'تم التوصيل'), lang),
     ui.h(tr(lang, `Delivered, ${first}!`, `تم التوصيل${first ? ' يا ' + first : ''}!`), lang),
     ui.p(tr(lang,
       `Your Hikaya book (order <strong dir="ltr">${no}</strong>) has been delivered. We hope it becomes a bedtime favourite.`,
@@ -157,6 +161,7 @@ function cartReminder(cart) {
   const story = cart.story ? esc(cart.story) : '';
   const link = `${SITE_URL}cart.html`;
   const body = [
+    ui.eyebrow(tr(lang, 'Saved for you', 'محفوظة لك'), lang),
     ui.h(tr(lang, `${child ? child + "'s" : 'Their'} story is still waiting`, `قصة ${child || 'طفلك'} ما زالت بانتظارك`), lang),
     ui.p(tr(lang,
       `You started a personalised storybook${story ? ` (<strong>${story}</strong>)` : ''}${child ? ` for <strong>${child}</strong>` : ''}. If it's still in your cart on the same device, you can pick up right where you left off.`,
@@ -180,6 +185,7 @@ function contactReceived({ name, message, orderNumber, lang }) {
   lang = lang === 'ar' ? 'ar' : 'en';
   const first = esc(firstName(name, lang));
   const body = [
+    ui.eyebrow(tr(lang, 'Message received', 'وصلتنا رسالتك'), lang),
     ui.h(tr(lang, `Thanks, ${first}!`, `شكرًا لك${first ? ' يا ' + first : ''}!`), lang),
     ui.p(tr(lang,
       'We\'ve got your message and a real person will reply, usually within one working day.',
