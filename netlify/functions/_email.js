@@ -21,7 +21,13 @@ const CUSTOMER_EMAIL = 'hello@maison-jaber.com';
 const OWNER_INBOX = process.env.CONTACT_INBOX_EMAIL || 'info@maison-jaber.com';
 
 async function sendEmail({ to, subject, html, replyTo }) {
-  const apiKey = process.env.RESEND_API_KEY;
+  const rawKey = process.env.RESEND_API_KEY || '';
+  /* Keys pasted via notes/chat apps can pick up smart quotes or spaces; strip anything that can't be in a key. */
+  const apiKey = rawKey.replace(/[^\x21-\x7E]/g, '').replace(/^['"`]+|['"`]+$/g, '');
+  if (rawKey && apiKey !== rawKey) {
+    const odd = [...rawKey].map((c, i) => (c.charCodeAt(0) < 0x21 || c.charCodeAt(0) > 0x7E) ? `${i}:U+${c.charCodeAt(0).toString(16)}` : null).filter(Boolean);
+    console.warn(`[email] RESEND_API_KEY had unexpected characters (raw length ${rawKey.length}, cleaned ${apiKey.length}, starts "${apiKey.slice(0, 3)}", odd chars at ${odd.join(', ')}). Re-paste it in Netlify.`);
+  }
   const from = process.env.EMAIL_FROM || `Hikaya by Maison Jaber <${CUSTOMER_EMAIL}>`;
 
   if (!apiKey) {
