@@ -184,3 +184,54 @@
     Oman: { en: 'Oman', ar: 'عُمان' },
   };
 })();
+
+/* Oct 2026: photo→illustration reveal, shop by occasion, WhatsApp help (no full stops in Arabic copy). */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.rvl = {
+    kicker: { en: 'The Hikaya moment', ar: 'لحظة حكاية' },
+    title: { en: 'One photo. Their very own storybook.', ar: 'صورة واحدة، وقصة خاصة بهم' },
+    sub: { en: 'Share one clear photo and we illustrate your child as the hero, recognisably them, on every page of their book.', ar: 'شارك صورة واضحة واحدة، وسنرسم طفلك بطلًا للقصة، يشبهه تمامًا، في كل صفحة من كتابه' },
+    hint: { en: 'Drag to reveal', ar: 'اسحب لترى التحوّل' },
+    photo: { en: 'Your photo', ar: 'صورتك' },
+    book: { en: 'In their book', ar: 'في كتابه' },
+    slider: { en: 'Compare the photo with the illustrated page', ar: 'قارن الصورة بالرسم في الكتاب' },
+    p1: { en: 'Name, age and one photo, that’s all we need', ar: 'الاسم والعمر وصورة واحدة، هذا كل ما نحتاجه' },
+    p2: { en: 'Your child’s photo stays private', ar: 'صورة طفلك تبقى خاصة' },
+    p3: { en: 'Printed as a keepsake hardcover', ar: 'يُطبع كتابًا فاخرًا بغلاف مقوّى يدوم للذكرى' },
+    alt_photo: { en: 'A photo of a smiling girl with curly hair', ar: 'صورة لطفلة مبتسمة بشعر مجعّد' },
+    alt_book: { en: 'The same girl illustrated on the cover of her Hikaya book', ar: 'الطفلة نفسها مرسومة على غلاف كتابها من حكاية' },
+    note: { en: 'Example shown with a sample photo', ar: 'المثال المعروض بصورة توضيحية' },
+  };
+  T.occ = {
+    title: { en: 'Find the perfect gift', ar: 'اختر الهدية المناسبة' },
+    sub: { en: 'A story made for one child, for the moments you want them to remember.', ar: 'قصة مصنوعة لطفل واحد، للحظات التي تريده أن يتذكرها' },
+    shop: { en: 'Shop by occasion', ar: 'تسوّق حسب المناسبة' },
+    birthday: { en: 'Birthday', ar: 'عيد الميلاد' },
+    birthday_d: { en: 'A gift with their name on every page', ar: 'هدية تحمل اسمه في كل صفحة' },
+    eid: { en: 'Eid & Ramadan', ar: 'العيد ورمضان' },
+    eid_d: { en: 'An Eidiya they’ll keep for years', ar: 'عيدية تبقى معهم سنوات' },
+    christmas: { en: 'Christmas', ar: 'الكريسماس' },
+    christmas_d: { en: 'The story they’ll ask for every night', ar: 'القصة التي سيطلبونها كل ليلة' },
+    newbaby: { en: 'New baby', ar: 'مولود جديد' },
+    newbaby_d: { en: 'For big brothers and big sisters', ar: 'للأخ الأكبر والأخت الكبرى' },
+    school: { en: 'First day of school', ar: 'أول يوم في المدرسة' },
+    school_d: { en: 'Courage for new beginnings', ar: 'شجاعة للبدايات الجديدة' },
+    justbecause: { en: 'Just because', ar: 'بلا مناسبة' },
+    justbecause_d: { en: 'Because every child deserves their story', ar: 'لأن كل طفل يستحق قصته' },
+    banner: { en: 'Gifts for {occasion}', ar: 'هدايا {occasion}' },
+    banner_d: { en: 'Every story arrives gift-boxed, and we can deliver straight to the child. Add a gift message at checkout.', ar: 'تصل كل قصة في علبة هدية، ويمكننا توصيلها مباشرة إلى الطفل، وأضف رسالة الإهداء عند الدفع' },
+    all: { en: 'See all occasions', ar: 'كل المناسبات' },
+    clear: { en: 'Show all stories', ar: 'عرض كل القصص' },
+    f_all: { en: 'All occasions', ar: 'كل المناسبات' },
+    f_label: { en: 'Occasion', ar: 'المناسبة' },
+  };
+  T.wa = {
+    btn: { en: 'Chat on WhatsApp', ar: 'تواصل عبر واتساب' },
+    short: { en: 'Need help?', ar: 'تحتاج مساعدة؟' },
+    msg: { en: 'Hi Hikaya, I have a question', ar: 'مرحبًا حكاية، لدي سؤال' },
+    msg_page: { en: 'Hi Hikaya, I have a question about {page}', ar: 'مرحبًا حكاية، لدي سؤال عن {page}' },
+    label: { en: 'WhatsApp', ar: 'واتساب' },
+    hours: { en: 'A real person replies, usually within a few hours', ar: 'يرد عليك شخص حقيقي، عادةً خلال ساعات قليلة' },
+  };
+})();

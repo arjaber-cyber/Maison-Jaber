@@ -357,7 +357,7 @@
   window.addEventListener('resize', () => document.querySelectorAll('.track').forEach(updateArrows));
 
   /* ---------------- Price helpers ---------------- */
-  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 149'; }
+  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 169'; }
   function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
   /* "Was X, now Y" markup used everywhere a book price is shown (struck-through was + bold now). */
   function priceHtml() {
@@ -365,14 +365,65 @@
     return was ? `<s class="hk-was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span><bdi>${esc(was)}</bdi></s> <span class="hk-now"><span class="sr-only">${esc(t('lx.now', 'now'))} </span><bdi>${esc(now)}</bdi></span>` : `<span class="hk-now"><bdi>${esc(now)}</bdi></span>`;
   }
 
+  /* ---------------- Shop by occasion ---------------- */
+  /* Every Hikaya book suits any gifting moment, so most occasions show the whole collection.
+     A few narrow it by story slug or "moments". A story can also carry its own `occasions` array from the dashboard. */
+  const OCCASIONS = [
+    { key: 'birthday', icon: '<path d="M5 21h14v-8H5z"/><path d="M3.5 21h17M5 16.5c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0"/><path d="M8 13V10M12 13V10M16 13V10"/><path d="M8 7.5c-.7-.8-.7-1.6 0-2.5.7.9.7 1.7 0 2.5zM12 7.5c-.7-.8-.7-1.6 0-2.5.7.9.7 1.7 0 2.5zM16 7.5c-.7-.8-.7-1.6 0-2.5.7.9.7 1.7 0 2.5z"/>' },
+    { key: 'eid', icon: '<path d="M15.5 3.5a8.5 8.5 0 1 0 5 13.2A7 7 0 0 1 15.5 3.5z"/><path d="M18 6.5l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z"/>' },
+    { key: 'christmas', icon: '<path d="M12 3l3.5 5h-2L17 13h-2.5l3.5 5H6l3.5-5H7l3.5-5h-2z"/><path d="M12 18v3"/>' },
+    { key: 'newbaby', slugs: ['cloud-ship'], icon: '<circle cx="12" cy="7.5" r="3.5"/><path d="M6 20c.8-4.2 3.2-6.5 6-6.5s5.2 2.3 6 6.5"/><path d="M10.6 7.6h.01M13.4 7.6h.01"/>' },
+    { key: 'school', moments: ['new', 'courage', 'confidence', 'friendship'], icon: '<path d="M6 8h12a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a1 1 0 0 1 1-1z"/><path d="M9 8V6a3 3 0 0 1 6 0v2M9 13h6"/>' },
+    { key: 'justbecause', icon: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>' },
+  ];
+  const occasion = k => OCCASIONS.find(o => o.key === k) || null;
+  const occasionLabel = k => t('occ.' + k, k);
+  function inOccasion(s, k) {
+    const o = occasion(k); if (!o) return true;
+    if (Array.isArray(s.occasions) && s.occasions.length) return s.occasions.includes(k);
+    if (o.slugs) return o.slugs.includes(s.slug);
+    return !o.moments || (s.moments || []).some(m => o.moments.includes(m));
+  }
+  const occIcon = o => `<span class="occ-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${o.icon}</svg></span>`;
+
+  /* ---------------- WhatsApp help ---------------- */
+  /* Business WhatsApp number in international format, digits only (e.g. '9715XXXXXXXX').
+     Leave empty and the WhatsApp button stays hidden everywhere. */
+  const WHATSAPP_NUMBER = '';
+  const WA_SKIP = ['admin', 'login', 'invoice'];
+  function waHref() {
+    const h1 = document.querySelector('main h1');
+    const story = PAGE === 'story' && h1 ? h1.textContent.trim() : '';
+    const msg = story ? t('wa.msg_page', 'Hi Hikaya, I have a question about {page}').replace('{page}', story) : t('wa.msg', 'Hi Hikaya, I have a question');
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  }
+  const WA_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.2A9.8 9.8 0 0 0 3.6 17l-1.4 4.8 5-1.3A9.8 9.8 0 1 0 12 2.2zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.3z"/></svg>';
+  function renderWhatsApp() {
+    if (!WHATSAPP_NUMBER || WA_SKIP.includes(PAGE)) return;
+    let a = document.getElementById('hk-wa');
+    if (!a) {
+      a = document.createElement('a'); a.id = 'hk-wa'; a.className = 'hk-wa'; a.target = '_blank'; a.rel = 'noopener';
+      a.addEventListener('click', () => { try { window.hikayaTrackEvent && window.hikayaTrackEvent('whatsapp_click', { page: PAGE }); } catch (_) {} });
+      document.body.appendChild(a);
+    }
+    a.href = waHref(); a.setAttribute('aria-label', t('wa.btn', 'Chat on WhatsApp'));
+    a.innerHTML = `${WA_SVG}<span class="hk-wa-txt">${esc(t('wa.short', 'Need help?'))}</span>`;
+    /* Pages can also offer it inline (e.g. Contact us): <div data-hk-whatsapp hidden>…</div> */
+    document.querySelectorAll('[data-hk-whatsapp]').forEach(el => {
+      el.hidden = false;
+      el.innerHTML = `<dt>${esc(t('wa.label', 'WhatsApp'))}</dt><dd><a href="${esc(waHref())}" target="_blank" rel="noopener" dir="ltr">+${esc(WHATSAPP_NUMBER)}</a><br><small>${esc(t('wa.hours', 'A real person replies, usually within a few hours'))}</small></dd>`;
+    });
+  }
+
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR };
+  window.Hikaya = { priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
 
   /* ---------------- Boot ---------------- */
   mount();
   function boot() {
     initRegion(); initLang(); initNav(); initSticky(); initCarousels();
-    renderLang(); renderRegion();
+    renderLang(); renderRegion(); renderWhatsApp();
+    document.addEventListener('hikaya:langchange', renderWhatsApp);
     if (window.hikayaApplyRegion) window.hikayaApplyRegion();
     /* Arabic visitors: translations are now applied, so reveal the page (instead of waiting for the 2.5 s safety timeout). */
     requestAnimationFrame(() => document.documentElement.classList.remove('i18n-wait'));

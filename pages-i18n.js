@@ -50,7 +50,7 @@
     crumbs_stories: { en: 'Stories', ar: 'القصص' },
     incl_box: { en: 'Includes our signature gift packaging', ar: 'يشمل تغليف الهدايا المميز' },
     create_this: { en: 'Create This Story', ar: 'أنشئ هذه القصة' },
-    bundle: { en: 'Ordering for siblings? 2 books get 10% off each and free delivery. 3 or more get 20% off.', ar: 'تطلب للإخوة؟ كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 20%' },
+    bundle: { en: 'Ordering for siblings? 2 books get 10% off each and free delivery. 3 or more get 15% off.', ar: 'تطلب للإخوة؟ كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 15%' },
     happens: { en: 'What happens in this story?', ar: 'ماذا يحدث في هذه القصة؟' },
     learns: { en: 'What your child learns', ar: 'ماذا يتعلم طفلك' },
     personalised: { en: 'What gets personalised', ar: 'ما الذي نخصّصه' },
@@ -136,7 +136,7 @@
     fq4: { en: "Can I see the book before it's printed?", ar: "هل يمكنني رؤية الكتاب قبل الطباعة؟" },
     fa4: { en: "Not at the moment. Once you order, we create, print and pack your child's book, so please double-check the name, age and photo before checkout.", ar: "ليس حاليًا، بعد الطلب نصنع كتاب طفلك ونطبعه ونغلّفه، لذا يرجى التأكد من الاسم والعمر والصورة قبل الدفع" },
     fq5: { en: "Can I order for siblings?", ar: "هل يمكنني الطلب للإخوة؟" },
-    fa5: { en: "Yes. Add a book for each child to the same order. Two books get 10% off each plus free delivery; three or more get 20% off.", ar: "نعم، أضف كتابًا لكل طفل في الطلب نفسه، كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 20%" },
+    fa5: { en: "Yes. Add a book for each child to the same order. Two books get 10% off each plus free delivery; three or more get 15% off.", ar: "نعم، أضف كتابًا لكل طفل في الطلب نفسه، كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 15%" },
     fq6: { en: "Can I make changes after ordering?", ar: "هل يمكنني التعديل بعد الطلب؟" },
     fa6: { en: "Contact us as soon as possible and we'll do our best to update the name, dedication or photo before production starts.", ar: "تواصل معنا بأسرع وقت وسنبذل جهدنا لتعديل الاسم أو الإهداء أو الصورة قبل بدء الإنتاج" },
     fq7: { en: "Which ages are the stories for?", ar: "لأي الأعمار هذه القصص؟" },
@@ -520,8 +520,8 @@
   "ar": "كم سعر الكتاب؟"
  },
  "a10": {
-  "en": "Books are on offer: was AED 199, now AED 149 in the UAE (was SAR 199, now SAR 149 in Saudi Arabia and was QAR 199, now QAR 149 in Qatar). In Kuwait it is KWD 12.50 (was KWD 16.75), in Bahrain BHD 15.25 (was BHD 20.50) and in Oman OMR 15.50 (was OMR 21). Gift packaging is always included. Ordering for siblings? 2 books get 10% off each plus free delivery, and 3 or more get 20% off.",
-  "ar": "الكتب بسعر العرض: كان 199 درهمًا والآن 149 درهمًا في الإمارات (كان 199 ريالًا والآن 149 ريالًا في السعودية، وكان 199 ريالًا قطريًا والآن 149 في قطر)، وفي الكويت 12.50 دينار (كان 16.75)، وفي البحرين 15.25 دينار (كان 20.50)، وفي عُمان 15.50 ريال (كان 21)، وتغليف الهدية مشمول دائمًا، وعند الطلب للإخوة يحصل كتابان على خصم 10% لكل كتاب مع توصيل مجاني، و3 كتب أو أكثر على خصم 20%"
+  "en": "Books are on offer: was AED 199, now AED 169 in the UAE (was SAR 199, now SAR 169 in Saudi Arabia and was QAR 199, now QAR 169 in Qatar). In Kuwait it is KWD 14.25 (was KWD 16.75), in Bahrain BHD 17.25 (was BHD 20.50) and in Oman OMR 17.75 (was OMR 21). Gift packaging is always included. Ordering for siblings? 2 books get 10% off each plus free delivery, and 3 or more get 15% off.",
+  "ar": "الكتب بسعر العرض: كان 199 درهمًا والآن 169 درهمًا في الإمارات (كان 199 ريالًا والآن 169 ريالًا في السعودية، وكان 199 ريالًا قطريًا والآن 169 في قطر)، وفي الكويت 14.25 دينار (كان 16.75)، وفي البحرين 17.25 دينار (كان 20.50)، وفي عُمان 17.75 ريال (كان 21)، وتغليف الهدية مشمول دائمًا، وعند الطلب للإخوة يحصل كتابان على خصم 10% لكل كتاب مع توصيل مجاني، و3 كتب أو أكثر على خصم 15%"
  },
  "q11": {
   "en": "Is gift packaging included?",

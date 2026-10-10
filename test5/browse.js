@@ -45,33 +45,42 @@
     if (!gridEl.children.length) gridEl.innerHTML = H.skeletonHtml(4);
     const all = await H.loadCatalog();
     gridEl.removeAttribute('aria-busy');
-    const ageSel = document.getElementById('f-age'), themeSel = document.getElementById('f-theme'), sortSel = document.getElementById('f-sort');
+    const ageSel = document.getElementById('f-age'), themeSel = document.getElementById('f-theme'), sortSel = document.getElementById('f-sort'), occSel = document.getElementById('f-occ');
     const grid = document.getElementById('grid'), count = document.getElementById('count'), empty = document.getElementById('empty');
     function options() {
-      const a = ageSel.value || qs.get('age') || '', th = themeSel.value || qs.get('theme') || '', so = sortSel.value || qs.get('sort') || 'featured';
+      const a = ageSel.value || qs.get('age') || '', th = themeSel.value || qs.get('theme') || '', so = sortSel.value || qs.get('sort') || 'featured', oc = (occSel && occSel.value) || qs.get('occasion') || '';
       ageSel.innerHTML = `<option value="">${esc(t('pg.f_all_ages', 'All ages'))}</option>` + BANDS.map(b => `<option value="${b}">${esc(H.rangeText(...b.split('-')))}</option>`).join('');
       themeSel.innerHTML = `<option value="">${esc(t('pg.f_all_themes', 'All themes'))}</option>` + Object.keys(THEME_GROUPS).map(g => `<option value="${g}">${esc(H.groupLabel(g))}</option>`).join('');
       sortSel.innerHTML = [['featured', 's_featured'], ['newest', 's_newest'], ['az', 's_az']].map(([v, k]) => `<option value="${v}">${esc(t('pg.' + k, v))}</option>`).join('');
+      if (occSel) { occSel.innerHTML = `<option value="">${esc(t('occ.f_all', 'All occasions'))}</option>` + H.OCCASIONS.map(o => `<option value="${o.key}">${esc(H.occasionLabel(o.key))}</option>`).join(''); occSel.value = H.occasion(oc) ? oc : ''; }
       ageSel.value = BANDS.includes(a) ? a : ''; themeSel.value = THEME_GROUPS[th] ? th : ''; sortSel.value = so;
     }
     function render() {
-      const a = ageSel.value, th = themeSel.value, so = sortSel.value;
-      let list = all.filter(s => H.inBand(s, a) && inGroup(s, th));
+      const a = ageSel.value, th = themeSel.value, so = sortSel.value, oc = occSel ? occSel.value : '';
+      let list = all.filter(s => H.inBand(s, a) && inGroup(s, th) && H.inOccasion(s, oc));
+      renderOccBanner(oc);
       if (so === 'featured') list = sortFeatured(list);
       if (so === 'newest') list = [...list].sort((x, y) => String(y.created_at || '').localeCompare(String(x.created_at || '')) || (y.sort_order || 0) - (x.sort_order || 0));
       if (so === 'az') list = [...list].sort((x, y) => H.titlePlain(x).localeCompare(H.titlePlain(y), H.lang()));
       grid.innerHTML = list.map(s => H.cardHtml(s)).join('');
       count.textContent = list.length === 1 ? t('pg.count_one', '1 story') : tpl(t('pg.count', '{n} stories'), { n: list.length });
       /* The empty state only appears when the visitor has chosen filters that match nothing. */
-      empty.hidden = list.length > 0 || !(a || th);
-      if (!list.length && !(a || th)) grid.innerHTML = `<li class="catalog-note">${esc(t('lx.catalog_wait', 'New stories are on their way. Please check back soon.'))}</li>`;
-      document.getElementById('reset').hidden = !(a || th);
-      const p = new URLSearchParams(); if (a) p.set('age', a); if (th) p.set('theme', th); if (so !== 'featured') p.set('sort', so);
+      empty.hidden = list.length > 0 || !(a || th || oc);
+      if (!list.length && !(a || th || oc)) grid.innerHTML = `<li class="catalog-note">${esc(t('lx.catalog_wait', 'New stories are on their way. Please check back soon.'))}</li>`;
+      document.getElementById('reset').hidden = !(a || th || oc);
+      const p = new URLSearchParams(); if (oc) p.set('occasion', oc); if (a) p.set('age', a); if (th) p.set('theme', th); if (so !== 'featured') p.set('sort', so);
       H.setQS(p.toString() ? '?' + p : '');
     }
-    [ageSel, themeSel, sortSel].forEach(el => el.addEventListener('change', render));
-    document.getElementById('reset').addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; render(); });
-    document.querySelectorAll('[data-reset]').forEach(b => b.addEventListener('click', () => { ageSel.value = ''; themeSel.value = ''; render(); }));
+    function renderOccBanner(oc) {
+      const ban = document.getElementById('occ-banner'); if (!ban) return;
+      const o = H.occasion(oc); ban.hidden = !o; if (!o) return;
+      document.getElementById('occ-banner-ico').innerHTML = H.occIcon(o);
+      document.getElementById('occ-banner-t').textContent = tpl(t('occ.banner', 'Gifts for {occasion}'), { occasion: H.occasionLabel(o.key) });
+    }
+    const clearAll = () => { ageSel.value = ''; themeSel.value = ''; if (occSel) occSel.value = ''; render(); };
+    [ageSel, themeSel, sortSel, occSel].filter(Boolean).forEach(el => el.addEventListener('change', render));
+    document.getElementById('reset').addEventListener('click', clearAll);
+    document.querySelectorAll('[data-reset]').forEach(b => b.addEventListener('click', clearAll));
     options(); render();
     document.addEventListener('hikaya:langchange', () => { options(); render(); });
   }
@@ -167,7 +176,7 @@
       }
       // structured data (Product) for this story
       try {
-        const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 149 };
+        const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };
         let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
         ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
           offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: location.origin + location.pathname + '?s=' + encodeURIComponent(s.slug) } });

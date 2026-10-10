@@ -20,6 +20,38 @@
     });
     H.initCarousels();
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', render); else render();
-  document.addEventListener('hikaya:langchange', render);
+  /* Shop by occasion tiles → stories.html?occasion=… */
+  function renderOccasions() {
+    const grid = document.getElementById('occ-grid'); if (!grid) return;
+    grid.innerHTML = H.OCCASIONS.map(o => `<li><a class="occ-tile" href="stories.html?occasion=${o.key}">${H.occIcon(o)}<span class="occ-t">${H.esc(H.occasionLabel(o.key))}</span><small>${H.esc(H.t('occ.' + o.key + '_d', ''))}</small></a></li>`).join('');
+  }
+
+  /* Photo → illustration reveal: a native range input drives the split (keyboard + touch friendly). */
+  function initReveal() {
+    const stage = document.getElementById('rvl'); if (!stage) return;
+    const range = stage.querySelector('.rvl-range');
+    const set = v => stage.style.setProperty('--pos', v + '%');
+    range.addEventListener('input', () => { set(range.value); stage.classList.add('touched'); });
+    /* A gentle one-time sweep when it first scrolls into view, so visitors see it moves. */
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return; io.disconnect();
+      const frames = [50, 22, 78, 50]; let i = 0, from = 50, t0 = null;
+      const step = ts => {
+        if (stage.classList.contains('touched')) return;
+        if (t0 == null) t0 = ts; const p = Math.min(1, (ts - t0) / 700);
+        const v = from + (frames[i + 1] - from) * (1 - Math.pow(1 - p, 3));
+        set(v.toFixed(1)); range.value = Math.round(v);
+        if (p < 1) return requestAnimationFrame(step);
+        i++; from = frames[i]; t0 = null; if (i < frames.length - 1) requestAnimationFrame(step);
+      };
+      setTimeout(() => requestAnimationFrame(step), 400);
+    }, { threshold: 0.6 });
+    io.observe(stage);
+  }
+
+  function boot() { render(); renderOccasions(); initReveal(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); });
 })();

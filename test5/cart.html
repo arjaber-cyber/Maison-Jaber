@@ -169,9 +169,9 @@
     if (cart.length === 1) {
       upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_1', 'Add one more book and save 10% + free delivery.')}</span></div>`;
     } else if (cart.length === 2) {
-      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_2', '10% off applied! Add one more to unlock 20% off.')}</span></div>`;
+      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_2', '10% off applied! Add one more to unlock 15% off.')}</span></div>`;
     } else {
-      upsellHtml = `<div class="upsell-banner maxed"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg><span>${t('cart.upsell_max', '20% off + free delivery applied — our best price!')}</span></div>`;
+      upsellHtml = `<div class="upsell-banner maxed"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg><span>${t('cart.upsell_max', '15% off + free delivery applied — our best price!')}</span></div>`;
     }
     upsellSlot.innerHTML = upsellHtml;
 

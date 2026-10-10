@@ -8,7 +8,7 @@
    BUNDLE TIERS (placeholder — adjust to whatever margin makes sense):
      1 book  -> full price, standard delivery fee
      2 books -> 10% off each book + free delivery
-     3+ books -> 20% off each book + free delivery
+     3+ books -> 15% off each book + free delivery
    These percentages are a starting guess, not something the business
    confirmed — treat as a placeholder to tune once real numbers exist.
 */
@@ -16,7 +16,7 @@
 window.HIKAYA_BUNDLE_TIERS = [
   { minItems: 1, discountPct: 0, freeDelivery: false },
   { minItems: 2, discountPct: 10, freeDelivery: true },
-  { minItems: 3, discountPct: 20, freeDelivery: true },
+  { minItems: 3, discountPct: 15, freeDelivery: true },
 ];
 
 (function () {

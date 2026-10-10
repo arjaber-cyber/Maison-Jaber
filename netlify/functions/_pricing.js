@@ -8,18 +8,18 @@
 // browser copies are for display only).
 
 const REGIONS = {
-  UAE:     { currency: 'AED', bookNow: 149,   deliveryFee: 0 },
-  Saudi:   { currency: 'SAR', bookNow: 149,   deliveryFee: 30 },
-  Qatar:   { currency: 'QAR', bookNow: 149,   deliveryFee: 30 },
-  Kuwait:  { currency: 'KWD', bookNow: 12.5,  deliveryFee: 2.52 },
-  Bahrain: { currency: 'BHD', bookNow: 15.25, deliveryFee: 3.07 },
-  Oman:    { currency: 'OMR', bookNow: 15.5,  deliveryFee: 3.12 },
+  UAE:     { currency: 'AED', bookNow: 169,   deliveryFee: 0 },
+  Saudi:   { currency: 'SAR', bookNow: 169,   deliveryFee: 30 },
+  Qatar:   { currency: 'QAR', bookNow: 169,   deliveryFee: 30 },
+  Kuwait:  { currency: 'KWD', bookNow: 14.25, deliveryFee: 2.52 },
+  Bahrain: { currency: 'BHD', bookNow: 17.25, deliveryFee: 3.07 },
+  Oman:    { currency: 'OMR', bookNow: 17.75, deliveryFee: 3.12 },
 };
 
 const BUNDLE_TIERS = [
   { minItems: 1, discountPct: 0,  freeDelivery: false },
   { minItems: 2, discountPct: 10, freeDelivery: true },
-  { minItems: 3, discountPct: 20, freeDelivery: true },
+  { minItems: 3, discountPct: 15, freeDelivery: true },
 ];
 
 // Ziina charges in AED. Customers see their local price; we charge the AED
