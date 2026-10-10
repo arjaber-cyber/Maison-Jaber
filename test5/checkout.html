@@ -982,7 +982,7 @@
       giftRecipientName: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-name').value.trim() : '',
       giftRecipientPhone: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-phone').value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
+      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', siteLang: (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
       bundleDiscountPct: finalPricing.bundlePct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,

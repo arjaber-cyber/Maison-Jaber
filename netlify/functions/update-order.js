@@ -10,7 +10,8 @@
 
 const { isAdminRequest } = require('./_admin-check');
 const { STAGES, normalizeStage } = require('./_stages');
-const { sendEmail, emailShell } = require('./_email');
+const { sendEmail } = require('./_email');
+const { orderShipped, orderDelivered } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -25,22 +26,10 @@ const json = (code, body) => ({ statusCode: code, body: JSON.stringify(body) });
 const clip = (v, n) => (v == null ? null : String(v).trim().slice(0, n) || null);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+// Customer emails for the shipping and delivered stages (English or Arabic, see _templates.js).
 function customerEmail(order, stage) {
-  const first = String(order.full_name || '').split(' ')[0] || 'there';
-  const no = esc(order.order_number || '');
-  if (stage === 'with_courier') {
-    const track = order.tracking_url
-      ? `<p><a href="${esc(order.tracking_url)}" style="color:#8A5638;font-weight:700">Track your delivery${order.tracking_number ? ' (' + esc(order.tracking_number) + ')' : ''}</a></p>`
-      : (order.tracking_number ? `<p>Tracking number: <strong>${esc(order.tracking_number)}</strong>${order.courier ? ' with ' + esc(order.courier) : ''}</p>` : '');
-    return {
-      subject: `Your Hikaya book is on its way · ${order.order_number || ''}`,
-      html: emailShell(`<p>Hi ${esc(first)},</p><p>Good news: your personalised Hikaya book (order <strong>${no}</strong>) is gift-boxed and now with ${order.courier ? esc(order.courier) : 'our delivery partner'}.</p>${track}<p>You can also check progress any time at <a href="https://maison-jaber.com/track-order.html">maison-jaber.com/track-order</a>.</p><p>With love,<br>Hikaya by Maison Jaber</p>`),
-    };
-  }
-  return {
-    subject: `Delivered: your Hikaya book · ${order.order_number || ''}`,
-    html: emailShell(`<p>Hi ${esc(first)},</p><p>Your Hikaya book (order <strong>${no}</strong>) has been delivered. We hope it becomes a favourite at bedtime.</p><p>If anything isn't perfect, just reply to this email and a real person will help.</p><p>With love,<br>Hikaya by Maison Jaber</p>`),
-  };
+  const m = stage === 'with_courier' ? orderShipped(order) : orderDelivered(order);
+  return { subject: m.subject, html: m.html };
 }
 
 exports.handler = async (event) => {
@@ -116,7 +105,7 @@ exports.handler = async (event) => {
 
     let emailed = false;
     if (notifyCustomer && patch.order_status && ['with_courier', 'delivered'].includes(patch.order_status) && order.email) {
-      try { const m = customerEmail(order, patch.order_status); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
+      try { const m = customerEmail(rows[0], patch.order_status); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
       catch (e) { console.error('update-order email failed:', e); }
     }
     return json(200, { order, emailed });

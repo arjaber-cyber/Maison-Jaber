@@ -71,7 +71,7 @@ function codeEmail(c, name) {
       </div>
       <p style="font-size:13px; line-height:1.6; color:#7d6a5a;">Enter it at checkout.${c.email ? ' It works with this email address only.' : ''}${c.max_uses === 1 ? ' It can be used once.' : ''} One discount applies per order.</p>
       <p><a href="${esc(SHOP_URL)}" style="display:inline-block; background:#2E2018; color:#fff; text-decoration:none; padding:11px 22px; border-radius:100px; font-weight:700; font-size:14px;">Choose a story</a></p>
-      <p style="font-size:13px; color:#7d6a5a;">With love,<br>Hikaya by Maison Jaber</p>`),
+      <p style="font-size:13px; color:#7d6a5a;">With love,<br>The Hikaya team at Maison Jaber</p>`, { preheader: `Your code ${c.code}: ${offerText(c)}.` }),
   };
 }
 

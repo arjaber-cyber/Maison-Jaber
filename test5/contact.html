@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
     busy = true; btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.textContent = t('pg.ct_sending', 'Sending…');
     msg.className = 'form-msg'; msg.textContent = '';
     try {
-      var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, orderNumber: orderNumber, message: message }) });
+      var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, orderNumber: orderNumber, message: message, lang: (window.hikayaLang ? window.hikayaLang() : 'en') }) });
       var data = {}; try { data = await res.json(); } catch (_) {}
       if (res.ok) { lastSent = sig; msg.className = 'form-msg success'; msg.textContent = t('lx.ct_ok', "Thank you, your message is with us. We'll reply by email, usually within a day."); form.reset(); lastSent = ''; }
       else { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again, or email hello@maison-jaber.com.'); }

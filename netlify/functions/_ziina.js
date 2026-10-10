@@ -6,6 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
+const { orderConfirmed, orderLang } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -72,24 +73,20 @@ async function settleFromZiina(pi) {
 async function sendConfirmation(order) {
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch {}
-  const list = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}</li>`).join('');
-  const first = esc(String(order.full_name || '').split(' ')[0] || 'there');
   const waived = order.payment_status === 'waived';
   const localLine = !waived && order.currency && order.currency !== 'AED' ? ` (${order.amount} ${order.currency})` : '';
-  const paidLine = waived ? `This one is on us${order.promo_code ? ` (code <strong>${esc(order.promo_code)}</strong>)` : ''}: nothing to pay` : `Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}`;
-  await sendEmail({
-    to: order.email,
-    subject: `Your Hikaya order is confirmed — ${order.order_number}`,
-    html: emailShell(`
-      <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">Thank you, ${first}!</h2>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">${waived ? 'Your order is confirmed' : 'Your payment went through'} and their story is officially on its way:</p>
-      <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${list}</ul>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">${paidLine}. It ships to <strong>${esc(order.address)}, ${esc(order.city)}</strong>, in about 5–7 working days.</p>
-      <div style="background:#F3E8D8; border-radius:10px; padding:14px 16px; margin:18px 0; font-size:13px;"><strong>Order reference:</strong> ${esc(order.order_number)}</div>
-      <p style="font-size:13px; color:#7d6a5a;">Questions? Just reply to this email.</p>`),
-  });
+  // Arabic story titles for Arabic-language emails (best effort; English titles otherwise).
+  let arTitles = null;
+  if (orderLang(order) === 'ar') {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug,title_ar`, { headers: H });
+      if (r.ok) arTitles = Object.fromEntries((await r.json()).filter(x => x.slug && x.title_ar).map(x => [x.slug, x.title_ar]));
+    } catch {}
+  }
+  const mail = orderConfirmed(order, arTitles);
+  await sendEmail({ to: order.email, subject: mail.subject, html: mail.html });
   /* New-order alert for the team (info@). */
-  const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}</li>`).join('');
+  const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.ageEdition ? ' · ages ' + esc(i.ageEdition) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}${i.dedication ? '<br><em>Dedication:</em> ' + esc(i.dedication) : ''}</li>`).join('');
   await sendEmail({
     to: OWNER_INBOX,
     replyTo: order.email,
@@ -99,6 +96,7 @@ async function sendConfirmation(order) {
       <p style="font-size:14px; color:#5b4a3d;"><strong>${esc(order.full_name)}</strong> · ${esc(order.email)}${order.phone ? ' · ' + esc(order.phone) : ''}<br>${esc(order.address)}, ${esc(order.city)}${order.country ? ', ' + esc(order.country) : ''}</p>
       <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${books}</ul>
       <p style="font-size:14px; color:#5b4a3d;">${waived ? `Free order (${esc(order.order_type || 'gift')}) via code <strong>${esc(order.promo_code || '')}</strong> · not counted as revenue` : `Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}`}${order.promo_code && !waived ? ' · code ' + esc(order.promo_code) : ''}${order.is_gift ? ' · Sent as a gift' : ''}</p>
+      ${order.is_gift && order.gift_message ? `<p style="font-size:14px; color:#5b4a3d;"><strong>Gift message:</strong> ${esc(order.gift_message)}</p>` : ''}
       <p><a href="https://maison-jaber.com/test5/admin.html" style="color:#8A5638; font-weight:700;">Open the dashboard →</a></p>`),
   });
 }
