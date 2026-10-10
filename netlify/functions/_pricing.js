@@ -11,9 +11,9 @@ const REGIONS = {
   UAE:     { currency: 'AED', bookNow: 169,   deliveryFee: 0 },
   Saudi:   { currency: 'SAR', bookNow: 169,   deliveryFee: 30 },
   Qatar:   { currency: 'QAR', bookNow: 169,   deliveryFee: 30 },
-  Kuwait:  { currency: 'KWD', bookNow: 14.25, deliveryFee: 2.52 },
-  Bahrain: { currency: 'BHD', bookNow: 17.25, deliveryFee: 3.07 },
-  Oman:    { currency: 'OMR', bookNow: 17.75, deliveryFee: 3.12 },
+  Kuwait:  { currency: 'KWD', bookNow: 14.25, deliveryFee: 2.5 },
+  Bahrain: { currency: 'BHD', bookNow: 17.25, deliveryFee: 3 },
+  Oman:    { currency: 'OMR', bookNow: 17.75, deliveryFee: 3 },
 };
 
 const BUNDLE_TIERS = [

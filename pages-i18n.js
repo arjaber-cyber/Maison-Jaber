@@ -612,8 +612,8 @@
   "ar": "كيف تُستخدم صورة طفلي؟"
  },
  "a20": {
-  "en": "Only to create the book you order. It is never used for advertising, social media or public galleries without your written permission. <a href=\"#\" data-photo-privacy>How we protect your child's photo</a>",
-  "ar": "لصنع الكتاب الذي تطلبه فقط، ولا تُستخدم في الإعلانات أو على وسائل التواصل أو في المعارض العامة دون إذن كتابي منك <a href=\"#\" data-photo-privacy>كيف نحمي صورة طفلك</a>"
+  "en": "Only to create the book you order. It is never used for advertising, social media or public galleries without your written permission. <a href=\"privacy.html\" data-photo-privacy>How we protect your child's photo</a>",
+  "ar": "لصنع الكتاب الذي تطلبه فقط، ولا تُستخدم في الإعلانات أو على وسائل التواصل أو في المعارض العامة دون إذن كتابي منك <a href=\"privacy.html\" data-photo-privacy>كيف نحمي صورة طفلك</a>"
  },
  "q21": {
   "en": "How long do you keep photos?",
@@ -662,5 +662,19 @@
     checks: { en: 'Final checks', ar: 'المراجعة الأخيرة' },
     printing: { en: 'Printing', ar: 'قيد الطباعة' },
     packed: { en: 'Packed', ar: 'تم التغليف' },
+  };
+
+  /* QA fixes (Oct 2026): cart/checkout labels, gift recipient, name check. Arabic without full stops. */
+  T.qa = {
+    optional: { en: '(optional)', ar: '(اختياري)' },
+    phone_ph: { en: 'e.g. +971 50 123 4567', ar: '+971 50 123 4567' },
+    gift_note: { en: 'Sending it straight to them? Add their name and phone, and put their address in the address fields above', ar: 'هل ترسله إليهم مباشرة؟ أضف اسمهم ورقم هاتفهم، واكتب عنوانهم في حقول العنوان أعلاه' },
+    recipient_name: { en: "Recipient's name", ar: 'اسم المستلم' },
+    recipient_phone: { en: "Recipient's phone", ar: 'رقم هاتف المستلم' },
+    err_gift_long: { en: 'Please keep the gift message to 20 words or fewer.', ar: 'يرجى ألا تتجاوز رسالة الهدية 20 كلمة' },
+    book_en: { en: 'English book', ar: 'كتاب بالإنجليزية' },
+    book_ar: { en: 'Arabic book', ar: 'كتاب بالعربية' },
+    upsell_1_free: { en: 'Add one more book and save 10% on each.', ar: 'أضف كتابًا آخر ووفّر 10% على كل كتاب' },
+    name_err: { en: 'Please use letters only (no numbers or symbols), up to 20 characters.', ar: 'يرجى استخدام الحروف فقط (بدون أرقام أو رموز) وبحد أقصى 20 حرفًا' },
   };
 })();

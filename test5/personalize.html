@@ -319,7 +319,7 @@
       <div class="wizard-step" data-step="details" id="wizard-step-details">
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
-          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required data-i18n-placeholder="personalize.child_name_ph" /></div>
+          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
           <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
           <div class="field">
             <span class="field-label" id="gender-label" data-i18n="personalize.gender_label">Which pronouns should we use?</span>
@@ -904,6 +904,17 @@
 
   // --- Order form completion enables the Continue button ---
   const nameInput = document.getElementById('child-name');
+  // Letters from any language, plus spaces, hyphens and apostrophes (it is printed on every page).
+  const NAME_RE = /^[\p{L}\p{M}][\p{L}\p{M}' \-]{0,19}$/u;
+  const nameOk = () => NAME_RE.test(nameInput.value.trim());
+  function showNameError() {
+    const el = document.getElementById('child-name-error'); if (!el) return;
+    const v = nameInput.value.trim(); const bad = !!v && !nameOk();
+    el.hidden = !bad; el.textContent = bad ? t('qa.name_err', 'Please use letters only (no numbers or symbols), up to 20 characters.') : '';
+    nameInput.setAttribute('aria-invalid', String(bad));
+  }
+  nameInput.addEventListener('blur', showNameError);
+  nameInput.addEventListener('input', () => { if (nameInput.getAttribute('aria-invalid') === 'true') showNameError(); });
   nameInput.addEventListener('input', () => {
     document.getElementById('summary-name').textContent = nameInput.value || '—';
     document.getElementById('sb-name').textContent = nameInput.value.trim();
@@ -929,14 +940,14 @@
     if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
     const detailsNextBtn = document.getElementById('details-next-btn');
     const ageOk = ageState().ok;
-    if (detailsNextBtn) detailsNextBtn.disabled = !(nameInput.value.trim() && ageOk);
+    if (detailsNextBtn) detailsNextBtn.disabled = !(nameOk() && ageOk);
     const photoNextBtn = document.getElementById('photo-next-btn');
     if (photoNextBtn) photoNextBtn.disabled = !hasVerifiedPhoto;
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
 
     const ready = storyChosen
-      && nameInput.value.trim()
+      && nameOk()
       && ageOk
       && hasVerifiedPhoto
       && extraCharOk;
@@ -1041,7 +1052,7 @@
   function goNext(fromStep) {
     if (fromStep === 'details') {
       // Belt and braces: never leave this step with an invalid age, even if Next was somehow enabled.
-      if (!nameInput.value.trim()) { nameInput.focus(); return; }
+      if (!nameOk()) { showNameError(); nameInput.focus(); return; }
       const st = renderAge(true);
       if (!st.ok) { ageTouched = true; ageInputEl.focus(); return; }
     }

@@ -6,7 +6,7 @@
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Your Cart — Hikaya by Maison Jaber</title>
-<meta name="description" content="Review the personalized storybooks in your cart before checkout." />
+<meta name="description" content="Review the personalised storybooks in your cart before checkout." />
 <meta name="robots" content="noindex, follow" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600;700;800&display=swap');
@@ -132,7 +132,13 @@
   document.addEventListener('DOMContentLoaded', () => {
     render();
     document.addEventListener('hikaya:regionchange', render);
+    document.addEventListener('hikaya:langchange', render);
   });
+
+  function ageLabel(band) {
+    const [lo, hi] = String(band).split('-');
+    return t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', lo).replace('{b}', hi || lo);
+  }
 
   function fmt(n, region) {
     return window.hikayaFormatPrice ? window.hikayaFormatPrice(n, region) : `${region.symbol} ${n}`;
@@ -154,7 +160,7 @@
         <div class="empty-cart">
           <svg viewBox="0 0 24 24" stroke-width="1.6"><path d="M3 4h2l2.2 11a2 2 0 0 0 2 1.6h8.1a2 2 0 0 0 2-1.6L21 8H6.5"/><circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
           <h2>${t('cart.empty_title', 'Your cart is empty')}</h2>
-          <p>${t('cart.empty_sub', 'Create a personalized storybook to get started.')}</p>
+          <p>${t('cart.empty_sub', 'Create a personalised storybook to get started.')}</p>
           <a class="btn-primary" href="stories.html" style="display:inline-flex; width:auto; padding:14px 30px;">${t('cart.browse_stories', 'Browse Stories')}</a>
         </div>`;
       summarySlot.innerHTML = '';
@@ -167,7 +173,7 @@
     // Upsell messaging -- classic ecommerce nudge toward the next bundle tier.
     let upsellHtml = '';
     if (cart.length === 1) {
-      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_1', 'Add one more book and save 10% + free delivery.')}</span></div>`;
+      upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${region.deliveryFee ? t('cart.upsell_1', 'Add one more book and save 10% + free delivery.') : t('qa.upsell_1_free', 'Add one more book and save 10% on each.')}</span></div>`;
     } else if (cart.length === 2) {
       upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_2', '10% off applied! Add one more to unlock 15% off.')}</span></div>`;
     } else {
@@ -180,7 +186,7 @@
         <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
         <div class="info">
           <h3>${item.story}</h3>
-          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</div>
+          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}</div>
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
         </div>

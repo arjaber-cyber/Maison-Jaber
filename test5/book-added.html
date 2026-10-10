@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<meta name="description" content="Your personalised Hikaya storybook is saved in your cart. Add another child's story or continue to checkout." />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Added to Your Cart — Hikaya by Maison Jaber</title>
 <meta name="robots" content="noindex, nofollow" />
@@ -150,7 +151,15 @@
     swatch.className = 'swatch ' + (last.theme || 'courage');
     window.hikayaCart.coverFor(last).then(url => window.hikayaCart.paintCover(swatch, url));
     document.getElementById('item-name').textContent = last.story || 'Your story';
-    document.getElementById('item-meta').textContent = [last.childName, last.ageEdition ? 'Ages ' + last.ageEdition : null].filter(Boolean).join(' · ');
+    const tt = (k, f) => { try { return (window.hikayaT && window.hikayaT(k)) || f; } catch (_) { return f; } };
+    const setMeta = () => {
+      const band = last.ageEdition ? String(last.ageEdition).split('-') : null;
+      const ageTxt = band ? tt('a11y.age_range', 'Ages {a}–{b}').replace('{a}', band[0]).replace('{b}', band[1] || band[0]) : null;
+      const langTxt = last.bookLanguage === 'ar' ? tt('qa.book_ar', 'Arabic book') : tt('qa.book_en', 'English book');
+      document.getElementById('item-meta').textContent = [last.childName, ageTxt, langTxt].filter(Boolean).join(' · ');
+    };
+    setMeta();
+    document.addEventListener('hikaya:langchange', setMeta);
 
     const count = cart.length;
     const countNote = document.getElementById('cart-count-note');
