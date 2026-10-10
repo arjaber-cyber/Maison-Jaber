@@ -6,7 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
-const { SUPABASE_URL, SUPABASE_KEY } = require('./_pricing');
+const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
 
@@ -55,11 +55,15 @@ async function settleFromZiina(pi) {
     const updated = await transition(order.id, 'awaiting_payment', {
       payment_status: 'paid', order_status: 'received', status_updated_at: new Date().toISOString(),
     });
-    if (updated) await sendConfirmation(updated).catch(e => console.error('confirmation email failed', e));
+    if (updated) {
+      if (updated.promo_code) await settleDiscount(updated.id, true);
+      await sendConfirmation(updated).catch(e => console.error('confirmation email failed', e));
+    }
     return { found: true, paid: true, order: updated || order };
   }
   if (intent.status === 'failed' || intent.status === 'canceled') {
-    await transition(order.id, 'awaiting_payment', { payment_status: intent.status, status_updated_at: new Date().toISOString() });
+    const moved = await transition(order.id, 'awaiting_payment', { payment_status: intent.status, status_updated_at: new Date().toISOString() });
+    if (moved && moved.promo_code) await settleDiscount(moved.id, false);
     return { found: true, paid: false, status: intent.status, order };
   }
   return { found: true, paid: false, status: intent.status || 'pending', order };
@@ -70,15 +74,17 @@ async function sendConfirmation(order) {
   try { items = JSON.parse(order.items || '[]'); } catch {}
   const list = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}</li>`).join('');
   const first = esc(String(order.full_name || '').split(' ')[0] || 'there');
-  const localLine = order.currency && order.currency !== 'AED' ? ` (${order.amount} ${order.currency})` : '';
+  const waived = order.payment_status === 'waived';
+  const localLine = !waived && order.currency && order.currency !== 'AED' ? ` (${order.amount} ${order.currency})` : '';
+  const paidLine = waived ? `This one is on us${order.promo_code ? ` (code <strong>${esc(order.promo_code)}</strong>)` : ''}: nothing to pay` : `Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}`;
   await sendEmail({
     to: order.email,
     subject: `Your Hikaya order is confirmed — ${order.order_number}`,
     html: emailShell(`
       <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">Thank you, ${first}!</h2>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Your payment went through and their story is officially on its way:</p>
+      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">${waived ? 'Your order is confirmed' : 'Your payment went through'} and their story is officially on its way:</p>
       <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${list}</ul>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}. It ships to <strong>${esc(order.address)}, ${esc(order.city)}</strong>, in about 5–7 working days.</p>
+      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">${paidLine}. It ships to <strong>${esc(order.address)}, ${esc(order.city)}</strong>, in about 5–7 working days.</p>
       <div style="background:#F3E8D8; border-radius:10px; padding:14px 16px; margin:18px 0; font-size:13px;"><strong>Order reference:</strong> ${esc(order.order_number)}</div>
       <p style="font-size:13px; color:#7d6a5a;">Questions? Just reply to this email.</p>`),
   });
@@ -87,16 +93,16 @@ async function sendConfirmation(order) {
   await sendEmail({
     to: OWNER_INBOX,
     replyTo: order.email,
-    subject: `New paid order ${order.order_number} · AED ${Number(order.charged_aed).toFixed(2)}`,
+    subject: waived ? `New free order ${order.order_number} · code ${order.promo_code || ''}` : `New paid order ${order.order_number} · AED ${Number(order.charged_aed).toFixed(2)}`,
     html: emailShell(`
       <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">New order: ${esc(order.order_number)}</h2>
       <p style="font-size:14px; color:#5b4a3d;"><strong>${esc(order.full_name)}</strong> · ${esc(order.email)}${order.phone ? ' · ' + esc(order.phone) : ''}<br>${esc(order.address)}, ${esc(order.city)}${order.country ? ', ' + esc(order.country) : ''}</p>
       <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${books}</ul>
-      <p style="font-size:14px; color:#5b4a3d;">Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}${order.is_gift ? ' · Gift' : ''}</p>
+      <p style="font-size:14px; color:#5b4a3d;">${waived ? `Free order (${esc(order.order_type || 'gift')}) via code <strong>${esc(order.promo_code || '')}</strong> · not counted as revenue` : `Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}`}${order.promo_code && !waived ? ' · code ' + esc(order.promo_code) : ''}${order.is_gift ? ' · Sent as a gift' : ''}</p>
       <p><a href="https://maison-jaber.com/test5/admin.html" style="color:#8A5638; font-weight:700;">Open the dashboard →</a></p>`),
   });
 }
 
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 
-module.exports = { settleFromZiina, getOrderByPaymentId, transition };
+module.exports = { settleFromZiina, getOrderByPaymentId, transition, sendConfirmation };

@@ -320,6 +320,73 @@
   .op-mini .t { font-weight:800; font-size:12.5px; line-height:1.3; } .op-mini .m { display:flex; justify-content:space-between; gap:6px; color:var(--ink-soft); font-weight:600; margin-top:3px; } .op-mini .lt { color:#9a6a12; font-weight:800; }
   .op-col-empty { color:var(--line); font-size:12px; font-weight:700; text-align:center; margin:14px 0; }
 
+
+  /* ---------- Discounts tab + order types (Oct 2026) ---------- */
+  .dc-kpis { margin-bottom:16px; }
+  .dc-panel { background:#fff; border:1px solid var(--line-soft); border-radius:16px; padding:18px; margin-bottom:16px; }
+  .dc-panel-head h2 { font-size:18px; font-weight:800; margin:0; } .dc-panel-head p { margin:4px 0 14px; color:var(--ink-soft); font-size:13.5px; font-weight:500; }
+  .dc-templates { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .dc-tpl { position:relative; display:inline-flex; }
+  .dc-tpl > button:first-child { display:flex; flex-direction:column; align-items:flex-start; gap:2px; text-align:left; padding:10px 30px 10px 12px; border:1.5px solid var(--line); border-radius:12px; background:var(--bg); font:inherit; cursor:pointer; color:var(--ink); max-width:280px; }
+  .dc-tpl > button:first-child:hover { border-color:var(--coral); } .dc-tpl > button.on { border-color:var(--coral-deep); background:#fff; box-shadow:0 6px 18px -12px rgba(46,32,24,.5); }
+  .dc-tpl b { font-size:13px; } .dc-tpl small { font-size:11.5px; color:var(--ink-soft); font-weight:600; }
+  .dc-tpl-x { position:absolute; top:4px; right:4px; width:22px; height:22px; border:0; border-radius:50%; background:transparent; color:var(--ink-soft); cursor:pointer; font-size:15px; line-height:1; }
+  .dc-tpl-x:hover { background:#f7e3dd; color:#a3402b; }
+  .dc-form { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; }
+  .dc-form.inner { margin-top:12px; }
+  .dc-form label { display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:700; color:var(--ink-soft); min-width:0; }
+  .dc-form label.op-check { flex-direction:row; align-items:center; font-size:13px; } .dc-form .op-check input { width:16px; height:16px; flex:none; padding:0; }
+  .dc-form label small { font-weight:500; } .dc-form label[hidden] { display:none; }
+  .dc-form .wide { grid-column:span 2; }
+  .dc-form input, .dc-form select { padding:10px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; font-size:14px; background:#fff; color:var(--ink); width:100%; box-sizing:border-box; }
+  .dc-form input:disabled { background:var(--bg); }
+  .dc-inline { display:flex; align-items:center; gap:8px; } .dc-inline em { font-style:normal; font-weight:600; }
+  .dc-more { background:var(--bg); border-radius:12px; padding:10px 12px; } .dc-more summary { cursor:pointer; font-size:13px; font-weight:700; color:var(--ink-soft); }
+  .dc-more .dc-form { grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .dc-actions { grid-column:1 / -1 !important; display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; justify-content:flex-end; border-top:1px solid var(--line-soft); padding-top:14px; }
+  .dc-actions .op-check { margin-right:auto; }
+  .dc-rule { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-soft); font-weight:600; flex-basis:100%; order:-1; }
+  .dc-rule svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.8; flex:none; }
+  .dc-result { margin-top:14px; }
+  .dc-made { display:flex; justify-content:space-between; gap:14px; align-items:center; flex-wrap:wrap; background:#eef4ec; border:1px solid #d3e3cf; border-radius:14px; padding:14px 16px; }
+  .dc-code-big { font-family:ui-monospace, Menlo, monospace; font-size:26px; font-weight:800; letter-spacing:.06em; color:var(--ink); margin:2px 0; user-select:all; }
+  .dc-made-actions { display:flex; gap:8px; flex-wrap:wrap; }
+  .dc-batch { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; max-height:160px; overflow:auto; } .dc-batch code { background:#fff; border-radius:6px; padding:3px 7px; font-size:12.5px; }
+  .dc-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .dc-tagcard { display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:10px 12px; border:1px solid var(--line-soft); border-radius:12px; background:var(--bg); font:inherit; cursor:pointer; color:var(--ink); text-align:left; }
+  .dc-tagcard b { font-size:13px; } .dc-tagcard span { font-size:11.5px; color:var(--ink-soft); font-weight:600; } .dc-tagcard.on { border-color:var(--coral-deep); background:#fff; }
+  .dc-table { border:1px solid var(--line-soft); border-radius:14px; overflow:hidden; }
+  .dc-tr { display:grid; grid-template-columns:1.5fr 1.2fr .9fr .7fr .9fr 1.2fr auto; gap:10px; align-items:center; padding:11px 14px; border-top:1px solid var(--line-soft); font-size:13px; font-weight:600; }
+  .dc-tr:first-child { border-top:0; } .dc-tr.open { background:#fffcf7; }
+  .dc-th { background:var(--bg); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:800; }
+  .dc-tr small { display:block; font-size:11.5px; color:var(--ink-soft); font-weight:600; margin-top:2px; word-break:break-word; }
+  .dc-code { border:0; background:none; padding:0; font-family:ui-monospace, Menlo, monospace; font-size:13.5px; font-weight:800; color:var(--ink); cursor:pointer; text-align:left; letter-spacing:.03em; }
+  .dc-code:hover { text-decoration:underline; }
+  .dc-c-act { display:flex; gap:6px; justify-content:flex-end; }
+  .op-btn.sm2 { padding:6px 10px; font-size:12px; border-radius:9px; }
+  .dc-detail { grid-column:1 / -1; background:var(--bg); border-radius:12px; padding:12px 14px; margin-top:4px; }
+  .dc-detail .op-kv { grid-template-columns:100px 1fr; } .dc-detail .op-kv a { font-family:ui-monospace, Menlo, monospace; font-size:12.5px; }
+  .dc-detail-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  .op-badge.type { background:#efe3f3; color:#6b3f7a; }
+  .op-free { color:#6b3f7a; font-weight:800; }
+  .op-kpis.op-kpis-7 { grid-template-columns:repeat(7, minmax(0,1fr)); }
+  .op-kpis.op-kpis-7 .op-kpi .n { font-size:24px; white-space:nowrap; } .op-kpis.op-kpis-7 .op-kpi { padding:12px 13px; }
+  @media (max-width:1200px) { .op-kpis.op-kpis-7 { grid-template-columns:repeat(4, minmax(0,1fr)); } }
+  @media (max-width:700px) { .op-kpis.op-kpis-7 { grid-template-columns:1fr 1fr; } }
+  .op-card.nonsale { border-left:4px solid #b48bc0; }
+  .op-type { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .op-type label { display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:700; color:var(--ink-soft); }
+  .op-type select, .op-type input { padding:9px 11px; border:1px solid var(--line); border-radius:10px; font:inherit; font-size:13.5px; background:#fff; color:var(--ink); }
+  .op-type input { min-width:220px; }
+  @media (max-width:1000px) { .dc-form { grid-template-columns:repeat(2, minmax(0,1fr)); } }
+  @media (max-width:700px) {
+    .dc-panel { padding:14px; } .dc-form, .dc-more .dc-form { grid-template-columns:1fr; } .dc-form .wide { grid-column:auto; }
+    .dc-actions { justify-content:stretch; } .dc-actions .op-btn { flex:1; }
+    .dc-th { display:none; } .dc-tr { grid-template-columns:1fr 1fr; gap:6px 12px; }
+    .dc-c-code { grid-column:1 / -1; } .dc-c-act { grid-column:1 / -1; justify-content:flex-start; }
+    .dc-tr [data-l]::before { content:attr(data-l); display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:800; }
+    .op-type input { min-width:0; width:100%; } .op-type label { flex:1 1 100%; }
+  }
   #op-toast { position:fixed; left:50%; bottom:24px; transform:translate(-50%, 20px); opacity:0; background:var(--ink); color:#fff; padding:11px 18px; border-radius:100px; font-size:13.5px; font-weight:700; z-index:200; pointer-events:none; transition:opacity .2s, transform .2s; max-width:calc(100vw - 32px); }
   #op-toast.show { opacity:1; transform:translate(-50%, 0); } #op-toast.bad { background:#a3402b; }
 
@@ -340,6 +407,7 @@
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="admin-orders.js"></script>
+<script src="admin-discounts.js"></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 </head>
@@ -364,6 +432,7 @@
 
 <nav class="op-tabs wrap" role="tablist" aria-label="Dashboard sections">
   <button role="tab" data-tab="orders" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>Orders</button>
+  <button role="tab" data-tab="discounts" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Discounts</button>
   <button role="tab" data-tab="stories" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>Stories</button>
   <button role="tab" data-tab="photos" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Site photos</button>
 </nav>
@@ -393,6 +462,15 @@
 </div>
 </div>
 
+</div>
+<div data-panel="discounts" hidden>
+<div class="wrap page-head">
+  <h1>Discounts</h1>
+  <p>Create discount codes, send them to customers and see what each one brought in. All amounts in AED.</p>
+</div>
+<div class="wrap" id="dc-root" style="margin-bottom:48px;">
+  <div class="state-box" id="dc-state">Loading codes…</div>
+</div>
 </div>
 <div data-panel="photos" hidden>
 <div class="wrap page-head">
@@ -573,6 +651,7 @@
     document.getElementById('password-gate').style.display = 'none';
     document.getElementById('dashboard-body').style.display = 'block';
     window.hkOrders.load(adminPassword);
+    if (window.hkDiscounts) window.hkDiscounts.load(adminPassword);
     // Personalize requests now arrive as real orders (cart + checkout); the old Netlify Forms feed is retired.
     loadSitePhotos(adminPassword);
     loadStories(adminPassword);
@@ -1234,7 +1313,7 @@
     try { history.replaceState(null, '', '#' + k); } catch (_) {}
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
-  const h = location.hash.slice(1); if (['orders', 'stories', 'photos'].includes(h)) show(h);
+  const h = location.hash.slice(1); if (['orders', 'discounts', 'stories', 'photos'].includes(h)) show(h);
 })();
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(function(){document.documentElement.classList.remove('i18n-wait')})});</script>

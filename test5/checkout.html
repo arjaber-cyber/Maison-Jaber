@@ -525,59 +525,87 @@
   const THEME_ITEM_LABEL = { courage: 'story1_title', adventure: 'story2_title', lullaby: 'story3_title' };
   let appliedPromo = null;
 
-  document.getElementById('promo-apply-btn').addEventListener('click', async () => {
-    const input = document.getElementById('promo-code-input');
-    const msg = document.getElementById('promo-message');
-    const code = input.value.trim();
+  const promoInput = document.getElementById('promo-code-input');
+  const promoBtn = document.getElementById('promo-apply-btn');
+  const promoMsg = document.getElementById('promo-message');
+  function setPromoMsg(kind, text) {
+    promoMsg.className = 'promo-message' + (kind ? ' ' + kind : '');
+    promoMsg.textContent = text;
+    if (appliedPromo) {
+      const rm = document.createElement('button');
+      rm.type = 'button'; rm.textContent = t('checkout.promo_remove', 'Remove');
+      rm.style.cssText = 'margin-inline-start:8px; background:none; border:0; padding:0; font:inherit; text-decoration:underline; cursor:pointer; color:inherit;';
+      rm.addEventListener('click', removePromo);
+      promoMsg.appendChild(rm);
+    }
+  }
+  function removePromo() {
+    appliedPromo = null;
+    promoInput.disabled = false; promoBtn.disabled = false; promoInput.value = '';
+    setPromoMsg('', '');
+    renderPaymentSection();
+  }
+  window.hkRemovePromo = removePromo;
+
+  promoBtn.addEventListener('click', async () => {
+    const code = promoInput.value.trim();
     if (!code) return;
-
-    msg.className = 'promo-message';
-    msg.textContent = t('checkout.promo_checking', 'Checking…');
-
+    setPromoMsg('', t('checkout.promo_checking', 'Checking…'));
     try {
       const res = await fetch('/.netlify/functions/validate-discount-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, email: document.getElementById('email').value.trim() }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.valid) {
         appliedPromo = null;
-        msg.className = 'promo-message error';
-        msg.textContent = data.error || t('checkout.promo_invalid', "That code isn't valid.");
+        setPromoMsg('error', t('checkout.promo_' + (data.reason || 'invalid'), data.error || t('checkout.promo_invalid', "That code isn't valid.")));
       } else {
-        appliedPromo = { code: code.toUpperCase(), type: data.type, value: data.value };
-        msg.className = 'promo-message success';
-        msg.textContent = t('checkout.promo_applied', 'Code applied!');
-        input.disabled = true;
-        document.getElementById('promo-apply-btn').disabled = true;
+        appliedPromo = { code: data.code || code.toUpperCase(), type: data.type, value: Number(data.value) || 0 };
+        promoInput.disabled = true;
+        promoBtn.disabled = true;
+        const fp = computeFinalPricing(REGIONS[currentRegionKey]);
+        if (fp.promoNotBetter) setPromoMsg('', t('checkout.promo_not_better', 'Your bundle discount already saves you more, so we kept the bundle. Only one discount applies per order.'));
+        else setPromoMsg('success', appliedPromo.type === 'free_order' ? t('checkout.promo_free_order', 'Code applied! This order is on us.') : t('checkout.promo_applied', 'Code applied!'));
       }
     } catch {
       appliedPromo = null;
-      msg.className = 'promo-message error';
-      msg.textContent = t('checkout.err_generic', 'Something went wrong. Please try again.');
+      setPromoMsg('error', t('checkout.err_generic', 'Something went wrong. Please try again.'));
     }
-    renderCartSummary();
+    renderPaymentSection();
   });
 
+  /* One discount per order: the customer gets whichever is better, the
+     bundle discount or the code (a free-order code always wins). The server
+     (_pricing.js) applies the same rule and is what actually gets charged. */
   function computeFinalPricing(region) {
     const pricing = window.hikayaCart.computeCartPricing(region);
-    let deliveryFee = pricing.tier.freeDelivery ? 0 : pricing.deliveryFee;
+    const extra = pricing.extraCharacterFee || 0;
+    const fullBooks = pricing.perBookFull * pricing.itemCount;
     let booksTotal = pricing.booksTotal;
-    let promoApplied = null;
+    let deliveryFee = pricing.tier.freeDelivery ? 0 : pricing.deliveryFee;
+    let extraFee = extra;
+    let bundlePct = pricing.tier.discountPct;
+    let promoApplied = null, promoNotBetter = false;
     if (appliedPromo) {
-      if (appliedPromo.type === 'free_shipping') {
-        deliveryFee = 0;
-        promoApplied = { code: appliedPromo.code, label: t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase() };
-      } else if (appliedPromo.type === 'percent') {
-        booksTotal -= booksTotal * (appliedPromo.value / 100);
-        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}%` };
-      } else if (appliedPromo.type === 'fixed') {
-        booksTotal = Math.max(0, booksTotal - appliedPromo.value);
-        promoApplied = { code: appliedPromo.code, label: `-${appliedPromo.value}` };
+      let b = fullBooks, d = region.deliveryFee || 0, x = extra, label = '';
+      const p = appliedPromo;
+      if (p.type === 'free_order') { b = 0; d = 0; x = 0; label = t('checkout.promo_free_label', 'Free order'); }
+      else if (p.type === 'free_shipping') { d = 0; label = t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase(); }
+      else if (p.type === 'percent') { b = fullBooks * (1 - Math.min(100, p.value) / 100); label = `-${p.value}%`; }
+      else if (p.type === 'fixed') {
+        const local = window.hikayaConvertFromAed ? window.hikayaConvertFromAed(p.value, region) : p.value;
+        b = Math.max(0, fullBooks - local);
+        label = '-' + (window.hikayaFormatPrice ? window.hikayaFormatPrice(Math.round(local * 100) / 100, region) : local);
       }
+      if (p.type === 'free_order' || b + d + x < booksTotal + deliveryFee + extraFee - 0.001) {
+        booksTotal = b; deliveryFee = d; extraFee = x; bundlePct = 0;
+        promoApplied = { code: p.code, label };
+      } else promoNotBetter = true;
     }
-    return { ...pricing, deliveryFee, booksTotal, total: booksTotal + deliveryFee + (pricing.extraCharacterFee || 0), promoApplied };
+    const total = Math.round((booksTotal + deliveryFee + extraFee) * 100) / 100;
+    return { ...pricing, extraCharacterFee: extraFee, deliveryFee, booksTotal, bundlePct, total, promoApplied, promoNotBetter };
   }
 
   function renderCartSummary() {
@@ -621,9 +649,9 @@
     const final = computeFinalPricing(region);
 
     const discountRow = document.getElementById('bundle-discount-row');
-    if (final.tier.discountPct > 0) {
+    if (final.bundlePct > 0) {
       discountRow.style.display = 'flex';
-      document.getElementById('bundle-discount-note').textContent = `-${final.tier.discountPct}%`;
+      document.getElementById('bundle-discount-note').textContent = `-${final.bundlePct}%`;
     } else {
       discountRow.style.display = 'none';
     }
@@ -647,6 +675,8 @@
     document.getElementById('price-delivery').textContent = final.deliveryFee === 0 ? t('checkout.free', 'Free') : fmt(final.deliveryFee);
     document.getElementById('price-total').textContent = fmt(final.total);
     if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
+    // Keep the payment box in step when the total becomes (or stops being) free.
+    if (paymentArea && paymentArea.dataset.free !== undefined && paymentArea.dataset.free !== String(final.total === 0)) setTimeout(renderPaymentSection, 0);
   }
 
   function updatePricing() {
@@ -672,6 +702,8 @@
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
     const region = REGIONS[currentRegionKey];
+    const fpAll = (window.hikayaCart && window.hikayaCart.getCart().length) ? computeFinalPricing(region) : { total: -1 };
+    paymentArea.dataset.free = String(fpAll.total === 0); // set before updatePricing so it can't loop back here
     updatePricing();
 
     if (region.methods[0] === 'contact') {
@@ -695,6 +727,20 @@
     }
 
     let bodyHtml = '';
+    if (fpAll.total === 0 && region.methods.includes('ziina')) {
+      selectedPaymentMethod = 'ziina';
+      paymentArea.innerHTML = `
+        <div class="cod-box ziina-box">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="9" width="17" height="11" rx="1"/><path d="M3 9h18M12 9v11M12 9c-1.5-3.5-5.5-4-5.5-1.5S10 9 12 9zm0 0c1.5-3.5 5.5-4 5.5-1.5S14 9 12 9z"/></svg>
+          <div>
+            <h4>${t('checkout.free_title', 'Nothing to pay')}</h4>
+            <p>${t('checkout.free_body', 'Your code covers this whole order. Just confirm and we will start on the book.')}</p>
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('checkout.free_btn', 'Place free order');
+      return;
+    }
     if (selectedPaymentMethod === 'ziina') {
       const fp = computeFinalPricing(region);
       const rate = (window.HIKAYA_AED_RATES || {})[region.currency] || 1;
@@ -914,7 +960,7 @@
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
       paymentMethod: selectedPaymentMethod,
       items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
-      bundleDiscountPct: finalPricing.tier.discountPct,
+      bundleDiscountPct: finalPricing.bundlePct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,
       currency: region.currency
@@ -971,6 +1017,11 @@
           method: 'POST', headers, body: JSON.stringify({ ...order, returnPath: location.pathname }),
         });
         const data = await res.json().catch(() => ({}));
+        if (res.ok && data.free) {
+          placeOrderBtn.disabled = true;
+          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber);
+          return;
+        }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
         try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, items: order.items, email: order.email })); } catch {}
         placeOrderBtn.textContent = t('pg.ziina_redirect', 'Taking you to secure payment…');

@@ -41,8 +41,12 @@ order can be paid for until these exist. Also still needed: `ADMIN_PASSWORD`,
 
 ## 🟡 Owner dashboard — solid, but incomplete
 
-- No discount code management UI — codes only exist as hardcoded fallbacks or via
-  direct Supabase table edits; no "create a new code" button
+- ✅ Done (Oct 2026): Discounts tab — templates, single/batch codes, email-locked codes,
+  emailing codes, tracker (uses, discount given, sales). One discount per order (best of
+  bundle vs code). 100% codes skip payment. Orders have a type (sale / gift / influencer /
+  replacement / test); only sales count as revenue, giveaways shown separately.
+- Not yet: cost per book (printing + delivery) to show the true cost of giveaways;
+  a "create order by hand" form (for now, issue a free-order code and place it via checkout)
 - No customer messages inbox in admin — Contact Us only emails the owner, doesn't
   surface anywhere in the dashboard itself
 - No newsletter subscriber list or export in admin

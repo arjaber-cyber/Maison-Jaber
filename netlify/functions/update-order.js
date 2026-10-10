@@ -17,7 +17,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
 const ALL_STAGES = [...STAGES, 'cancelled'];
-const PAYMENT = ['pending', 'pending_cod', 'paid', 'refunded', 'failed'];
+const PAYMENT = ['pending', 'pending_cod', 'paid', 'refunded', 'failed', 'waived'];
+// Only "sale" counts as revenue on the dashboard; the rest are giveaways/internal.
+const ORDER_TYPES = ['sale', 'gift', 'influencer', 'replacement', 'test'];
 const H = { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 const json = (code, body) => ({ statusCode: code, body: JSON.stringify(body) });
 const clip = (v, n) => (v == null ? null : String(v).trim().slice(0, n) || null);
@@ -61,6 +63,12 @@ exports.handler = async (event) => {
     patch.payment_status = paymentStatus;
   }
   if (adminNotes !== undefined) patch.admin_notes = String(adminNotes).slice(0, 4000);
+  let newType = null;
+  if (p.orderType !== undefined) {
+    if (!ORDER_TYPES.includes(p.orderType)) return json(400, { error: 'Invalid order type.' });
+    newType = p.orderType;
+    if (p.orderTypeNote !== undefined) patch.order_type_note = clip(p.orderTypeNote, 300);
+  }
   if (p.courier !== undefined) patch.courier = clip(p.courier, 80);
   if (p.trackingNumber !== undefined) patch.tracking_number = clip(p.trackingNumber, 120);
   if (p.trackingUrl !== undefined) {
@@ -68,10 +76,18 @@ exports.handler = async (event) => {
     if (u && !/^https?:\/\//i.test(u)) return json(400, { error: 'Tracking link must start with https://' });
     patch.tracking_url = u;
   }
-  if (!newStage && !Object.keys(patch).length) return json(400, { error: 'Nothing to update.' });
+  if (!newStage && !newType && !Object.keys(patch).length) return json(400, { error: 'Nothing to update.' });
 
   try {
     let current = null;
+    if (newType) {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=order_type,order_type_history`, { headers: H });
+      const rows = await r.json().catch(() => []);
+      if (!r.ok || !rows.length) return json(404, { error: 'Order not found.' });
+      const hist = Array.isArray(rows[0].order_type_history) ? rows[0].order_type_history : [];
+      patch.order_type = newType;
+      if ((rows[0].order_type || 'sale') !== newType) patch.order_type_history = [...hist, { from: rows[0].order_type || 'sale', to: newType, note: patch.order_type_note || null, at: new Date().toISOString() }].slice(-50);
+    }
     if (newStage) {
       const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=order_status,stage_history`, { headers: H });
       const rows = await r.json().catch(() => []);
