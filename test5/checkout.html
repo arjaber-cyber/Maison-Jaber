@@ -417,6 +417,7 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { maybeSendWelcome } from './welcome.js';
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -444,6 +445,7 @@
       accountStep.style.display = 'none';
       signedInBar.style.display = 'block';
       signedInEmail.textContent = session.user.email;
+      maybeSendWelcome(session);
       // Prefill known details
       const fullName = session.user.user_metadata?.full_name;
       if (fullName) document.getElementById('full-name').value = fullName;
@@ -982,7 +984,7 @@
       giftRecipientName: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-name').value.trim() : '',
       giftRecipientPhone: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-phone').value.trim() : '',
       paymentMethod: selectedPaymentMethod,
-      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
+      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', siteLang: (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
       bundleDiscountPct: finalPricing.bundlePct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,

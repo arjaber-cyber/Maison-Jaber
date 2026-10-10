@@ -7,6 +7,7 @@
 // until that's configured.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
+const { contactReceived } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -29,6 +30,7 @@ exports.handler = async (event) => {
   }
 
   const { name, email, orderNumber, message } = payload;
+  const lang = payload.lang === 'ar' ? 'ar' : 'en';
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!name || !emailRe.test(email || '') || !message || message.trim().length < 5) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please fill in your name, a valid email, and a message.' }) };
@@ -52,7 +54,7 @@ exports.handler = async (event) => {
     await sendEmail({
       to: ownerEmail,
       replyTo: email, // hit Reply in Zoho and it goes straight to the customer
-      subject: `New contact message from ${name}${orderNumber ? ' (Order ' + orderNumber + ')' : ''}`,
+      subject: `New contact message from ${String(name).slice(0, 80)}${orderNumber ? ' (Order ' + String(orderNumber).slice(0, 30) + ')' : ''}${lang === 'ar' ? ' · Arabic' : ''}`,
       html: emailShell(`
         <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">New message from your site</h2>
         <p style="font-size:14px; color:#5b4a3d;"><strong>From:</strong> ${esc(name)} (${esc(email)})</p>
@@ -62,14 +64,8 @@ exports.handler = async (event) => {
     });
   }
 
-  await sendEmail({
-    to: email,
-    subject: 'We got your message — Hikaya by Maison Jaber',
-    html: emailShell(`
-      <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">Thanks, ${esc(name.split(' ')[0])}!</h2>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">We've received your message and will get back to you as soon as we can — usually within a day.</p>
-    `)
-  });
+  const reply = contactReceived({ name, message, orderNumber, lang });
+  await sendEmail({ to: email, subject: reply.subject, html: reply.html });
 
   return { statusCode: 200, body: JSON.stringify({ success: true }) };
 };

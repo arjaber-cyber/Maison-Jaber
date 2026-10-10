@@ -9,6 +9,9 @@
 // SETUP: create a `newsletter_subscribers` table in Supabase:
 //   email text primary key, subscribed_at timestamptz
 
+const { sendEmail } = require('./_email');
+const { newsletterWelcome } = require('./_templates');
+
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
 // Server-side key (set SUPABASE_SERVICE_ROLE_KEY in Netlify env). The tables are locked with RLS,
@@ -33,7 +36,14 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Please enter a valid email address.' }) };
   }
 
+  const lang = payload.lang === 'ar' ? 'ar' : 'en';
   try {
+    // Already subscribed? Then don't send the welcome note again.
+    let isNew = true;
+    try {
+      const chk = await fetch(`${SUPABASE_URL}/rest/v1/newsletter_subscribers?email=eq.${encodeURIComponent(email)}&select=email`, { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } });
+      if (chk.ok) isNew = (await chk.json()).length === 0;
+    } catch {}
     const res = await fetch(`${SUPABASE_URL}/rest/v1/newsletter_subscribers?on_conflict=email`, {
       method: 'POST',
       headers: {
@@ -42,10 +52,14 @@ exports.handler = async (event) => {
         Authorization: `Bearer ${SUPABASE_KEY}`,
         Prefer: 'resolution=merge-duplicates',
       },
-      body: JSON.stringify({ email, subscribed_at: new Date().toISOString() }),
+      body: JSON.stringify(isNew ? { email, lang, subscribed_at: new Date().toISOString() } : { email, lang }),
     });
     if (!res.ok) {
       console.warn('newsletter_subscribers insert failed (table may not exist yet):', await res.text());
+    }
+    else if (isNew) {
+      const m = newsletterWelcome(lang);
+      await sendEmail({ to: email, subject: m.subject, html: m.html }).catch(e => console.warn('newsletter welcome failed', e));
     }
     // Always a friendly success to the visitor -- a missing table is our
     // setup issue, not something they should see as an error.

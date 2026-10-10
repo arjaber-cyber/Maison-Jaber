@@ -122,6 +122,7 @@
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  import { maybeSendWelcome } from './welcome.js';
   import { mountGoogleSignIn } from './google-auth.js';
 
   const supabase = createClient(
@@ -148,7 +149,7 @@
 
   // If already signed in, go straight there
   supabase.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = safeReturnTo;
+    if (data.session) { maybeSendWelcome(data.session); setTimeout(() => { window.location.href = safeReturnTo; }, 300); }
   });
 
   mountGoogleSignIn(supabase, document.getElementById('google-btn'), {

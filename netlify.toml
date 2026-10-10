@@ -5,6 +5,10 @@
 [functions."send-abandoned-reminders"]
   schedule = "0 */6 * * *"
 
+# Daily 08:00 UAE (04:00 UTC): customer feedback requests + team "needs attention" summary.
+[functions."daily-emails"]
+  schedule = "0 4 * * *"
+
 # Deletes uploaded child photos older than 15 days (our promise to parents).
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"

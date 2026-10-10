@@ -91,8 +91,16 @@
       <li><a href="track-order.html" data-i18n="home6.foot_track">Track your order</a></li>
       <li><a href="refund-policy.html" data-i18n="home6.foot_refund">Returns and refunds</a></li>
     </ul></div>
-    
   </div>
+  <form class="foot-news" id="foot-news" novalidate>
+    <div class="fn-copy"><h2 data-i18n="qa.news_t">New stories, first</h2><p data-i18n="qa.news_d">New stories and Eid, Ramadan and back-to-school editions. We write rarely and keep it short.</p></div>
+    <div class="fn-row">
+      <label class="sr-only" for="foot-news-email" data-i18n="qa.news_label">Your email</label>
+      <input type="email" id="foot-news-email" required autocomplete="email" inputmode="email" dir="ltr" placeholder="you@email.com" />
+      <button type="submit" class="btn btn-primary" data-i18n="qa.news_btn">Sign up</button>
+    </div>
+    <p class="fn-msg" id="foot-news-msg" role="status" aria-live="polite"></p>
+  </form>
   <div class="foot-bottom">
     <span data-i18n="home6.foot_copy">© 2026 Maison Jaber. All rights reserved.</span>
     <span class="powered" data-i18n="pg.powered">Powered by Maison Jaber FZ-LLC</span>
@@ -207,6 +215,23 @@
     if (end) new IntersectionObserver(([e]) => { seen.b = e.isIntersecting; update(); }).observe(end);
     update();
   }
+
+  /* ---------------- Newsletter sign-up (footer) ---------------- */
+  document.addEventListener('submit', async e => {
+    const form = e.target.closest && e.target.closest('#foot-news'); if (!form) return;
+    e.preventDefault();
+    const input = form.querySelector('input[type=email]'), msg = form.querySelector('.fn-msg'), btn = form.querySelector('button');
+    const email = (input.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = t('qa.news_bad', 'Please enter a valid email address.'); msg.className = 'fn-msg bad'; input.focus(); return; }
+    btn.disabled = true; msg.className = 'fn-msg'; msg.textContent = t('qa.news_sending', 'Signing you up…');
+    try {
+      const r = await fetch('/.netlify/functions/subscribe-newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, lang: lang() }) });
+      if (!r.ok) throw new Error();
+      msg.textContent = t('qa.news_ok', "You're on the list. Check your inbox for a welcome note."); msg.className = 'fn-msg ok'; input.value = '';
+      if (window.hikayaTrackEvent) window.hikayaTrackEvent('newsletter_signup', {});
+    } catch (_) { msg.textContent = t('qa.news_err', 'Something went wrong. Please try again.'); msg.className = 'fn-msg bad'; }
+    btn.disabled = false;
+  });
 
   /* ---------------- Photo privacy (modal) ---------------- */
   const PRIV_ROWS = [

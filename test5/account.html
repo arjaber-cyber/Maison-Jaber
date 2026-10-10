@@ -236,6 +236,7 @@
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  import { maybeSendWelcome } from './welcome.js';
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -249,9 +250,11 @@
   } else {
     const welcomeEl = document.querySelector('.page-hero h1');
     const name = session.user.user_metadata?.full_name || session.user.email;
-    welcomeEl.textContent = `Welcome back, ${name.split(' ')[0]}`;
+    const isNew = session.user.created_at && (Date.now() - new Date(session.user.created_at).getTime() < 15 * 60 * 1000);
+    welcomeEl.textContent = `${isNew ? 'Welcome' : 'Welcome back'}, ${name.split(' ')[0]}`;
     document.querySelector('.page-hero p').textContent = 'Your orders, saved projects, and details, all in one place.';
     loadMyOrders(session.access_token, session.user.email);
+    maybeSendWelcome(session);
   }
 
   const STAGE_LABELS = {

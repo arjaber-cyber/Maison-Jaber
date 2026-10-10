@@ -10,7 +10,8 @@
 
 const { isAdminRequest } = require('./_admin-check');
 const { STAGES, normalizeStage } = require('./_stages');
-const { sendEmail, emailShell } = require('./_email');
+const { sendEmail } = require('./_email');
+const { orderShipped, orderDelivered, orderPrinting, orderCancelled, photoRequest, delayNotice } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -25,22 +26,14 @@ const json = (code, body) => ({ statusCode: code, body: JSON.stringify(body) });
 const clip = (v, n) => (v == null ? null : String(v).trim().slice(0, n) || null);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-function customerEmail(order, stage) {
-  const first = String(order.full_name || '').split(' ')[0] || 'there';
-  const no = esc(order.order_number || '');
-  if (stage === 'with_courier') {
-    const track = order.tracking_url
-      ? `<p><a href="${esc(order.tracking_url)}" style="color:#8A5638;font-weight:700">Track your delivery${order.tracking_number ? ' (' + esc(order.tracking_number) + ')' : ''}</a></p>`
-      : (order.tracking_number ? `<p>Tracking number: <strong>${esc(order.tracking_number)}</strong>${order.courier ? ' with ' + esc(order.courier) : ''}</p>` : '');
-    return {
-      subject: `Your Hikaya book is on its way · ${order.order_number || ''}`,
-      html: emailShell(`<p>Hi ${esc(first)},</p><p>Good news: your personalised Hikaya book (order <strong>${no}</strong>) is gift-boxed and now with ${order.courier ? esc(order.courier) : 'our delivery partner'}.</p>${track}<p>You can also check progress any time at <a href="https://maison-jaber.com/track-order.html">maison-jaber.com/track-order</a>.</p><p>With love,<br>Hikaya by Maison Jaber</p>`),
-    };
-  }
-  return {
-    subject: `Delivered: your Hikaya book · ${order.order_number || ''}`,
-    html: emailShell(`<p>Hi ${esc(first)},</p><p>Your Hikaya book (order <strong>${no}</strong>) has been delivered. We hope it becomes a favourite at bedtime.</p><p>If anything isn't perfect, just reply to this email and a real person will help.</p><p>With love,<br>Hikaya by Maison Jaber</p>`),
-  };
+// Customer emails for stage changes (English or Arabic, see _templates.js).
+function customerEmail(order, stage, refunded) {
+  if (refunded) return orderCancelled(order, true);
+  const m = stage === 'printing' ? orderPrinting(order)
+    : stage === 'with_courier' ? orderShipped(order)
+    : stage === 'cancelled' ? orderCancelled(order, false)
+    : orderDelivered(order);
+  return { subject: m.subject, html: m.html };
 }
 
 exports.handler = async (event) => {
@@ -51,6 +44,34 @@ exports.handler = async (event) => {
   try { p = JSON.parse(event.body); } catch { return json(400, { error: 'Invalid request.' }); }
   const { orderId, paymentStatus, adminNotes, notifyCustomer } = p;
   if (!orderId || !/^[0-9a-f-]{36}$/i.test(orderId)) return json(400, { error: 'Missing or invalid orderId.' });
+
+  // One-off customer messages from the dashboard: ask for a new photo, or tell them it's running late.
+  // Sends the email and logs it in the internal notes; the order stage is not changed.
+  if (p.customerMessage === 'photo' || p.customerMessage === 'delay') {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=*`, { headers: H });
+      const rows = await r.json().catch(() => []);
+      if (!r.ok || !rows.length) return json(404, { error: 'Order not found.' });
+      const full = rows[0];
+      if (!full.email) return json(400, { error: 'This order has no email address.' });
+      const note = clip(p.note, 600);
+      const newDate = p.newDate && /^\d{4}-\d{2}-\d{2}$/.test(p.newDate) ? p.newDate : null;
+      if (p.customerMessage === 'delay' && !newDate) return json(400, { error: 'Pick the new delivery date first.' });
+      const m = p.customerMessage === 'photo' ? photoRequest(full, note) : delayNotice(full, newDate, note);
+      const sent = await sendEmail({ to: full.email, subject: m.subject, html: m.html });
+      const emailed = !!(sent && sent.sent !== false);
+      const stamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Dubai' });
+      const line = `[${stamp}] ${p.customerMessage === 'photo' ? 'Asked customer for a new photo' : 'Sent delay notice, new date ' + newDate}${emailed ? '' : ' (email NOT sent: email sending not set up)'}${note ? ': ' + note : ''}`;
+      const admin_notes = (full.admin_notes ? full.admin_notes + '\n' : '') + line;
+      const u = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}`, { method: 'PATCH', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify({ admin_notes: admin_notes.slice(-4000) }) });
+      const urows = await u.json().catch(() => []);
+      const { items, ...order } = (Array.isArray(urows) && urows[0]) || full;
+      return json(200, { order, emailed });
+    } catch (err) {
+      console.error('update-order customerMessage error:', err);
+      return json(500, { error: 'Could not send the message.' });
+    }
+  }
 
   const patch = {};
   let newStage = null;
@@ -115,8 +136,9 @@ exports.handler = async (event) => {
     const { items, ...order } = rows[0];
 
     let emailed = false;
-    if (notifyCustomer && patch.order_status && ['with_courier', 'delivered'].includes(patch.order_status) && order.email) {
-      try { const m = customerEmail(order, patch.order_status); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
+    const refundNow = patch.payment_status === 'refunded';
+    if (notifyCustomer && order.email && (refundNow || (patch.order_status && ['printing', 'with_courier', 'delivered', 'cancelled'].includes(patch.order_status)))) {
+      try { const m = customerEmail(rows[0], patch.order_status, refundNow); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
       catch (e) { console.error('update-order email failed:', e); }
     }
     return json(200, { order, emailed });

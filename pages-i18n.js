@@ -675,6 +675,14 @@
     book_en: { en: 'English book', ar: 'كتاب بالإنجليزية' },
     book_ar: { en: 'Arabic book', ar: 'كتاب بالعربية' },
     upsell_1_free: { en: 'Add one more book and save 10% on each.', ar: 'أضف كتابًا آخر ووفّر 10% على كل كتاب' },
+    news_t: { en: 'New stories, first', ar: 'القصص الجديدة أولًا' },
+    news_d: { en: 'New stories and Eid, Ramadan and back-to-school editions. We write rarely and keep it short.', ar: 'قصص جديدة وإصدارات العيد ورمضان والعودة إلى المدرسة، نراسلك نادرًا وباختصار' },
+    news_label: { en: 'Your email', ar: 'بريدك الإلكتروني' },
+    news_btn: { en: 'Sign up', ar: 'اشترك' },
+    news_bad: { en: 'Please enter a valid email address.', ar: 'يرجى إدخال بريد إلكتروني صحيح' },
+    news_sending: { en: 'Signing you up…', ar: 'جارٍ تسجيلك…' },
+    news_ok: { en: "You're on the list. Check your inbox for a welcome note.", ar: 'تم تسجيلك، ستجد رسالة ترحيب في بريدك' },
+    news_err: { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ ما، يرجى المحاولة مرة أخرى' },
     name_err: { en: 'Please use letters only (no numbers or symbols), up to 20 characters.', ar: 'يرجى استخدام الحروف فقط (بدون أرقام أو رموز) وبحد أقصى 20 حرفًا' },
   };
 })();

@@ -9,7 +9,8 @@
 // and RESEND_API_KEY set (see _email.js) to actually send anything -- until
 // both exist, this just runs, finds nothing to do, and exits quietly.
 
-const { sendEmail, emailShell } = require('./_email');
+const { sendEmail } = require('./_email');
+const { cartReminder } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -40,21 +41,8 @@ exports.handler = async () => {
 
   let sent = 0;
   for (const cart of carts) {
-    const firstName = cart.child_name ? cart.child_name : 'their story';
-    const result = await sendEmail({
-      to: cart.email,
-      subject: `${cart.child_name ? cart.child_name + "'s" : 'Your child\'s'} Hikaya story is waiting for you`,
-      html: emailShell(`
-        <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">You were so close!</h2>
-        <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">
-          You started creating a personalized storybook${cart.story ? ' — <strong>' + cart.story + '</strong>' : ''}${cart.child_name ? ' for <strong>' + cart.child_name + '</strong>' : ''}. It's still saved and ready whenever you are.
-        </p>
-        <div style="text-align:center; margin:22px 0;">
-          <a href="https://maison-jaber.com/test5/personalize.html" style="background:#A67443; color:#fff; padding:13px 26px; border-radius:999px; text-decoration:none; font-size:14px; font-weight:600; display:inline-block;">Finish Their Story &rarr;</a>
-        </div>
-        <p style="font-size:13px; color:#7d6a5a;">If you've changed your mind, no worries at all — just ignore this email.</p>
-      `)
-    });
+    const mail = cartReminder(cart);
+    const result = await sendEmail({ to: cart.email, subject: mail.subject, html: mail.html });
 
     if (result.sent) {
       sent++;
