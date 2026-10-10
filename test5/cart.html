@@ -186,7 +186,7 @@
         <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
         <div class="info">
           <h3>${item.story}</h3>
-          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}</div>
+          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}${item.dedication ? ' · ✉ ' + t('qa.msg_yours', 'Your message') : ''}</div>
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
         </div>

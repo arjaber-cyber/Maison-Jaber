@@ -321,7 +321,7 @@
           <section class="op-box"><h4>Books (${its.length})</h4>${its.map((it, n) => `
             <div class="op-item"><strong>${esc(it.story || '—')}</strong>
               <div class="op-item-m">${esc(it.childName || '—')}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
-              ${it.dedication ? `<div class="op-quote">“${esc(it.dedication)}”</div>` : ''}
+              ${it.dedication ? `<div class="op-quote"><small style="display:block; font-style:normal; font-weight:700; opacity:.7;">First-page message (print this instead of the standard one)</small>“${esc(it.dedication)}”</div>` : ''}
               <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
             </div>`).join('')}</section>
           <section class="op-box"><h4>Customer &amp; delivery</h4><dl class="op-kv">

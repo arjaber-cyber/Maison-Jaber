@@ -645,7 +645,7 @@
         <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>
-          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}</p>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}${item.dedication ? ' &middot; ✉ ' + t('qa.msg_yours', 'Your message') : ''}</p>
           ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
           <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
         </div>
