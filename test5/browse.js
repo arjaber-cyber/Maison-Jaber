@@ -162,6 +162,12 @@
       let html = rows.map(([i, k]) => `<li>${ico(i)}<div><b>${esc(t('pg.' + k))}</b><span>${esc(t('pg.' + k + '_d'))}</span></div></li>`).join('');
       if (s.has_extra_character && s.extra_character_name) html += `<li>${ico('extra')}<div><b>${esc(t('pg.p_extra'))}</b><span>${esc(tpl(t('pg.p_extra_d'), { who: s.extra_character_name }))}</span></div></li>`;
       document.getElementById('st-personal').innerHTML = html;
+      // Every story opens with a message to the child; invite parents to write their own.
+      const plist = document.getElementById('st-personal');
+      let cta = document.getElementById('st-msg-cta');
+      if (!cta) { cta = document.createElement('div'); cta.id = 'st-msg-cta'; cta.className = 'st-msg-cta'; plist.insertAdjacentElement('afterend', cta); }
+      const msgHref = H.personaliseHref ? H.personaliseHref(s) : `personalize.html?story=${encodeURIComponent(s.slug)}`;
+      cta.innerHTML = `<p>${esc(t('qa.st_msg_d', 'This story opens with a message to your child. Want to write your own?'))}</p><a class="btn btn-secondary" href="${esc(msgHref + (msgHref.includes('?') ? '&' : '?') + 'msg=1')}">${esc(t('qa.st_msg_btn', 'Personalise the message'))} <span aria-hidden="true">✎</span></a>`;
       // inside the book
       const inside = document.getElementById('st-inside');
       if (pv.length) {

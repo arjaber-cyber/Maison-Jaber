@@ -402,7 +402,23 @@
       <!-- Step: Review -->
       <div class="wizard-step" data-step="review" id="wizard-step-review">
         <div id="review-summary"></div>
-        <div class="review-dedication"><div class="field full"><label class="field-label" for="dedication" data-i18n="personalize.dedication">Add something just from you (optional)</label><textarea id="dedication" name="dedication" placeholder="For the inside cover" data-i18n-placeholder="personalize.dedication_ph"></textarea></div></div>
+        <section class="msg-card" id="msg-card" aria-labelledby="msg-title">
+          <div class="msg-head">
+            <span class="msg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg></span>
+            <div>
+              <h3 id="msg-title"><span data-i18n="qa.msg_t1">A message to</span> <span id="msg-name" data-i18n-skip></span> <span data-i18n="qa.msg_t2">on the first page</span></h3>
+              <p data-i18n="qa.msg_d">Every Hikaya story opens with a short, warm message to your child. Would you like it to come from you?</p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary msg-toggle" id="msg-toggle" aria-expanded="false" aria-controls="msg-body"><span data-i18n="qa.msg_btn">Personalise the message</span> <span aria-hidden="true">✎</span></button>
+          <div class="msg-body" id="msg-body" hidden>
+            <label class="field-label" for="dedication" data-i18n="qa.msg_label">Your message</label>
+            <textarea id="dedication" name="dedication" maxlength="300" rows="4" dir="auto" placeholder="e.g. To our brave Sara, may every page remind you how loved you are. Mama and Baba" data-i18n-placeholder="qa.msg_ph"></textarea>
+            <div class="msg-row"><span class="msg-count" id="msg-count">0/300</span><button type="button" class="msg-inspire" id="msg-inspire"><span aria-hidden="true">✦</span> <span data-i18n="qa.msg_inspire">Inspire me</span></button></div>
+            <p class="msg-note" data-i18n="qa.msg_note">We print it on the first page exactly as you write it, so please check names and spelling.</p>
+            <button type="button" class="msg-cancel" id="msg-cancel" data-i18n="qa.msg_cancel">Keep the story's own message instead</button>
+          </div>
+        </section>
         <div class="field full book-lang">
           <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
           <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
@@ -726,6 +742,42 @@
     const b = e.currentTarget; b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'));
   });
   document.getElementById('book-language').addEventListener('change', e => { e.target.dataset.touched = '1'; });
+
+  /* ---- Personal message for the first page (saved as the item's dedication) ---- */
+  (function () {
+    const toggle = document.getElementById('msg-toggle'), body = document.getElementById('msg-body'), ta = document.getElementById('dedication');
+    const count = document.getElementById('msg-count'), card = document.getElementById('msg-card');
+    if (!toggle || !body || !ta) return;
+    const MAX = 300;
+    const IDEAS = {
+      en: ['To our brave {name}, may every page remind you how loved you are. Love, Mama and Baba', 'Dear {name}, this story is yours, just like our hearts. Keep shining, little star.', 'For {name}: dream big, be kind, and never stop asking questions. We are so proud of you.', 'Happy reading, {name}! Wherever your adventures take you, home is always here.'],
+      ar: ['إلى {name} الشجاع، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزنا {name}، هذه القصة لك، تمامًا مثل قلوبنا، ابقَ نجمًا لامعًا', 'إلى {name}: احلم كثيرًا، وكن لطيفًا، ولا تتوقف عن السؤال، نحن فخورون بك', 'قراءة ممتعة يا {name}! أينما أخذتك مغامراتك، يبقى البيت هنا دائمًا'],
+    };
+    const childName = () => (document.getElementById('child-name').value || '').trim();
+    const lang = () => (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    const setOpen = open => {
+      body.hidden = !open; toggle.hidden = open; toggle.setAttribute('aria-expanded', String(open));
+      card.classList.toggle('open', open);
+      if (open) setTimeout(() => ta.focus(), 30);
+    };
+    const update = () => { count.textContent = `${ta.value.length}/${MAX}`; count.classList.toggle('over', ta.value.length >= MAX); };
+    const paintName = () => { const n = childName(); document.getElementById('msg-name').textContent = n || t('lx.st_child', 'your child'); };
+    toggle.addEventListener('click', () => setOpen(true));
+    document.getElementById('msg-cancel').addEventListener('click', () => { ta.value = ''; update(); setOpen(false); toggle.focus(); });
+    document.getElementById('msg-inspire').addEventListener('click', () => {
+      const list = IDEAS[lang()]; let pick = list[Math.floor(Math.random() * list.length)];
+      if (list.length > 1) while (pick.replace('{name}', '') === ta.dataset.lastIdea) pick = list[Math.floor(Math.random() * list.length)];
+      ta.dataset.lastIdea = pick.replace('{name}', '');
+      ta.value = pick.replace('{name}', childName() || (lang() === 'ar' ? 'بطلنا' : 'our little hero')); update(); ta.focus();
+    });
+    ta.addEventListener('input', update);
+    document.getElementById('child-name').addEventListener('input', paintName);
+    document.addEventListener('hikaya:langchange', paintName);
+    paintName(); update();
+    // Opened from a story page's "Write your own message" button, or editing a message already written.
+    if (new URLSearchParams(location.search).get('msg') === '1' || ta.value.trim()) setOpen(true);
+    window.hkMsgSync = () => { paintName(); update(); if (ta.value.trim()) setOpen(true); };
+  })();
   document.getElementById('change-story-btn').addEventListener('click', () => {
     document.getElementById('story-chip').style.display = 'none';
     document.getElementById('story-grid').style.display = 'grid';
@@ -1007,7 +1059,7 @@
     details: ['pg.wz_details_t', 'Tell us about them', 'pg.wz_details_s', 'Their first name, age, and how the story should talk about them.'],
     photo: ['pg.wz_photo_t', 'Add a photo of them', 'pg.wz_photo_s', 'A clear, front-facing photo so we can illustrate them as the hero.'],
     extra: ['pg.wz_extra_t', 'One more character', 'pg.wz_extra_s', 'This story has a special character you can add.'],
-    review: ['pg.wz_review_t', 'Check and add to cart', 'pg.wz_review_s', 'Make sure everything looks right. You can add a dedication too.'],
+    review: ['pg.wz_review_t', 'Check and add to cart', 'pg.wz_review_s', 'Make sure everything looks right. You can also write your own message for the first page.'],
   };
   function renderStepHeading(stepName) {
     const h = STEP_HEADINGS[stepName]; if (!h) return;
@@ -1080,6 +1132,7 @@
     const name = nameInput.value.trim();
     const age = ageInputEl.value;
     const dedication = document.getElementById('dedication').value.trim();
+    if (window.hkMsgSync) window.hkMsgSync();
     const photoCount = photoFiles.filter(p => p.status === 'verified').length;
     const rows = [
       { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
@@ -1156,6 +1209,7 @@
     nameInput.value = '';
     ageInputEl.value = '';
     document.getElementById('dedication').value = '';
+    if (window.hkMsgSync) { window.hkMsgSync(); const b = document.getElementById('msg-body'); if (b) { b.hidden = true; document.getElementById('msg-toggle').hidden = false; document.getElementById('msg-toggle').setAttribute('aria-expanded', 'false'); document.getElementById('msg-card').classList.remove('open'); } }
     document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
     document.getElementById('child-gender').value = '';
     ageTouched = false; renderAge(false);
