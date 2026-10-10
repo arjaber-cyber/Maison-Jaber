@@ -406,6 +406,7 @@
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  import { mountGoogleSignIn } from './google-auth.js';
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -451,8 +452,11 @@
   }
   refreshAuthUI();
 
-  document.getElementById('google-signin').addEventListener('click', async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+  mountGoogleSignIn(supabase, document.getElementById('google-signin'), {
+    redirectTo: window.location.href,
+    size: 'medium',
+    onSignedIn: () => refreshAuthUI(),
+    onError: (msg) => alert(msg)
   });
   document.getElementById('facebook-signin').addEventListener('click', async () => {
     await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });

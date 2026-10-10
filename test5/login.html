@@ -122,6 +122,7 @@
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  import { mountGoogleSignIn } from './google-auth.js';
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -150,11 +151,10 @@
     if (data.session) window.location.href = safeReturnTo;
   });
 
-  document.getElementById('google-btn').addEventListener('click', async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo) }
-    });
+  mountGoogleSignIn(supabase, document.getElementById('google-btn'), {
+    redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo),
+    onSignedIn: () => { window.location.href = safeReturnTo; },
+    onError: (msg) => { statusEl.className = 'status error'; statusEl.textContent = msg; }
   });
 
   document.getElementById('facebook-btn').addEventListener('click', async () => {
