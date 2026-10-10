@@ -116,6 +116,9 @@
 
   .map-field { margin-top: 4px; }
   #gift-message-field textarea { resize: vertical; min-height: 64px; }
+  .opt-mark { font-weight: 500; color: var(--ink-soft); text-transform: none; letter-spacing: 0; }
+  .gift-recipient-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 8px; }
+  #gift-recipient-field .form-grid { margin: 0; }
   .gift-message-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
   .gift-word-count { font-size: 11.5px; color: var(--ink-soft); font-weight: 600; }
   .gift-word-count.over { color: var(--coral-deep); }
@@ -309,10 +312,10 @@
           </div>
           <div class="map-hint" data-i18n="checkout.map_hint">The pin updates automatically as you type your address — check it lands in the right spot.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" placeholder="For delivery updates" autocomplete="tel" inputmode="tel" data-i18n-placeholder="checkout.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-placeholder="qa.phone_ph" /></div>
         <div class="field"><label class="field-label" for="gift" data-i18n="checkout.is_gift">Is this a gift?</label><select id="gift"><option value="no" data-i18n="checkout.no">No</option><option value="yes" data-i18n="checkout.yes">Yes</option></select></div>
         <div class="field full" id="gift-message-field" style="display:none;">
-          <label class="field-label" for="gift-message"><span data-i18n="checkout.gift_message_label">Gift message</span> <span class="req-mark">*</span></label>
+          <label class="field-label" for="gift-message"><span data-i18n="checkout.gift_message_label">Gift message</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label>
           <textarea id="gift-message" maxlength="160" placeholder="A short note for the gift card..." data-i18n-placeholder="checkout.gift_message_ph" rows="3"></textarea>
           <div class="gift-message-row">
             <span id="gift-word-count" class="gift-word-count">0/20 <span data-i18n="checkout.words">words</span></span>
@@ -320,6 +323,13 @@
               <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
               <span data-i18n="checkout.inspire_me">Inspire me</span>
             </button>
+          </div>
+        </div>
+        <div class="field full" id="gift-recipient-field" style="display:none;">
+          <p class="gift-recipient-note" data-i18n="qa.gift_note">Sending it straight to them? Add their name and phone, and put their address in the address fields above</p>
+          <div class="form-grid">
+            <div class="field"><label class="field-label" for="gift-recipient-name"><span data-i18n="qa.recipient_name">Recipient's name</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label><input type="text" id="gift-recipient-name" maxlength="80" autocomplete="off" /></div>
+            <div class="field"><label class="field-label" for="gift-recipient-phone"><span data-i18n="qa.recipient_phone">Recipient's phone</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label><input type="tel" id="gift-recipient-phone" maxlength="30" inputmode="tel" dir="ltr" autocomplete="off" placeholder="e.g. +971 50 123 4567" data-i18n-placeholder="qa.phone_ph" /></div>
           </div>
         </div>
       </div>
@@ -361,7 +371,7 @@
       <div id="summary-cart-items"><!-- populated from cart.js --></div>
 
       <div class="promo-box">
-        <input type="text" id="promo-code-input" placeholder="Discount code" data-i18n-placeholder="checkout.promo_placeholder" />
+        <input type="text" id="promo-code-input" placeholder="Discount code" data-i18n-placeholder="checkout.promo_placeholder" aria-label="Discount code" data-i18n-aria="checkout.promo_placeholder" autocomplete="off" autocapitalize="characters" />
         <button type="button" id="promo-apply-btn" data-i18n="checkout.apply">Apply</button>
       </div>
       <div class="promo-message" id="promo-message"></div>
@@ -374,7 +384,7 @@
       <p class="summary-eta" data-hk-eta>Delivery to UAE: about 5 working days</p>
       <ul class="summary-trust">
         <li data-i18n="lx.tr_secure">Secure payment</li>
-        <li><a href="#" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a></li>
+        <li><a href="privacy.html" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a></li>
         <li data-i18n="lx.tr_box">Gift packaging included</li>
       </ul>
     </div>
@@ -633,7 +643,7 @@
         <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>
-          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? 'Ages ' + item.ageEdition : ''}</p>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}</p>
           ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
           <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
         </div>
@@ -835,11 +845,17 @@
   }
 
   countrySelect.addEventListener('change', () => {
-    localStorage.setItem('hikaya_region', countrySelect.value);
+    // Use the shared picker so the header label and delivery estimate update too.
+    if (window.hikayaPickRegion) window.hikayaPickRegion(countrySelect.value);
+    else localStorage.setItem('hikaya_region', countrySelect.value);
     renderPaymentSection();
   });
   renderPaymentSection();
   detectLocation();
+  // Re-render dynamic text (summary lines, payment box) once translations switch language.
+  document.addEventListener('hikaya:langchange', () => renderPaymentSection());
+  // Page-copy translations load after this script, so render once more when everything is ready.
+  if (document.readyState !== 'complete') document.addEventListener('DOMContentLoaded', () => renderPaymentSection());
 
   // ---------- Abandoned cart tracking ----------
   // Fires once someone types a plausible email at checkout but doesn't
@@ -913,6 +929,7 @@
 
   giftSelect.addEventListener('change', () => {
     giftMessageField.style.display = giftSelect.value === 'yes' ? 'flex' : 'none';
+    document.getElementById('gift-recipient-field').style.display = giftSelect.value === 'yes' ? 'block' : 'none';
   });
 
   giftMessage.addEventListener('input', () => {
@@ -962,6 +979,8 @@
       phone: document.getElementById('phone').value,
       isGift: giftSelect.value === 'yes',
       giftMessage: giftSelect.value === 'yes' ? giftMessage.value.trim() : '',
+      giftRecipientName: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-name').value.trim() : '',
+      giftRecipientPhone: giftSelect.value === 'yes' ? document.getElementById('gift-recipient-phone').value.trim() : '',
       paymentMethod: selectedPaymentMethod,
       items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0 })),
       bundleDiscountPct: finalPricing.bundlePct,
@@ -976,8 +995,8 @@
       return;
     }
 
-    if (order.isGift && !order.giftMessage) {
-      errorBox.textContent = t('checkout.err_gift_message', 'Please add a short gift message, or use "Inspire me" for one.');
+    if (order.isGift && order.giftMessage.split(/\s+/).filter(Boolean).length > 20) {
+      errorBox.textContent = t('qa.err_gift_long', 'Please keep the gift message to 20 words or fewer.');
       errorBox.style.display = 'block';
       return;
     }

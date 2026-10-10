@@ -6,7 +6,7 @@
 // marked paid once Ziina confirms it (webhook or status check).
 //
 // POST { fullName, email, phone, address, city, country (UAE|Saudi|...),
-//        isGift, giftMessage, items:[{story, childName, ageEdition, gender,
+//        isGift, giftMessage, giftRecipientName, giftRecipientPhone, items:[{story, childName, ageEdition, gender,
 //        dedication, extraCharacterName}], promoCode, returnPath }
 // Env: ZIINA_API_KEY, ZIINA_TEST_MODE (true = Ziina sandbox, no real money),
 //      SUPABASE_SERVICE_ROLE_KEY, ZIINA_WEBHOOK_SECRET
@@ -64,13 +64,20 @@ exports.handler = async (event) => {
   }));
   const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
 
+  // Gift sent straight to someone else: keep the recipient with the delivery address,
+  // so whoever packs and ships the order sees it next to the address.
+  const recipName = o.isGift ? String(o.giftRecipientName || '').trim().slice(0, 80) : '';
+  const recipPhone = o.isGift ? String(o.giftRecipientPhone || '').trim().slice(0, 30) : '';
+  const recipient = [recipName, recipPhone].filter(Boolean).join(', ');
+  const deliveryAddress = String(o.address).trim() + (recipient ? ` (Gift recipient: ${recipient})` : '');
+
   // 1) Save the order first, so nothing is ever paid without a record.
   const save = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
     method: 'POST',
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation' },
     body: JSON.stringify({
       order_number: orderNumber, full_name: String(o.fullName).trim(), email, phone: String(o.phone).trim(),
-      address: String(o.address).trim(), city: String(o.city).trim(), country: o.country,
+      address: deliveryAddress, city: String(o.city).trim(), country: o.country,
       payment_method: free ? 'free' : 'ziina', amount: price.total, currency: price.currency, charged_aed: price.chargedAed,
       is_gift: !!o.isGift, gift_message: o.isGift ? String(o.giftMessage || '').slice(0, 600) : null,
       items: JSON.stringify(cleanItems), bundle_discount_pct: price.breakdown.bundleDiscountPct, promo_code: price.breakdown.promo,

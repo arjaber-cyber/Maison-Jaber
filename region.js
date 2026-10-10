@@ -9,8 +9,8 @@
    other page should read prices from here rather than hardcoding their own.
 */
 
-/* DELIVERY (Oct 2026 launch): UAE free; every other GCC country pays the
-   equivalent of AED 30, converted with the same ratio as book prices
+/* DELIVERY (Oct 2026 launch): UAE free; every other GCC country pays roughly
+   AED 30, rounded to a clean local amount (KWD 2.5, BHD 3, OMR 3)
    (AED 30 at the AED rates below; KSA/Qatar use the same number, 30). 2+ book bundles still ship free (cart.js). */
 /* Ziina charges in AED: local price x rate (keep in sync with netlify/functions/_pricing.js). */
 window.HIKAYA_AED_RATES = { AED: 1, SAR: 0.97933, QAR: 1.00893, BHD: 9.76729, OMR: 9.55137, KWD: 11.95 };
@@ -18,9 +18,9 @@ window.HIKAYA_REGIONS = {
   UAE:      { zone: 'GCC', countryCodes: ['AE'], currency: 'AED', symbol: 'AED', bookWas: 199, bookNow: 169, deliveryFee: 0, methods: ['ziina'], label: 'United Arab Emirates', shortLabel: 'UAE' },
   Saudi:    { zone: 'GCC', countryCodes: ['SA'], currency: 'SAR', symbol: 'SAR', bookWas: 199, bookNow: 169, deliveryFee: 30, methods: ['ziina'], label: 'Saudi Arabia', shortLabel: 'KSA' },
   Qatar:    { zone: 'GCC', countryCodes: ['QA'], currency: 'QAR', symbol: 'QAR', bookWas: 199, bookNow: 169, deliveryFee: 30, methods: ['ziina'], label: 'Qatar', shortLabel: 'Qatar' },
-  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 14.25, deliveryFee: 2.52, methods: ['ziina'], label: 'Kuwait', shortLabel: 'Kuwait' },
-  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 17.25, deliveryFee: 3.07, methods: ['ziina'], label: 'Bahrain', shortLabel: 'Bahrain' },
-  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 17.75, deliveryFee: 3.12, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
+  Kuwait:   { zone: 'GCC', countryCodes: ['KW'], currency: 'KWD', symbol: 'KWD', bookWas: 16.75, bookNow: 14.25, deliveryFee: 2.5, methods: ['ziina'], label: 'Kuwait', shortLabel: 'Kuwait' },
+  Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 17.25, deliveryFee: 3, methods: ['ziina'], label: 'Bahrain', shortLabel: 'Bahrain' },
+  Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 17.75, deliveryFee: 3, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
 };
 // GCC-only launch: visitors outside the GCC default to UAE (AED) pricing.
 
