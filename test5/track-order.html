@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
-<style>html.i18n-wait body{visibility:hidden}</style>
+<style>html.i18n-wait body{visibility:hidden}  .tl-date { display:block; font-size:12px; font-weight:500; color:var(--ink-soft, #5E4A3D); margin-top:2px; }
+  .tl-track { font-size:13px; font-weight:500; margin-top:6px; color:var(--ink-soft, #5E4A3D); } .tl-track a { color:var(--brand, #8A5638); font-weight:700; text-decoration:underline; }
+</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Track Your Order — Hikaya by Maison Jaber</title>
 <meta name="description" content="Check the status of your Hikaya storybook order." />
@@ -118,11 +120,10 @@
   /* Customer-facing names for the fulfilment stages the dashboard uses.
      "awaiting_approval" is an internal step (there is no customer preview), so it is only shown if an order is actually in it. */
   const STAGE_FB = {
-    received: 'Order received', preparing: 'Personalisation in progress', awaiting_approval: 'Final checks',
-    sent_to_printing: 'Printing', received_from_printing: 'Packed',
-    shipped: 'Shipped', delivered: 'Delivered',
+    received: 'Order received', ai_production: 'Illustrating your child as the hero', printing: 'Printing your book',
+    back_from_printing: 'Quality check and gift-boxing', with_courier: 'On its way to you', delivered: 'Delivered',
   };
-  const STAGE_KEY = { received: 'trk_c.received', preparing: 'trk_c.preparing', awaiting_approval: 'trk_c.checks', sent_to_printing: 'trk_c.printing', received_from_printing: 'trk_c.packed', shipped: 'trk.st_shipped', delivered: 'trk.st_delivered' };
+  const STAGE_KEY = { received: 'trk_c.received', ai_production: 'trk_c.ai_production', printing: 'trk_c.printing_now', back_from_printing: 'trk_c.back_from_printing', with_courier: 'trk_c.with_courier', delivered: 'trk_c.delivered' };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const form = document.getElementById('track-form');
   const btn = document.getElementById('track-btn');
@@ -157,15 +158,26 @@
     note.textContent = data.awaitingPayment ? tr('lx.trk_unpaid', 'We have your order, but payment has not been confirmed yet.') : '';
     document.getElementById('invoice-link').hidden = !!data.awaitingPayment;
     if (data.awaitingPayment) return;
-    const current = (data.stages || [])[data.stageIndex];
-    const shown = (data.stages || []).filter(st => st !== 'awaiting_approval' || st === current);
-    shown.forEach((stage) => {
+    if (data.cancelled) { note.hidden = false; note.textContent = tr('trk_c.cancelled', 'This order was cancelled. If you have questions, please contact us.'); return; }
+    const dates = data.stageDates || {};
+    (data.stages || []).forEach((stage) => {
       const i = data.stages.indexOf(stage);
       const row = document.createElement('div');
       row.className = 'tl-step ' + (i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : '');
       if (i === data.stageIndex) row.setAttribute('aria-current', 'step');
       row.innerHTML = '<div class="marker-col"><div class="marker"><svg viewBox="0 0 24 24" stroke-width="3" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg></div><div class="bar"></div></div><div class="label"></div>';
-      row.querySelector('.label').textContent = tr(STAGE_KEY[stage] || ('trk.st_' + stage), STAGE_FB[stage] || stage);
+      const lbl = row.querySelector('.label');
+      lbl.textContent = tr(STAGE_KEY[stage] || ('trk.st_' + stage), STAGE_FB[stage] || stage);
+      if (i <= data.stageIndex && dates[stage]) { const d = document.createElement('small'); d.className = 'tl-date'; d.textContent = new Date(dates[stage]).toLocaleDateString(loc, { day: 'numeric', month: 'short' }); lbl.appendChild(d); }
+      if (stage === 'with_courier' && i <= data.stageIndex && (data.courier || data.trackingNumber || data.trackingUrl)) {
+        const t = document.createElement('div'); t.className = 'tl-track';
+        const bits = [];
+        if (data.courier) bits.push(tr('trk_c.courier_line', 'With {courier}').replace('{courier}', data.courier));
+        if (data.trackingNumber) bits.push(tr('trk_c.tracking_no', 'Tracking number: {n}').replace('{n}', data.trackingNumber));
+        t.textContent = bits.join(' · ');
+        if (data.trackingUrl && /^https?:\/\//.test(data.trackingUrl)) { const a = document.createElement('a'); a.href = data.trackingUrl; a.target = '_blank'; a.rel = 'noopener'; a.textContent = tr('trk_c.track_link', 'Track your delivery →'); t.appendChild(document.createElement('br')); t.appendChild(a); }
+        lbl.appendChild(t);
+      }
       timeline.appendChild(row);
     });
     document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(lastEmail)}`;

@@ -648,6 +648,15 @@
 (function () {
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.trk_c = {
+    ai_production: { en: 'Illustrating your child as the hero', ar: 'نرسم طفلك بطلًا للقصة' },
+    printing_now: { en: 'Printing your book', ar: 'نطبع كتابك' },
+    back_from_printing: { en: 'Quality check and gift-boxing', ar: 'الفحص النهائي وتغليف الهدية' },
+    with_courier: { en: 'On its way to you', ar: 'في الطريق إليك' },
+    delivered: { en: 'Delivered', ar: 'تم التوصيل' },
+    cancelled: { en: 'This order was cancelled. If you have questions, please contact us.', ar: 'تم إلغاء هذا الطلب، إن كان لديك أي سؤال يسعدنا تواصلك معنا' },
+    courier_line: { en: 'With {courier}', ar: 'مع {courier}' },
+    tracking_no: { en: 'Tracking number: {n}', ar: 'رقم التتبّع: {n}' },
+    track_link: { en: 'Track your delivery →', ar: 'تتبّع الشحنة ←' },
     received: { en: 'Order received', ar: 'استلمنا طلبك' },
     preparing: { en: 'Personalisation in progress', ar: 'نعمل على تخصيص الكتاب' },
     checks: { en: 'Final checks', ar: 'المراجعة الأخيرة' },

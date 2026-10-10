@@ -33,7 +33,7 @@
   .wordmark { font-family: 'Inter', sans-serif; font-size: 19px; font-weight: 700; color: var(--coral-deep); }
   header.site a.exit { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
 
-  .page-head { padding: 20px 0; }
+  .page-head { padding-top: 20px; padding-bottom: 20px; }
   .page-head h1 { font-size: 26px; }
   .page-head p { color: var(--ink-soft); font-weight: 600; margin-top: 6px; }
 
@@ -206,12 +206,140 @@
   .om-note { font-size:12px; color:var(--ink-soft); font-weight:600; min-height:16px; }
   .om-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; }
   @media (max-width:640px) { .om-head { grid-template-columns:1fr; } .om-right { text-align:left; } }
+
+  /* ===== Oct 2026 dashboard: tabs + order pipeline ===== */
+  body { background: var(--bg); }
+  .op-tabs { display:flex; gap:6px; padding-top:18px; padding-bottom:4px; overflow-x:auto; }
+  .op-tabs button { display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:100px; border:1px solid var(--line); background:#fff; font:inherit; font-size:14px; font-weight:700; color:var(--ink-soft); cursor:pointer; white-space:nowrap; }
+  .op-tabs button svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .op-tabs button[aria-selected="true"] { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; }
+  .op-tabs button:focus-visible, .op-btn:focus-visible, .op-step:focus-visible, .op-head:focus-visible { outline:3px solid var(--gold); outline-offset:2px; }
+
+  .op-kpis { display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:12px; }
+  .op-kpi { background:#fff; border:1px solid var(--line-soft); border-radius:14px; padding:14px 16px; }
+  .op-kpi .l { font-size:11.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .op-kpi .n { font-family:'Cormorant Garamond', serif; font-size:30px; font-weight:600; color:var(--coral-deep); line-height:1.1; margin-top:4px; font-variant-numeric:tabular-nums; }
+  .op-kpi .s { font-size:12px; color:var(--ink-soft); font-weight:600; margin-top:2px; }
+  .op-kpi.warn { background:#fdf4e3; border-color:#efd9ad; } .op-kpi.warn .n { color:#9a6a12; } .op-kpi[data-late] { cursor:pointer; }
+  .op-kpi.ok .n { color:#4f7a52; }
+
+  .op-flow { background:#fff; border:1px solid var(--line-soft); border-radius:16px; padding:14px; margin-bottom:12px; }
+  .op-flow-steps { display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px; }
+  .op-step { position:relative; display:flex; flex-direction:column; align-items:flex-start; gap:2px; padding:12px 12px 10px; border-radius:12px; border:2px solid var(--line-soft); background:var(--bg); font:inherit; text-align:left; cursor:pointer; color:var(--ink); transition:border-color .15s, background .15s; }
+  .op-step:hover { border-color:var(--coral); }
+  .op-step.on { border-color:var(--coral-deep); background:#fff; box-shadow:0 6px 18px -10px rgba(46,32,24,.35); }
+  .op-step.empty .op-step-n { color:var(--line); }
+  .op-step-ic { width:34px; height:34px; border-radius:10px; background:#fff; color:var(--coral-deep); display:inline-flex; align-items:center; justify-content:center; margin-bottom:6px; border:1px solid var(--line-soft); }
+  .op-step-ic.sm { width:28px; height:28px; margin:0; }
+  .op-step-ic svg, .op-node svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+  .op-step-n { font-family:'Cormorant Garamond', serif; font-size:28px; font-weight:700; line-height:1; color:var(--coral-deep); }
+  .op-step-l { font-size:12.5px; font-weight:700; color:var(--ink-soft); line-height:1.25; }
+  .op-step-late { position:absolute; top:10px; right:10px; font-size:10.5px; font-weight:800; color:#9a6a12; background:#fbf0d9; border-radius:100px; padding:2px 7px; }
+  .op-step-arrow { position:absolute; right:-9px; top:50%; width:8px; height:8px; border-top:2px solid var(--line); border-right:2px solid var(--line); transform:translateY(-50%) rotate(45deg); }
+  .op-flow-filters { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; padding-top:12px; border-top:1px solid var(--line-soft); }
+  .op-chip { border:1px solid var(--line); background:var(--bg); border-radius:100px; padding:6px 12px; font:inherit; font-size:12.5px; font-weight:700; cursor:pointer; color:var(--ink-soft); }
+  .op-chip b { margin-left:4px; color:var(--ink); } .op-chip.on { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; } .op-chip.on b { color:#fff; }
+  .op-chip.warn:not(:disabled) { border-color:#e7c98c; } .op-chip:disabled { opacity:.5; cursor:default; }
+
+  .op-toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  .op-search { flex:1; min-width:220px; display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:0 12px; }
+  .op-search svg, .op-btn svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+  .op-search input { flex:1; border:0; outline:0; padding:11px 0; font:inherit; font-size:14px; background:transparent; }
+  .op-toolbar select { padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; font:inherit; font-size:13.5px; font-weight:600; color:var(--ink); }
+  .op-seg { display:inline-flex; background:#fff; border:1px solid var(--line); border-radius:12px; padding:3px; }
+  .op-seg button { border:0; background:none; font:inherit; font-size:13px; font-weight:700; padding:7px 14px; border-radius:9px; cursor:pointer; color:var(--ink-soft); }
+  .op-seg button[aria-pressed="true"] { background:var(--coral-deep); color:#fff; }
+  .op-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:9px 14px; border:1px solid var(--line); border-radius:12px; background:#fff; font:inherit; font-size:13.5px; font-weight:700; cursor:pointer; color:var(--ink); text-decoration:none; }
+  .op-btn:hover { border-color:var(--coral); } .op-btn:disabled { opacity:.55; cursor:wait; }
+  .op-btn.ghost { background:transparent; } .op-btn.danger { color:#a3402b; }
+  .op-btn.primary { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; } .op-btn.primary:hover { background:#3f2718; }
+  .op-btn.lg { padding:13px 22px; font-size:15px; border-radius:100px; } .op-btn.sm { padding:7px 10px; font-size:12px; border-radius:9px; width:100%; margin-top:8px; }
+  .op-btn.link { border:0; background:none; color:var(--ink-soft); font-size:13px; text-decoration:underline; padding:6px; }
+
+  .op-listhead { display:flex; align-items:baseline; gap:10px; margin:4px 0 10px; } .op-listhead h2 { font-size:18px; font-weight:700; } .op-listhead span { color:var(--ink-soft); font-size:13px; font-weight:600; }
+  .op-empty { text-align:center; padding:48px 20px; background:#fff; border:1px dashed var(--line); border-radius:16px; color:var(--ink-soft); font-weight:600; }
+  .op-empty svg.big { width:40px; height:40px; fill:none; stroke:#8fae8f; stroke-width:1.6; margin:0 auto 8px; display:block; }
+
+  .op-card { background:#fff; border:1px solid var(--line-soft); border-radius:16px; margin-bottom:10px; overflow:hidden; transition:box-shadow .2s; }
+  .op-card.open { box-shadow:0 10px 30px -18px rgba(46,32,24,.45); border-color:var(--line); }
+  .op-card.late { border-left:4px solid #e0b25c; }
+  .op-head { display:grid; grid-template-columns:1fr auto 24px; gap:14px; padding:14px 16px; cursor:pointer; align-items:center; }
+  .op-head:hover { background:#fffcf7; }
+  .op-title { font-weight:800; font-size:15px; }
+  .op-sub { color:var(--ink-soft); font-size:12.5px; font-weight:600; margin-top:3px; } .op-sub .no { font-family:ui-monospace, Menlo, monospace; font-size:12px; color:var(--ink); }
+  .op-badges { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .op-badge { font-size:11px; font-weight:800; padding:3px 9px; border-radius:100px; background:var(--bg-soft); color:var(--ink-soft); }
+  .op-badge.ok { background:#e7f0e4; color:#4f7a52; } .op-badge.warn { background:#fbf0d9; color:#9a6a12; } .op-badge.bad { background:#f7e3dd; color:#a3402b; } .op-badge.info { background:#e3ecf3; color:#3f5f7a; }
+  .op-badge.stage { background:var(--coral-deep); color:#fff; } .op-badge.s-delivered { background:#4f7a52; } .op-badge.s-with_courier { background:#3f5f7a; }
+  .op-head-side { text-align:right; } .op-amt { font-weight:800; font-size:15px; font-variant-numeric:tabular-nums; } .op-date { color:var(--ink-soft); font-size:12px; font-weight:600; margin-top:2px; }
+  .op-dots { display:inline-flex; gap:4px; margin-top:8px; } .op-dots i { width:16px; height:5px; border-radius:3px; background:var(--line-soft); } .op-dots i.d { background:#c9ad8c; } .op-dots i.c { background:var(--coral-deep); }
+  .op-chev svg { width:20px; height:20px; fill:none; stroke:var(--ink-soft); stroke-width:2; transition:transform .2s; } .op-card.open .op-chev svg { transform:rotate(180deg); }
+  .op-body { display:none; border-top:1px solid var(--line-soft); padding:18px 16px 16px; } .op-card.open .op-body { display:block; }
+
+  .op-stepper { list-style:none; margin:0 0 16px; padding:0; display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); position:relative; }
+  .op-stepper li { position:relative; text-align:center; padding:0 4px; }
+  .op-stepper li::before { content:''; position:absolute; top:19px; left:-50%; right:50%; height:3px; background:var(--line-soft); z-index:0; }
+  .op-stepper li:first-child::before { display:none; }
+  .op-stepper li.done::before, .op-stepper li.cur::before { background:#c9ad8c; }
+  .op-node { position:relative; z-index:1; width:40px; height:40px; border-radius:50%; border:2px solid var(--line); background:#fff; color:var(--ink-soft); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
+  .op-node:hover:not(:disabled) { border-color:var(--coral); }
+  .op-stepper li.done .op-node { background:#c9ad8c; border-color:#c9ad8c; color:#fff; }
+  .op-stepper li.cur .op-node { background:var(--coral-deep); border-color:var(--coral-deep); color:#fff; box-shadow:0 0 0 5px rgba(86,54,34,.14); cursor:default; }
+  .op-stepper li.cur.late .op-node { box-shadow:0 0 0 5px rgba(224,178,92,.35); }
+  .op-node-l { font-size:12px; font-weight:800; margin-top:8px; line-height:1.25; } .op-stepper li.todo .op-node-l { color:var(--ink-soft); font-weight:700; }
+  .op-node-t { font-size:11px; color:var(--ink-soft); font-weight:600; margin-top:3px; line-height:1.35; } .op-node-t b { color:var(--coral-deep); } .op-stepper li.late .op-node-t b { color:#9a6a12; }
+
+  .op-next { display:grid; grid-template-columns:1fr auto; gap:14px 20px; align-items:center; background:var(--bg); border:1px solid var(--line-soft); border-radius:14px; padding:14px 16px; margin-bottom:14px; }
+  .op-next.late { background:#fdf6e8; border-color:#efd9ad; } .op-next.done { background:#eef4ec; border-color:#d3e3cf; } .op-next.cancelled { background:#faeeea; border-color:#efcfc6; }
+  .op-next p { margin:4px 0 0; font-size:13.5px; color:var(--ink-soft); font-weight:500; } .op-next b { font-size:15px; }
+  .op-now { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--coral-deep); } .op-now em { font-style:normal; color:#9a6a12; }
+  .op-warn { color:#9a6a12 !important; font-weight:700 !important; }
+  .op-next-actions { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  .op-courier { grid-column:1 / -1; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .op-courier label { display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:700; color:var(--ink-soft); } .op-courier label.wide { grid-column:1 / -1; } .op-courier small { font-weight:500; }
+  .op-courier input { padding:10px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; font-size:14px; background:#fff; color:var(--ink); }
+  .op-check { display:flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; } .op-check input { width:16px; height:16px; accent-color:var(--coral-deep); }
+
+  .op-grid { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px; }
+  .op-box { background:var(--bg); border-radius:12px; padding:12px 14px; }
+  .op-box h4 { margin:0 0 8px; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+  .op-kv { display:grid; grid-template-columns:78px 1fr; gap:5px 10px; font-size:13px; margin:0; } .op-kv dt { color:var(--ink-soft); font-weight:600; } .op-kv dd { margin:0; font-weight:600; word-break:break-word; } .op-kv dd.big { font-size:16px; font-weight:800; } .op-kv a { text-decoration:underline; }
+  .op-item { background:#fff; border-radius:10px; padding:10px 12px; margin-bottom:8px; } .op-item:last-child { margin-bottom:0; }
+  .op-item-m { font-size:12.5px; color:var(--ink-soft); font-weight:600; margin-top:2px; } .op-item-m b { color:var(--coral-deep); }
+  .op-quote { font-style:italic; background:#fff; border-radius:8px; padding:8px 10px; margin-top:8px; font-size:13px; }
+  .op-photos { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; } .op-photos a { display:flex; flex-direction:column; gap:3px; font-size:11px; font-weight:700; color:var(--ink-soft); } .op-photos img { width:96px; height:96px; object-fit:cover; border-radius:10px; }
+  .op-muted { color:var(--ink-soft); font-size:12px; font-weight:600; } .op-mono { font-family:ui-monospace, Menlo, monospace; font-size:12px !important; }
+  .op-notes-box { margin-top:12px; } .op-notes { width:100%; min-height:64px; border:1px solid var(--line); border-radius:10px; padding:9px 11px; font:inherit; font-size:13.5px; background:#fff; resize:vertical; }
+  .op-foot { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; align-items:center; } .op-status { font-size:12.5px; font-weight:700; color:#4f7a52; } .op-status.bad { color:#a3402b; }
+
+  .op-board { display:grid; grid-template-columns:repeat(6, minmax(158px,1fr)); gap:10px; overflow-x:auto; padding-bottom:8px; }
+  .op-col { background:#fff; border:1px solid var(--line-soft); border-radius:14px; display:flex; flex-direction:column; min-height:220px; } .op-col.on { border-color:var(--coral-deep); }
+  .op-col header { display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line-soft); } .op-col h3 { font-size:13px; font-weight:800; flex:1; margin:0; line-height:1.2; } .op-col header b { font-size:13px; background:var(--bg-soft); border-radius:100px; padding:1px 8px; }
+  .op-col-body { padding:8px; display:flex; flex-direction:column; gap:8px; }
+  .op-mini { background:var(--bg); border:1px solid var(--line-soft); border-radius:10px; padding:9px 10px; cursor:pointer; font-size:12px; } .op-mini:hover { border-color:var(--coral); } .op-mini.late { border-left:3px solid #e0b25c; }
+  .op-mini .t { font-weight:800; font-size:12.5px; line-height:1.3; } .op-mini .m { display:flex; justify-content:space-between; gap:6px; color:var(--ink-soft); font-weight:600; margin-top:3px; } .op-mini .lt { color:#9a6a12; font-weight:800; }
+  .op-col-empty { color:var(--line); font-size:12px; font-weight:700; text-align:center; margin:14px 0; }
+
+  #op-toast { position:fixed; left:50%; bottom:24px; transform:translate(-50%, 20px); opacity:0; background:var(--ink); color:#fff; padding:11px 18px; border-radius:100px; font-size:13.5px; font-weight:700; z-index:200; pointer-events:none; transition:opacity .2s, transform .2s; max-width:calc(100vw - 32px); }
+  #op-toast.show { opacity:1; transform:translate(-50%, 0); } #op-toast.bad { background:#a3402b; }
+
+  @media (max-width:1000px) { .op-kpis { grid-template-columns:repeat(3, minmax(0,1fr)); } .op-flow-steps { grid-template-columns:repeat(3, minmax(0,1fr)); } .op-step-arrow { display:none; } .op-grid { grid-template-columns:1fr; } }
+  @media (max-width:700px) {
+    .op-kpis { grid-template-columns:1fr 1fr; gap:8px; } .op-kpi { padding:12px; } .op-kpi .n { font-size:24px; } .op-kpi:last-child { grid-column:1 / -1; }
+    .op-flow-steps { display:flex; overflow-x:auto; gap:8px; margin:0 -14px; padding:0 14px 4px; scroll-snap-type:x mandatory; } .op-step { flex:0 0 118px; scroll-snap-align:start; padding:10px; } .op-step-ic { width:28px; height:28px; margin-bottom:4px; } .op-step-n { font-size:24px; }
+    .op-head { grid-template-columns:1fr 20px; } .op-head-side { grid-column:1; grid-row:2; text-align:left; display:flex; align-items:center; gap:10px; flex-wrap:wrap; } .op-head-side .op-dots { margin:0; } .op-chev { grid-column:2; grid-row:1; }
+    .op-stepper { grid-template-columns:1fr; gap:0; } .op-stepper li { display:grid; grid-template-columns:40px 1fr; column-gap:12px; text-align:left; padding:0 0 12px; }
+    .op-stepper li::before { top:-12px; bottom:auto; left:19px; right:auto; width:3px; height:24px; } .op-node { grid-row:1 / span 2; } .op-node-l { margin-top:2px; } .op-node-t br { display:none; } .op-node-t b { margin-left:6px; }
+    .op-next { grid-template-columns:1fr; } .op-next-actions { align-items:stretch; } .op-next-actions .op-btn.lg { width:100%; } .op-courier { grid-template-columns:1fr; }
+    .op-toolbar .op-btn span { display:none; }
+  }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/story-themes.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
+<script src="admin-orders.js"></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 </head>
@@ -233,6 +361,13 @@
 </div>
 
 <div id="dashboard-body" style="display:none;">
+
+<nav class="op-tabs wrap" role="tablist" aria-label="Dashboard sections">
+  <button role="tab" data-tab="orders" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>Orders</button>
+  <button role="tab" data-tab="stories" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>Stories</button>
+  <button role="tab" data-tab="photos" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Site photos</button>
+</nav>
+<div data-panel="orders">
 
 <div class="wrap page-head">
   <h1 data-i18n="admin.orders_title">Orders</h1>
@@ -258,6 +393,8 @@
 </div>
 </div>
 
+</div>
+<div data-panel="photos" hidden>
 <div class="wrap page-head">
   <h1 data-i18n="admin.photos_title">Site Photos</h1>
   <p data-i18n="admin.photos_sub">Upload a replacement for any photo used across the site — it updates everywhere that photo appears, right away.</p>
@@ -265,6 +402,8 @@
 
 <div class="wrap" id="photos-grid" style="margin-bottom: 48px;"></div>
 
+</div>
+<div data-panel="stories" hidden>
 <div class="wrap page-head">
   <h1 data-i18n="admin.stories_title">Stories</h1>
   <p data-i18n="admin.stories_sub">Add a new story to the catalog, or give an existing one an optional extra character (like a parent) customers can personalize for an extra fee.</p>
@@ -336,6 +475,7 @@
     <button type="button" class="upload-btn" id="story-cancel-btn" style="margin-top:14px; margin-left:8px; display:none;" data-i18n="admin.story_cancel_btn">Cancel Edit</button>
     <div class="upload-status" id="story-form-status"></div>
   </div>
+</div>
 </div>
 </div>
 
@@ -432,7 +572,7 @@
   function showDashboard() {
     document.getElementById('password-gate').style.display = 'none';
     document.getElementById('dashboard-body').style.display = 'block';
-    loadOrders(adminPassword);
+    window.hkOrders.load(adminPassword);
     // Personalize requests now arrive as real orders (cart + checkout); the old Netlify Forms feed is retired.
     loadSitePhotos(adminPassword);
     loadStories(adminPassword);
@@ -462,248 +602,6 @@
       if (ok) showDashboard();
       else { sessionStorage.removeItem('hikaya_admin_password'); adminPassword = null; }
     });
-  }
-
-  // ---------- Orders manager ----------
-  const OM_STAGES = [['received','Received'],['preparing','Preparing'],['awaiting_approval','Awaiting approval'],['sent_to_printing','Sent to printing'],['received_from_printing','Back from printing'],['shipped','Shipped'],['delivered','Delivered']];
-  const OM_STAGE_LABEL = Object.fromEntries([...OM_STAGES, ['cancelled','Cancelled']]);
-  const OM_PAY = { pending:['Awaiting payment','warn'], pending_cod:['Cash on delivery','info'], paid:['Paid','ok'], refunded:['Refunded','bad'], failed:['Payment failed','bad'] };
-  const OM_METHOD = { cod:'Cash on delivery', card:'Card', applepay:'Apple Pay', googlepay:'Google Pay', tabby:'Tabby', tamara:'Tamara', shamcash:'Sham Cash' };
-  const omEsc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const omMoney = (n, c) => n == null ? '—' : `${Number(n).toFixed(2)} ${c || ''}`.trim();
-  const omDate = (d) => d ? new Date(d).toLocaleString(undefined, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
-  let omOrders = [];
-  const omOpen = new Set();
-  const omFull = new Map();   // id -> items with photos
-  const omFilter = { q:'', stage:'all', pay:'all' };
-
-  async function loadOrders(token) {
-    const ordersStateBox = document.getElementById('orders-state-box');
-    const ordersSub = document.getElementById('orders-sub');
-    try {
-      const res = await fetch('/.netlify/functions/get-orders', { headers: { 'x-admin-password': token } });
-      const data = await res.json();
-      if (!res.ok) { ordersStateBox.textContent = data.error || window.hikayaT('admin.orders_err_generic'); ordersSub.textContent = ''; return; }
-      if (!data.tableReady) { ordersStateBox.textContent = 'Orders can\'t be loaded yet — SUPABASE_SERVICE_ROLE_KEY still needs to be added in Netlify.'; ordersSub.textContent = ''; return; }
-      omOrders = data.orders || [];
-      ordersSub.textContent = `${omOrders.length} ${window.hikayaT('admin.orders_received')} · updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-      renderOrderStats(omOrders);
-      if (!omOrders.length) { ordersStateBox.textContent = window.hikayaT('admin.no_orders'); return; }
-      ordersStateBox.style.display = 'none';
-      omRenderShell();
-    } catch (err) {
-      console.error('loadOrders error:', err);
-      ordersStateBox.textContent = window.hikayaT('admin.orders_err_generic');
-    }
-  }
-
-  function renderOrderStats(orders) {
-    const statsRow = document.getElementById('orders-stats-row');
-    const live = orders.filter(o => o.order_status !== 'cancelled');
-    const weekAgo = Date.now() - 7 * 864e5;
-    const revenue = {};
-    live.filter(o => o.payment_status === 'paid' || o.payment_status === 'pending_cod').forEach(o => {
-      revenue[o.currency || '?'] = (revenue[o.currency || '?'] || 0) + (parseFloat(o.amount) || 0);
-    });
-    const revText = Object.keys(revenue).length ? Object.entries(revenue).map(([c, v]) => `${v.toFixed(0)} ${c}`).join('<br>') : '—';
-    const inProd = live.filter(o => ['received','preparing','awaiting_approval','sent_to_printing','received_from_printing'].includes(o.order_status || 'received')).length;
-    statsRow.style.display = 'grid';
-    statsRow.className = 'wrap stats-grid';
-    statsRow.innerHTML = `
-      <div class="stat-card"><div class="num">${live.length}</div><div class="lbl">Orders</div></div>
-      <div class="stat-card"><div class="num">${inProd}</div><div class="lbl">To fulfil</div></div>
-      <div class="stat-card"><div class="num">${live.filter(o => o.created_at && new Date(o.created_at) >= weekAgo).length}</div><div class="lbl">This week</div></div>
-      <div class="stat-card"><div class="num" style="font-size:18px; line-height:1.35;">${revText}</div><div class="lbl">Revenue (paid + COD)</div></div>`;
-  }
-
-  function omRenderShell() {
-    const box = document.getElementById('orders-content');
-    let shell = document.getElementById('om-shell');
-    if (!shell) { shell = document.createElement('div'); shell.id = 'om-shell'; box.appendChild(shell); }
-    shell.innerHTML = `
-      <div class="om-toolbar">
-        <div class="om-row">
-          <input type="search" id="om-q" placeholder="Search order no., child, customer, email, phone, city…" value="${omEsc(omFilter.q)}">
-          <select id="om-pay"><option value="all">All payments</option>${Object.entries(OM_PAY).map(([k,[l]]) => `<option value="${k}">${l}</option>`).join('')}</select>
-          <button class="om-btn" id="om-refresh">↻ Refresh</button>
-          <button class="om-btn" id="om-export">Export CSV</button>
-        </div>
-        <div class="om-chips" id="om-chips"></div>
-      </div>
-      <div id="om-list"></div>`;
-    document.getElementById('om-pay').value = omFilter.pay;
-    document.getElementById('om-q').oninput = (e) => { omFilter.q = e.target.value; omRenderList(); };
-    document.getElementById('om-pay').onchange = (e) => { omFilter.pay = e.target.value; omRenderList(); };
-    document.getElementById('om-refresh').onclick = () => loadOrders(adminPassword);
-    document.getElementById('om-export').onclick = omExport;
-    omRenderList();
-  }
-
-  function omMatch(o, ignoreStage) {
-    const st = o.order_status || 'received';
-    if (!ignoreStage && omFilter.stage !== 'all' && st !== omFilter.stage) return false;
-    if (omFilter.pay !== 'all' && o.payment_status !== omFilter.pay) return false;
-    const q = omFilter.q.trim().toLowerCase();
-    if (q) {
-      const kids = (o.items || []).map(i => `${i.childName || ''} ${i.story || ''}`).join(' ');
-      if (![o.order_number, o.full_name, o.email, o.phone, o.city, o.country, kids].join(' ').toLowerCase().includes(q)) return false;
-    }
-    return true;
-  }
-
-  function omRenderList() {
-    const base = omOrders.filter(o => omMatch(o, true));
-    const cnt = (k) => base.filter(o => (o.order_status || 'received') === k).length;
-    const chips = [['all','All',base.length], ...OM_STAGES.map(([k,l]) => [k,l,cnt(k)]), ['cancelled','Cancelled',cnt('cancelled')]];
-    const chipsEl = document.getElementById('om-chips');
-    chipsEl.innerHTML = chips.map(([k,l,c]) => `<button class="om-chip ${omFilter.stage === k ? 'active' : ''}" data-k="${k}">${l}<span class="c">${c}</span></button>`).join('');
-    chipsEl.querySelectorAll('.om-chip').forEach(b => b.onclick = () => { omFilter.stage = b.dataset.k; omRenderList(); });
-    const rows = omOrders.filter(o => omMatch(o));
-    const list = document.getElementById('om-list');
-    list.innerHTML = rows.length ? rows.map(omCardHtml).join('') : '<div class="state-box">No orders match these filters.</div>';
-    rows.forEach(omBind);
-  }
-
-  function omCardHtml(o) {
-    const st = o.order_status || 'received';
-    const idx = OM_STAGES.findIndex(([k]) => k === st);
-    const [payL, payC] = OM_PAY[o.payment_status] || [o.payment_status || '—', ''];
-    const items = o.items || [];
-    const kids = items.map(i => `${omEsc(i.childName || '—')} · ${omEsc(i.story || '')}`).join(' + ');
-    const stBadge = st === 'cancelled' ? '<span class="om-badge bad">Cancelled</span>' : `<span class="om-badge ${st === 'delivered' ? 'ok' : st === 'shipped' ? 'info' : ''}">${OM_STAGE_LABEL[st] || omEsc(st)}</span>`;
-    const phone = (o.phone || '').replace(/[^\d]/g, '');
-    return `
-    <div class="om-card ${omOpen.has(o.id) ? 'open' : ''}" id="om-${o.id}">
-      <div class="om-head" data-toggle>
-        <div>
-          <div class="om-title">${kids || 'Order'}<span class="no">${omEsc(o.order_number || '')}</span></div>
-          <div class="om-sub">${omEsc(o.full_name || o.email || '')}${o.city ? ' · ' + omEsc(o.city) : ''}${o.country ? ' · ' + omEsc(o.country) : ''}</div>
-          <div class="om-badges">${stBadge}<span class="om-badge ${payC}">${payL}</span>${items.length > 1 ? `<span class="om-badge">${items.length} books</span>` : ''}${o.is_gift ? '<span class="om-badge info">Gift</span>' : ''}${o.promo_code ? `<span class="om-badge">${omEsc(o.promo_code)}</span>` : ''}</div>
-        </div>
-        <div class="om-right"><div class="om-amt">${omMoney(o.amount, o.currency)}</div><div class="om-date">${omDate(o.created_at)}</div></div>
-      </div>
-      <div class="om-body">
-        ${st === 'cancelled' ? '' : `<div class="om-pipe">${OM_STAGES.map(([k,l],i) => `<button class="om-stage ${i < idx ? 'done' : ''} ${i === idx ? 'current' : ''}" data-stage="${k}">${l}</button>`).join('')}</div>`}
-        <div class="om-grid">
-          <div class="om-box" style="grid-column: span 1;">
-            <h4>Books (${items.length})</h4>
-            <div data-items>${items.map((it, n) => `
-              <div class="om-item">
-                <strong>${omEsc(it.story || '—')}</strong><br>
-                <span style="font-size:12.5px; color:var(--ink-soft); font-weight:600;">${omEsc(it.childName || '—')}${it.ageEdition ? ' · Ages ' + omEsc(it.ageEdition) : ''}${it.gender ? ' · ' + omEsc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + omEsc(it.extraCharacterName) : ''}${it.childAge ? ' · Age ' + omEsc(it.childAge) : ''}${it.bookLanguage ? ' · ' + (it.bookLanguage === 'ar' ? 'Arabic book' : 'English book') : ''}</span>
-                ${it.dedication ? `<div class="om-quote">“${omEsc(it.dedication)}”</div>` : ''}
-                <div class="om-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length) ? `<span class="om-note">${(it.photos || []).length + (it.photoPaths || []).length} photo(s) — loading…</span>` : '<span class="om-note">No photos</span>'}</div>
-              </div>`).join('')}</div>
-          </div>
-          <div class="om-box">
-            <h4>Customer &amp; delivery</h4>
-            <dl class="om-kv">
-              <dt>Name</dt><dd>${omEsc(o.full_name || '—')}</dd>
-              <dt>Email</dt><dd>${o.email ? `<a style="text-decoration:underline" href="mailto:${omEsc(o.email)}?subject=${encodeURIComponent('Your Hikaya order ' + (o.order_number || ''))}">${omEsc(o.email)}</a>` : '—'}</dd>
-              <dt>Phone</dt><dd>${o.phone ? `${omEsc(o.phone)}${phone ? ` · <a style="text-decoration:underline" target="_blank" rel="noopener" href="https://wa.me/${phone}">WhatsApp</a>` : ''}` : '—'}</dd>
-              <dt>Address</dt><dd>${omEsc([o.address, o.city, o.country].filter(Boolean).join(', ') || '—')}</dd>
-            </dl>
-            ${o.is_gift && o.gift_message ? `<div class="om-quote">Gift note: “${omEsc(o.gift_message)}”</div>` : ''}
-          </div>
-          <div class="om-box">
-            <h4>Payment</h4>
-            <dl class="om-kv">
-              <dt>Status</dt><dd>${payL}</dd>
-              <dt>Method</dt><dd>${omEsc(OM_METHOD[o.payment_method] || o.payment_method || '—')}</dd>
-              <dt>Amount</dt><dd>${omMoney(o.amount, o.currency)}</dd>
-              ${o.bundle_discount_pct ? `<dt>Bundle</dt><dd>-${omEsc(o.bundle_discount_pct)}%</dd>` : ''}
-              ${o.promo_code ? `<dt>Promo</dt><dd>${omEsc(o.promo_code)}</dd>` : ''}
-              ${o.paytabs_tran_ref ? `<dt>PayTabs ref</dt><dd>${omEsc(o.paytabs_tran_ref)}</dd>` : ''}
-              <dt>Placed</dt><dd>${omDate(o.created_at)}</dd>
-              <dt>Stage since</dt><dd>${omDate(o.status_updated_at)}</dd>
-            </dl>
-          </div>
-        </div>
-        <div class="om-box" style="margin-top:12px;">
-          <h4>Internal notes</h4>
-          <textarea class="om-notes" data-notes placeholder="Only visible to you">${omEsc(o.admin_notes || '')}</textarea>
-          <div class="om-note" data-note-status></div>
-        </div>
-        <div class="om-actions">
-          ${o.payment_status !== 'paid' ? '<button class="om-btn" data-pay="paid">Mark as paid</button>' : '<button class="om-btn" data-pay="refunded">Mark refunded</button>'}
-          ${o.order_number && o.email ? `<a class="om-btn" target="_blank" rel="noopener" href="invoice.html?order=${encodeURIComponent(o.order_number)}&email=${encodeURIComponent(o.email)}">Invoice</a>` : ''}
-          ${st === 'cancelled' ? '<button class="om-btn" data-stage="received">Restore order</button>' : '<button class="om-btn danger" data-cancel>Cancel order</button>'}
-          <span class="om-note" data-status></span>
-        </div>
-      </div>
-    </div>`;
-  }
-
-  function omBind(o) {
-    const el = document.getElementById('om-' + o.id);
-    el.querySelector('[data-toggle]').onclick = () => {
-      el.classList.toggle('open');
-      if (el.classList.contains('open')) { omOpen.add(o.id); omLoadPhotos(o, el); } else omOpen.delete(o.id);
-    };
-    if (el.classList.contains('open')) omLoadPhotos(o, el);
-    el.querySelectorAll('[data-stage]').forEach(b => b.onclick = () => omSave(o, { orderStatus: b.dataset.stage }, `Moved to ${OM_STAGE_LABEL[b.dataset.stage]}`));
-    el.querySelectorAll('[data-pay]').forEach(b => b.onclick = () => omSave(o, { paymentStatus: b.dataset.pay }, `Marked ${OM_PAY[b.dataset.pay][0].toLowerCase()}`));
-    const c = el.querySelector('[data-cancel]');
-    if (c) c.onclick = () => { if (confirm(`Cancel order ${o.order_number || ''}?`)) omSave(o, { orderStatus: 'cancelled' }, 'Order cancelled'); };
-    const ta = el.querySelector('[data-notes]'); const ns = el.querySelector('[data-note-status]'); let t;
-    ta.oninput = () => { ns.textContent = 'Unsaved…'; clearTimeout(t); t = setTimeout(async () => {
-      const r = await omPost({ orderId: o.id, adminNotes: ta.value });
-      if (r.error) { ns.textContent = r.error; return; }
-      o.admin_notes = ta.value; ns.textContent = 'Saved';
-    }, 700); };
-  }
-
-  async function omLoadPhotos(o, el) {
-    const needs = (o.items || []).some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length);
-    if (!needs) return;
-    let items = omFull.get(o.id);
-    if (!items) {
-      try {
-        const res = await fetch('/.netlify/functions/get-orders?id=' + encodeURIComponent(o.id), { headers: { 'x-admin-password': adminPassword } });
-        const data = await res.json();
-        items = (data.orders && data.orders[0] && data.orders[0].items) || [];
-        omFull.set(o.id, items);
-      } catch { items = []; }
-    }
-    items.forEach((it, n) => {
-      const box = el.querySelector(`[data-photos="${n}"]`);
-      if (!box) return;
-      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' }))].filter(p => p.dataUrl && (/^data:image\//.test(p.dataUrl) || p.dataUrl.indexOf('https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/sign/') === 0));
-      box.innerHTML = pics.length
-        ? pics.map((p, k) => `<a href="${p.dataUrl}" download="${omEsc((o.order_number || 'order') + '-' + p.who + '-' + (k + 1))}" title="${omEsc(p.who)} — click to download"><img src="${p.dataUrl}" alt="${omEsc(p.who)}"></a>`).join('')
-        : '<span class="om-note">No photos</span>';
-    });
-  }
-
-  async function omPost(body) {
-    try {
-      const res = await fetch('/.netlify/functions/update-order', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword }, body: JSON.stringify(body) });
-      const data = await res.json().catch(() => ({}));
-      return res.ok ? data : { error: data.error || 'Could not save.' };
-    } catch { return { error: 'Network error — please try again.' }; }
-  }
-
-  async function omSave(o, patch, okMsg) {
-    const st = document.querySelector(`#om-${o.id} [data-status]`);
-    if (st) st.textContent = 'Saving…';
-    const r = await omPost({ orderId: o.id, ...patch });
-    if (r.error) { if (st) st.textContent = r.error; return; }
-    Object.assign(o, r.order || {});
-    omOpen.add(o.id);
-    renderOrderStats(omOrders);
-    omRenderList();
-    const s2 = document.querySelector(`#om-${o.id} [data-status]`); if (s2) { s2.textContent = okMsg; setTimeout(() => { s2.textContent = ''; }, 2000); }
-  }
-
-  function omExport() {
-    const cols = ['order_number','created_at','order_status','payment_status','payment_method','amount','currency','full_name','email','phone','address','city','country','is_gift','gift_message','promo_code','bundle_discount_pct','admin_notes'];
-    const cell = (v) => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-    const rows = omOrders.filter(o => omMatch(o)).map(o => [...cols.map(c => cell(o[c])), cell((o.items || []).map(i => `${i.story} for ${i.childName}${i.ageEdition ? ' (' + i.ageEdition + ')' : ''}`).join('; '))].join(','));
-    const csv = [[...cols, 'books'].join(','), ...rows].join('\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv' }));
-    a.download = `hikaya-orders-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
   }
 
   // ---------- Site photos ----------
@@ -1327,6 +1225,18 @@
   }
 </script>
 
+<script>
+(function () {
+  const tabs = document.querySelectorAll('.op-tabs [data-tab]');
+  function show(k) {
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === k)));
+    document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== k; });
+    try { history.replaceState(null, '', '#' + k); } catch (_) {}
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+  const h = location.hash.slice(1); if (['orders', 'stories', 'photos'].includes(h)) show(h);
+})();
+</script>
 <script>document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(function(){document.documentElement.classList.remove('i18n-wait')})});</script>
 </body>
 </html>
