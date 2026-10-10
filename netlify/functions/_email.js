@@ -10,14 +10,19 @@
 //      their shared test domain while developing).
 //   2. In Netlify: Site settings > Environment variables, add:
 //        RESEND_API_KEY = <your Resend API key>
-//        EMAIL_FROM     = Hikaya by Maison Jaber <hello@maison-jaber.com>
+//        EMAIL_FROM     = Hikaya by Maison Jaber <hello@maison-jaber.com>   (optional, this is the default)
+//        CONTACT_INBOX_EMAIL = info@maison-jaber.com                        (optional, this is the default)
 //   3. Redeploy. Until RESEND_API_KEY is set, sendEmail() logs a warning
 //      and returns without sending -- so nothing crashes, it just quietly
 //      doesn't send until it's configured.
 
-async function sendEmail({ to, subject, html }) {
+/* Mailboxes (Zoho): hello@ is the customer-facing address, info@ receives the business alerts. */
+const CUSTOMER_EMAIL = 'hello@maison-jaber.com';
+const OWNER_INBOX = process.env.CONTACT_INBOX_EMAIL || 'info@maison-jaber.com';
+
+async function sendEmail({ to, subject, html, replyTo }) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || 'Hikaya by Maison Jaber <onboarding@resend.dev>';
+  const from = process.env.EMAIL_FROM || `Hikaya by Maison Jaber <${CUSTOMER_EMAIL}>`;
 
   if (!apiKey) {
     console.warn(`[email] RESEND_API_KEY not set -- skipping email to ${to} ("${subject}"). Add it in Netlify env vars to enable sending.`);
@@ -31,7 +36,7 @@ async function sendEmail({ to, subject, html }) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify({ from, to, subject, html }),
+      body: JSON.stringify({ from, to, subject, html, reply_to: replyTo || CUSTOMER_EMAIL }),
     });
     if (!res.ok) {
       const errText = await res.text();
@@ -66,4 +71,4 @@ function emailShell(bodyHtml) {
   </div>`;
 }
 
-module.exports = { sendEmail, emailShell };
+module.exports = { sendEmail, emailShell, OWNER_INBOX, CUSTOMER_EMAIL };

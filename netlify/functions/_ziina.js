@@ -5,7 +5,7 @@
 // first marks the order; the other sees it's already done, so the
 // confirmation email is sent exactly once.
 
-const { sendEmail, emailShell } = require('./_email');
+const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
 const { SUPABASE_URL, SUPABASE_KEY } = require('./_pricing');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -78,9 +78,22 @@ async function sendConfirmation(order) {
       <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">Thank you, ${first}!</h2>
       <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Your payment went through and their story is officially on its way:</p>
       <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${list}</ul>
-      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}. It ships to <strong>${esc(order.address)}, ${esc(order.city)}</strong>, usually within about a week.</p>
+      <p style="font-size:14px; line-height:1.6; color:#5b4a3d;">Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}. It ships to <strong>${esc(order.address)}, ${esc(order.city)}</strong>, in about 5–7 working days.</p>
       <div style="background:#F3E8D8; border-radius:10px; padding:14px 16px; margin:18px 0; font-size:13px;"><strong>Order reference:</strong> ${esc(order.order_number)}</div>
       <p style="font-size:13px; color:#7d6a5a;">Questions? Just reply to this email.</p>`),
+  });
+  /* New-order alert for the team (info@). */
+  const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}</li>`).join('');
+  await sendEmail({
+    to: OWNER_INBOX,
+    replyTo: order.email,
+    subject: `New paid order ${order.order_number} · AED ${Number(order.charged_aed).toFixed(2)}`,
+    html: emailShell(`
+      <h2 style="font-family:Georgia,serif; font-size:20px; margin:0 0 12px;">New order: ${esc(order.order_number)}</h2>
+      <p style="font-size:14px; color:#5b4a3d;"><strong>${esc(order.full_name)}</strong> · ${esc(order.email)}${order.phone ? ' · ' + esc(order.phone) : ''}<br>${esc(order.address)}, ${esc(order.city)}${order.country ? ', ' + esc(order.country) : ''}</p>
+      <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${books}</ul>
+      <p style="font-size:14px; color:#5b4a3d;">Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}${order.is_gift ? ' · Gift' : ''}</p>
+      <p><a href="https://maison-jaber.com/test5/admin.html" style="color:#8A5638; font-weight:700;">Open the dashboard →</a></p>`),
   });
 }
 
