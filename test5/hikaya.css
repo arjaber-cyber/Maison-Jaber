@@ -1068,3 +1068,16 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
   .hk-wa .hk-wa-txt { display: none; }
   body:has(.sticky-cta.show) .hk-wa { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* Footer newsletter sign-up */
+.foot-news { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; margin-top: 28px; padding: 20px 0; border-top: 1px solid rgba(230,214,194,.22); }
+.foot-news .fn-copy { max-width: 46ch; }
+.foot-news h2 { margin-bottom: 4px; }
+.foot-news p { color: #D2BCA2; font-size: 13px; margin: 0; }
+.foot-news .fn-row { display: flex; gap: 8px; flex: 1 1 320px; max-width: 440px; }
+.foot-news input { flex: 1; min-width: 0; min-height: 46px; border-radius: 23px; border: 1px solid rgba(230,214,194,.4); background: rgba(255,248,238,.08); color: #FFF8EE; padding: 0 18px; font: inherit; font-size: 14px; }
+.foot-news input::placeholder { color: #B8A08A; }
+.foot-news .btn { min-height: 46px; padding: 0 22px; font-size: 14px; background: #FFF8EE; color: var(--brand-dark); }
+.foot-news .btn:hover { background: #fff; }
+.foot-news .fn-msg { flex-basis: 100%; min-height: 1em; font-size: 13px; }
+.foot-news .fn-msg.ok { color: #E6D6C2; } .foot-news .fn-msg.bad { color: #F3B8A0; }

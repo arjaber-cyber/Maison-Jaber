@@ -36,6 +36,7 @@ function ageText(band, lang) {
   return lang === 'ar' ? `من ${a} إلى ${b || a} سنوات` : `Ages ${a}–${b || a}`;
 }
 const bookLangText = (l, lang) => (l === 'ar' ? tr(lang, 'Arabic book', 'كتاب بالعربية') : tr(lang, 'English book', 'كتاب بالإنجليزية'));
+const invoiceUrl = o => `${SITE_URL}invoice.html?orderNumber=${encodeURIComponent(o.order_number || '')}&email=${encodeURIComponent(o.email || '')}`;
 const trackUrl = no => `${SITE_URL}track-order.html${no ? '?order=' + encodeURIComponent(no) : ''}`;
 
 /* Story titles in Arabic, when the caller has the catalogue (slug -> title_ar). */
@@ -96,6 +97,7 @@ function orderConfirmed(order, arTitles, covers) {
       '<strong>Spotted a mistake?</strong> We print exactly the name, age and photo you sent, and there is no preview step. If anything needs changing, reply to this email as soon as you can. We can update it as long as production hasn\'t started.',
       '<strong>هل لاحظت خطأ؟</strong> نطبع الاسم والعمر والصورة كما أرسلتها تمامًا، ولا توجد مرحلة معاينة، وإذا احتجت إلى أي تعديل فردّ على هذا البريد بأسرع وقت، ويمكننا التعديل ما دام الإنتاج لم يبدأ'), lang, true).replace('margin:0 0 14px', 'margin:0')),
     ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+    waived ? '' : ui.p(`<a href="${esc(invoiceUrl(order))}" style="color:#8A5638; font-weight:700;">${tr(lang, 'Download your invoice', 'تنزيل الفاتورة')}</a>`, lang, true),
     ui.sign(lang),
   ].join('');
   return { subject, html: emailShell(body, { lang, preheader }), lang };
@@ -302,4 +304,132 @@ function orderCancelled(order, refunded) {
   };
 }
 
-module.exports = { welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };
+/* ---------------- We need a better photo (sent from the dashboard) ---------------- */
+function photoRequest(order, note) {
+  const lang = orderLang(order);
+  const first = esc(firstName(order.full_name, lang));
+  const items = parseItems(order);
+  const names = [...new Set(items.map(i => i.childName).filter(Boolean))];
+  const who = names.length === 1 ? esc(names[0]) : '';
+  const tip = (en, ar) => `<li style="margin:0 0 6px;">${tr(lang, en, ar)}</li>`;
+  const body = [
+    ui.eyebrow(tr(lang, 'Action needed', 'مطلوب منك'), lang),
+    ui.h(tr(lang, `Could you send another photo, ${first}?`, `هل يمكنك إرسال صورة أخرى${first ? ' يا ' + first : ''}؟`), lang),
+    ui.p(tr(lang,
+      `We've paused order <strong dir="ltr">${esc(order.order_number || '')}</strong> before printing because the photo${who ? ` of <strong>${who}</strong>` : ''} isn't clear enough for us to illustrate them well. We'd rather ask than print a book you're not happy with.`,
+      `أوقفنا الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong> قبل الطباعة لأن صورة ${who ? `<strong>${who}</strong>` : 'طفلك'} ليست واضحة بما يكفي لنرسمه بشكل جميل، ونفضّل أن نسألك على أن نطبع كتابًا لا يرضيك`), lang),
+    note ? ui.box(ui.p(`<strong>${tr(lang, 'From our team:', 'ملاحظة من فريقنا:')}</strong> ${esc(note)}`, lang).replace('margin:0 0 14px', 'margin:0')) : '',
+    ui.p(tr(lang, '<strong>Just reply to this email with a new photo.</strong> The best photos:', '<strong>ردّ على هذا البريد بصورة جديدة فقط</strong>، وأفضل الصور هي التي:'), lang),
+    `<ul style="margin:0 0 16px; padding-${lang === 'ar' ? 'right' : 'left'}:20px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14.5px; line-height:1.55; color:#5E4A3D;">
+      ${tip('Show their face clearly, looking toward the camera', 'يظهر فيها الوجه بوضوح وينظر نحو الكاميرا')}
+      ${tip('Are well-lit, without harsh shadows', 'تكون الإضاءة فيها جيدة بلا ظلال قوية')}
+      ${tip('Aren\'t blurry or taken from far away', 'لا تكون ضبابية أو ملتقطة من بعيد')}
+      ${tip('Have nothing covering the face, and only your child in them', 'لا يغطي الوجه فيها شيء، ويظهر فيها طفلك وحده')}
+    </ul>`,
+    ui.p(tr(lang,
+      'As soon as we have it we carry on, and we\'ll keep your delivery as close to the original date as we can. You can also send it on WhatsApp.',
+      'سنكمل العمل فور وصولها، وسنحرص على أن يبقى موعد التوصيل قريبًا من الموعد الأصلي قدر الإمكان، ويمكنك أيضًا إرسالها عبر واتساب'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, `Action needed: a clearer photo for your Hikaya book · ${order.order_number || ''}`, `مطلوب: صورة أوضح لكتاب حكاية · ${order.order_number || ''}`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Reply with a new photo and we will carry on.', 'ردّ بصورة جديدة وسنكمل العمل') }),
+  };
+}
+
+/* ---------------- Running late (sent from the dashboard) ---------------- */
+function delayNotice(order, newDate, note) {
+  const lang = orderLang(order);
+  const first = esc(firstName(order.full_name, lang));
+  const when = newDate ? new Date(newDate + 'T12:00:00Z').toLocaleDateString(lang === 'ar' ? 'ar-AE' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Dubai' }) : '';
+  const body = [
+    ui.eyebrow(tr(lang, 'Delivery update', 'تحديث التوصيل'), lang),
+    ui.h(tr(lang, `A quick update, ${first}`, `تحديث سريع${first ? ' يا ' + first : ''}`), lang),
+    ui.p(tr(lang,
+      `Order <strong dir="ltr">${esc(order.order_number || '')}</strong> is taking a little longer than we planned, and we're sorry for the wait. We wanted you to hear it from us first.`,
+      `يستغرق الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong> وقتًا أطول قليلًا مما خططنا له، ونعتذر عن الانتظار، وأردنا أن تعرف ذلك منّا أولًا`), lang),
+    when ? ui.rows([[tr(lang, 'New estimated delivery', 'موعد التوصيل المتوقع الجديد'), esc(when)]], lang) : '',
+    note ? ui.box(ui.p(esc(note), lang).replace('margin:0 0 14px', 'margin:0')) : '',
+    ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+    ui.p(tr(lang, 'If the date matters for a birthday or a special day, reply and tell us. We\'ll do everything we can.', 'إذا كان الموعد مهمًا لعيد ميلاد أو مناسبة خاصة فردّ وأخبرنا، وسنبذل كل ما بوسعنا'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, `Delivery update for your Hikaya book · ${order.order_number || ''}`, `تحديث موعد توصيل كتاب حكاية · ${order.order_number || ''}`),
+    html: emailShell(body, { lang, preheader: tr(lang, when ? `New estimated delivery: ${when}.` : 'Running a little late.', when ? `موعد التوصيل الجديد: ${when}` : 'تأخير بسيط') }),
+  };
+}
+
+/* ---------------- Feedback / review request (about 5 days after delivery) ---------------- */
+function reviewRequest(order) {
+  const lang = orderLang(order);
+  const first = esc(firstName(order.full_name, lang));
+  const items = parseItems(order);
+  const names = [...new Set(items.map(i => i.childName).filter(Boolean))];
+  const who = names.length === 1 ? esc(names[0]) : '';
+  const body = [
+    ui.eyebrow(tr(lang, 'How did we do?', 'ما رأيك؟'), lang),
+    ui.h(tr(lang, `Did ${who || 'they'} love it, ${first}?`, `هل أحبّ ${who || 'طفلك'} الكتاب${first ? ' يا ' + first : ''}؟`), lang),
+    ui.p(tr(lang,
+      'We\'re a small UAE studio and every book is made by hand for one child, so hearing how it landed means a lot.',
+      'نحن استوديو صغير في الإمارات، وكل كتاب نصنعه بعناية لطفل واحد، لذلك يهمّنا كثيرًا أن نعرف كيف كان وقعه'), lang),
+    ui.p(tr(lang,
+      '<strong>Just reply to this email</strong> with a few words: what they thought, their favourite page, or a photo of the moment they saw their name.',
+      '<strong>ردّ على هذا البريد</strong> ببضع كلمات: رأيهم، أو صفحتهم المفضّلة، أو صورة للحظة رؤيتهم لاسمهم'), lang),
+    ui.box(`<div style="text-align:center;">${ui.p(tr(lang,
+      `As a thank-you, we'll send you <strong>10% off your next book</strong>, valid for 60 days.`,
+      `وشكرًا لك، سنرسل لك <strong>خصم 10% على كتابك القادم</strong> صالحًا لمدة 60 يومًا`), lang).replace('margin:0 0 14px', 'margin:0')}</div>`),
+    ui.p(tr(lang,
+      'We only share feedback on our website or social media with your permission, and never your child\'s photo unless you say so.',
+      'لا ننشر رأيك على موقعنا أو وسائل التواصل إلا بإذنك، ولا ننشر صورة طفلك أبدًا إلا إذا طلبت ذلك'), lang, true),
+    ui.button(`${SITE_URL}stories.html`, tr(lang, 'See all stories &rarr;', 'تصفّح كل القصص &larr;'), lang),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, `How did ${names.length === 1 ? names[0] : 'they'} like the Hikaya book?`, `ما رأي ${names.length === 1 ? names[0] : 'طفلك'} في كتاب حكاية؟`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Reply with a few words and get 10% off your next book.', 'ردّ ببضع كلمات واحصل على خصم 10% على كتابك القادم') }),
+  };
+}
+
+/* ---------------- Newsletter sign-up confirmation ---------------- */
+function newsletterWelcome(lang) {
+  lang = lang === 'ar' ? 'ar' : 'en';
+  const body = [
+    ui.eyebrow(tr(lang, 'You\'re on the list', 'تم تسجيلك'), lang),
+    ui.h(tr(lang, 'Thanks for joining us!', 'شكرًا لانضمامك إلينا!'), lang),
+    ui.p(tr(lang,
+      'You\'ll be the first to hear about new stories, seasonal editions for Eid, Ramadan and the school year, and the occasional family offer. We write rarely and keep it short.',
+      'ستكون أول من يعرف بالقصص الجديدة، وإصدارات العيد ورمضان والعام الدراسي، وبعض العروض العائلية من حين لآخر، ونراسلك نادرًا وباختصار'), lang),
+    ui.button(`${SITE_URL}stories.html`, tr(lang, 'Browse the stories &rarr;', 'تصفّح القصص &larr;'), lang),
+    ui.p(tr(lang,
+      'Changed your mind? Reply with "unsubscribe" and we\'ll remove you straight away.',
+      'غيّرت رأيك؟ ردّ بكلمة "إلغاء الاشتراك" وسنحذفك فورًا'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, 'Welcome to the Hikaya family', 'أهلًا بك في عائلة حكاية'),
+    html: emailShell(body, { lang, preheader: tr(lang, 'New stories and seasonal editions, straight to your inbox.', 'قصص جديدة وإصدارات المواسم في بريدك') }),
+  };
+}
+
+/* ---------------- Daily "needs attention" digest for the team (English) ---------------- */
+function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
+  const list = (rows) => `<ul style="margin:0 0 16px; padding-left:18px; font-family:Manrope,Arial,sans-serif; font-size:14px; line-height:1.6; color:#5E4A3D;">${rows.join('')}</ul>`;
+  const section = (title, rows, empty) => ui.h3(title, 'en') + (rows.length ? list(rows) : ui.p(empty, 'en', true));
+  const total = late.length + unpaid.length + messages.length;
+  const body = [
+    ui.eyebrow('Daily summary'),
+    ui.h(total ? `${total} thing${total === 1 ? '' : 's'} need${total === 1 ? 's' : ''} attention` : 'All clear today'),
+    section(`Orders running late (${late.length})`, late.map(o => `<li><strong>${esc(o.order_number)}</strong> · ${esc(o.full_name || '')} · ${esc(o.stageLabel)} for ${o.days} day${o.days === 1 ? '' : 's'} (target ${o.sla})</li>`), 'None. Every order is on schedule.'),
+    section(`Unpaid orders, last 3 days (${unpaid.length})`, unpaid.map(o => `<li><strong>${esc(o.order_number)}</strong> · ${esc(o.full_name || '')} · ${esc(o.email || '')} · ${esc(o.payment_status)}</li>`), 'None.'),
+    section(`New contact messages, last 24 hours (${messages.length})`, messages.map(m => `<li><strong>${esc(m.name || '')}</strong> (${esc(m.email || '')})${m.order_number ? ' · ' + esc(m.order_number) : ''}: ${esc(String(m.message || '').slice(0, 140))}${String(m.message || '').length > 140 ? '…' : ''}</li>`), 'None.'),
+    reviewsSent ? ui.p(`Feedback emails sent today: <strong>${reviewsSent}</strong>. When customers reply, use "Give this customer a code" in the dashboard to send their 10% thank-you.`, 'en', true) : '',
+    ui.button(adminUrl, 'Open the dashboard &rarr;'),
+  ].join('');
+  return {
+    subject: total ? `Hikaya daily: ${total} need${total === 1 ? 's' : ''} attention` : 'Hikaya daily: all clear',
+    html: emailShell(body, { preheader: `${late.length} late · ${unpaid.length} unpaid · ${messages.length} new messages` }),
+  };
+}
+
+module.exports = { photoRequest, delayNotice, reviewRequest, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };

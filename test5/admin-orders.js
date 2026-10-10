@@ -353,9 +353,16 @@
           </div></section>
         <section class="op-box op-notes-box"><h4>Internal notes <span class="op-muted" data-note-status></span></h4>
           <textarea class="op-notes" data-notes placeholder="Only you can see this. E.g. printer job no., special requests…">${esc(o.admin_notes || '')}</textarea></section>
+        ${o.email && !['cancelled', 'delivered'].includes(st) ? `<section class="op-box op-msg-box"><h4>Message the customer</h4>
+          <textarea class="op-notes" data-cm-note rows="2" placeholder="Optional note included in the email, e.g. “The photo is a little dark” or “The printer is running a day behind”"></textarea>
+          <div class="op-msg-actions">
+            <button type="button" class="op-btn" data-cm="photo" title="Emails the customer asking them to reply with a clearer photo">Ask for a new photo</button>
+            <label class="op-msg-date">New delivery date <input type="date" data-cm-date></label>
+            <button type="button" class="op-btn" data-cm="delay" title="Emails the customer the new estimated delivery date">Send delay notice</button>
+          </div></section>` : ''}
         <div class="op-foot">
           ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : '<button class="op-btn" data-pay="refunded">Mark refunded</button>'}
-          ${o.order_number && o.email ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?order=${encodeURIComponent(o.order_number)}&email=${encodeURIComponent(o.email)}">Invoice</a>` : ''}
+          ${o.order_number && o.email ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?orderNumber=${encodeURIComponent(o.order_number)}&email=${encodeURIComponent(o.email)}">Invoice</a>` : ''}
           ${st === 'cancelled' ? '' : '<button class="op-btn danger" data-cancel>Cancel order</button>'}
           <span class="op-status" data-status role="status"></span>
         </div>
@@ -395,6 +402,12 @@
       if (b.dataset.pay === 'refunded' && o.email) p.notifyCustomer = confirm(`Email ${o.email} that the refund has been issued?`);
       save(o, p, `Marked ${PAY[b.dataset.pay][0].toLowerCase()}`);
     });
+    el.querySelectorAll('[data-cm]').forEach(b => b.onclick = () => {
+      const kind = b.dataset.cm, note = el.querySelector('[data-cm-note]').value.trim(), newDate = el.querySelector('[data-cm-date]').value;
+      if (kind === 'delay' && !newDate) { status(el, 'Pick the new delivery date first.', true); el.querySelector('[data-cm-date]').focus(); return; }
+      if (!confirm(kind === 'photo' ? `Email ${o.email} asking for a clearer photo? Remember to pause production until it arrives.` : `Email ${o.email} that the new delivery date is ${newDate}?`)) return;
+      save(o, { customerMessage: kind, note, newDate }, kind === 'photo' ? 'Photo request sent' : 'Delay notice sent');
+    });
     const c = el.querySelector('[data-cancel]'); if (c) c.onclick = () => { if (confirm(`Cancel order ${o.order_number || ''}? You can restore it later.`)) move(o, 'cancelled', o.email ? { notifyCustomer: confirm(`Email ${o.email} that the order is cancelled?`) } : {}, 'Order cancelled'); };
     const ts = el.querySelector('[data-otype-save]');
     if (ts) ts.onclick = () => {
@@ -430,7 +443,7 @@
       if (r.order) Object.assign(o, r.order, { _items: o._items });
       open.add(o.id);
       renderStats(); renderAll();
-      const msg = okMsg + (r.emailed ? ' · customer emailed' : (patch.notifyCustomer ? ' · email not sent (email sending isn’t set up yet)' : ''));
+      const msg = (patch.customerMessage && !r.emailed) ? 'Email not sent (email sending isn’t set up yet). Logged in notes.' : okMsg + (r.emailed ? ' · customer emailed' : (patch.notifyCustomer ? ' · email not sent (email sending isn’t set up yet)' : ''));
       toast(msg);
       status($('op-' + o.id), msg);
     } catch (e) {

@@ -11,7 +11,7 @@
 const { isAdminRequest } = require('./_admin-check');
 const { STAGES, normalizeStage } = require('./_stages');
 const { sendEmail } = require('./_email');
-const { orderShipped, orderDelivered, orderPrinting, orderCancelled } = require('./_templates');
+const { orderShipped, orderDelivered, orderPrinting, orderCancelled, photoRequest, delayNotice } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -44,6 +44,34 @@ exports.handler = async (event) => {
   try { p = JSON.parse(event.body); } catch { return json(400, { error: 'Invalid request.' }); }
   const { orderId, paymentStatus, adminNotes, notifyCustomer } = p;
   if (!orderId || !/^[0-9a-f-]{36}$/i.test(orderId)) return json(400, { error: 'Missing or invalid orderId.' });
+
+  // One-off customer messages from the dashboard: ask for a new photo, or tell them it's running late.
+  // Sends the email and logs it in the internal notes; the order stage is not changed.
+  if (p.customerMessage === 'photo' || p.customerMessage === 'delay') {
+    try {
+      const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}&select=*`, { headers: H });
+      const rows = await r.json().catch(() => []);
+      if (!r.ok || !rows.length) return json(404, { error: 'Order not found.' });
+      const full = rows[0];
+      if (!full.email) return json(400, { error: 'This order has no email address.' });
+      const note = clip(p.note, 600);
+      const newDate = p.newDate && /^\d{4}-\d{2}-\d{2}$/.test(p.newDate) ? p.newDate : null;
+      if (p.customerMessage === 'delay' && !newDate) return json(400, { error: 'Pick the new delivery date first.' });
+      const m = p.customerMessage === 'photo' ? photoRequest(full, note) : delayNotice(full, newDate, note);
+      const sent = await sendEmail({ to: full.email, subject: m.subject, html: m.html });
+      const emailed = !!(sent && sent.sent !== false);
+      const stamp = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Dubai' });
+      const line = `[${stamp}] ${p.customerMessage === 'photo' ? 'Asked customer for a new photo' : 'Sent delay notice, new date ' + newDate}${emailed ? '' : ' (email NOT sent: email sending not set up)'}${note ? ': ' + note : ''}`;
+      const admin_notes = (full.admin_notes ? full.admin_notes + '\n' : '') + line;
+      const u = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderId}`, { method: 'PATCH', headers: { ...H, Prefer: 'return=representation' }, body: JSON.stringify({ admin_notes: admin_notes.slice(-4000) }) });
+      const urows = await u.json().catch(() => []);
+      const { items, ...order } = (Array.isArray(urows) && urows[0]) || full;
+      return json(200, { order, emailed });
+    } catch (err) {
+      console.error('update-order customerMessage error:', err);
+      return json(500, { error: 'Could not send the message.' });
+    }
+  }
 
   const patch = {};
   let newStage = null;
