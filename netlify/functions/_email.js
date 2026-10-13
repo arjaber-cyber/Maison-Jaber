@@ -48,7 +48,7 @@ function htmlToText(html) {
     .replace(/^[ \t]+/gm, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
-async function sendEmail({ to, subject, html, text, replyTo }) {
+function resendKey() {
   const rawKey = process.env.RESEND_API_KEY || '';
   /* Keys pasted via notes/chat apps can pick up smart quotes or spaces; strip anything that can't be in a key. */
   const apiKey = rawKey.replace(/[^\x21-\x7E]/g, '').replace(/^['"`]+|['"`]+$/g, '');
@@ -56,7 +56,39 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
     const odd = [...rawKey].map((c, i) => (c.charCodeAt(0) < 0x21 || c.charCodeAt(0) > 0x7E) ? `${i}:U+${c.charCodeAt(0).toString(16)}` : null).filter(Boolean);
     console.warn(`[email] RESEND_API_KEY had unexpected characters (raw length ${rawKey.length}, cleaned ${apiKey.length}, starts "${apiKey.slice(0, 3)}", odd chars at ${odd.join(', ')}). Re-paste it in Netlify.`);
   }
-  const from = process.env.EMAIL_FROM || `Hikaya by Maison Jaber <${CUSTOMER_EMAIL}>`;
+  return apiKey;
+}
+const fromAddress = () => process.env.EMAIL_FROM || `Hikaya by Maison Jaber <${CUSTOMER_EMAIL}>`;
+
+/* Marketing mail (CRM campaigns): up to 100 emails in one Resend call.
+   list: [{ to, subject, html, text?, headers? }]. Resolves to one result per email, in order. */
+async function sendBatch(list) {
+  const apiKey = resendKey();
+  if (!apiKey) return list.map(() => ({ sent: false, reason: 'not_configured' }));
+  const from = process.env.MARKETING_EMAIL_FROM || fromAddress();
+  try {
+    const res = await fetch('https://api.resend.com/emails/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(list.map(m => ({ from, to: m.to, subject: m.subject, html: m.html, text: m.text || htmlToText(m.html), reply_to: CUSTOMER_EMAIL, headers: m.headers || undefined }))),
+    });
+    const body = await res.text();
+    if (!res.ok) {
+      console.error('[email] Resend batch error:', res.status, body);
+      let msg = body; try { msg = JSON.parse(body).message || body; } catch {}
+      return list.map(() => ({ sent: false, reason: 'api_error', detail: String(msg).slice(0, 300), status: res.status }));
+    }
+    let ids = []; try { ids = (JSON.parse(body).data || []).map(d => d.id); } catch {}
+    return list.map((m, i) => ({ sent: true, id: ids[i] || null }));
+  } catch (err) {
+    console.error('[email] batch send failed:', err);
+    return list.map(() => ({ sent: false, reason: 'network_error', detail: 'Could not reach the email service.' }));
+  }
+}
+
+async function sendEmail({ to, subject, html, text, replyTo, headers }) {
+  const apiKey = resendKey();
+  const from = fromAddress();
 
   if (!apiKey) {
     console.warn(`[email] RESEND_API_KEY not set -- skipping email to ${to} ("${subject}"). Add it in Netlify env vars to enable sending.`);
@@ -70,7 +102,7 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify({ from, to, subject, html, text: text || htmlToText(html), reply_to: replyTo || CUSTOMER_EMAIL }),
+      body: JSON.stringify({ from, to, subject, html, text: text || htmlToText(html), reply_to: replyTo || CUSTOMER_EMAIL, headers: headers || undefined }),
     });
     if (!res.ok) {
       const errText = await res.text();
@@ -167,4 +199,4 @@ function emailShell(bodyHtml, opts) {
 </td></tr></table></body></html>`;
 }
 
-module.exports = { sendEmail, emailShell, htmlToText, ui, esc, etaDays, C, OWNER_INBOX, CUSTOMER_EMAIL, SITE_URL, WHATSAPP, WHATSAPP_DISPLAY };
+module.exports = { sendEmail, sendBatch, emailShell, htmlToText, ui, esc, etaDays, C, SERIF, SANS, HAND, OWNER_INBOX, CUSTOMER_EMAIL, SITE_URL, WHATSAPP, WHATSAPP_DISPLAY };

@@ -494,5 +494,14 @@
     const c = o && $('op-' + o.id); if (c) { c.scrollIntoView({ behavior: 'smooth', block: 'start' }); photos(o, c); }
   }
 
-  window.hkOrders = { load, focus, STAGES, aed, fmtAED };
+  /* Used by the Overview tab and the CRM. ready resolves once orders have loaded. */
+  let readyResolve; const ready = new Promise(r => { readyResolve = r; });
+  const _load = load;
+  async function loadAndSignal(password) { try { await _load(password); } finally { readyResolve(orders); } }
+  window.hkOrders = {
+    load: loadAndSignal, focus, STAGES, aed, fmtAED, ready,
+    get orders() { return orders; },
+    helpers: { stageOf, isLate, isSale, typeOf, earned, counts, retail, giveaway, items },
+    reload: () => _load(pw),
+  };
 })();
