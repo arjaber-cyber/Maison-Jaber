@@ -12,9 +12,16 @@
 
 const AMOUNT_FILS = 200; // 2 AED (Ziina minimum)
 
+const { isAdminRequest } = require('./_admin-check');
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+  // Admin only: this endpoint spends money (AI credits / real payments), so it
+  // must never be callable by the public.
+  if (!isAdminRequest(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Admin password required.' }) };
   }
   if (!process.env.ZIINA_API_KEY) {
     return { statusCode: 500, body: JSON.stringify({ error: 'ZIINA_API_KEY is not set in Netlify.' }) };

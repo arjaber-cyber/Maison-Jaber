@@ -39,7 +39,7 @@ async function pay(mode){
   const btns=document.querySelectorAll('button'); btns.forEach(b=>b.disabled=true);
   const msg=document.getElementById('msg'); msg.className='msg'; msg.textContent='Creating payment…';
   try{
-    const r=await fetch('/.netlify/functions/ziina-test-payment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode})});
+    let pw='';try{pw=sessionStorage.getItem('hikaya_admin_password')||''}catch(e){}if(!pw){pw=prompt('Admin password')||'';try{sessionStorage.setItem('hikaya_admin_password',pw)}catch(e){}}const r=await fetch('/.netlify/functions/ziina-test-payment',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':pw},body:JSON.stringify({mode})});
     const d=await r.json();
     if(!r.ok) throw new Error((d.error||'Error')+(d.detail?'\n'+JSON.stringify(d.detail):''));
     const useHosted=document.getElementById('hosted').checked || !d.embeddedUrl;

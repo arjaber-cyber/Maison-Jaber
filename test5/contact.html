@@ -8,6 +8,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Contact | Hikaya</title>
 <meta name="description" content="Questions about an order, a photo or delivery? Get in touch with Hikaya." />
+<link rel="canonical" href="https://maison-jaber.com/contact.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Hikaya by Maison Jaber" />
+<meta property="og:title" content="Contact | Hikaya" />
+<meta property="og:description" content="Questions about an order, a photo or delivery? Get in touch with Hikaya." />
+<meta property="og:url" content="https://maison-jaber.com/contact.html" />
+<meta property="og:image" content="https://maison-jaber.com/test5/images/hom-hero-01.webp" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,6 +32,7 @@
     <h1 id="ct-title" data-i18n="pg.ct_title">Get in touch</h1>
     <p class="lede" data-i18n="pg.ct_sub">Questions about an order, a photo or delivery? We're here to help.</p>
     <form class="cform" id="cform" novalidate>
+      <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label>Leave this empty<input type="text" name="website" id="cf-website" tabindex="-1" autocomplete="off"></label></div>
       <label><span data-i18n="pg.ct_name">Name</span><input type="text" id="contact-name" autocomplete="name" required /></label>
       <label><span data-i18n="pg.ct_email">Email</span><input type="email" id="contact-email" autocomplete="email" inputmode="email" dir="ltr" required /></label>
       <label><span data-i18n="pg.ct_order">Order number (optional)</span><input type="text" id="contact-order" placeholder="HK-12345678" /></label>
@@ -74,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     busy = true; btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.textContent = t('pg.ct_sending', 'Sending…');
     msg.className = 'form-msg'; msg.textContent = '';
     try {
-      var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, email: email, orderNumber: orderNumber, message: message, lang: (window.hikayaLang ? window.hikayaLang() : 'en') }) });
+      var res = await fetch('/.netlify/functions/contact-submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ website: (document.getElementById('cf-website') || {}).value || '', name: name, email: email, orderNumber: orderNumber, message: message, lang: (window.hikayaLang ? window.hikayaLang() : 'en') }) });
       var data = {}; try { data = await res.json(); } catch (_) {}
       if (res.ok) { lastSent = sig; msg.className = 'form-msg success'; msg.textContent = t('lx.ct_ok', "Thank you, your message is with us. We'll reply by email, usually within a day."); form.reset(); lastSent = ''; }
       else { msg.className = 'form-msg error'; msg.textContent = t('pg.ct_err', 'Something went wrong. Please try again, or email hello@maison-jaber.com.'); }

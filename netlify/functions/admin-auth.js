@@ -16,6 +16,8 @@
 // every request via the x-admin-password header, so there's no separate
 // session to steal or expire awkwardly.
 
+const { safeEqual } = require('./_admin-check');
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -36,8 +38,10 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request.' }) };
   }
 
-  if (payload.password === adminPassword) {
+  if (safeEqual(payload && payload.password, adminPassword)) {
     return { statusCode: 200, body: JSON.stringify({ valid: true }) };
   }
+  // Slow down password guessing: every wrong attempt waits ~1.5s.
+  await new Promise(r => setTimeout(r, 1500));
   return { statusCode: 401, body: JSON.stringify({ error: 'Incorrect password.' }) };
 };

@@ -577,6 +577,8 @@
     { key: 'delivered', label: window.hikayaT('admin.stage_delivered') }
   ];
 
+  // Escape customer-typed text before putting it into the page (blocks script injection via order fields).
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const BOOK_PRICE = (window.HIKAYA_REGIONS && window.HIKAYA_REGIONS.UAE && window.HIKAYA_REGIONS.UAE.bookNow) || 169; // from region.js (AED)
 
   function renderStats(submissions) {
@@ -621,7 +623,7 @@
         <div class="lbl">Estimated Value</div>
       </div>
       <div class="stat-card">
-        <div class="num" style="font-size:20px; line-height:1.3;">${topStory ? topStory[0] : '—'}</div>
+        <div class="num" style="font-size:20px; line-height:1.3;">${topStory ? esc(topStory[0]) : '—'}</div>
         <div class="lbl">Most Requested (${topStory ? topStory[1] : 0})</div>
       </div>
       <div class="stat-card wide">
@@ -1254,9 +1256,9 @@
                 ${photoKeys.length ? photoKeys.map(() => `<div class="ph">${window.hikayaT('admin.photo')}</div>`).join('') : '<div class="ph"></div>'}
               </div>
               <div class="req-info">
-                <h3>${d.child_name || window.hikayaT('admin.unnamed')} &middot; ${d.story || window.hikayaT('admin.no_story')}</h3>
-                <div class="meta">${window.hikayaT('admin.ages_label')} ${d.age_edition || '—'} &middot; ${d.account_email || d.parent_email || window.hikayaT('admin.no_email')}</div>
-                ${d.dedication ? `<div class="dedication">"${d.dedication}"</div>` : ''}
+                <h3>${esc(d.child_name || window.hikayaT('admin.unnamed'))} &middot; ${esc(d.story || window.hikayaT('admin.no_story'))}</h3>
+                <div class="meta">${window.hikayaT('admin.ages_label')} ${esc(d.age_edition || '—')} &middot; ${esc(d.account_email || d.parent_email || window.hikayaT('admin.no_email'))}</div>
+                ${d.dedication ? `<div class="dedication">"${esc(d.dedication)}"</div>` : ''}
               </div>
               <div class="req-date">${new Date(sub.created_at).toLocaleDateString()}</div>
             </div>

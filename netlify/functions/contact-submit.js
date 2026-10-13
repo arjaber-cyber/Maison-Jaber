@@ -30,6 +30,12 @@ exports.handler = async (event) => {
   }
 
   const { name, email, orderNumber, message } = payload;
+  // Spam guard: bots fill the hidden "website" field. Pretend success, send nothing
+  // (this form also emails an auto-reply, so it must not become a spam relay).
+  if (payload.website) return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+  if (String(message || '').length > 5000 || String(name || '').length > 200) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Your message is too long. Please shorten it and try again.' }) };
+  }
   const lang = payload.lang === 'ar' ? 'ar' : 'en';
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!name || !emailRe.test(email || '') || !message || message.trim().length < 5) {

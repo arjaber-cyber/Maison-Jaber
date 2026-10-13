@@ -12,11 +12,18 @@
 // This function never exposes your API key to the browser: the key only
 // ever lives on Netlify's server, and the browser just calls this function.
 
+const { isAdminRequest } = require('./_admin-check');
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  // Admin only: this endpoint spends money (AI credits / real payments), so it
+  // must never be callable by the public.
+  if (!isAdminRequest(event)) {
+    return { statusCode: 401, body: JSON.stringify({ error: 'Admin password required.' }) };
+  }
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return {
