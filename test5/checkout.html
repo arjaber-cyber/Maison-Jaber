@@ -968,7 +968,7 @@
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
 
-    function finalizeOrderSuccess(message, orderNumber) {
+    function finalizeOrderSuccess(message, orderNumber, trackingToken) {
       successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
@@ -989,7 +989,7 @@
       }).catch(() => { /* best-effort only */ });
 
       if (window.hikayaCart) window.hikayaCart.clearCart();
-      if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber);
+      if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber, trackingToken);
     }
 
     // Ziina: the server re-prices the cart, saves the order, and returns Ziina's payment page.
@@ -1004,11 +1004,11 @@
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.free) {
           placeOrderBtn.disabled = true;
-          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber);
+          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber, data.trackingToken);
           return;
         }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
-        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, items: order.items, email: order.email })); } catch {}
+        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email })); } catch {}
         placeOrderBtn.textContent = t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
       } catch (err) {
@@ -1111,13 +1111,13 @@
 
 <script>
 /* Order confirmation screen (2026 redesign): same success logic, new presentation. */
-window.hkShowOrderDone = function (order, orderNumber) {
+window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
   var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
   var names = (order.items || []).map(function (i) { return i.childName; }).filter(Boolean);
   var who = names.length ? names.join(' & ') : '';
   document.getElementById('od-sub').textContent = who ? t('pg.od_sub', 'Thank you for creating a Hikaya story for {name}.').replace('{name}', who) : t('pg.od_sub_plain', 'Thank you for creating a Hikaya story.');
   document.getElementById('od-number').textContent = orderNumber || t('pg.od_number_email', 'Sent to your email');
-  if (orderNumber) document.getElementById('od-track').href = 'track-order.html?order=' + encodeURIComponent(orderNumber);
+  if (trackingToken) document.getElementById('od-track').href = 'track-order.html?t=' + encodeURIComponent(trackingToken);
   /* Show only the confirmation inside <main> (the site header and footer stay). */
   var main = document.getElementById('main');
   Array.prototype.forEach.call(main.children, function (el) { if (el.id !== 'order-done') el.hidden = true; });
@@ -1142,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
     if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'ziina' });
     box.remove();
-    if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order);
+    if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     history.replaceState(null, '', location.pathname);
   }
   if (how === 'cancel') { say(t('pg.ziina_cancelled', 'Payment cancelled. Your cart is still here whenever you are ready.'), 'warn'); history.replaceState(null, '', location.pathname); return; }

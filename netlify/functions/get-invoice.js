@@ -1,8 +1,7 @@
 // netlify/functions/get-invoice.js
 //
-// Returns the data needed to render an invoice for one order. Same
-// order-number + email requirement as track-order.js, so a stranger can't
-// pull up someone else's invoice by guessing an order number.
+// Returns the data needed to render an invoice for one order, found by its private,
+// unguessable tracking token, so a stranger can't pull up someone else's invoice.
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -11,20 +10,21 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
 exports.handler = async (event) => {
-  const orderNumber = (event.queryStringParameters?.orderNumber || '').trim().toUpperCase();
-  const email = (event.queryStringParameters?.email || '').trim().toLowerCase();
-  if (!orderNumber || !email) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Missing order number or email.' }) };
+  // Invoices open only with the order's private link token (from the order emails, the
+  // account page, or after the one-time tracking code). Order number + email is no longer enough.
+  const token = (event.queryStringParameters?.t || '').trim();
+  if (!/^[0-9a-f]{64}$/.test(token)) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'This invoice link is not valid.' }) };
   }
 
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/orders?order_number=eq.${encodeURIComponent(orderNumber)}&email=eq.${encodeURIComponent(email)}&select=*`,
+      `${SUPABASE_URL}/rest/v1/orders?tracking_token=eq.${token}&select=*`,
       { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
     );
     const rows = await res.json();
     if (!res.ok || !rows || rows.length === 0) {
-      return { statusCode: 404, body: JSON.stringify({ error: 'Invoice not found. Double-check your order number and email.' }) };
+      return { statusCode: 404, body: JSON.stringify({ error: 'This invoice link is not valid.' }) };
     }
     const row = rows[0];
     let items = [];

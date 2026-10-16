@@ -36,8 +36,10 @@ function ageText(band, lang) {
   return lang === 'ar' ? `من ${a} إلى ${b || a} سنوات` : `Ages ${a}–${b || a}`;
 }
 const bookLangText = (l, lang) => (l === 'ar' ? tr(lang, 'Arabic book', 'كتاب بالعربية') : tr(lang, 'English book', 'كتاب بالإنجليزية'));
-const invoiceUrl = o => `${SITE_URL}invoice.html?orderNumber=${encodeURIComponent(o.order_number || '')}&email=${encodeURIComponent(o.email || '')}`;
-const trackUrl = no => `${SITE_URL}track-order.html${no ? '?order=' + encodeURIComponent(no) : ''}`;
+/* Private per-order links (orders.tracking_token): open the order or its invoice with no code needed.
+   The token is long and random, so only someone who received the email has it. */
+const invoiceUrl = o => o && o.tracking_token ? `${SITE_URL}invoice.html?t=${encodeURIComponent(o.tracking_token)}` : `${SITE_URL}track-order.html`;
+const trackUrl = o => `${SITE_URL}track-order.html${o && o.tracking_token ? '?t=' + encodeURIComponent(o.tracking_token) : ''}`;
 
 /* Story titles in Arabic, when the caller has the catalogue (slug -> title_ar). */
 function storyTitle(item, lang, arTitles) {
@@ -97,7 +99,7 @@ function orderConfirmed(order, arTitles, covers) {
     ui.box(ui.p(tr(lang,
       '<strong>Spotted a mistake?</strong> We print exactly the name, age and photo you sent, and there is no preview step. If anything needs changing, reply to this email as soon as you can. We can update it as long as production hasn\'t started.',
       '<strong>هل لاحظت خطأ؟</strong> نطبع الاسم والعمر والصورة كما أرسلتها تمامًا، ولا توجد مرحلة معاينة، وإذا احتجت إلى أي تعديل فردّ على هذا البريد بأسرع وقت، ويمكننا التعديل ما دام الإنتاج لم يبدأ'), lang, true).replace('margin:0 0 14px', 'margin:0')),
-    ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+    ui.button(trackUrl(order), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
     waived ? '' : ui.p(`<a href="${esc(invoiceUrl(order))}" style="color:#8A5638; font-weight:700;">${tr(lang, 'Download your invoice', 'تنزيل الفاتورة')}</a>`, lang, true),
     ui.sign(lang),
   ].join('');
@@ -122,7 +124,7 @@ function orderShipped(order) {
     trackBits.length ? ui.rows(trackBits, lang) + '<div style="height:12px"></div>' : '',
     order.tracking_url
       ? ui.button(order.tracking_url, tr(lang, 'Track the delivery &rarr;', 'تتبّع الشحنة &larr;'), lang)
-      : ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+      : ui.button(trackUrl(order), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
     ui.sign(lang),
   ].join('');
   return {
@@ -270,7 +272,7 @@ function orderPrinting(order) {
     ui.p(tr(lang,
       `The illustrations for order <strong dir="ltr">${esc(order.order_number || '')}</strong> are finished and the hardcover is being printed. Next we check every page, gift-box it and hand it to the courier.`,
       `انتهينا من رسومات الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong>، والكتاب قيد الطباعة الآن، وبعدها نراجع كل صفحة ونغلّفه في علبة الهدية ونسلّمه لشركة التوصيل`), lang),
-    ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+    ui.button(trackUrl(order), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
     ui.sign(lang),
   ].join('');
   return {
@@ -351,7 +353,7 @@ function delayNotice(order, newDate, note) {
       `يستغرق الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong> وقتًا أطول قليلًا مما خططنا له، ونعتذر عن الانتظار، وأردنا أن تعرف ذلك منّا أولًا`), lang),
     when ? ui.rows([[tr(lang, 'New estimated delivery', 'موعد التوصيل المتوقع الجديد'), esc(when)]], lang) : '',
     note ? ui.box(ui.p(esc(note), lang).replace('margin:0 0 14px', 'margin:0')) : '',
-    ui.button(trackUrl(order.order_number), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
+    ui.button(trackUrl(order), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
     ui.p(tr(lang, 'If the date matters for a birthday or a special day, reply and tell us. We\'ll do everything we can.', 'إذا كان الموعد مهمًا لعيد ميلاد أو مناسبة خاصة فردّ وأخبرنا، وسنبذل كل ما بوسعنا'), lang, true),
     ui.sign(lang),
   ].join('');
@@ -413,6 +415,24 @@ function newsletterWelcome(lang) {
   };
 }
 
+/* ---------------- One-time code for guest order tracking ---------------- */
+function trackCode(code, lang) {
+  lang = lang === 'ar' ? 'ar' : 'en';
+  const big = `<p style="margin:6px 0 18px; font-family:Manrope,Arial,sans-serif; font-size:34px; font-weight:700; letter-spacing:.3em; color:#573624;" dir="ltr">${esc(code)}</p>`;
+  const body = [
+    ui.eyebrow(tr(lang, 'Track your order', 'تتبّع طلبك'), lang),
+    ui.h(tr(lang, 'Your tracking code', 'رمز تتبّع طلبك'), lang),
+    ui.p(tr(lang, 'Enter this code on the tracking page to see your orders. It works once and expires in 10 minutes.', 'أدخل هذا الرمز في صفحة التتبّع لعرض طلباتك، يُستخدم مرة واحدة وتنتهي صلاحيته خلال 10 دقائق'), lang),
+    big,
+    ui.p(tr(lang, "Didn't ask for this? You can ignore this email. Nobody can see your orders without this code.", 'لم تطلب هذا الرمز؟ يمكنك تجاهل هذه الرسالة، فلا أحد يستطيع رؤية طلباتك بدون هذا الرمز'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, `${code} is your Hikaya tracking code`, `${code} رمز تتبّع طلبك من حكاية`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Your one-time code to see your order status.', 'رمزك لمرة واحدة لعرض حالة طلبك') }),
+  };
+}
+
 /* ---------------- Daily "needs attention" digest for the team (English) ---------------- */
 function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
   const list = (rows) => `<ul style="margin:0 0 16px; padding-left:18px; font-family:Manrope,Arial,sans-serif; font-size:14px; line-height:1.6; color:#5E4A3D;">${rows.join('')}</ul>`;
@@ -433,4 +453,4 @@ function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
   };
 }
 
-module.exports = { photoRequest, delayNotice, reviewRequest, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };
+module.exports = { trackCode, photoRequest, delayNotice, reviewRequest, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };

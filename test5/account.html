@@ -292,11 +292,16 @@
             </div>
           </div>
           <div class="order-actions">
-            <a href="invoice.html?orderNumber=${encodeURIComponent(order.order_number || '')}&email=${encodeURIComponent(userEmail)}">Invoice</a>
-            <a href="track-order.html">Track</a>
+            ${order.tracking_token ? `<a href="invoice.html?t=${encodeURIComponent(order.tracking_token)}">Invoice</a>
+            <a href="track-order.html?t=${encodeURIComponent(order.tracking_token)}" class="track-link">Track</a>` : ''}
             <span class="stage-badge">${STAGE_LABELS[order.order_status] || 'Order Received'}</span>
           </div>
         `;
+        /* The whole card opens its tracking: signed-in customers never need a code. */
+        if (order.tracking_token) {
+          card.style.cursor = 'pointer';
+          card.addEventListener('click', e => { if (!e.target.closest('a')) location.href = 'track-order.html?t=' + encodeURIComponent(order.tracking_token); });
+        }
         panel.appendChild(card);
       });
     } catch (err) {

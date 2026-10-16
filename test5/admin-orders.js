@@ -364,7 +364,7 @@
           </div></section>` : ''}
         <div class="op-foot">
           ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : '<button class="op-btn" data-pay="refunded">Mark refunded</button>'}
-          ${o.order_number && o.email ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?orderNumber=${encodeURIComponent(o.order_number)}&email=${encodeURIComponent(o.email)}">Invoice</a>` : ''}
+          ${o.tracking_token ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?t=${encodeURIComponent(o.tracking_token)}">Invoice</a> <button type="button" class="op-btn" data-copy-track="${esc(o.tracking_token)}" title="Copy the private tracking link to send to the customer">Copy tracking link</button>` : ''}
           ${st === 'cancelled' ? '' : '<button class="op-btn danger" data-cancel>Cancel order</button>'}
           <span class="op-status" data-status role="status"></span>
         </div>
@@ -495,6 +495,15 @@
     if ($('op-shell')) { $('op-q').value = f.q; $('op-pay').value = 'all'; $('op-type').value = 'all'; renderAll(); }
     const c = o && $('op-' + o.id); if (c) { c.scrollIntoView({ behavior: 'smooth', block: 'start' }); photos(o, c); }
   }
+
+  // "Copy tracking link": the order's private link, to send a customer on WhatsApp if they ask.
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-copy-track]'); if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    const url = new URL('track-order.html?t=' + b.dataset.copyTrack, location.href).href;
+    const done = () => { const t = b.textContent; b.textContent = 'Copied ✓'; setTimeout(() => { b.textContent = t; }, 1600); };
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => prompt('Tracking link:', url)); else prompt('Tracking link:', url);
+  });
 
   window.hkOrders = { load, focus, STAGES, aed, fmtAED };
 })();

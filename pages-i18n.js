@@ -564,8 +564,8 @@
   "ar": "كيف أتتبع طلبي؟"
  },
  "a15": {
-  "en": "Use <a href=\"track-order.html\">Track your order</a> with your order number and the email you used at checkout.",
-  "ar": "استخدم صفحة <a href=\"track-order.html\">تتبع طلبك</a> برقم الطلب والبريد الإلكتروني الذي استخدمته عند الدفع"
+  "en": "Tap Track your order in any of our order emails. Signed in? Your orders are in <a href=\"account.html\">your account</a>. Or use <a href=\"track-order.html\">Track your order</a> with your order number, email or phone, and we'll email you a one-time code.",
+  "ar": "اضغط «تتبّع طلبك» في أي رسالة من رسائل طلبك، وإذا كنت مسجّل الدخول ستجد طلباتك في <a href=\"account.html\">حسابك</a>، أو استخدم صفحة <a href=\"track-order.html\">تتبع طلبك</a> برقم الطلب أو البريد الإلكتروني أو الهاتف وسنرسل لك رمزًا لمرة واحدة"
  },
  "g_help": {
   "en": "Payment, returns and help",
@@ -728,6 +728,23 @@
     trk_err_bad: { en: 'Please enter an order number like HK-12345678, an email address, or a full phone number.', ar: 'يرجى إدخال رقم طلب مثل HK-12345678، أو بريد إلكتروني، أو رقم هاتف كامل' },
     trk_not_found: { en: 'We could not find an order with those details. Please check and try again.', ar: 'لم نجد طلبًا بهذه البيانات، يرجى التحقق والمحاولة مرة أخرى' },
     trk_count: { en: 'We found {n} orders', ar: 'وجدنا {n} طلبات' },
+    trk_intro2: { en: "Enter your order number, or the email or phone number you used at checkout. We'll email you a one-time code to see your order.", ar: 'أدخل رقم طلبك، أو البريد الإلكتروني أو رقم الهاتف الذي استخدمته عند الطلب، وسنرسل لك رمزًا لمرة واحدة لعرض طلبك' },
+    trk_send: { en: 'Send me a code', ar: 'أرسل لي الرمز' },
+    trk_signin: { en: 'Have an account?', ar: 'لديك حساب؟' },
+    trk_signin_a: { en: 'Sign in to see all your orders instantly', ar: 'سجّل الدخول لرؤية جميع طلباتك فورًا' },
+    trk_sent: { en: "If we have an order with those details, we've just emailed a 6-digit code to the address used at checkout. It expires in 10 minutes.", ar: 'إذا كان لدينا طلب بهذه البيانات، فقد أرسلنا الآن رمزًا من 6 أرقام إلى البريد الإلكتروني المستخدم عند الطلب، وتنتهي صلاحيته خلال 10 دقائق' },
+    trk_code_label: { en: '6-digit code', ar: 'الرمز المكوّن من 6 أرقام' },
+    trk_view: { en: 'View my orders', ar: 'عرض طلباتي' },
+    trk_resend: { en: 'Send a new code', ar: 'أرسل رمزًا جديدًا' },
+    trk_resend_in: { en: 'Send a new code ({s}s)', ar: 'أرسل رمزًا جديدًا ({s} ث)' },
+    trk_restart: { en: 'Use a different email or number', ar: 'استخدم بريدًا أو رقمًا آخر' },
+    trk_nocode: { en: "No email? Check your spam folder, or message us on WhatsApp and we'll help.", ar: 'لم تصلك الرسالة؟ تحقق من مجلد الرسائل غير المرغوب فيها، أو راسلنا على واتساب وسنساعدك' },
+    trk_code_err: { en: 'Please enter the 6-digit code from the email.', ar: 'يرجى إدخال الرمز المكوّن من 6 أرقام من الرسالة' },
+    trk_expired: { en: 'This code has expired. Please send a new one.', ar: 'انتهت صلاحية هذا الرمز، يرجى طلب رمز جديد' },
+    trk_locked: { en: 'Too many wrong codes. Please send a new one.', ar: 'تم إدخال رموز خاطئة كثيرة، يرجى طلب رمز جديد' },
+    trk_wrong: { en: 'That code is not right. Please check the email and try again.', ar: 'هذا الرمز غير صحيح، يرجى التحقق من الرسالة والمحاولة مرة أخرى' },
+    trk_rate: { en: 'Too many attempts. Please try again in an hour, or message us on WhatsApp.', ar: 'محاولات كثيرة، يرجى المحاولة بعد ساعة أو مراسلتنا على واتساب' },
+    trk_bad_link: { en: 'This tracking link is not valid. Enter your order number, email or phone below to get a code.', ar: 'رابط التتبّع هذا غير صالح، أدخل رقم الطلب أو البريد الإلكتروني أو الهاتف أدناه للحصول على رمز' },
     trk_invoice_email: { en: 'To view the invoice, track with the email you used at checkout.', ar: 'لعرض الفاتورة، تتبّع طلبك بالبريد الإلكتروني الذي استخدمته عند الطلب' },
   };
 })();

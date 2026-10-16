@@ -103,20 +103,19 @@
 
   (async function () {
     const params = new URLSearchParams(window.location.search);
-    const orderNumber = params.get('orderNumber');
-    const email = params.get('email');
+    const token = params.get('t');
     const loading = document.getElementById('loading');
     const errorBox = document.getElementById('error-box');
 
-    if (!orderNumber || !email) {
+    if (!token) {
       loading.style.display = 'none';
       errorBox.style.display = 'block';
-      errorBox.textContent = 'Missing order number or email. Use the link from your order confirmation email or track-order page.';
+      errorBox.innerHTML = 'Please open your invoice from the link in your order email, your account, or the <a href="track-order.html" style="text-decoration:underline;">order tracking page</a>.';
       return;
     }
 
     try {
-      const res = await fetch(`/.netlify/functions/get-invoice?orderNumber=${encodeURIComponent(orderNumber)}&email=${encodeURIComponent(email)}`);
+      const res = await fetch(`/.netlify/functions/get-invoice?t=${encodeURIComponent(token)}`);
       const data = await res.json();
       if (!res.ok) {
         loading.style.display = 'none';

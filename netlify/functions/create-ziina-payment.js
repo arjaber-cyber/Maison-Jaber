@@ -127,7 +127,7 @@ exports.handler = async (event) => {
     const done = await patchOrder({ payment_status: 'waived', order_status: 'received', status_updated_at: now, stage_history: [{ stage: 'received', at: now }] });
     await settleDiscount(saved.id, true);
     if (done) await sendConfirmation(done).catch(e => console.error('confirmation email failed', e));
-    return json(200, { free: true, orderNumber, total: 0, currency: price.currency, chargedAed: 0 });
+    return json(200, { free: true, orderNumber, trackingToken: saved.tracking_token, total: 0, currency: price.currency, chargedAed: 0 });
   }
 
   // 2) Create the Ziina payment for the server-calculated AED amount.
@@ -167,5 +167,5 @@ exports.handler = async (event) => {
     body: JSON.stringify({ ziina_payment_id: intent.id }),
   });
 
-  return json(200, { redirectUrl: intent.redirect_url, orderNumber, promoNotBetter: price.promoNotBetter, total: price.total, currency: price.currency, chargedAed: price.chargedAed, test: testMode() });
+  return json(200, { redirectUrl: intent.redirect_url, orderNumber, trackingToken: saved.tracking_token, promoNotBetter: price.promoNotBetter, total: price.total, currency: price.currency, chargedAed: price.chargedAed, test: testMode() });
 };
