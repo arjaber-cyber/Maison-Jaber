@@ -244,6 +244,22 @@
   .review-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line-soft, #ece1d1); font-size: 13.5px; }
   .review-row span:first-child { color: var(--ink-soft, #7d6a5a); font-weight: 600; }
   .review-row span:last-child { font-weight: 700; text-align: right; max-width: 60%; }
+  .book-lang { margin: 16px 0 14px; }
+  .book-name-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); font-size: 13px; font-weight: 600; }
+  .book-name-line bdi { font-weight: 800; color: var(--coral-deep); }
+  .consent-box { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 4px 0 12px; font-size: 12.5px; font-weight: 600; line-height: 1.5; cursor: pointer; }
+  .consent-box input { width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0; accent-color: var(--coral); }
+  .consent-box.need { border-color: #9b2c1f; }
+  .name-modal-backdrop { position: fixed; inset: 0; background: rgba(46,32,24,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .name-modal-backdrop[hidden] { display: none; }
+  .name-modal { background: #fff; border-radius: 18px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+  .name-modal h3 { font-size: 18px; margin-bottom: 6px; }
+  .name-modal .nm-sub { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin: 0 0 14px; }
+  .name-modal input { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .name-modal .nm-hint { font-size: 12px; color: var(--ink-soft); font-weight: 600; min-height: 16px; margin: 6px 0 0; }
+  .nm-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .nm-actions .btn-back { font-size: 12.5px; padding: 12px 14px; }
+  .nm-actions .btn-primary { flex: 1; justify-content: center; }
   .review-edit { font-size: 11.5px; text-decoration: underline; color: var(--ink-soft); font-weight: 700; margin-left: 8px; cursor: pointer; background: none; border: none; }
 </style>
 <script src="/i18n.js" defer></script>
@@ -367,6 +383,10 @@
         </div>
         <div class="photo-thumbs" id="photo-thumbs"></div>
         <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
+        <label class="consent-box" id="photo-consent-box" hidden>
+          <input type="checkbox" id="photo-consent" />
+          <span data-i18n="bl.photo_consent">I authorise Hikaya by Maison Jaber to use the photo(s) I upload only to create my child's personalised book. They will not be used for any other purpose, and they are automatically deleted from our records within 15 days.</span>
+        </label>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
           <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled data-i18n="pg.next">Continue →</button>
@@ -402,6 +422,14 @@
       <!-- Step: Review -->
       <div class="wizard-step" data-step="review" id="wizard-step-review">
         <div id="review-summary"></div>
+        <div class="field full book-lang">
+          <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
+          <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
+          <div class="book-name-line" id="book-name-line" hidden>
+            <span><span data-i18n="bl.name_in_book">Name printed in the book:</span> <bdi id="book-name-shown" data-i18n-skip></bdi></span>
+            <button type="button" class="review-edit" id="book-name-change" data-i18n="bl.change">Change</button>
+          </div>
+        </div>
         <section class="msg-card" id="msg-card" aria-labelledby="msg-title">
           <div class="msg-head">
             <span class="msg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg></span>
@@ -419,10 +447,7 @@
             <button type="button" class="msg-cancel" id="msg-cancel" data-i18n="qa.msg_cancel">Keep the story's own message instead</button>
           </div>
         </section>
-        <div class="field full book-lang">
-          <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
-          <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
-        </div>
+        <p class="field-error" id="lang-mismatch-error" role="alert" hidden></p>
         <div class="next-box" aria-labelledby="nx-title">
           <h3 id="nx-title" data-i18n="lx.nx_t">What happens next</h3>
           <ol>
@@ -443,6 +468,21 @@
 
 </form>
 
+
+<div class="name-modal-backdrop" id="name-modal" hidden>
+  <div class="name-modal" role="dialog" aria-modal="true" aria-labelledby="name-modal-title">
+    <h3 id="name-modal-title" data-i18n="bl.nm_title">How should we write the name in the book?</h3>
+    <p class="nm-sub" id="name-modal-sub"></p>
+    <label class="field-label" for="name-modal-input" id="name-modal-label"></label>
+    <input type="text" id="name-modal-input" maxlength="20" autocomplete="off" />
+    <p class="nm-hint" id="name-modal-hint" aria-live="polite"></p>
+    <p class="field-error" id="name-modal-error" role="alert" hidden></p>
+    <div class="nm-actions">
+      <button type="button" class="btn-back" id="name-modal-cancel" data-i18n="bl.nm_cancel">Keep the book in the other language</button>
+      <button type="button" class="btn-primary" id="name-modal-ok" data-i18n="bl.nm_ok">Confirm name</button>
+    </div>
+  </div>
+</div>
 
 </main>
 <div id="hk-foot"></div>
@@ -741,7 +781,111 @@
   document.getElementById('summary-bar').addEventListener('click', e => {
     const b = e.currentTarget; b.setAttribute('aria-expanded', String(b.getAttribute('aria-expanded') !== 'true'));
   });
-  document.getElementById('book-language').addEventListener('change', e => { e.target.dataset.touched = '1'; });
+  /* ---- Book language: the name and the first-page message must be written in it ----
+     The parent types the name once (any script). If the book is in the other language, a pop-up
+     suggests the name in that language and the parent confirms or corrects it. That confirmed
+     name is the one saved on the order and printed in the book. */
+  const AR_RE = /[؀-ۿ]/, LATIN_RE = /[A-Za-z]/;
+  const scriptOf = s => { const a = AR_RE.test(s), l = LATIN_RE.test(s); return a && !l ? 'ar' : l && !a ? 'en' : (a && l ? 'mixed' : ''); };
+  const bookLangSel = document.getElementById('book-language');
+  const bookLang = () => bookLangSel.value === 'ar' ? 'ar' : 'en';
+  const typedName = () => (document.getElementById('child-name').value || '').trim();
+  let bookNameConfirmed = null; // { typed, lang, name }
+  function bookName() {
+    const typed = typedName(); if (!typed) return '';
+    if (scriptOf(typed) === bookLang()) return typed;
+    const c = bookNameConfirmed;
+    return c && c.typed === typed && c.lang === bookLang() ? c.name : '';
+  }
+  window.hkBookName = bookName;
+  function dedicationLangOk() {
+    const d = document.getElementById('dedication').value;
+    return bookLang() === 'ar' ? !LATIN_RE.test(d) : !AR_RE.test(d);
+  }
+  function langState() {
+    if (!bookName()) return { ok: false, why: 'name' };
+    if (!dedicationLangOk()) return { ok: false, why: 'msg' };
+    return { ok: true };
+  }
+  function paintBookName() {
+    const line = document.getElementById('book-name-line'), n = bookName();
+    // Only worth showing when the printed name differs from what they typed.
+    line.hidden = !n || n === typedName();
+    document.getElementById('book-name-shown').textContent = n;
+    const msgName = document.getElementById('msg-name'); if (msgName) msgName.textContent = n || typedName() || t('lx.st_child', 'your child');
+  }
+  function langCheck() {
+    paintBookName();
+    const st = langState(), err = document.getElementById('lang-mismatch-error');
+    const show = currentStepName === 'review' && !st.ok;
+    err.hidden = !show;
+    if (show) err.textContent = st.why === 'name'
+      ? t('bl.err_name', 'Please confirm how the name should be written in the book language.')
+      : (bookLang() === 'ar'
+        ? t('bl.err_msg_ar', 'The book is in Arabic, so the first-page message must be written in Arabic too. Please rewrite it in Arabic, or use "Inspire me".')
+        : t('bl.err_msg_en', 'The book is in English, so the first-page message must be written in English too. Please rewrite it in English, or use "Inspire me".'));
+    checkDetailsComplete();
+  }
+  window.hkLangCheck = langCheck;
+
+  const nm = {
+    wrap: document.getElementById('name-modal'), input: document.getElementById('name-modal-input'),
+    sub: document.getElementById('name-modal-sub'), label: document.getElementById('name-modal-label'),
+    hint: document.getElementById('name-modal-hint'), err: document.getElementById('name-modal-error'),
+    ok: document.getElementById('name-modal-ok'), cancel: document.getElementById('name-modal-cancel'),
+  };
+  let nmReq = 0, nmReturnFocus = null;
+  const langName = l => l === 'ar' ? t('lx.lang_ar', 'Arabic') : t('lx.lang_en', 'English');
+  async function openNameModal() {
+    const typed = typedName(); if (!typed) return;
+    const to = bookLang(), from = scriptOf(typed) === 'ar' ? 'ar' : 'en';
+    nmReturnFocus = document.activeElement;
+    nm.sub.textContent = t('bl.nm_sub', 'The book is in {lang}, so the name has to be written in {lang} too. We suggested a spelling below. Please check it carefully: it is printed exactly like this on every page.').replace(/\{lang\}/g, langName(to));
+    nm.label.textContent = t('bl.nm_label', '{name} in {lang}').replace('{name}', typed).replace('{lang}', langName(to));
+    nm.input.dir = to === 'ar' ? 'rtl' : 'ltr'; nm.input.lang = to;
+    nm.cancel.textContent = t('bl.nm_cancel_to', 'Keep the book in {lang}').replace('{lang}', langName(from));
+    nm.input.value = (bookNameConfirmed && bookNameConfirmed.typed === typed && bookNameConfirmed.lang === to) ? bookNameConfirmed.name : '';
+    nm.err.hidden = true; nm.wrap.hidden = false;
+    setTimeout(() => nm.input.focus(), 30);
+    if (nm.input.value) return;
+    const req = ++nmReq;
+    nm.hint.textContent = t('bl.nm_loading', 'Suggesting a spelling…');
+    try {
+      const r = await fetch('/.netlify/functions/translate-name', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: typed, to }) });
+      const d = await r.json().catch(() => ({}));
+      if (req !== nmReq || nm.wrap.hidden) return;
+      if (d.name && !nm.input.value.trim()) { nm.input.value = d.name; nm.input.select(); }
+      nm.hint.textContent = d.name ? t('bl.nm_suggested', 'Suggested spelling. You can change it.') : t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to));
+    } catch (_) {
+      if (req === nmReq) nm.hint.textContent = t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to));
+    }
+  }
+  function closeNameModal() { nmReq++; nm.wrap.hidden = true; nm.hint.textContent = ''; if (nmReturnFocus && nmReturnFocus.focus) nmReturnFocus.focus(); }
+  nm.ok.addEventListener('click', () => {
+    const v = nm.input.value.trim(), to = bookLang();
+    const valid = /^[\p{L}\p{M}][\p{L}\p{M}' \-]{0,19}$/u.test(v) && scriptOf(v) === to;
+    if (!valid) {
+      nm.err.hidden = false;
+      nm.err.textContent = t('bl.nm_err', 'Please write the name using {lang} letters only.').replace('{lang}', langName(to));
+      nm.input.setAttribute('aria-invalid', 'true'); nm.input.focus(); return;
+    }
+    nm.input.removeAttribute('aria-invalid');
+    bookNameConfirmed = { typed: typedName(), lang: to, name: v };
+    closeNameModal(); langCheck();
+    if (currentStepName === 'review') renderReviewSummary();
+  });
+  nm.input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.ok.click(); } });
+  nm.cancel.addEventListener('click', () => {
+    // Switch the book back to the language the name was typed in.
+    const typed = typedName(); const s = scriptOf(typed);
+    if (s === 'ar' || s === 'en') bookLangSel.value = s;
+    closeNameModal(); langCheck();
+    if (currentStepName === 'review') renderReviewSummary();
+  });
+  nm.wrap.addEventListener('keydown', e => { if (e.key === 'Escape') nm.cancel.click(); });
+  function ensureBookName() { if (currentStepName === 'review' && typedName() && !bookName()) openNameModal(); }
+  document.getElementById('book-name-change').addEventListener('click', () => { openNameModal(); });
+  bookLangSel.addEventListener('change', e => { e.target.dataset.touched = '1'; langCheck(); if (currentStepName === 'review') renderReviewSummary(); ensureBookName(); });
 
   /* ---- Personal message for the first page (saved as the item's dedication) ---- */
   (function () {
@@ -752,9 +896,12 @@
     const IDEAS = {
       en: ['To our brave {name}, may every page remind you how loved you are. Love, Mama and Baba', 'Dear {name}, this story is yours, just like our hearts. Keep shining, little star.', 'For {name}: dream big, be kind, and never stop asking questions. We are so proud of you.', 'Happy reading, {name}! Wherever your adventures take you, home is always here.'],
       ar: ['إلى {name} الشجاع، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزنا {name}، هذه القصة لك، تمامًا مثل قلوبنا، ابقَ نجمًا لامعًا', 'إلى {name}: احلم كثيرًا، وكن لطيفًا، ولا تتوقف عن السؤال، نحن فخورون بك', 'قراءة ممتعة يا {name}! أينما أخذتك مغامراتك، يبقى البيت هنا دائمًا'],
+      ar_girl: ['إلى {name} الشجاعة، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزتنا {name}، هذه القصة لكِ، تمامًا مثل قلوبنا، ابقي نجمة لامعة', 'إلى {name}: احلمي كثيرًا، وكوني لطيفة، ولا تتوقفي عن السؤال، نحن فخورون بكِ', 'قراءة ممتعة يا {name}! أينما أخذتكِ مغامراتك، يبقى البيت هنا دائمًا'],
     };
-    const childName = () => (document.getElementById('child-name').value || '').trim();
-    const lang = () => (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    // The message is printed in the BOOK's language, so ideas follow the book language, not the site language.
+    const childName = () => (window.hkBookName && window.hkBookName()) || '';
+    const lang = () => document.getElementById('book-language').value === 'ar' ? 'ar' : 'en';
+    const ideaList = () => lang() === 'ar' && document.getElementById('child-gender').value === 'girl' ? IDEAS.ar_girl : IDEAS[lang()];
     const setOpen = open => {
       body.hidden = !open; toggle.hidden = open; toggle.setAttribute('aria-expanded', String(open));
       card.classList.toggle('open', open);
@@ -765,12 +912,14 @@
     toggle.addEventListener('click', () => setOpen(true));
     document.getElementById('msg-cancel').addEventListener('click', () => { ta.value = ''; update(); setOpen(false); toggle.focus(); });
     document.getElementById('msg-inspire').addEventListener('click', () => {
-      const list = IDEAS[lang()]; let pick = list[Math.floor(Math.random() * list.length)];
+      const list = ideaList(); let pick = list[Math.floor(Math.random() * list.length)];
       if (list.length > 1) while (pick.replace('{name}', '') === ta.dataset.lastIdea) pick = list[Math.floor(Math.random() * list.length)];
       ta.dataset.lastIdea = pick.replace('{name}', '');
       ta.value = pick.replace('{name}', childName() || (lang() === 'ar' ? 'بطلنا' : 'our little hero')); update(); ta.focus();
+      if (window.hkLangCheck) window.hkLangCheck();
     });
     ta.addEventListener('input', update);
+    ta.addEventListener('input', () => { if (window.hkLangCheck) window.hkLangCheck(); });
     document.getElementById('child-name').addEventListener('input', paintName);
     document.addEventListener('hikaya:langchange', paintName);
     paintName(); update();
@@ -974,6 +1123,7 @@
   });
 
   const continueBtn = document.getElementById('continue-order-btn');
+  document.getElementById('photo-consent').addEventListener('change', e => { document.getElementById('photo-consent-box').classList.remove('need'); checkDetailsComplete(); });
   function checkDetailsComplete() {
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
     const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking');
@@ -994,7 +1144,10 @@
     const ageOk = ageState().ok;
     if (detailsNextBtn) detailsNextBtn.disabled = !(nameOk() && ageOk);
     const photoNextBtn = document.getElementById('photo-next-btn');
-    if (photoNextBtn) photoNextBtn.disabled = !hasVerifiedPhoto;
+    const consentBox = document.getElementById('photo-consent-box');
+    if (consentBox) consentBox.hidden = photoFiles.length === 0;
+    const photoConsent = document.getElementById('photo-consent').checked;
+    if (photoNextBtn) photoNextBtn.disabled = !(hasVerifiedPhoto && photoConsent);
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
 
@@ -1002,7 +1155,9 @@
       && nameOk()
       && ageOk
       && hasVerifiedPhoto
-      && extraCharOk;
+      && photoConsent
+      && extraCharOk
+      && langState().ok;
     continueBtn.disabled = !ready;
     if (stillChecking) {
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
@@ -1082,7 +1237,7 @@
     renderAge(false);
     renderStepHeading(currentStepName);
     renderWizardProgress();
-    if (currentStepName === 'review') renderReviewSummary();
+    if (currentStepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
     checkDetailsComplete();
   }
   document.addEventListener('hikaya:langchange', renderAll);
@@ -1095,7 +1250,7 @@
     document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
     const target = document.getElementById('wizard-step-' + stepName);
     if (target) target.classList.add('active');
-    if (stepName === 'review') renderReviewSummary();
+    if (stepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
     renderWizardProgress();
     const formCol = document.querySelector('.order-form-col');
     if (formCol) formCol.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1127,6 +1282,8 @@
   });
 
   function renderReviewSummary() {
+    const langSel = document.getElementById('book-language');
+    if (langSel && !langSel.dataset.touched) langSel.value = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     const storyName = document.getElementById('story-input').value;
     const storyInfo = STORY_CATALOG[storyName];
     const name = nameInput.value.trim();
@@ -1136,9 +1293,10 @@
     const photoCount = photoFiles.filter(p => p.status === 'verified').length;
     const rows = [
       { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
-      { label: t('personalize.summary_name', "Child's name"), value: name || '—', step: 'details' },
+      { label: t('personalize.summary_name', "Child's name"), value: (bookName() && bookName() !== name ? bookName() + ' (' + name + ')' : name) || '—', step: 'details' },
       { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
       { label: t('personalize.summary_photos', 'Photos'), value: photoCount, step: 'photo' },
+      { label: t('bl.photo_ok_row', 'Photo use'), value: t('bl.photo_ok_val', 'Authorised for this book only, deleted within 15 days'), step: 'photo' },
     ];
     if (storyInfo && storyInfo.has_extra_character) {
       const extraVal = extraCharChoice === 'yes'
@@ -1147,8 +1305,6 @@
       rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
     }
 
-    const langSel = document.getElementById('book-language');
-    if (langSel && !langSel.dataset.touched) langSel.value = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', name || t('lx.st_child', 'your child'));
     const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
     document.getElementById('nx3').textContent = t('lx.nx3', 'Delivered gift-boxed: {eta}.').replace('{eta}', eta.charAt(0).toLowerCase() === eta.charAt(0) ? eta : eta.charAt(0).toLowerCase() + eta.slice(1));
@@ -1181,7 +1337,10 @@
       slug: (storyInfo && storyInfo.slug) || null,
       coverUrl: (storyInfo && storyInfo.cover_image_url) || null,
       theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
-      childName: nameInput.value.trim(),
+      childName: bookName(), // the name exactly as printed, in the book language
+      childNameTyped: nameInput.value.trim(),
+      photoConsent: document.getElementById('photo-consent').checked,
+      photoConsentAt: new Date().toISOString(),
       ageEdition: document.getElementById('age-input').value,
       childAge: ageInputEl.value,
       gender: document.getElementById('child-gender').value,
@@ -1207,6 +1366,8 @@
     document.getElementById('summary-name').textContent = '—';
     document.getElementById('summary-photos').textContent = '0';
     nameInput.value = '';
+    bookNameConfirmed = null;
+    document.getElementById('photo-consent').checked = false;
     ageInputEl.value = '';
     document.getElementById('dedication').value = '';
     if (window.hkMsgSync) { window.hkMsgSync(); const b = document.getElementById('msg-body'); if (b) { b.hidden = true; document.getElementById('msg-toggle').hidden = false; document.getElementById('msg-toggle').setAttribute('aria-expanded', 'false'); document.getElementById('msg-card').classList.remove('open'); } }
@@ -1265,6 +1426,7 @@
   let saving = false;
   continueBtn.addEventListener('click', async () => {
     if (saving || continueBtn.disabled) return;
+    if (!langState().ok) { langCheck(); ensureBookName(); return; }
     saving = true; continueBtn.disabled = true; continueBtn.setAttribute('aria-busy', 'true');
     const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
     const item = buildCartItemFromForm();

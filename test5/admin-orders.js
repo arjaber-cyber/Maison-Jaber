@@ -320,7 +320,7 @@
         <div class="op-grid">
           <section class="op-box"><h4>Books (${its.length})</h4>${its.map((it, n) => `
             <div class="op-item"><strong>${esc(it.story || '—')}</strong>
-              <div class="op-item-m">${esc(it.childName || '—')}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
+              <div class="op-item-m">${esc(it.childName || '—')}${it.childNameTyped && it.childNameTyped !== it.childName ? ' <span class="op-muted">(typed as ' + esc(it.childNameTyped) + ')</span>' : ''}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
               ${it.dedication ? `<div class="op-quote"><small style="display:block; font-style:normal; font-weight:700; opacity:.7;">First-page message (print this instead of the standard one)</small>“${esc(it.dedication)}”</div>` : ''}
               <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
             </div>`).join('')}</section>
@@ -329,6 +329,8 @@
             <dt>Email</dt><dd>${o.email ? `<a href="mailto:${esc(o.email)}?subject=${encodeURIComponent('Your Hikaya order ' + (o.order_number || ''))}">${esc(o.email)}</a>` : '—'}</dd>
             <dt>Phone</dt><dd>${o.phone ? `${esc(o.phone)}${phone ? ` · <a target="_blank" rel="noopener" href="https://wa.me/${phone}">WhatsApp</a>` : ''}` : '—'}</dd>
             <dt>Address</dt><dd>${esc([o.address, o.city, o.country].filter(Boolean).join(', ') || '—')}</dd>
+            <dt>Promotions</dt><dd>${o.marketing_opt_in ? 'Yes, opted in to emails &amp; messages' : '<span class="op-muted">Not opted in</span>'}</dd>
+            ${o.info_confirmed_at || o.photo_consent_at ? `<dt>Consents</dt><dd>${o.info_confirmed_at ? 'Info confirmed' : ''}${o.info_confirmed_at && o.photo_consent_at ? ' · ' : ''}${o.photo_consent_at ? 'Photo use authorised (15-day deletion)' : ''}</dd>` : ''}
             ${o.courier || o.tracking_number ? `<dt>Courier</dt><dd>${esc(o.courier || '—')}${o.tracking_number ? ' · ' + (o.tracking_url ? `<a target="_blank" rel="noopener" href="${esc(o.tracking_url)}">${esc(o.tracking_number)}</a>` : esc(o.tracking_number)) : ''}</dd>` : ''}
           </dl>${o.is_gift && o.gift_message ? `<div class="op-quote">Gift note: “${esc(o.gift_message)}”</div>` : ''}</section>
           <section class="op-box"><h4>Payment</h4><dl class="op-kv">

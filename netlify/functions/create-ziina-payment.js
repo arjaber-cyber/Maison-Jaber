@@ -6,7 +6,7 @@
 // marked paid once Ziina confirms it (webhook or status check).
 //
 // POST { fullName, email, phone, address, city, country (UAE|Saudi|...),
-//        isGift, giftMessage, giftRecipientName, giftRecipientPhone, items:[{story, childName, ageEdition, gender,
+//        infoConfirmed (required), marketingOptIn, items:[{story, childName (as printed, in the book language), childNameTyped, photoConsent (required), ageEdition, gender,
 //        dedication, extraCharacterName}], promoCode, returnPath }
 // Env: ZIINA_API_KEY, ZIINA_TEST_MODE (true = Ziina sandbox, no real money),
 //      SUPABASE_SERVICE_ROLE_KEY, ZIINA_WEBHOOK_SECRET
@@ -21,6 +21,7 @@
 const { priceOrder, orderTypeForTag, reserveDiscount, settleDiscount, PROMO_MESSAGES, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY } = require('./_pricing');
 const { sendConfirmation } = require('./_ziina');
 
+const { checkOrderRules } = require('./_orderRules');
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 const testMode = () => ['true', '1', 'yes', 'on'].includes(String(process.env.ZIINA_TEST_MODE || '').trim().toLowerCase());
 
@@ -33,6 +34,8 @@ exports.handler = async (event) => {
   const req = ['fullName', 'email', 'phone', 'address', 'city', 'country'];
   if (req.some(k => !String(o[k] || '').trim())) return json(400, { error: 'Please fill in your name, email, phone, address, and city.' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(o.email).trim())) return json(400, { error: 'Please enter a valid email address.' });
+  const ruleErr = checkOrderRules(o);
+  if (ruleErr) return json(400, ruleErr);
 
   // Logged-in customers: attach the order to their account email (best effort).
   let email = String(o.email).trim();
@@ -58,7 +61,7 @@ exports.handler = async (event) => {
   const PHOTO_PATH = /^\d{4}-\d{2}-\d{2}\/[0-9a-f]{32}\.(jpg|png|webp)$/;
   const paths = list => (Array.isArray(list) ? list : []).map(String).filter(p => PHOTO_PATH.test(p)).slice(0, 5);
   const cleanItems = o.items.map(i => ({
-    story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
+    story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childNameTyped: String(i.childNameTyped || i.childName || '').slice(0, 60), photoConsent: i.photoConsent === true, photoConsentAt: i.photoConsentAt ? String(i.photoConsentAt).slice(0, 40) : null, childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
     gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
     photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
   }));
@@ -66,10 +69,9 @@ exports.handler = async (event) => {
 
   // Gift sent straight to someone else: keep the recipient with the delivery address,
   // so whoever packs and ships the order sees it next to the address.
-  const recipName = o.isGift ? String(o.giftRecipientName || '').trim().slice(0, 80) : '';
-  const recipPhone = o.isGift ? String(o.giftRecipientPhone || '').trim().slice(0, 30) : '';
-  const recipient = [recipName, recipPhone].filter(Boolean).join(', ');
-  const deliveryAddress = String(o.address).trim() + (recipient ? ` (Gift recipient: ${recipient})` : '');
+  // ("Is this a gift?" was removed from checkout: every book ships gift-packaged anyway.)
+  const deliveryAddress = String(o.address).trim();
+  const nowIso = new Date().toISOString();
 
   // 1) Save the order first, so nothing is ever paid without a record.
   const save = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
@@ -79,7 +81,8 @@ exports.handler = async (event) => {
       order_number: orderNumber, full_name: String(o.fullName).trim(), email, phone: String(o.phone).trim(),
       address: deliveryAddress, city: String(o.city).trim(), country: o.country,
       payment_method: free ? 'free' : 'ziina', amount: price.total, currency: price.currency, charged_aed: price.chargedAed,
-      is_gift: !!o.isGift, gift_message: o.isGift ? String(o.giftMessage || '').slice(0, 600) : null,
+      is_gift: false, gift_message: null,
+      marketing_opt_in: o.marketingOptIn === true, info_confirmed_at: nowIso, photo_consent_at: nowIso,
       items: JSON.stringify(cleanItems), bundle_discount_pct: price.breakdown.bundleDiscountPct, promo_code: price.breakdown.promo,
       list_value_aed: price.listValueAed, promo_discount_aed: price.promoDiscountAed,
       order_type: free && price.promo ? orderTypeForTag(price.promo.tag) : 'sale',
@@ -92,6 +95,16 @@ exports.handler = async (event) => {
     return json(500, { error: 'We could not start your order. Please try again.' });
   }
   const [saved] = await save.json();
+
+  // Opted in to promotions at checkout: add them to the mailing list the CRM sends from.
+  if (o.marketingOptIn === true) {
+    const lang = (cleanItems[0] && cleanItems[0].siteLang) === 'ar' ? 'ar' : 'en';
+    await fetch(`${SUPABASE_URL}/rest/v1/newsletter_subscribers?on_conflict=email`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'resolution=ignore-duplicates' },
+      body: JSON.stringify({ email: email.toLowerCase(), lang, subscribed_at: nowIso }),
+    }).catch(e => console.warn('newsletter opt-in save failed', e));
+  }
   const patchOrder = body => fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${saved.id}`, {
     method: 'PATCH', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation' },
     body: JSON.stringify(body),

@@ -48,7 +48,7 @@
   .btn-primary:hover { background: var(--coral-deep); }
   .lookup-error { color: var(--coral-deep); font-size: 13px; font-weight: 700; margin-top: 12px; text-align: center; display: none; }
 
-  .result-card { background: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 40px; display: none; }
+  .result-card { background: #fff; border-radius: var(--radius); padding: 28px; margin-bottom: 40px; }
   .result-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
   .result-header h2 { font-size: 19px; }
   .result-header span { font-size: 12px; color: var(--ink-soft); font-weight: 700; }
@@ -66,6 +66,9 @@
   .tl-step:last-child .bar { display: none; }
   .tl-step .label { padding-bottom: 24px; font-size: 13.5px; font-weight: 700; color: var(--ink-soft); padding-top: 2px; }
   .tl-step.current .label { color: var(--ink); }
+  .result-card + .result-card { margin-top: -20px; }
+  .results-count { font-size: 13px; font-weight: 700; color: var(--ink-soft); text-align: center; margin: -10px 0 14px; }
+  .invoice-note { text-align: center; font-size: 12px; color: var(--ink-soft); font-weight: 600; margin: 4px 0 0; }
   .invoice-link { display: block; text-align: center; margin-top: 4px; font-size: 13px; font-weight: 700; text-decoration: underline; color: var(--ink-soft); }
 
   footer.site { background: #2E2018; color: #e8ddd0; padding: 30px 0; text-align: center; margin-top: 40px; }
@@ -81,87 +84,74 @@
 
 <div class="wrap page-head">
   <h1 data-i18n="trk.title">Track Your Order</h1>
-  <p data-i18n="trk.intro">Enter your order number and the email you used at checkout.</p>
+  <p data-i18n="bl.trk_intro">Enter your order number, or the email or phone number you used at checkout.</p>
 </div>
 
 <div class="wrap">
   <form class="lookup-card" id="track-form" novalidate>
     <div class="field">
-      <label class="field-label" for="order-number" data-i18n="trk.order_label">Order Number</label>
-      <input type="text" id="order-number" placeholder="HK-12345678" autocomplete="off" dir="ltr" required />
-    </div>
-    <div class="field">
-      <label class="field-label" for="track-email" data-i18n="trk.email_label">Email</label>
-      <input type="email" id="track-email" placeholder="you@email.com" autocomplete="email" dir="ltr" required aria-describedby="lookup-error" />
+      <label class="field-label" for="track-query" data-i18n="bl.trk_label">Order number, email or phone</label>
+      <input type="text" id="track-query" placeholder="HK-12345678 · you@email.com · +971 50 123 4567" autocomplete="off" dir="ltr" required aria-describedby="lookup-error" data-i18n-placeholder="bl.trk_ph" />
     </div>
     <button type="submit" class="btn-primary" id="track-btn" data-i18n="trk.action">Track Order</button>
     <div class="lookup-error" id="lookup-error" role="alert" aria-live="assertive"></div>
   </form>
 
-  <div class="result-card" id="result-card" tabindex="-1">
-    <div class="result-header">
-      <h2 id="result-order-number" dir="ltr"></h2>
-      <span id="result-date"></span>
-    </div>
-    <div class="result-items" id="result-items"></div>
-    <p class="lookup-note" id="result-note" role="status" hidden></p>
-    <div class="timeline" id="timeline"></div>
-    <a class="invoice-link" id="invoice-link" href="#" data-i18n="trk.invoice">View Invoice →</a>
-  </div>
+  <p class="results-count" id="results-count" role="status" hidden></p>
+  <div id="results" tabindex="-1"></div>
 </div>
 </main>
 <div id="hk-foot"></div>
 
 <script>
-/* QA003: validate before calling the lookup, and always restore the button
-   (not found, server error, timeout, network failure, success). */
+/* One box: order number, email or phone. Validates before calling the lookup, shows every
+   matching order (newest first), and always restores the button. */
 (function () {
   const tr = (k, fb) => (window.hikayaT && window.hikayaT(k)) || fb;
-  /* Customer-facing names for the fulfilment stages the dashboard uses.
-     "awaiting_approval" is an internal step (there is no customer preview), so it is only shown if an order is actually in it. */
+  /* Customer-facing names for the fulfilment stages the dashboard uses. */
   const STAGE_FB = {
     received: 'Order received', ai_production: 'Illustrating your child as the hero', printing: 'Printing your book',
     back_from_printing: 'Quality check and gift-boxing', with_courier: 'On its way to you', delivered: 'Delivered',
   };
   const STAGE_KEY = { received: 'trk_c.received', ai_production: 'trk_c.ai_production', printing: 'trk_c.printing_now', back_from_printing: 'trk_c.back_from_printing', with_courier: 'trk_c.with_courier', delivered: 'trk_c.delivered' };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const ORDER_RE = /^HK-?\d{4,14}$/i;
   const form = document.getElementById('track-form');
   const btn = document.getElementById('track-btn');
-  const numEl = document.getElementById('order-number');
-  const emailEl = document.getElementById('track-email');
+  const qEl = document.getElementById('track-query');
   const errorEl = document.getElementById('lookup-error');
-  const resultCard = document.getElementById('result-card');
-  let busy = false, lastData = null, lastEmail = '';
+  const results = document.getElementById('results');
+  const countEl = document.getElementById('results-count');
+  let busy = false, lastData = null, lastQuery = '';
 
   function setBusy(on) {
     busy = on; btn.disabled = on; btn.setAttribute('aria-busy', String(on));
     btn.textContent = on ? tr('trk.pending', 'Checking…') : tr('trk.action', 'Track Order');
   }
-  function showError(msg, field) {
-    errorEl.textContent = msg; errorEl.style.display = 'block';
-    [numEl, emailEl].forEach(el => el.removeAttribute('aria-invalid'));
-    if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
-  }
-  function clearError() { errorEl.textContent = ''; errorEl.style.display = 'none'; [numEl, emailEl].forEach(el => el.removeAttribute('aria-invalid')); }
-  [numEl, emailEl].forEach(el => el.addEventListener('input', clearError));
+  function showError(msg) { errorEl.textContent = msg; errorEl.style.display = 'block'; qEl.setAttribute('aria-invalid', 'true'); qEl.focus(); }
+  function clearError() { errorEl.textContent = ''; errorEl.style.display = 'none'; qEl.removeAttribute('aria-invalid'); }
+  qEl.addEventListener('input', clearError);
 
-  function renderResult() {
-    const data = lastData; if (!data) return;
+  function kindOf(v) {
+    if (ORDER_RE.test(v)) return 'order';
+    if (v.includes('@')) return EMAIL_RE.test(v) ? 'email' : 'bad_email';
+    const digits = v.replace(/\D/g, '').replace(/^00/, '').replace(/^0+/, '');
+    return /^[\d\s+()\-.]+$/.test(v) && digits.length >= 8 && digits.length <= 15 ? 'phone' : 'bad';
+  }
+
+  function card(data) {
     const loc = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar-AE' : 'en-GB';
-    document.getElementById('result-order-number').textContent = data.orderNumber;
-    document.getElementById('result-date').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString(loc) : '';
-    document.getElementById('result-items').textContent = (data.items || []).map(i => i.childName ? tr('trk.item_for', '{story} for {name}').replace('{story}', i.story).replace('{name}', i.childName) : i.story).join(' · ');
-    const timeline = document.getElementById('timeline');
-    timeline.innerHTML = '';
-    const note = document.getElementById('result-note');
-    note.hidden = !data.awaitingPayment;
-    note.textContent = data.awaitingPayment ? tr('lx.trk_unpaid', 'We have your order, but payment has not been confirmed yet.') : '';
-    document.getElementById('invoice-link').hidden = !!data.awaitingPayment;
-    if (data.awaitingPayment) return;
-    if (data.cancelled) { note.hidden = false; note.textContent = tr('trk_c.cancelled', 'This order was cancelled. If you have questions, please contact us.'); return; }
+    const el = document.createElement('div');
+    el.className = 'result-card';
+    el.innerHTML = '<div class="result-header"><h2 dir="ltr"></h2><span></span></div><div class="result-items"></div><p class="lookup-note" role="status" hidden></p><div class="timeline"></div>';
+    el.querySelector('h2').textContent = data.orderNumber;
+    el.querySelector('.result-header span').textContent = data.createdAt ? new Date(data.createdAt).toLocaleDateString(loc) : '';
+    el.querySelector('.result-items').textContent = (data.items || []).map(i => i.childName ? tr('trk.item_for', '{story} for {name}').replace('{story}', i.story).replace('{name}', i.childName) : i.story).join(' · ');
+    const note = el.querySelector('.lookup-note'), timeline = el.querySelector('.timeline');
+    if (data.awaitingPayment) { note.hidden = false; note.textContent = tr('lx.trk_unpaid', 'We have your order, but payment has not been confirmed yet.'); return el; }
+    if (data.cancelled) { note.hidden = false; note.textContent = tr('trk_c.cancelled', 'This order was cancelled. If you have questions, please contact us.'); return el; }
     const dates = data.stageDates || {};
-    (data.stages || []).forEach((stage) => {
-      const i = data.stages.indexOf(stage);
+    (data.stages || []).forEach((stage, i) => {
       const row = document.createElement('div');
       row.className = 'tl-step ' + (i < data.stageIndex ? 'done' : i === data.stageIndex ? 'current' : '');
       if (i === data.stageIndex) row.setAttribute('aria-current', 'step');
@@ -180,18 +170,35 @@
       }
       timeline.appendChild(row);
     });
-    document.getElementById('invoice-link').href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(lastEmail)}`;
+    if (lastData.invoiceAllowed) {
+      const a = document.createElement('a'); a.className = 'invoice-link';
+      a.href = `invoice.html?orderNumber=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(lastQuery)}`;
+      a.textContent = tr('trk.invoice', 'View Invoice →'); el.appendChild(a);
+    } else {
+      const n = document.createElement('p'); n.className = 'invoice-note';
+      n.textContent = tr('bl.trk_invoice_email', 'To view the invoice, track with the email you used at checkout.'); el.appendChild(n);
+    }
+    return el;
+  }
+
+  function renderResults() {
+    if (!lastData) return;
+    const list = Array.isArray(lastData.orders) && lastData.orders.length ? lastData.orders : [lastData];
+    results.innerHTML = '';
+    list.forEach(o => results.appendChild(card(o)));
+    countEl.hidden = list.length < 2;
+    countEl.textContent = list.length > 1 ? tr('bl.trk_count', 'We found {n} orders').replace('{n}', list.length) : '';
   }
 
   async function trackOrder() {
     if (busy) return;
     clearError();
-    resultCard.style.display = 'none';
-    const orderNumber = numEl.value.trim();
-    const email = emailEl.value.trim();
-    if (!orderNumber) return showError(tr('trk.err_order', 'Please enter your order number.'), numEl);
-    if (!email) return showError(tr('trk.err_email_missing', 'Please enter the email you used at checkout.'), emailEl);
-    if (!EMAIL_RE.test(email)) return showError(tr('trk.err_email', 'Please enter a valid email address, like name@example.com.'), emailEl);
+    results.innerHTML = ''; countEl.hidden = true;
+    const query = qEl.value.trim();
+    if (!query) return showError(tr('bl.trk_err_empty', 'Please enter your order number, email or phone number.'));
+    const kind = kindOf(query);
+    if (kind === 'bad_email') return showError(tr('trk.err_email', 'Please enter a valid email address, like name@example.com.'));
+    if (kind === 'bad') return showError(tr('bl.trk_err_bad', 'Please enter an order number like HK-12345678, an email address, or a full phone number.'));
 
     setBusy(true);
     const ctrl = ('AbortController' in window) ? new AbortController() : null;
@@ -200,21 +207,18 @@
       const res = await fetch('/.netlify/functions/track-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderNumber, email }),
+        body: JSON.stringify({ query }),
         signal: ctrl ? ctrl.signal : undefined,
       });
       let data = {};
       try { data = await res.json(); } catch (_) { data = {}; }
-      if (res.status === 404 || (res.ok && !data.orderNumber)) {
-        showError(tr('trk.not_found', 'We could not find that order. Double-check your order number and email, then try again.'));
-        return;
-      }
+      if (res.status === 404 || (res.ok && !data.orderNumber)) { showError(tr('bl.trk_not_found', 'We could not find an order with those details. Please check and try again.')); return; }
+      if (res.status === 400) { showError(tr('bl.trk_err_bad', 'Please enter an order number like HK-12345678, an email address, or a full phone number.')); return; }
       if (!res.ok) { showError(tr('trk.err_generic', 'Something went wrong. Please try again.')); return; }
-      lastData = data; lastEmail = email;
-      renderResult();
-      resultCard.style.display = 'block';
-      resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      resultCard.focus({ preventScroll: true });
+      lastData = data; lastQuery = query;
+      renderResults();
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      results.focus({ preventScroll: true });
     } catch (err) {
       showError(err && err.name === 'AbortError'
         ? tr('trk.err_timeout', 'This is taking longer than usual. Please try again.')
@@ -228,8 +232,8 @@
   form.addEventListener('submit', e => { e.preventDefault(); trackOrder(); });
   /* Arriving from the order confirmation: the order number is filled in for you. */
   const pre = new URLSearchParams(location.search).get('order');
-  if (pre && /^HK-\d{4,12}$/i.test(pre)) numEl.value = pre.toUpperCase();
-  document.addEventListener('hikaya:langchange', () => { if (!busy) setBusy(false); if (lastData) renderResult(); });
+  if (pre && /^HK-\d{4,12}$/i.test(pre)) qEl.value = pre.toUpperCase();
+  document.addEventListener('hikaya:langchange', () => { if (!busy) setBusy(false); if (lastData) renderResults(); });
 })();
 </script>
 

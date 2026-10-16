@@ -61,6 +61,8 @@ exports.handler = async (event) => {
   if (!items || !Array.isArray(items) || items.length === 0) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Your cart is empty.' }) };
   }
+  const ruleErr = require('./_orderRules').checkOrderRules(order);
+  if (ruleErr) return { statusCode: 400, body: JSON.stringify(ruleErr) };
 
   // Every order gets a unique cart_id so PayTabs' callback can be matched
   // back to the right pending order.
