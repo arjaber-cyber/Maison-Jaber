@@ -698,6 +698,17 @@
     name_err: { en: 'Please use letters only (no numbers or symbols), up to 20 characters.', ar: 'يرجى استخدام الحروف فقط (بدون أرقام أو رموز) وبحد أقصى 20 حرفًا' },
   };
   /* Book-language rules, photo permission, checkout confirmations and one-box order tracking (Oct 2026) */
+  /* Checkout step 1: how to check out (Oct 2026 redesign) */
+  T.cx = {
+    title: { en: 'Almost there', ar: 'اقتربنا من النهاية' },
+    sub: { en: 'Your book is ready to order. How would you like to check out?', ar: 'كتابك جاهز للطلب، كيف تحب أن تُكمل الطلب؟' },
+    guest_note: { en: "No account needed. We'll email your order number and tracking link.", ar: 'لا تحتاج إلى حساب، سنرسل لك رقم الطلب ورابط التتبع على بريدك الإلكتروني' },
+    or: { en: 'or sign in', ar: 'أو سجّل الدخول' },
+    signin_note: { en: 'Save your details for next time and track all your orders in one place.', ar: 'احفظ بياناتك للمرة القادمة وتتبّع جميع طلباتك في مكان واحد' },
+    t_secure: { en: 'Secure payment', ar: 'دفع آمن' },
+    t_gift: { en: 'Gift box included', ar: 'علبة الهدية مشمولة' },
+    t_photo: { en: 'Photos deleted in 15 days', ar: 'تُحذف الصور خلال 15 يومًا' },
+  };
   T.bl = {
     name_in_book: { en: 'Name printed in the book:', ar: 'الاسم المطبوع في الكتاب:' },
     change: { en: 'Change', ar: 'تغيير' },
