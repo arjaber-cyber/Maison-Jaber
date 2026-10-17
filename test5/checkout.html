@@ -32,8 +32,11 @@
   .signin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
   @media (max-width: 560px) {
     .signin-buttons { flex-direction: column; width: 100%; }
-    .signin-buttons button { width: 100%; }
+    .signin-buttons button, .signin-buttons .hk-google-btn { width: 100%; }
+    .signin-text > span { display: block; margin: 0 !important; }
+    .signin-text > span + span { margin-top: 4px !important; }
   }
+  .signin-buttons button { min-height: 40px; }
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
@@ -257,7 +260,7 @@
 
 <div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 20px;">
   <div class="signin-box">
-    <div>
+    <div class="signin-text">
       <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.signin_title">Sign in for faster checkout</span>
       <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
     </div>
@@ -326,11 +329,11 @@
 
     <div class="approval">
       <input type="checkbox" id="final-approval" />
-      <label for="final-approval" data-i18n="bl.approval">I confirm that all the information I have shared is correct: my child's name as it will be printed, age, photo, book language, first-page message, and my contact and delivery details. I understand the book goes into production exactly as entered once payment is made.</label>
+      <label for="final-approval" data-i18n="bl.approval">My details are correct. I know the book is printed exactly as I entered it.</label>
     </div>
     <div class="approval">
       <input type="checkbox" id="marketing-optin" />
-      <label for="marketing-optin"><span data-i18n="bl.marketing">I'm happy to receive emails and messages (including WhatsApp and SMS) from Hikaya by Maison Jaber about new stories, offers and promotions. I can unsubscribe at any time.</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label>
+      <label for="marketing-optin"><span data-i18n="bl.marketing">Send me new stories and offers. I can unsubscribe anytime.</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label>
     </div>
 
     <button class="btn-primary" id="place-order" disabled data-i18n="pg.ziina_btn">Continue to secure payment</button>
@@ -452,7 +455,8 @@
 
   mountGoogleSignIn(supabase, document.getElementById('google-signin'), {
     redirectTo: window.location.href,
-    size: 'medium',
+    size: 'large',
+    fill: true,
     onSignedIn: () => refreshAuthUI(),
     onError: (msg) => alert(msg)
   });

@@ -48,6 +48,7 @@ function siteLang() {
  * @param opts.onSignedIn called after a successful sign-in
  * @param opts.onError    called with a readable message on failure
  * @param opts.size       'large' (default) or 'medium'
+ * @param opts.fill       stretch to the width of its container (stacked layouts)
  */
 export function mountGoogleSignIn(supabase, fallbackBtn, opts = {}) {
   const fallback = () => supabase.auth.signInWithOAuth({
@@ -80,10 +81,16 @@ export function mountGoogleSignIn(supabase, fallbackBtn, opts = {}) {
 
       const holder = document.createElement('div');
       holder.className = 'hk-google-btn';
-      holder.style.cssText = opts.size === 'medium' ? 'display:inline-flex;align-items:center;' : 'display:flex;justify-content:center;margin-bottom:12px;min-height:40px;';
+      holder.style.cssText = opts.fill
+        ? 'display:flex;justify-content:center;align-items:center;min-height:40px;'
+        : opts.size === 'medium' ? 'display:inline-flex;align-items:center;' : 'display:flex;justify-content:center;margin-bottom:12px;min-height:40px;';
       fallbackBtn.parentNode.insertBefore(holder, fallbackBtn);
 
-      const width = Math.min(400, Math.max(200, Math.round(fallbackBtn.getBoundingClientRect().width || 320)));
+      // In a stacked layout the holder already spans the row, so match it;
+      // otherwise copy the width of the button it replaces.
+      const holderW = opts.fill ? holder.getBoundingClientRect().width : 0;
+      const baseW = holderW >= 200 ? holderW : (fallbackBtn.getBoundingClientRect().width || 320);
+      const width = Math.min(400, Math.max(200, Math.round(baseW)));
       window.google.accounts.id.renderButton(holder, {
         type: 'standard',
         theme: 'outline',
