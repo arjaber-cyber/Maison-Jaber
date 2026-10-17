@@ -763,6 +763,12 @@
     back_alt: { en: 'Back cover of {title}', ar: 'الغلاف الخلفي لقصة {title}' },
     end: { en: 'The end', ar: 'النهاية' },
     page: { en: 'Page {n}', ar: 'الصفحة {n}' },
+    open: { en: 'Look inside', ar: 'تصفّح الكتاب' },
+    close: { en: 'Close preview', ar: 'إغلاق المعاينة' },
+    sub2: { en: 'A peek inside. Your book is illustrated with your child as the hero.', ar: 'نظرة إلى داخل الكتاب، وكتابك يُرسم وطفلك هو البطل' },
+    hint2: { en: 'Use the arrows, swipe, or drag a page corner', ar: 'استخدم الأسهم أو اسحب الصفحة أو زاويتها' },
+    page_of: { en: 'Page {n} of {total}', ar: 'الصفحة {n} من {total}' },
+    pages_of: { en: 'Pages {a}–{b} of {total}', ar: 'الصفحتان {a}–{b} من {total}' },
     pages: { en: 'Pages {a}–{b}', ar: 'الصفحتان {a}–{b}' },
   };
 })();

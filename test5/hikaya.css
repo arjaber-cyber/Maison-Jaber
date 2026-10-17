@@ -1107,46 +1107,44 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
 .st-msg-cta .btn { min-height: 44px; padding: 0 20px; font-size: 14px; }
 
 /* =========================================================
-   LOOK INSIDE — page-turning book preview (flipbook.js)
-   Cover, up to 6 pages, back cover. Spreads on wide screens, single pages on phones.
+   LOOK INSIDE — full-screen page-turning book preview (flipbook.js + vendor/page-flip)
+   Front cover → up to 6 pages → back cover. Spreads on wide screens, single pages on phones.
    ========================================================= */
-.look-inside { text-align: center; }
-.look-inside .sub { color: var(--ink-soft); margin: -6px auto 22px; max-width: 560px; }
-.fb { --fb-paper: #FBF6EE; position: relative; max-width: 1000px; margin-inline: auto; outline: none; user-select: none; -webkit-user-select: none; }
-.fb:focus-visible .fb-stage { outline: 2px solid var(--brand); outline-offset: 6px; border-radius: 6px; }
-.fb-stage { position: relative; perspective: 2600px; cursor: pointer; padding-block: 6px 14px; }
-.fb-single .fb-stage { overflow: hidden; max-width: 520px; margin-inline: auto; }
-.fb-book { position: relative; width: 100%; aspect-ratio: 2 / 1; transform-style: preserve-3d; transition: transform .7s var(--ease); }
-.fb-single .fb-book { aspect-ratio: 1 / 1; }
-.fb-book.is-closed-front { transform: translateX(-25%); }
-.fb-book.is-closed-back { transform: translateX(25%); }
-.fb-book::before { content: ""; position: absolute; inset: 2% 0 -2%; border-radius: 6px; box-shadow: 0 30px 50px -28px rgba(38,28,23,.55); pointer-events: none; transition: inset .7s var(--ease); }
-.fb-spread .fb-book.is-closed-front::before { inset: 2% 0 -2% 50%; }
-.fb-spread .fb-book.is-closed-back::before { inset: 2% 50% -2% 0; }
-.fb-leaf { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; transform-origin: left center; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.45, .05, .25, 1); }
-.fb-single .fb-leaf { left: 0; width: 100%; transition-duration: .75s; }
-.fb-leaf.is-turned { transform: rotateY(-180deg); }
-.fb-still .fb-leaf, .fb-still.fb-book { transition: none; }
-.fb-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; background: var(--fb-paper); }
-.fb-face img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-.fb-back { transform: rotateY(180deg); }
-.fb-front { border-radius: 0 4px 4px 0; }
-.fb-back { border-radius: 4px 0 0 4px; }
-.fb-single .fb-front { border-radius: 4px; }
-/* Gentle shading toward the spine so the pages read as a bound book. */
-.fb-front::after, .fb-back::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
-.fb-front::after { background: linear-gradient(90deg, rgba(38,28,23,.22), rgba(38,28,23,.06) 4%, transparent 10%); }
-.fb-back::after { background: linear-gradient(270deg, rgba(38,28,23,.22), rgba(38,28,23,.06) 4%, transparent 10%); }
-.fb-single .fb-front::after { background: linear-gradient(90deg, rgba(38,28,23,.14), transparent 5%); }
-.fb-paper { background: radial-gradient(ellipse at center, #fffdf8 0%, var(--fb-paper) 70%, #F1E7D8 100%); }
-.fb-leaf.is-moving .fb-face { box-shadow: 0 0 40px -10px rgba(38,28,23,.45); }
-.fb-ctrl { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 8px; }
-.fb-btn { all: unset; cursor: pointer; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--white); border: 1px solid var(--taupe); color: var(--brand-dark); transition: background .2s, border-color .2s, opacity .2s; }
-.fb-btn:hover:not(:disabled) { border-color: var(--brand); background: var(--card); }
-.fb-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
-.fb-btn:disabled { opacity: .35; cursor: default; }
-.fb-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.fb-count { min-width: 120px; font-size: 14px; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.fb-hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 8px; }
-@media (prefers-reduced-motion: reduce) { .fb-leaf, .fb-book { transition: none !important; } }
+.lx-open { display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; }
+.lx-open svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.gallery .main { position: relative; }
+.lx-badge { position: absolute; inset-inline-end: 14px; bottom: 14px; display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; border: 0; cursor: pointer; background: rgba(255,252,247,.94); color: var(--brand-dark); font: 700 14px/1 var(--sans); box-shadow: 0 6px 18px -6px rgba(38,28,23,.45); }
+.lx-badge:hover { background: var(--white); }
+.lx-badge svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+html.lx-lock, html.lx-lock body { overflow: hidden; }
+html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soon as the book closes */
+.lx-viewer { position: fixed; inset: 0; z-index: 2147483000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: calc(env(safe-area-inset-top, 0px) + 56px) max(16px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 20px) max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(246, 239, 228, .96); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; visibility: hidden; transition: opacity .35s var(--ease), visibility 0s linear .35s; }
+.lx-viewer.is-on { opacity: 1; visibility: visible; transition: opacity .35s var(--ease); }
+.lx-close { all: unset; position: absolute; top: calc(env(safe-area-inset-top, 0px) + 14px); inset-inline-end: max(16px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; background: var(--white); border: 1px solid var(--taupe); color: var(--ink); }
+.lx-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.lx-close:focus-visible, .lx-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.lx-head { text-align: center; }
+.lx-title { font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
+.lx-sub { margin: 2px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+.lx-shelf { width: 100%; max-width: 960px; display: flex; justify-content: center; }
+.lx-mover { transition: transform .7s cubic-bezier(.3, .7, .2, 1); }
+.lx-book { margin: 0 auto; filter: drop-shadow(0 22px 28px rgba(38, 28, 23, .32)); }
+.lx-page { background: #FBF6EE; overflow: hidden; }
+.lx-page img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; user-select: none; -webkit-user-select: none; }
+/* Soft shading toward the spine so inside pages read as a bound book. */
+.lx-page.is-soft::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.lx-page.--left.is-soft::after { background: linear-gradient(to left, rgba(38, 28, 23, .2), transparent 9%); }
+.lx-page.--right.is-soft::after { background: linear-gradient(to right, rgba(38, 28, 23, .2), transparent 9%); }
+.lx-ctrl { display: flex; align-items: center; gap: 16px; }
+.lx-btn { all: unset; cursor: pointer; width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--white); border: 1px solid var(--taupe); color: var(--brand-dark); transition: opacity .2s, border-color .2s; }
+.lx-btn:hover:not(:disabled) { border-color: var(--brand); }
+.lx-btn:disabled { opacity: .35; cursor: default; }
+.lx-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.lx-count { min-width: 140px; text-align: center; font-size: 14px; font-weight: 600; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.lx-end[hidden] { display: none; }
+.lx-hint { margin: 0; font-size: 12.5px; color: var(--ink-soft); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .lx-mover, .lx-viewer { transition: none !important; } }
 .two-col.one-col { grid-template-columns: 1fr; }

@@ -122,7 +122,7 @@
     const s = all.find(x => x.slug === slug) || (slug ? null : all[0]);
     const root = document.getElementById('pdp-root');
     if (!s) { document.getElementById('not-found').hidden = false; root.hidden = true; return; }
-    let current = 0;
+    let openLook = null, lookOpenedFromHash = false;
     function images() {
       const pv = Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : [];
       return s.open_book_image_url ? [s.open_book_image_url].concat(pv) : pv;
@@ -139,15 +139,11 @@
       renderPrice();
       document.getElementById('st-cta').href = H.personaliseHref(s);
       document.querySelectorAll('[data-st-cta]').forEach(a => { a.href = H.personaliseHref(s); });
-      // gallery
-      const pv = images();
-      const ob = s.open_book_image_url || null;
+      // gallery: the front cover only. Inside pages are shown in the "Look inside" book, not as photos.
       const main = document.getElementById('st-main');
-      const shots = [null].concat(pv);
-      main.innerHTML = current === 0 || !pv[current - 1] ? H.coverHtml(s, '', { alt: true, eager: true }) : `<div class="cover"><img src="${esc(pv[current - 1])}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: current, title: plain }))}" style="object-fit:contain;background:var(--white)"></div>`;
-      const th = document.getElementById('st-thumbs');
-      th.hidden = shots.length < 2;
-      th.innerHTML = shots.slice(0, 5).map((u, i) => `<li><button type="button" aria-pressed="${i === current}" aria-label="${esc(i === 0 ? t('lx.cover', 'Cover') : (ob && i === 1) ? t('lx.open_book', 'Open the book photo') : tpl(t('lx.sample_n', 'Sample page {n}'), { n: ob ? i - 1 : i }))}" data-i="${i}"><img src="${esc(u || s.cover || '')}" alt=""></button></li>`).join('');
+      main.innerHTML = H.coverHtml(s, '', { alt: true, eager: true });
+      document.getElementById('st-thumbs').hidden = true;
+      document.getElementById('st-thumbs').innerHTML = '';
       // what happens
       /* QA005: the admin "description" is English-only, so Arabic shows the Arabic synopsis instead of mixing languages. */
       const arMode = H.lang() === 'ar';
@@ -168,30 +164,34 @@
       if (!cta) { cta = document.createElement('div'); cta.id = 'st-msg-cta'; cta.className = 'st-msg-cta'; plist.insertAdjacentElement('afterend', cta); }
       const msgHref = H.personaliseHref ? H.personaliseHref(s) : `personalize.html?story=${encodeURIComponent(s.slug)}`;
       cta.innerHTML = `<p>${esc(t('qa.st_msg_d', 'This story opens with a message to your child. Want to write your own?'))}</p><a class="btn btn-secondary" href="${esc(msgHref + (msgHref.includes('?') ? '&' : '?') + 'msg=1')}">${esc(t('qa.st_msg_btn', 'Personalise the message'))} <span aria-hidden="true">✎</span></a>`;
-      // Look inside: a page-turning preview (front cover, up to 6 pages, back cover).
+      // Look inside: opens the full-screen page-turning book (front cover, up to 6 pages, back cover).
       const flipPages = (Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : []).slice(0, 6);
-      const lookSec = document.getElementById('inside');
-      if (lookSec) {
-        lookSec.hidden = !flipPages.length;
-        if (flipPages.length && window.HikayaFlipbook) window.HikayaFlipbook.mount(document.getElementById('st-flip'), { cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t });
-        // Cards link to "#inside"; the section only appears once the story loads, so scroll to it then.
-        if (!lookSec.hidden && location.hash === '#inside' && !lookSec.dataset.scrolled) { lookSec.dataset.scrolled = '1'; requestAnimationFrame(() => lookSec.scrollIntoView({ block: 'start' })); }
-      }
-      // Inside the book (side column): the open-book photo if there is one; an example spread only when the story has no sample pages yet.
+      const canLook = !!(flipPages.length && s.cover_image_url && window.HikayaFlipbook);
+      const lookIco = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5C5.5 4.5 8.5 4.5 12 6.5c3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg>';
+      if (canLook) main.insertAdjacentHTML('beforeend', `<button type="button" class="lx-badge" data-look-inside>${lookIco}<span>${esc(t('fb.open', 'Look inside'))}</span></button>`);
+      const lookBtn = document.getElementById('st-look');
+      lookBtn.hidden = !canLook;
+      lookBtn.querySelector('span').textContent = t('fb.open', 'Look inside');
+      openLook = canLook ? () => window.HikayaFlipbook.open({ cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t, ctaHref: H.personaliseHref(s) }) : null;
+      // Story cards link here with "#inside": open the book straight away (once).
+      if (canLook && location.hash === '#inside' && !lookOpenedFromHash) { lookOpenedFromHash = true; setTimeout(openLook, 300); }
+      // Inside the book (side column): hidden when the story has its "Look inside" book. Only for stories
+      // without inside pages yet: the open-book photo if there is one, otherwise a labelled example spread.
       const inside = document.getElementById('st-inside');
       const insideCol = document.getElementById('inside-col');
-      if (ob) {
+      const ob = s.open_book_image_url || null;
+      if (canLook) {
+        inside.innerHTML = '';
+        insideCol.hidden = true;
+      } else if (ob) {
         const spread = ob ? `<button type="button" class="ob-spread" data-lb="0" aria-label="${esc(t('lx.open_book', 'Open the book photo'))}"><img src="${esc(ob)}" alt="${esc(tpl(t('lx.open_book_alt', '{title}, open to a two-page spread'), { title: plain }))}" loading="lazy"></button>` : '';
         inside.innerHTML = spread;
         insideCol.hidden = false;
-      } else if (!flipPages.length) {
+      } else {
         /* No approved sample pages for this story yet: show a Hikaya spread, honestly labelled as an example. */
         const src = window.PREVIEW_IMAGES ? window.PREVIEW_IMAGES['sty-inside-01.webp'] : 'images/sty-inside-01.webp';
         inside.innerHTML = `<img src="${src}" srcset="images/sty-inside-01-900.webp 900w, images/sty-inside-01.webp 1800w" sizes="(max-width: 899px) 100vw, 50vw" alt="${esc(t('lx.example_alt', 'An open Hikaya book showing an illustrated spread'))}" loading="lazy"><p class="note">${esc(t('lx.inside_example', 'An example of a Hikaya spread. Your book is illustrated with your child as the hero.'))}</p>`;
         insideCol.hidden = false;
-      } else {
-        inside.innerHTML = '';
-        insideCol.hidden = true;
       }
       insideCol.parentElement.classList.toggle('one-col', insideCol.hidden);
       // structured data (Product) for this story
@@ -212,7 +212,7 @@
       document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
       document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(); });
     }
-    document.getElementById('st-thumbs').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b) return; current = Number(b.dataset.i); render(); });
+    document.getElementById('pdp-root').addEventListener('click', e => { if (e.target.closest('[data-look-inside]') && openLook) { e.preventDefault(); openLook(); } });
     document.getElementById('st-inside').addEventListener('click', e => {
       const b = e.target.closest('[data-lb]'); if (!b) return;
       const pv = images(); let i = Number(b.dataset.lb);
