@@ -255,7 +255,7 @@
   .name-modal { background: #fff; border-radius: 18px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
   .name-modal h3 { font-size: 18px; margin-bottom: 6px; }
   .name-modal .nm-sub { font-size: 13px; color: var(--ink-soft); font-weight: 600; margin: 0 0 14px; }
-  .name-modal input { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .name-modal input { font-size: 26px; font-weight: 800; margin-top: 6px; text-align: center; padding: 12px; }
   .name-modal .nm-hint { font-size: 12px; color: var(--ink-soft); font-weight: 600; min-height: 16px; margin: 6px 0 0; }
   .nm-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
   .nm-actions .btn-back { font-size: 12.5px; padding: 12px 14px; }
@@ -268,6 +268,7 @@
 <script src="/analytics.js" defer></script>
 <script src="/cart.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/name-translit.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -844,21 +845,31 @@
     nm.label.textContent = t('bl.nm_label', '{name} in {lang}').replace('{name}', typed).replace('{lang}', langName(to));
     nm.input.dir = to === 'ar' ? 'rtl' : 'ltr'; nm.input.lang = to;
     nm.cancel.textContent = t('bl.nm_cancel_to', 'Keep the book in {lang}').replace('{lang}', langName(from));
-    nm.input.value = (bookNameConfirmed && bookNameConfirmed.typed === typed && bookNameConfirmed.lang === to) ? bookNameConfirmed.name : '';
+    document.getElementById('name-modal-title').textContent = t('bl.nm_title', 'Please confirm the name in {lang}').replace(/\{lang\}/g, langName(to));
+    nm.ok.textContent = t('bl.nm_ok', 'Confirm name');
     nm.err.hidden = true; nm.wrap.hidden = false;
-    setTimeout(() => nm.input.focus(), 30);
-    if (nm.input.value) return;
     const req = ++nmReq;
-    nm.hint.textContent = t('bl.nm_loading', 'Suggesting a spelling…');
+    const suggested = () => { nm.hint.textContent = t('bl.nm_suggested', 'We wrote the name for you. If it looks right, tap Confirm. You can edit it if needed.'); };
+    const prev = (bookNameConfirmed && bookNameConfirmed.typed === typed && bookNameConfirmed.lang === to) ? bookNameConfirmed.name : '';
+    if (prev) { nm.input.value = prev; suggested(); setTimeout(() => nm.ok.focus(), 30); return; }
+    // 1) instant: common names list (Gulf spelling)
+    const local = window.hkNameSuggest ? window.hkNameSuggest(typed, to) : { name: '', sure: false };
+    if (local.sure && local.name) { nm.input.value = local.name; suggested(); setTimeout(() => nm.ok.focus(), 30); return; }
+    // 2) name not in the list: show a letter-by-letter guess right away, then ask the AI for a better spelling
+    nm.input.value = local.name || '';
+    nm.hint.textContent = t('bl.nm_loading', 'Writing the name…');
+    setTimeout(() => nm.ok.focus(), 30);
+    let ai = '';
     try {
       const r = await fetch('/.netlify/functions/translate-name', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: typed, to }) });
       const d = await r.json().catch(() => ({}));
-      if (req !== nmReq || nm.wrap.hidden) return;
-      if (d.name && !nm.input.value.trim()) { nm.input.value = d.name; nm.input.select(); }
-      nm.hint.textContent = d.name ? t('bl.nm_suggested', 'Suggested spelling. You can change it.') : t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to));
-    } catch (_) {
-      if (req === nmReq) nm.hint.textContent = t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to));
-    }
+      ai = d.name || '';
+    } catch (_) {}
+    if (req !== nmReq || nm.wrap.hidden) return;
+    // Only replace our guess if the parent hasn't started editing it.
+    if (ai && (nm.input.value === (local.name || '') )) nm.input.value = ai;
+    if (nm.input.value.trim()) suggested();
+    else { nm.hint.textContent = t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to)); nm.input.focus(); }
   }
   function closeNameModal() { nmReq++; nm.wrap.hidden = true; nm.hint.textContent = ''; if (nmReturnFocus && nmReturnFocus.focus) nmReturnFocus.focus(); }
   nm.ok.addEventListener('click', () => {
@@ -894,13 +905,65 @@
     if (!toggle || !body || !ta) return;
     const MAX = 300;
     const IDEAS = {
-      en: ['To our brave {name}, may every page remind you how loved you are. Love, Mama and Baba', 'Dear {name}, this story is yours, just like our hearts. Keep shining, little star.', 'For {name}: dream big, be kind, and never stop asking questions. We are so proud of you.', 'Happy reading, {name}! Wherever your adventures take you, home is always here.'],
-      ar: ['إلى {name} الشجاع، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزنا {name}، هذه القصة لك، تمامًا مثل قلوبنا، ابقَ نجمًا لامعًا', 'إلى {name}: احلم كثيرًا، وكن لطيفًا، ولا تتوقف عن السؤال، نحن فخورون بك', 'قراءة ممتعة يا {name}! أينما أخذتك مغامراتك، يبقى البيت هنا دائمًا'],
-      ar_girl: ['إلى {name} الشجاعة، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزتنا {name}، هذه القصة لكِ، تمامًا مثل قلوبنا، ابقي نجمة لامعة', 'إلى {name}: احلمي كثيرًا، وكوني لطيفة، ولا تتوقفي عن السؤال، نحن فخورون بكِ', 'قراءة ممتعة يا {name}! أينما أخذتكِ مغامراتك، يبقى البيت هنا دائمًا'],
+      en: [
+        'To our brave {name}, may every page remind you how loved you are. Love, Mama and Baba',
+        'Dear {name}, this story is yours, just like our hearts. Keep shining, little star.',
+        'For {name}: dream big, be kind, and never stop asking questions. We are so proud of you.',
+        'Happy reading, {name}! Wherever your adventures take you, home is always here.',
+        'Dear {name}, you are the hero of this story and of our lives. We love you more than all the stars.',
+        'To {name}, the brightest light in our home. May you always be curious, kind and brave.',
+        'Happy birthday, {name}! Here is a story starring the most amazing child we know: you.',
+        'Eid Mubarak, {name}! This book is a little gift full of big love from all of us.',
+        'Ramadan Kareem, {name}. May this story fill your nights with wonder and your heart with light.',
+        'To our sweet {name}, with all the love in the world from Grandma and Grandpa.',
+        'Dear {name}, never forget: you can do anything you set your heart on. We believe in you.',
+        'For {name}, who makes every day an adventure. Thank you for filling our lives with joy.',
+        'Little {name}, every night we read together is our favourite part of the day.',
+        'To {name}: be brave like the hero in this book, and always know we are right beside you.',
+        'Dear {name}, this story was made just for you, because you are one of a kind.',
+        'To our wonderful {name}, may your imagination always be as big as your smile.',
+      ],
+      ar: [
+        'إلى {name} الشجاع، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا',
+        'عزيزنا {name}، هذه القصة لك، تمامًا مثل قلوبنا، ابقَ نجمًا لامعًا',
+        'إلى {name}: احلم كثيرًا، وكن لطيفًا، ولا تتوقف عن السؤال، نحن فخورون بك',
+        'قراءة ممتعة يا {name}! أينما أخذتك مغامراتك، يبقى البيت هنا دائمًا',
+        'عزيزنا {name}، أنت بطل هذه القصة وبطل حياتنا، نحبك أكثر من كل النجوم',
+        'إلى {name}، أجمل نور في بيتنا، كن دائمًا فضوليًا ولطيفًا وشجاعًا',
+        'كل عام وأنت بخير يا {name}! هذه قصة بطلها أروع طفل نعرفه: أنت',
+        'عيد مبارك يا {name}! هذا الكتاب هدية صغيرة مليئة بحب كبير منا جميعًا',
+        'رمضان كريم يا {name}، لتملأ هذه القصة لياليك بالدهشة وقلبك بالنور',
+        'إلى حبيبنا {name}، مع كل الحب من جدو وتيتا',
+        'عزيزنا {name}، لا تنسَ أبدًا أنك تستطيع تحقيق كل ما تحلم به، نحن نؤمن بك',
+        'إلى {name} الذي يجعل كل يوم مغامرة، شكرًا لأنك تملأ حياتنا فرحًا',
+        'يا {name} الصغير، كل ليلة نقرأ فيها معًا هي أجمل لحظات يومنا',
+        'إلى {name}: كن شجاعًا مثل بطل هذا الكتاب، واعلم أننا دائمًا بجانبك',
+        'عزيزنا {name}، صُنعت هذه القصة لك وحدك، لأنك لا مثيل لك',
+        'إلى {name} الرائع، ليبقَ خيالك دائمًا كبيرًا مثل ابتسامتك',
+      ],
+      ar_girl: [
+        'إلى {name} الشجاعة، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا',
+        'عزيزتنا {name}، هذه القصة لكِ، تمامًا مثل قلوبنا، ابقي نجمة لامعة',
+        'إلى {name}: احلمي كثيرًا، وكوني لطيفة، ولا تتوقفي عن السؤال، نحن فخورون بكِ',
+        'قراءة ممتعة يا {name}! أينما أخذتكِ مغامراتك، يبقى البيت هنا دائمًا',
+        'عزيزتنا {name}، أنتِ بطلة هذه القصة وبطلة حياتنا، نحبكِ أكثر من كل النجوم',
+        'إلى {name}، أجمل نور في بيتنا، كوني دائمًا فضولية ولطيفة وشجاعة',
+        'كل عام وأنتِ بخير يا {name}! هذه قصة بطلتها أروع طفلة نعرفها: أنتِ',
+        'عيد مبارك يا {name}! هذا الكتاب هدية صغيرة مليئة بحب كبير منا جميعًا',
+        'رمضان كريم يا {name}، لتملأ هذه القصة لياليكِ بالدهشة وقلبكِ بالنور',
+        'إلى حبيبتنا {name}، مع كل الحب من جدو وتيتا',
+        'عزيزتنا {name}، لا تنسي أبدًا أنكِ تستطيعين تحقيق كل ما تحلمين به، نحن نؤمن بكِ',
+        'إلى {name} التي تجعل كل يوم مغامرة، شكرًا لأنكِ تملئين حياتنا فرحًا',
+        'يا {name} الصغيرة، كل ليلة نقرأ فيها معًا هي أجمل لحظات يومنا',
+        'إلى {name}: كوني شجاعة مثل بطلة هذا الكتاب، واعلمي أننا دائمًا بجانبكِ',
+        'عزيزتنا {name}، صُنعت هذه القصة لكِ وحدكِ، لأنكِ لا مثيل لكِ',
+        'إلى {name} الرائعة، ليبقَ خيالكِ دائمًا كبيرًا مثل ابتسامتكِ',
+      ],
     };
     // The message is printed in the BOOK's language, so ideas follow the book language, not the site language.
     const childName = () => (window.hkBookName && window.hkBookName()) || '';
     const lang = () => document.getElementById('book-language').value === 'ar' ? 'ar' : 'en';
+    let ideaQueue = [], ideaKey = '';
     const ideaList = () => lang() === 'ar' && document.getElementById('child-gender').value === 'girl' ? IDEAS.ar_girl : IDEAS[lang()];
     const setOpen = open => {
       body.hidden = !open; toggle.hidden = open; toggle.setAttribute('aria-expanded', String(open));
@@ -912,9 +975,15 @@
     toggle.addEventListener('click', () => setOpen(true));
     document.getElementById('msg-cancel').addEventListener('click', () => { ta.value = ''; update(); setOpen(false); toggle.focus(); });
     document.getElementById('msg-inspire').addEventListener('click', () => {
-      const list = ideaList(); let pick = list[Math.floor(Math.random() * list.length)];
-      if (list.length > 1) while (pick.replace('{name}', '') === ta.dataset.lastIdea) pick = list[Math.floor(Math.random() * list.length)];
-      ta.dataset.lastIdea = pick.replace('{name}', '');
+      // Go through every idea in a shuffled order before any repeats.
+      const list = ideaList(), key = lang() + (list === IDEAS.ar_girl ? 'g' : '');
+      if (!ideaQueue.length || ideaKey !== key) {
+        ideaKey = key; ideaQueue = list.map((_, i) => i);
+        for (let i = ideaQueue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ideaQueue[i], ideaQueue[j]] = [ideaQueue[j], ideaQueue[i]]; }
+        if (ideaQueue.length > 1 && list[ideaQueue[0]] === ta.dataset.lastIdea) ideaQueue.push(ideaQueue.shift());
+      }
+      const pick = list[ideaQueue.shift()];
+      ta.dataset.lastIdea = pick;
       ta.value = pick.replace('{name}', childName() || (lang() === 'ar' ? 'بطلنا' : 'our little hero')); update(); ta.focus();
       if (window.hkLangCheck) window.hkLangCheck();
     });
