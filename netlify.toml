@@ -38,17 +38,17 @@
 # Old fixed story pages (stale titles and EUR prices) now point to the live story page.
 [[redirects]]
   from = "/test5/story-bravest-little-one.html"
-  to = "/test5/story.html?s=bravest-little-one"
+  to = "/test5/story.html?s=door-of-a-thousand-stars"
   status = 301
   force = true
 [[redirects]]
   from = "/test5/story-cloud-ship.html"
-  to = "/test5/story.html?s=cloud-ship"
+  to = "/test5/story.html?s=why-is-baby-looking-at-me"
   status = 301
   force = true
 [[redirects]]
   from = "/test5/story-star-who-couldnt-sleep.html"
-  to = "/test5/story.html?s=star-who-couldnt-sleep"
+  to = "/test5/story.html?s=to-the-rescue"
   status = 301
   force = true
 

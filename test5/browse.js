@@ -168,18 +168,32 @@
       if (!cta) { cta = document.createElement('div'); cta.id = 'st-msg-cta'; cta.className = 'st-msg-cta'; plist.insertAdjacentElement('afterend', cta); }
       const msgHref = H.personaliseHref ? H.personaliseHref(s) : `personalize.html?story=${encodeURIComponent(s.slug)}`;
       cta.innerHTML = `<p>${esc(t('qa.st_msg_d', 'This story opens with a message to your child. Want to write your own?'))}</p><a class="btn btn-secondary" href="${esc(msgHref + (msgHref.includes('?') ? '&' : '?') + 'msg=1')}">${esc(t('qa.st_msg_btn', 'Personalise the message'))} <span aria-hidden="true">✎</span></a>`;
-      // inside the book
+      // Look inside: a page-turning preview (front cover, up to 6 pages, back cover).
+      const flipPages = (Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : []).slice(0, 6);
+      const lookSec = document.getElementById('inside');
+      if (lookSec) {
+        lookSec.hidden = !flipPages.length;
+        if (flipPages.length && window.HikayaFlipbook) window.HikayaFlipbook.mount(document.getElementById('st-flip'), { cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t });
+        // Cards link to "#inside"; the section only appears once the story loads, so scroll to it then.
+        if (!lookSec.hidden && location.hash === '#inside' && !lookSec.dataset.scrolled) { lookSec.dataset.scrolled = '1'; requestAnimationFrame(() => lookSec.scrollIntoView({ block: 'start' })); }
+      }
+      // Inside the book (side column): the open-book photo if there is one; an example spread only when the story has no sample pages yet.
       const inside = document.getElementById('st-inside');
-      if (pv.length) {
-        const pages = ob ? pv.slice(1) : pv;
+      const insideCol = document.getElementById('inside-col');
+      if (ob) {
         const spread = ob ? `<button type="button" class="ob-spread" data-lb="0" aria-label="${esc(t('lx.open_book', 'Open the book photo'))}"><img src="${esc(ob)}" alt="${esc(tpl(t('lx.open_book_alt', '{title}, open to a two-page spread'), { title: plain }))}" loading="lazy"></button>` : '';
-        const off = ob ? 1 : 0;
-        inside.innerHTML = spread + (pages.length ? `<div class="pv-grid">${pages.slice(0, 4).map((u, j) => ({ u, i: j + off })).map(({ u, i }) => `<button type="button" data-lb="${i}" aria-label="${esc(tpl(t('lx.open_sample', 'Open sample page {n}'), { n: i + 1 - off }))}"><img src="${esc(u)}" alt="${esc(tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i + 1 - off, title: plain }))}" loading="lazy"></button>`).join('')}</div>` : '') + `<p class="note">${esc(t('pg.inside_note'))}</p>`;
-      } else {
+        inside.innerHTML = spread;
+        insideCol.hidden = false;
+      } else if (!flipPages.length) {
         /* No approved sample pages for this story yet: show a Hikaya spread, honestly labelled as an example. */
         const src = window.PREVIEW_IMAGES ? window.PREVIEW_IMAGES['sty-inside-01.webp'] : 'images/sty-inside-01.webp';
         inside.innerHTML = `<img src="${src}" srcset="images/sty-inside-01-900.webp 900w, images/sty-inside-01.webp 1800w" sizes="(max-width: 899px) 100vw, 50vw" alt="${esc(t('lx.example_alt', 'An open Hikaya book showing an illustrated spread'))}" loading="lazy"><p class="note">${esc(t('lx.inside_example', 'An example of a Hikaya spread. Your book is illustrated with your child as the hero.'))}</p>`;
+        insideCol.hidden = false;
+      } else {
+        inside.innerHTML = '';
+        insideCol.hidden = true;
       }
+      insideCol.parentElement.classList.toggle('one-col', insideCol.hidden);
       // structured data (Product) for this story
       try {
         const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };

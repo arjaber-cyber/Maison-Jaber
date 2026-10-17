@@ -21,133 +21,359 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 // Mirrors the active stories in the dashboard (Oct 2026); only used if the database cannot be reached.
 const BUILT_IN_STORIES = [
   {
-    "slug": "bravest-little-one",
+    "slug": "christmas-star",
+    "title": "The Christmas Star That Went Missing",
+    "title_ar": "نجمة الميلاد التي ضاعت",
+    "theme": "courage",
+    "collection": "Confidence, Kindness, Imagination, Christmas",
+    "age_ranges": "4-6,6-8",
+    "age_bands": [
+      "4-6",
+      "6-8"
+    ],
+    "moments": [
+      "confidence",
+      "kindness",
+      "imagination"
+    ],
+    "occasions": [
+      "christmas",
+      "birthday",
+      "justbecause"
+    ],
+    "description": "On Christmas Eve, the little star has fallen from the sky into the snow! A magical winter adventure about helping a friend find their way home and discovering that you shine brightest simply by being you.",
+    "premise": {
+      "en": "On Christmas Eve, the little star has fallen from the sky into the snow! A magical winter adventure about helping a friend find their way home and discovering that you shine brightest simply by being you.",
+      "ar": "في ليلة الميلاد، سقطت النجمة الصغيرة من السماء إلى الثلج! مغامرة شتوية ساحرة عن مساعدة صديق في العودة إلى مكانه، واكتشاف أنك تتألق أكثر حين تكون نفسك"
+    },
+    "card_note": {
+      "en": "A magical Christmas story",
+      "ar": "قصة ميلادية ساحرة"
+    },
+    "cover_gradient": "courage",
+    "cover_image_url": "https://maison-jaber.com/story-assets/christmas-star/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/christmas-star/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/christmas-star/p1.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/p2.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/p3.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/p4.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/p5.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/p6.jpg"
+    ],
+    "sort_order": 1,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
+    "slug": "door-of-a-thousand-stars",
     "title": "Door of a Thousand Stars",
     "title_ar": "باب الألف نجمة",
     "theme": "courage",
+    "collection": "Courage, New things, Confidence, Adventure",
+    "age_ranges": "4-6,6-8",
     "age_bands": [
-      "2-4",
       "4-6",
       "6-8"
     ],
     "moments": [
       "courage",
+      "new",
       "confidence",
-      "growing",
-      "imagination",
       "adventure"
     ],
+    "occasions": [
+      "school",
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "A talking star, a magical doorway and an adventure beyond the clouds! Help your child discover the courage to take one more step, even when a new beginning feels scary.",
     "premise": {
-      "ar": "نجمة تتكلّم، وباب سحري، ومغامرة فوق الغيوم! قصة تساعد طفلك على اكتشاف شجاعته ليخطو خطوة أخرى، حتى حين تبدو البداية الجديدة مخيفة.",
-      "en": "A talking star, a magical doorway and an adventure beyond the clouds! Help your child discover the courage to take one more step—even when a new beginning feels scary."
+      "en": "A talking star, a magical doorway and an adventure beyond the clouds! Help your child discover the courage to take one more step, even when a new beginning feels scary.",
+      "ar": "نجمة تتكلّم، وباب سحري، ومغامرة فوق الغيوم! قصة تساعد طفلك على اكتشاف شجاعته ليخطو خطوة أخرى، حتى حين تبدو البداية الجديدة مخيفة"
     },
-    "description": "A talking star, a magical doorway and an adventure beyond the clouds! Help your child discover the courage to take one more step—even when a new beginning feels scary.",
-    "cover_image_url": "https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/public/site-photos/stories/bravest-little-one-1791128047538.jpg",
-    "sort_order": 1,
+    "card_note": {
+      "en": "Perfect before a new school",
+      "ar": "مثالية قبل بداية المدرسة"
+    },
+    "cover_gradient": "courage",
+    "cover_image_url": "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p1.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p2.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p3.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p4.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p5.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p6.jpg"
+    ],
+    "sort_order": 2,
     "featured": false,
-    "has_extra_character": false,
-    "age_ranges": "2-4,4-6,6-8",
     "active": true,
-    "built_in": true,
+    "built_in": false,
+    "has_extra_character": false,
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
-    "preview_images": []
+    "detail_url": null
   },
   {
-    "slug": "cloud-ship",
-    "title": "Why Is Baby Looking At Me",
-    "title_ar": "لماذا ينظر إليّ المولود الصغير؟",
-    "theme": "adventure",
+    "slug": "storm-above-the-city",
+    "title": "The Storm Above the City",
+    "title_ar": "العاصفة فوق المدينة",
+    "theme": "courage",
+    "collection": "Adventure, Courage, Imagination, Friendship",
+    "age_ranges": "4-6,6-8",
     "age_bands": [
-      "2-4",
       "4-6",
       "6-8"
+    ],
+    "moments": [
+      "adventure",
+      "courage",
+      "imagination",
+      "friendship"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Rubber ducks are falling from the sky and a strange storm is spinning over the city! A superhero adventure about staying calm, thinking cleverly and learning that even heroes need a helping hand.",
+    "premise": {
+      "en": "Rubber ducks are falling from the sky and a strange storm is spinning over the city! A superhero adventure about staying calm, thinking cleverly and learning that even heroes need a helping hand.",
+      "ar": "بطّات مطاطية تتساقط من السماء، وعاصفة غريبة تدور فوق المدينة! مغامرة بطولية عن الهدوء والتفكير الذكي، وعن أن الأبطال أيضًا يحتاجون إلى يد تساعدهم"
+    },
+    "card_note": {
+      "en": "A superhero adventure",
+      "ar": "مغامرة بطولية"
+    },
+    "cover_gradient": "courage",
+    "cover_image_url": "https://maison-jaber.com/story-assets/storm-above-the-city/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/storm-above-the-city/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p1.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p2.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p3.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p4.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p5.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/p6.jpg"
+    ],
+    "sort_order": 3,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
+    "slug": "to-the-rescue",
+    "title": "To the Rescue!",
+    "title_ar": "إلى الإنقاذ!",
+    "theme": "courage",
+    "collection": "Kindness, Friendship, Confidence",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "kindness",
+      "friendship",
+      "confidence"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "A stuck ball, three little ducklings and a runaway kite! A cheerful neighbourhood adventure showing that you don't need a cape to be a hero, and that small hands can make a big difference.",
+    "premise": {
+      "en": "A stuck ball, three little ducklings and a runaway kite! A cheerful neighbourhood adventure showing that you don't need a cape to be a hero, and that small hands can make a big difference.",
+      "ar": "كرة عالقة، وثلاث بطّات صغيرة، وطائرة ورقية هاربة! مغامرة مبهجة في الحيّ تُظهر أنك لا تحتاج إلى عباءة لتكون بطلًا، وأن اليدين الصغيرتين تصنعان فرقًا كبيرًا"
+    },
+    "card_note": {
+      "en": "Small help, big difference",
+      "ar": "مساعدة صغيرة وفرق كبير"
+    },
+    "cover_gradient": "courage",
+    "cover_image_url": "https://maison-jaber.com/story-assets/to-the-rescue/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/to-the-rescue/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/to-the-rescue/p1.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/p2.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/p3.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/p4.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/p5.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/p6.jpg"
+    ],
+    "sort_order": 4,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
+    "slug": "why-is-baby-looking-at-me",
+    "title": "Why Is Baby Looking at Me?",
+    "title_ar": "لماذا ينظر إليّ المولود الصغير؟",
+    "theme": "adventure",
+    "collection": "Family, Feelings, Growing up",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
     ],
     "moments": [
       "family",
       "emotions",
-      "kindness",
       "growing"
     ],
+    "occasions": [
+      "newbaby",
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "A new baby brings big changes and lots of questions! A warm, playful story about finding your place, sharing little moments and discovering the joy of being an older sibling.",
     "premise": {
-      "ar": "مولود جديد يعني تغييرات كبيرة وأسئلة كثيرة! قصة دافئة ومرحة عن إيجاد مكانك في العائلة، ومشاركة اللحظات الصغيرة، واكتشاف فرحة أن تصبح الأخ الأكبر أو الأخت الكبرى.",
-      "en": "A new baby brings big changes—and lots of questions! A warm, playful story about finding your place, sharing little moments and discovering the joy of being an older sibling."
+      "en": "A new baby brings big changes and lots of questions! A warm, playful story about finding your place, sharing little moments and discovering the joy of being an older sibling.",
+      "ar": "مولود جديد يعني تغييرات كبيرة وأسئلة كثيرة! قصة دافئة ومرحة عن إيجاد مكانك في العائلة، ومشاركة اللحظات الصغيرة، واكتشاف فرحة أن تصبح الأخ الأكبر أو الأخت الكبرى"
     },
-    "description": "A new baby brings big changes—and lots of questions! A warm, playful story about finding your place, sharing little moments and discovering the joy of being an older sibling.",
-    "cover_image_url": "https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/public/site-photos/stories/cloud-ship-1791128246472.jpg",
-    "sort_order": 2,
+    "card_note": {
+      "en": "For new big brothers and sisters",
+      "ar": "للإخوة الكبار الجدد"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p1.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p2.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p3.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p4.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p5.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p6.jpg"
+    ],
+    "sort_order": 5,
     "featured": false,
-    "has_extra_character": false,
-    "age_ranges": "2-4,4-6,6-8",
     "active": true,
-    "built_in": true,
+    "built_in": false,
+    "has_extra_character": false,
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
-    "preview_images": []
+    "detail_url": null
   },
   {
-    "slug": "star-who-couldnt-sleep",
-    "title": "To The Rescue",
-    "title_ar": "إلى الإنقاذ!",
-    "theme": "courage",
+    "slug": "grandpas-wild-safari",
+    "title": "Grandpa's Wild Safari",
+    "title_ar": "رحلة السفاري البرية مع الجد",
+    "theme": "adventure",
+    "collection": "Family, Adventure, Growing up",
+    "age_ranges": "2-4,4-6",
     "age_bands": [
       "2-4",
-      "4-6",
-      "6-8"
+      "4-6"
     ],
     "moments": [
-      "kindness",
-      "courage",
-      "family"
+      "family",
+      "adventure",
+      "growing"
     ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Elephants, giraffes, zebras and hidden cheetah cubs! A warm safari adventure with Grandpa about slowing down, looking closely and sharing a day you'll both remember.",
     "premise": {
-      "ar": "كرة ضائعة، وطائرة ورقية عالقة، وفرص صغيرة للمساعدة! مغامرة مبهجة تُري طفلك كيف يصنع العقل الفضولي والقلب الطيب واليدان الصغيرتان فرقًا كبيرًا.",
-      "en": "A missing ball, a stuck kite and little chances to help! A cheerful adventure showing your child how curious minds, kind hearts and small hands can make a big difference."
+      "en": "Elephants, giraffes, zebras and hidden cheetah cubs! A warm safari adventure with Grandpa about slowing down, looking closely and sharing a day you'll both remember.",
+      "ar": "فيلة وزرافات وحمير وحشية، وأشبال فهد مختبئة! مغامرة سفاري دافئة مع الجد عن التمهّل والنظر بعناية، ومشاركة يوم لن تنسياه أبدًا"
     },
-    "description": "A missing ball, a stuck kite and little chances to help! A cheerful adventure showing your child how curious minds, kind hearts and small hands can make a big difference.",
-    "cover_image_url": "https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/public/site-photos/stories/star-who-couldnt-sleep-1791128371859.jpg",
-    "sort_order": 3,
+    "card_note": {
+      "en": "An adventure with Grandpa",
+      "ar": "مغامرة مع الجد"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/grandpas-wild-safari/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/grandpas-wild-safari/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p1.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p2.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p3.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p4.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p5.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p6.jpg"
+    ],
+    "sort_order": 6,
     "featured": false,
-    "has_extra_character": false,
-    "age_ranges": "2-4,4-6,6-8",
     "active": true,
-    "built_in": true,
+    "built_in": false,
+    "has_extra_character": false,
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
-    "preview_images": []
+    "detail_url": null
   },
   {
-    "slug": "the-silver-wingmission",
-    "title": "The Silver WingMission",
+    "slug": "silver-wing-mission",
+    "title": "The Silver-Wing Mission",
     "title_ar": "مهمة الجناح الفضي",
     "theme": "courage",
+    "collection": "Kindness, Friendship, Courage, Honesty",
+    "age_ranges": "6-8",
     "age_bands": [
-      "2-4",
-      "4-6",
       "6-8"
     ],
     "moments": [
       "kindness",
+      "friendship",
       "courage",
-      "emotions",
-      "imagination",
-      "growing"
+      "honesty"
     ],
-    "premise": {
-      "ar": "سفينة فضاء، ومهمة في ساحة اللعب، وقرار شجاع واحد. مغامرة مدرسية مشوّقة عن الوقوف إلى جانب صديق، والترحيب بالآخرين، واكتشاف كيف يغيّر اللطف يومًا كاملًا.",
-      "en": "A spaceship, a playground mission and one brave choice. An exciting school adventure about standing beside a friend, welcoming others and discovering how kindness can change the day."
-    },
+    "occasions": [
+      "school",
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
     "description": "A spaceship, a playground mission and one brave choice. An exciting school adventure about standing beside a friend, welcoming others and discovering how kindness can change the day.",
-    "cover_image_url": "https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/public/site-photos/stories/the-silver-wingmission-1791128461892.jpg",
-    "sort_order": 100,
+    "premise": {
+      "en": "A spaceship, a playground mission and one brave choice. An exciting school adventure about standing beside a friend, welcoming others and discovering how kindness can change the day.",
+      "ar": "سفينة فضاء، ومهمة في ساحة اللعب، وقرار شجاع واحد، مغامرة مدرسية مشوّقة عن الوقوف إلى جانب صديق، والترحيب بالآخرين، واكتشاف كيف يغيّر اللطف يومًا كاملًا"
+    },
+    "card_note": {
+      "en": "Kindness at school",
+      "ar": "اللطف في المدرسة"
+    },
+    "cover_gradient": "courage",
+    "cover_image_url": "https://maison-jaber.com/story-assets/silver-wing-mission/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/silver-wing-mission/back.jpg",
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p1.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p2.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p3.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p4.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p5.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/p6.jpg"
+    ],
+    "sort_order": 7,
     "featured": false,
-    "has_extra_character": false,
-    "age_ranges": "2-4,4-6,6-8",
     "active": true,
-    "built_in": true,
+    "built_in": false,
+    "has_extra_character": false,
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
-    "preview_images": []
+    "detail_url": null
   }
 ];
 

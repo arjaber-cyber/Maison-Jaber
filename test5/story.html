@@ -52,6 +52,11 @@
         <p class="bundle" data-i18n="pg.bundle">Ordering for siblings? 2 books get 10% off each and free delivery. 3 or more get 15% off.</p>
       </div>
     </section>
+    <section class="sec look-inside" id="inside" aria-labelledby="look-title" hidden>
+      <h2 id="look-title" class="small" style="margin-bottom:10px" data-i18n="fb.title">Look inside the book</h2>
+      <p class="sub" data-i18n="fb.sub">Turn the pages for a peek at the story. Your book is illustrated with your child as the hero.</p>
+      <div id="st-flip"></div>
+    </section>
     <section class="sec" aria-labelledby="happens-title">
       <h2 id="happens-title" class="small" style="margin-bottom:10px" data-i18n="pg.happens">What happens in this story?</h2>
       <p class="prose" id="st-happens"></p>
@@ -65,8 +70,8 @@
         <h2 class="small" style="margin-bottom:16px" data-i18n="pg.personalised">What gets personalised</h2>
         <ul class="plist" id="st-personal"></ul>
       </div>
-      <div>
-        <h2 class="small" id="inside" style="margin-bottom:16px" data-i18n="pg.inside">Inside the book</h2>
+      <div id="inside-col">
+        <h2 class="small" id="inside-photos" style="margin-bottom:16px" data-i18n="pg.inside">Inside the book</h2>
         <div class="inside" id="st-inside"></div>
       </div>
     </section>
@@ -107,6 +112,7 @@
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
 <script src="chrome.js" defer></script>
+<script src="flipbook.js" defer></script>
 <script src="browse.js" defer></script>
 </body>
 </html>

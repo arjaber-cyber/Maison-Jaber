@@ -30,7 +30,7 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: JSON.stringify({ error: 'Story not found (it may already be deleted).' }) };
     }
     // Best-effort: remove the cover and preview image files too.
-    const urls = [rows[0].cover_image_url, ...(Array.isArray(rows[0].preview_images) ? rows[0].preview_images : [])];
+    const urls = [rows[0].cover_image_url, rows[0].back_cover_url, rows[0].open_book_image_url, ...(Array.isArray(rows[0].preview_images) ? rows[0].preview_images : [])];
     const prefixes = urls.map(u => (u || '').match(/\/object\/public\/site-photos\/([^?]+)/)).filter(Boolean).map(m => decodeURIComponent(m[1]));
     if (prefixes.length) {
       await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}`, {

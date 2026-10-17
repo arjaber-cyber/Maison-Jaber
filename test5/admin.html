@@ -896,7 +896,7 @@
           <div class="story-actions">
             <button type="button" data-act="edit">Edit</button>
             <button type="button" data-act="photo">${s.cover_image_url ? 'Change photo' : 'Add photo'}</button>
-            <button type="button" data-act="previews">Inside photos (${(s.preview_images || []).length + (s.open_book_image_url ? 1 : 0)})</button>
+            <button type="button" data-act="previews">Inside photos (${(s.preview_images || []).length + (s.open_book_image_url ? 1 : 0) + (s.back_cover_url ? 1 : 0)})</button>
             ${s.cover_image_url ? '<button type="button" data-act="nophoto">Remove photo</button>' : ''}
             <button type="button" class="danger" data-act="delete">Delete</button>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-file>
@@ -910,7 +910,7 @@
               : `<button type="button" class="upload-btn" data-ob="add">+ Add open book photo (2 pages)</button>`}</div>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-ob-file>
             <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
-            <div class="size-hint"><strong>Preview images</strong> appear as "A glimpse inside" on the story's page. Any shape works; they're always shown in full, never cropped. Best: <strong>at least 1600 px wide</strong> (e.g. a page 1600 × 1600 px or a spread 2400 × 1200 px).</div>
+            <div class="size-hint"><strong>Inside pages (max 6)</strong> turn like a real book in "Look inside" on the story's page: front cover → these pages in order → back cover. Use single <strong>square pages, at least 1000 × 1000 px</strong>.</div>
             <div class="preview-thumbs">${(s.preview_images || []).map((u, i, arr) => `
               <div class="preview-thumb">
                 <img src="${stEsc(u)}" alt="Preview ${i + 1}" loading="lazy">
@@ -920,8 +920,17 @@
                   <button type="button" data-pv="remove" data-url="${stEsc(u)}" class="danger" title="Remove">Remove</button>
                 </div>
               </div>`).join('') || '<span style="font-size:12px; color:var(--ink-soft);">No previews yet.</span>'}</div>
-            <button type="button" class="upload-btn" data-pv="add" style="margin-top:10px;">+ Add preview images</button>
+            ${(s.preview_images || []).length >= 6
+              ? '<p style="font-size:12px; color:var(--ink-soft); margin-top:10px;">6 of 6 pages added (the "Look inside" maximum). Remove one to add another.</p>'
+              : `<button type="button" class="upload-btn" data-pv="add" style="margin-top:10px;">+ Add inside pages (${(s.preview_images || []).length} of 6)</button>`}
             <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-pv-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
+            <div class="size-hint"><strong>Back cover</strong> — the last page of "Look inside", after the inside pages. Square, at least <strong>1000 × 1000 px</strong>.</div>
+            <div class="open-book-slot">${s.back_cover_url
+              ? `<div class="preview-thumb"><img src="${stEsc(s.back_cover_url)}" alt="Back cover" loading="lazy">
+                  <div class="pt-actions"><button type="button" data-bc="replace">Replace</button><button type="button" data-bc="remove" class="danger">Remove</button></div></div>`
+              : `<button type="button" class="upload-btn" data-bc="add">+ Add back cover</button>`}</div>
+            <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-bc-file>
           </div>
         </div>
       `).join('') : '<p style="font-size:13px; color:var(--ink-soft);">No stories in the catalog yet — add one below.</p>';
@@ -965,7 +974,31 @@
           loadStories(adminPassword);
         };
         const pvFile = panel.querySelector('[data-pv-file]');
-        panel.querySelector('[data-pv="add"]').onclick = () => pvFile.click();
+        const pvAdd = panel.querySelector('[data-pv="add"]');
+        if (pvAdd) pvAdd.onclick = () => pvFile.click();
+        const bcFile = panel.querySelector('[data-bc-file]');
+        panel.querySelectorAll('[data-bc="add"],[data-bc="replace"]').forEach(b => b.onclick = () => bcFile.click());
+        bcFile.onchange = async () => {
+          const f = bcFile.files[0]; if (!f) return;
+          try {
+            status.textContent = 'Uploading back cover…';
+            const img = await resizeImage(f, 2000);
+            const r = await storyPreviewAction({ slug, action: 'set-back-cover', base64Data: img.base64Data, mimeType: img.mimeType });
+            if (r.error) { status.textContent = r.error; return; }
+          } catch (e) { status.textContent = e.message; return; }
+          openPreviewSlugs.add(slug);
+          status.textContent = 'Back cover saved';
+          loadStories(adminPassword);
+        };
+        const bcRm = panel.querySelector('[data-bc="remove"]');
+        if (bcRm) bcRm.onclick = async () => {
+          if (!confirm('Remove the back cover?')) return;
+          status.textContent = 'Removing…';
+          const r = await storyPreviewAction({ slug, action: 'remove-back-cover' });
+          if (r.error) { status.textContent = r.error; return; }
+          openPreviewSlugs.add(slug);
+          loadStories(adminPassword);
+        };
         pvFile.onchange = async () => {
           const files = [...pvFile.files];
           if (!files.length) return;

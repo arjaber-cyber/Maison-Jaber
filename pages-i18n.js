@@ -748,3 +748,21 @@
     trk_invoice_email: { en: 'To view the invoice, track with the email you used at checkout.', ar: 'لعرض الفاتورة، تتبّع طلبك بالبريد الإلكتروني الذي استخدمته عند الطلب' },
   };
 })();
+/* Look inside: page-turning book preview on story pages (Oct 2026). Arabic strings carry no full stops by brand rule. */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.fb = {
+    title: { en: 'Look inside the book', ar: 'تصفّح الكتاب من الداخل' },
+    sub: { en: 'Turn the pages for a peek at the story. Your book is illustrated with your child as the hero.', ar: 'قلّب الصفحات لتلقي نظرة على القصة، وكتابك يُرسم وطفلك هو البطل' },
+    role: { en: 'book preview', ar: 'معاينة الكتاب' },
+    label: { en: 'Look inside {title}', ar: 'تصفّح قصة {title}' },
+    prev: { en: 'Previous page', ar: 'الصفحة السابقة' },
+    next: { en: 'Next page', ar: 'الصفحة التالية' },
+    hint: { en: 'Tap or swipe to turn the page', ar: 'اضغط أو اسحب لتقليب الصفحة' },
+    back: { en: 'Back cover', ar: 'الغلاف الخلفي' },
+    back_alt: { en: 'Back cover of {title}', ar: 'الغلاف الخلفي لقصة {title}' },
+    end: { en: 'The end', ar: 'النهاية' },
+    page: { en: 'Page {n}', ar: 'الصفحة {n}' },
+    pages: { en: 'Pages {a}–{b}', ar: 'الصفحتان {a}–{b}' },
+  };
+})();
