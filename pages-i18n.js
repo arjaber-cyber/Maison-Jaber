@@ -71,7 +71,7 @@
     inc_print: { en: 'Premium print quality', ar: 'طباعة فاخرة' },
     inc_box: { en: 'Signature gift box', ar: 'علبة الهدايا المميزة' },
     inc_tissue: { en: 'Tissue and gold star seal', ar: 'ورق ناعم وختم النجمة الذهبية' },
-    inc_ribbon: { en: 'Satin ribbon and tag', ar: 'شريط ساتان وبطاقة' },
+    inc_ribbon: { en: 'Satin ribbon', ar: 'شريط ساتان' },
     inc_delivery: { en: 'Delivered to your door', ar: 'توصيل حتى بابك' },
     also_love: { en: 'They may also love', ar: 'قد يحبون أيضًا' },
     pages: { en: '{n} pages', ar: '{n} صفحة' },
@@ -528,8 +528,8 @@
   "ar": "هل تغليف الهدية مشمول؟"
  },
  "a11": {
-  "en": "Yes, at no extra cost. Every book arrives in our signature gift box with tissue, a satin ribbon and a tag. We can deliver straight to the person you're gifting, and you can add a gift message at checkout.",
-  "ar": "نعم ودون أي تكلفة إضافية، فكل كتاب يصل في علبة الهدايا المميزة مع ورق مناديل وشريط ساتان وبطاقة، ويمكننا توصيله مباشرة لمن تهديه، ويمكنك إضافة رسالة إهداء عند الدفع"
+  "en": "Yes, at no extra cost. Every book arrives in our signature gift box with tissue and a satin ribbon. We can deliver straight to the person you're gifting, and you can write your own message on the book's first page.",
+  "ar": "نعم ودون أي تكلفة إضافية، فكل كتاب يصل في علبة الهدايا المميزة مع ورق مناديل وشريط ساتان، ويمكننا توصيله مباشرة لمن تهديه، ويمكنك كتابة رسالتك الخاصة في الصفحة الأولى من الكتاب"
  },
  "g_delivery": {
   "en": "Delivery and tracking",

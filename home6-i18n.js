@@ -85,18 +85,18 @@
     pkg_sub: { en: 'Every Hikaya book comes in our signature gift packaging, because opening their story should feel as special as reading it.', ar: 'كل كتاب من حكاية يصل في تغليف الهدايا المميز، لأن فتح قصتهم يجب أن يكون مميزًا كقراءتها' },
     pkg_1: { en: 'Their personalised hardcover', ar: 'كتابهم المخصّص بغلاف مقوّى' },
     pkg_2: { en: 'Rigid cream keepsake box', ar: 'علبة تذكارية متينة بلون كريمي' },
-    pkg_3: { en: 'Satin ribbon and Hikaya tag', ar: 'شريط ساتان وبطاقة حكاية' },
+    pkg_3: { en: 'Tied with a satin ribbon', ar: 'مربوطة بشريط ساتان' },
     pkg_4: { en: 'Tissue sealed with our gold star', ar: 'ورق ناعم مختوم بنجمتنا الذهبية' },
     pkg_5: { en: 'Included with every order, at no extra cost', ar: 'مشمول مع كل طلب دون أي تكلفة إضافية' },
     pkg_direct: { en: 'Giving it to someone else? We can deliver it straight to them, gift-boxed.', ar: 'تهديه لشخص آخر؟ يمكننا توصيله إليه مباشرة في علبة الهدية' },
     pkg_alt: { en: 'The Hikaya gift box opened, showing cream tissue sealed with a gold star, beside the ribbon-tied closed box', ar: 'علبة حكاية مفتوحة مع ورق ناعم مختوم بنجمة ذهبية بجانب العلبة المغلقة بالشريط' },
-    pkg2_alt: { en: 'Close-up of a Hikaya card beside the ribbon-tied box', ar: 'بطاقة حكاية بجانب العلبة المربوطة بالشريط' },
+    pkg2_alt: { en: 'Close-up of the ribbon-tied Hikaya gift box', ar: 'صورة قريبة لعلبة هدايا حكاية المربوطة بالشريط' },
     pkg3_alt: { en: 'Hikaya packaging with tissue and gold star seal', ar: 'تغليف حكاية مع الورق الناعم وختم النجمة الذهبية' },
 
     // Reviews (PLACEHOLDERS — replace before launch)
     rev_title: { en: 'Loved by little readers, and their parents', ar: 'يحبها القرّاء الصغار، وأهاليهم أيضًا' },
     rev_hand: { en: 'Made just for them ♡', ar: 'صُنعت لهم وحدهم ♡' },
-    rev_alt: { en: 'Hikaya storybooks stacked beside a soft toy and a note card', ar: 'كتب حكاية بجانب دمية ناعمة وبطاقة' },
+    rev_alt: { en: 'Hikaya storybooks stacked beside a soft toy', ar: 'كتب حكاية بجانب دمية ناعمة' },
     r1: { en: 'She asked for “her book” every night for a week, and kept pointing at her own name.', ar: 'طلبت «كتابها» كل ليلة لأسبوع كامل، وكانت تشير إلى اسمها كل مرة' },
     r1_who: { en: 'Layla\'s mum, Dubai', ar: 'والدة ليلى، دبي' },
     r2: { en: 'The box alone made his birthday. The book itself is properly made. It will last.', ar: 'العلبة وحدها صنعت عيد ميلاده، والكتاب نفسه متقن الصنع وسيدوم طويلًا' },
@@ -153,7 +153,7 @@
   T.home6.pkg_title = { en: "Beautiful from story to doorstep.", ar: "جميلة من القصة حتى باب البيت" };
   T.home6.pkg_sub = { en: "Every Hikaya book comes beautifully presented in our signature gift packaging.", ar: "كل كتاب من حكاية يصل بتغليف الهدايا المميز الخاص بنا" };
   T.home6.pkg_direct = { en: "Giving it to someone else? We can deliver it straight to them.", ar: "تهديه لشخص آخر؟ يمكننا توصيله إليه مباشرة" };
-  T.home6.pkg_alt = { en: "The Hikaya gift box tied with a caramel satin ribbon and a Hikaya tag", ar: "علبة هدايا حكاية مربوطة بشريط ساتان وبطاقة حكاية" };
+  T.home6.pkg_alt = { en: "The Hikaya gift box tied with a caramel satin ribbon", ar: "علبة هدايا حكاية مربوطة بشريط ساتان بلون الكراميل" };
   T.home6.rev_title = { en: "Real stories. Real reactions.", ar: "قصص حقيقية. ردود فعل حقيقية" };
   T.home6.r1_who = { en: "Amira's mum", ar: "والدة أميرة" };
   T.home6.r1_city = { en: "Dubai", ar: "دبي" };
@@ -220,7 +220,7 @@
     justbecause: { en: 'Just because', ar: 'بلا مناسبة' },
     justbecause_d: { en: 'Because every child deserves their story', ar: 'لأن كل طفل يستحق قصته' },
     banner: { en: 'Gifts for {occasion}', ar: 'هدايا {occasion}' },
-    banner_d: { en: 'Every story arrives gift-boxed, and we can deliver straight to the child. Add a gift message at checkout.', ar: 'تصل كل قصة في علبة هدية، ويمكننا توصيلها مباشرة إلى الطفل، وأضف رسالة الإهداء عند الدفع' },
+    banner_d: { en: 'Every story arrives gift-boxed, and we can deliver straight to the child. Write your own message on the first page.', ar: 'تصل كل قصة في علبة هدية، ويمكننا توصيلها مباشرة إلى الطفل، واكتب رسالتك الخاصة في الصفحة الأولى' },
     all: { en: 'See all occasions', ar: 'كل المناسبات' },
     clear: { en: 'Show all stories', ar: 'عرض كل القصص' },
     f_all: { en: 'All occasions', ar: 'كل المناسبات' },
