@@ -55,6 +55,10 @@ exports.handler = async (event) => {
   }
 
   const { fullName, email, phone, address, city, country, amount, currency, items } = order;
+  // QA-03: never open a payment session for an empty cart.
+  if (!Array.isArray(items) || !items.length) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Your cart is empty.' }) };
+  }
   if (!fullName || !email || !phone || !address || !city || !amount || !currency) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing required order details.' }) };
   }

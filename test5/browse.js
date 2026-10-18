@@ -121,7 +121,7 @@
     const slug = qs.get('s') || qs.get('story');
     const s = all.find(x => x.slug === slug) || (slug ? null : all[0]);
     const root = document.getElementById('pdp-root');
-    if (!s) { document.getElementById('not-found').hidden = false; root.hidden = true; return; }
+    if (!s) { document.getElementById('not-found').hidden = false; root.hidden = true; delete document.body.dataset.waTopic; H.refreshWhatsApp && H.refreshWhatsApp(); return; }
     let openLook = null, lookOpenedFromHash = false;
     function images() {
       const pv = Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : [];
@@ -132,6 +132,7 @@
       document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
       const md = document.querySelector('meta[name="description"]'); if (md) md.content = H.premise(s) || md.content;
       document.getElementById('crumb-title').textContent = plain;
+      document.body.dataset.waTopic = plain; if (H.refreshWhatsApp) H.refreshWhatsApp(); // QA-02: WhatsApp message names this book, in the current language
       document.getElementById('st-title').innerHTML = H.titleHtml(s);
       document.getElementById('st-ages').textContent = [H.ageText(s.age_bands), s.page_count ? tpl(t('pg.pages', '{n} pages'), { n: s.page_count }) : ''].filter(Boolean).join(' · ');
       document.getElementById('st-chips').innerHTML = [...new Set((s.moments || []).map(m => t('home6.th_' + m, '') || H.themeLabel(m)))].map(l => `<li>${esc(l)}</li>`).join('');
@@ -174,7 +175,8 @@
       lookBtn.querySelector('span').textContent = t('fb.open', 'Look inside');
       // Arabic books open from the other side: turn right-to-left when the Arabic pages are shown.
       const rtlBook = H.lang() === 'ar' && Array.isArray(s.preview_images_ar) && s.preview_images_ar.filter(Boolean).length > 0;
-      openLook = canLook ? () => window.HikayaFlipbook.open({ cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t, ctaHref: H.personaliseHref(s), rtl: rtlBook }) : null;
+      const flipTexts = flipPages.map(u => (window.hikayaPreviewText ? window.hikayaPreviewText(u) : '')); // QA-05
+      openLook = canLook ? () => window.HikayaFlipbook.open({ cover: s.cover_image_url, pages: flipPages, texts: flipTexts, back: s.back_cover_url, title: plain, t, ctaHref: H.personaliseHref(s), rtl: rtlBook }) : null;
       // Story cards link here with "#inside": open the book straight away (once).
       if (canLook && location.hash === '#inside' && !lookOpenedFromHash) { lookOpenedFromHash = true; setTimeout(openLook, 300); }
       // Inside the book (side column): hidden when the story has its "Look inside" book. Only for stories

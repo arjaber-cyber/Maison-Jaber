@@ -228,6 +228,14 @@
 
   .lang-pill { font-size: 13px; font-weight: 700; padding: 10px 12px; border-radius: 100px; cursor: pointer; }
   .lang-pill:hover { background: var(--bg-soft, #f7f7f7); }
+  /* QA-03: empty-cart recovery instead of the delivery/payment form */
+  .co-empty { max-width: 640px; margin: 40px auto 70px; text-align: center; background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 36px 28px; }
+  .co-empty h2 { font-size: 28px; margin-bottom: 8px; }
+  .co-empty p { color: var(--ink-soft); margin: 0 0 22px; }
+  .co-empty-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .co-empty-ctas .btn { width: auto; min-width: 180px; }
+  /* QA-04: fields that need attention */
+  input[aria-invalid="true"] { border-color: #b5563b; background: #fff7f4; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -276,6 +284,15 @@
   </div>
 </div>
 
+<section class="wrap co-empty" id="co-empty" hidden aria-labelledby="co-empty-t">
+  <h2 id="co-empty-t" data-i18n="qa.co_empty_t">Your cart is empty</h2>
+  <p data-i18n="qa.co_empty_d">Add a personalised book to your cart first, then come back here to enter delivery and payment details.</p>
+  <div class="co-empty-ctas">
+    <a class="btn btn-primary" href="stories.html" data-i18n="qa.co_empty_browse">Browse Stories</a>
+    <a class="btn btn-secondary" href="personalize.html" data-i18n="qa.co_empty_create">Create a Book</a>
+  </div>
+</section>
+
 <div class="checkout-locked-note" id="checkout-locked-note" data-i18n="checkout.locked_note">Sign in or continue as a guest above to enter your delivery details.</div>
 
 <div class="checkout-layout" id="checkout-layout">
@@ -284,10 +301,10 @@
       <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
       <div class="req-note"><span class="req-mark">*</span> <span data-i18n="checkout.required_note">Required</span></div>
       <div class="form-grid">
-        <div class="field"><label class="field-label" for="full-name"><span data-i18n="checkout.full_name">Full name</span><span class="req-mark">*</span></label><input type="text" id="full-name" autocomplete="name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
-        <div class="field"><label class="field-label" for="email"><span data-i18n="checkout.email">Email</span><span class="req-mark">*</span></label><input type="email" id="email" placeholder="you@email.com" autocomplete="email" inputmode="email" dir="ltr" /></div>
-        <div class="field full"><label class="field-label" for="address"><span data-i18n="checkout.address">Address</span><span class="req-mark">*</span></label><input type="text" id="address" autocomplete="street-address" placeholder="Street, building, apartment" data-i18n-placeholder="checkout.address_ph" /></div>
-        <div class="field"><label class="field-label" for="city"><span data-i18n="checkout.city">City</span><span class="req-mark">*</span></label><input type="text" id="city" autocomplete="address-level2" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
+        <div class="field"><label class="field-label" for="full-name"><span data-i18n="checkout.full_name">Full name</span><span class="req-mark">*</span></label><input type="text" id="full-name" required aria-required="true" autocomplete="name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
+        <div class="field"><label class="field-label" for="email"><span data-i18n="checkout.email">Email</span><span class="req-mark">*</span></label><input type="email" id="email" required aria-required="true" placeholder="you@email.com" autocomplete="email" inputmode="email" dir="ltr" /></div>
+        <div class="field full"><label class="field-label" for="address"><span data-i18n="checkout.address">Address</span><span class="req-mark">*</span></label><input type="text" id="address" required aria-required="true" autocomplete="street-address" placeholder="Street, building, apartment" data-i18n-placeholder="checkout.address_ph" /></div>
+        <div class="field"><label class="field-label" for="city"><span data-i18n="checkout.city">City</span><span class="req-mark">*</span></label><input type="text" id="city" required aria-required="true" autocomplete="address-level2" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
         <div class="field">
           <label class="field-label" for="country" data-i18n="checkout.country">Country</label>
           <select id="country">
@@ -313,7 +330,7 @@
           </div>
           <div class="map-hint" data-i18n="checkout.map_hint">The pin updates automatically as you type your address — check it lands in the right spot.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-placeholder="qa.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" required aria-required="true" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-placeholder="qa.phone_ph" /></div>
       </div>
     </div>
 
@@ -325,7 +342,7 @@
     </div>
 
     <div class="approval">
-      <input type="checkbox" id="final-approval" />
+      <input type="checkbox" id="final-approval" required aria-required="true" />
       <label for="final-approval" data-i18n="bl.approval">I confirm that all the information I have shared is correct: my child's name as it will be printed, age, photo, book language, first-page message, and my contact and delivery details. I understand the book goes into production exactly as entered once payment is made.</label>
     </div>
     <div class="approval">
@@ -334,7 +351,7 @@
     </div>
 
     <button class="btn-primary" id="place-order" disabled data-i18n="pg.ziina_btn">Continue to secure payment</button>
-    <div class="payment-error" id="payment-error"></div>
+    <div class="payment-error" id="payment-error" role="alert" aria-live="assertive"></div>
     <div class="payment-success" id="payment-success"></div>
 
     <div class="trust-bar">
@@ -417,6 +434,23 @@
   const checkoutLockedNote = document.getElementById('checkout-locked-note');
   let continuedAsGuest = false;
 
+  /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
+  const coEmpty = document.getElementById('co-empty');
+  const isZiinaReturn = () => new URLSearchParams(location.search).has('ziina');
+  function cartIsEmpty() { return !(window.hikayaCart && window.hikayaCart.getCart().length); }
+  function applyEmptyGuard() {
+    const empty = cartIsEmpty() && !isZiinaReturn();
+    coEmpty.hidden = !empty;
+    document.getElementById('checkout-progress').hidden = empty;
+    if (empty) {
+      accountStep.style.display = 'none';
+      signedInBar.style.display = 'none';
+      checkoutLayout.classList.remove('unlocked');
+      checkoutLockedNote.style.display = 'none';
+    }
+    return empty;
+  }
+
   function unlockCheckoutLayout() {
     checkoutLayout.classList.add('unlocked');
     checkoutLockedNote.style.display = 'none';
@@ -427,6 +461,7 @@
 
   async function refreshAuthUI() {
     const { data: { session } } = await supabase.auth.getSession();
+    if (applyEmptyGuard()) return;
     if (session) {
       accountStep.style.display = 'none';
       signedInBar.style.display = 'block';
@@ -460,6 +495,7 @@
     await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
+    if (applyEmptyGuard()) return;
     continuedAsGuest = true;
     accountStep.style.display = 'none';
     unlockCheckoutLayout();
@@ -623,6 +659,7 @@
       document.getElementById('price-delivery').textContent = '—';
       document.getElementById('price-total').textContent = '—';
       if (placeOrderBtnEl) placeOrderBtnEl.disabled = true;
+      applyEmptyGuard();
       return;
     }
 
@@ -823,6 +860,7 @@
     }
 
     paymentArea.innerHTML = selectorHtml + bodyHtml;
+    if (cartIsEmpty()) placeOrderBtn.disabled = true; // QA-03
 
     paymentArea.querySelectorAll('.pay-method-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -902,27 +940,59 @@
     );
   });
 
+  // ---------- Validation messages (QA-04 / QA-07) ----------
+  /* Errors are remembered by translation key so they re-translate when the language changes,
+     and invalid fields are flagged for assistive technology and focused. */
+  const REQ_IDS = ['full-name', 'email', 'phone', 'address', 'city'];
+  let lastErr = null;
+  function showErr(key, fb, fieldIds) {
+    const box = document.getElementById('payment-error');
+    lastErr = key ? { key, fb } : null;
+    box.textContent = key ? t(key, fb) : fb;
+    box.style.display = 'block';
+    const ids = fieldIds || [];
+    REQ_IDS.concat('final-approval').forEach(id => {
+      const el = document.getElementById(id); if (!el) return;
+      if (ids.includes(id)) { el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', 'payment-error'); }
+      else { el.removeAttribute('aria-invalid'); if (el.getAttribute('aria-describedby') === 'payment-error') el.removeAttribute('aria-describedby'); }
+    });
+    const first = ids.length && document.getElementById(ids[0]);
+    if (first) first.focus(); else box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  REQ_IDS.concat('final-approval').forEach(id => {
+    const el = document.getElementById(id); if (!el) return;
+    el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', () => {
+      if ((el.type === 'checkbox' ? el.checked : el.value.trim()) && el.getAttribute('aria-invalid')) el.removeAttribute('aria-invalid');
+    });
+  });
+  document.addEventListener('hikaya:langchange', () => {
+    const box = document.getElementById('payment-error');
+    if (lastErr && box.style.display === 'block') box.textContent = t(lastErr.key, lastErr.fb);
+  });
+
   // ---------- Submit ----------
   placeOrderBtn.addEventListener('click', async () => {
     const errorBox = document.getElementById('payment-error');
     const successBox = document.getElementById('payment-success');
     errorBox.style.display = 'none';
     successBox.style.display = 'none';
+    lastErr = null;
+
+    if (applyEmptyGuard()) return; // QA-03
+
+    const missing = REQ_IDS.filter(id => !document.getElementById(id).value.trim());
+    if (missing.length) { showErr('checkout.err_required', 'Please fill in your name, email, phone, address, and city.', missing); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim())) { showErr('qa.err_email', 'Please enter a valid email address.', ['email']); return; }
 
     if (!document.getElementById('final-approval').checked) {
-      errorBox.textContent = t('bl.err_approval', "Please confirm that the information you shared is correct before placing the order.");
-      errorBox.style.display = 'block';
+      showErr('bl.err_approval', "Please confirm that the information you shared is correct before placing the order.", ['final-approval']);
       return;
     }
 
     const region = REGIONS[currentRegionKey];
     const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
 
-    if (cart.length === 0) {
-      errorBox.textContent = t('checkout.cart_empty', 'Your cart is empty.');
-      errorBox.style.display = 'block';
-      return;
-    }
+    if (cart.length === 0) { showErr('checkout.cart_empty', 'Your cart is empty.'); return; }
 
     const finalPricing = computeFinalPricing(region);
 
@@ -945,8 +1015,7 @@
     };
 
     if (!order.fullName || !order.email || !order.address || !order.city || !order.phone) {
-      errorBox.textContent = t('checkout.err_required', 'Please fill in your name, email, phone, address, and city.');
-      errorBox.style.display = 'block';
+      showErr('checkout.err_required', 'Please fill in your name, email, phone, address, and city.', REQ_IDS.filter(id => !document.getElementById(id).value.trim()));
       return;
     }
 
@@ -957,11 +1026,7 @@
       const n = String(i.childName || ''), d = String(i.dedication || '');
       return i.bookLanguage === 'ar' ? (!AR_RE.test(n) || LATIN_RE.test(n) || LATIN_RE.test(d)) : (!LATIN_RE.test(n) || AR_RE.test(n) || AR_RE.test(d));
     });
-    if (badItem) {
-      errorBox.textContent = t('bl.err_item', 'One of the books in your cart needs updating: the name and first-page message must be in the book language, and the photo permission must be given. Please remove it from your cart and create it again.');
-      errorBox.style.display = 'block';
-      return;
-    }
+    if (badItem) { showErr('bl.err_item', 'One of the books in your cart needs updating: the name and first-page message must be in the book language, and the photo permission must be given. Please remove it from your cart and create it again.'); return; }
 
 
     placeOrderBtn.disabled = true;

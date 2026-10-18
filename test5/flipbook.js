@@ -44,8 +44,23 @@
     return tpl(t('fb.pages_of', 'Pages {a}–{b} of {total}'), { a: i, b: Math.min(i + 1, n), total: n });
   }
 
+  /* QA-05: the narration is printed inside the artwork, so each sample page carries its text
+     (opts.texts, in reading order of the inside pages) for screen readers and the "Show text" panel. */
+  function textFor(readingIdx) { const tx = (opts && opts.texts) || []; return readingIdx >= 1 ? (tx[readingIdx - 1] || '') : ''; }
+  function renderText(i) {
+    const box = viewer.querySelector('.lx-text'), btn = viewer.querySelector('.lx-text-btn');
+    const any = ((opts && opts.texts) || []).some(Boolean);
+    btn.hidden = !any; if (!any) { box.hidden = true; return; }
+    const idx = flip.getOrientation() === 'portrait' ? [L(i)] : [L(i), L(i + 1)].filter(n => n < total);
+    const parts = [...new Set(idx)].sort((a, b) => a - b).map(textFor).filter(Boolean);
+    box.innerHTML = parts.length ? parts.map(p => `<p>${esc(opts.rtl ? arPunct(p) : p)}</p>`).join('') : `<p class="lx-text-none">${esc(opts.t('fb.no_text', 'No story text on this page.'))}</p>`;
+    box.hidden = btn.getAttribute('aria-expanded') !== 'true';
+  }
+  const arPunct = v => (window.Hikaya && window.Hikaya.arPunct ? window.Hikaya.arPunct(v) : v);
+
   function update(i) {
     if (!viewer || !flip) return;
+    renderText(i);
     viewer.querySelector('.lx-count').textContent = label(i);
     viewer.querySelector('[data-lx="prev"]').disabled = i === 0;
     viewer.querySelector('[data-lx="next"]').disabled = i >= total - 1;
@@ -72,7 +87,7 @@
       const hard = i === 0 || (opts.back && i === pages.length - 1);
       const alt = i === 0 ? tpl(t('lx.cover_alt', 'Cover of {title}'), { title })
         : hard ? tpl(t('fb.back_alt', 'Back cover of {title}'), { title })
-        : tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i, title });
+        : tpl(t('lx.page_alt', 'Sample page {n} from {title}'), { n: i, title }) + (textFor(i) ? ': ' + textFor(i) : '');
       return `<div class="lx-page ${hard ? 'is-hard' : 'is-soft'}"${hard ? ' data-density="hard"' : ''}><img src="${esc(src)}" alt="${esc(alt)}" draggable="false"></div>`;
     }).join('')}</div></div>`;
     const book = shelf.querySelector('.lx-book');
@@ -112,10 +127,14 @@
         <span class="lx-count" aria-live="polite"></span>
         <button type="button" class="lx-btn" data-lx="next" aria-label="${esc(t('fb.next', 'Next page'))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
+      <div class="lx-text-wrap"><button type="button" class="lx-text-btn" aria-expanded="false" aria-controls="lx-text" hidden></button>
+        <div class="lx-text" id="lx-text" aria-live="polite" hidden></div></div>
       <div class="lx-end" hidden><a class="btn btn-primary lx-cta" href="#"></a></div>
       <p class="lx-hint">${esc(t('fb.hint2', 'Use the arrows, swipe, or drag a page corner'))}</p>`;
     document.body.appendChild(viewer);
     viewer.addEventListener('click', e => {
+      const tb = e.target.closest('.lx-text-btn');
+      if (tb) { const on = tb.getAttribute('aria-expanded') !== 'true'; tb.setAttribute('aria-expanded', String(on)); tb.textContent = on ? opts.t('fb.hide_text', 'Hide text') : opts.t('fb.show_text', 'Show text'); if (flip) renderText(flip.getCurrentPageIndex()); return; }
       const b = e.target.closest('[data-lx]');
       if (b) {
         if (b.dataset.lx === 'close') close();
@@ -152,6 +171,13 @@
     ensureViewer();
     const t = opts.t;
     viewer.setAttribute('aria-label', tpl(t('fb.label', 'Look inside {title}'), { title: opts.title || '' }));
+    // QA-07: the viewer is built once, so refresh every label in the current language on each open.
+    viewer.setAttribute('lang', document.documentElement.lang || 'en');
+    viewer.querySelector('.lx-close').setAttribute('aria-label', t('fb.close', 'Close preview'));
+    viewer.querySelector('.lx-hint').textContent = t('fb.hint2', 'Use the arrows, swipe, or drag a page corner');
+    const tb = viewer.querySelector('.lx-text-btn');
+    tb.textContent = tb.getAttribute('aria-expanded') === 'true' ? t('fb.hide_text', 'Hide text') : t('fb.show_text', 'Show text');
+    viewer.querySelector('.lx-text').setAttribute('dir', opts.rtl ? 'rtl' : 'ltr');
     viewer.querySelector('.lx-title').textContent = opts.title || '';
     viewer.querySelector('.lx-sub').textContent = t('fb.sub2', 'A peek inside. Your book is illustrated with your child as the hero.');
     const cta = viewer.querySelector('.lx-cta');

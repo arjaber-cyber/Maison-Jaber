@@ -73,7 +73,7 @@
     <div>
       <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
       <p class="about" data-i18n="home6.foot_about">Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.</p>
-      <p class="about foot-contact"><a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a><br><span data-i18n="lx.foot_team">A real team, based in the UAE</span></p>
+      <p class="about foot-contact"><a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a><br><span id="hk-wa-foot" hidden><span class="wl"></span>: <a href="#" target="_blank" rel="noopener" dir="ltr"></a><br></span><span data-i18n="lx.foot_team">A real team, based in the UAE</span></p>
     </div>
     <div><h2 data-i18n="home6.foot_story">Our Story</h2><ul>
       <li><a href="about.html" data-i18n="home6.nav_about">Our Story</a></li>
@@ -353,7 +353,10 @@
   function coverHtml(s, extraClass, opts) {
     opts = opts || {};
     const alt = opts.alt ? esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) })) : '';
-    const img = s.cover ? `<img src="${esc(s.cover)}" alt="${alt}"${opts.eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async" width="560" height="560" />` : '';
+    /* QA-09: cards use the 600px cover (cover-600.jpg) when it exists next to the full-size file; the story page keeps the large cover. */
+    const small = !opts.eager && /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(s.cover || '') ? s.cover.replace(/\.jpg$/, '-600.jpg') : '';
+    const srcset = small ? ` srcset="${esc(small)} 600w, ${esc(s.cover)} 1200w" sizes="(max-width: 520px) 92vw, (max-width: 900px) 46vw, 300px"` : '';
+    const img = s.cover ? `<img src="${esc(small || s.cover)}"${srcset} alt="${alt}"${opts.eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async" width="560" height="560" />` : '';
     return `<div class="cover${extraClass ? ' ' + extraClass : ''}">${img}${s.cover ? '' : `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>`}</div>`;
   }
   function tpl(str, o) { return Object.keys(o).reduce((a, k) => a.split('{' + k + '}').join(o[k]), str); }
@@ -436,8 +439,9 @@
   const WHATSAPP_DISPLAY = '+971 50 801 1769';
   const WA_SKIP = ['admin', 'login', 'invoice'];
   function waHref() {
-    const h1 = document.querySelector('main h1');
-    const story = PAGE === 'story' && h1 ? h1.textContent.trim() : '';
+    /* QA-02: pages that know their subject (story detail) set data-wa-topic once their data has
+       rendered, in the current language. Never read a heading: the hidden "not found" h1 comes first. */
+    const story = (document.body && document.body.dataset.waTopic || '').trim();
     const msg = story ? t('wa.msg_page', 'Hi Hikaya, I have a question about {page}').replace('{page}', story) : t('wa.msg', 'Hi Hikaya, I have a question');
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   }
@@ -449,7 +453,13 @@
       a = document.createElement('a'); a.id = 'hk-wa'; a.className = 'hk-wa'; a.target = '_blank'; a.rel = 'noopener';
       a.addEventListener('click', () => { try { window.hikayaTrackEvent && window.hikayaTrackEvent('whatsapp_click', { page: PAGE }); } catch (_) {} });
       document.body.appendChild(a);
+      /* QA-01: step the floating button aside while the footer's legal row (Privacy · Terms) is on screen,
+         so it never covers those links; WhatsApp stays reachable from the footer contact line. */
+      const legal = document.querySelector('.site-footer .foot-bottom');
+      if (legal && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => a.classList.toggle('is-docked', e.isIntersecting), { rootMargin: '0px 0px 40px 0px' }).observe(legal);
     }
+    const footWa = document.getElementById('hk-wa-foot');
+    if (footWa) { footWa.hidden = false; footWa.querySelector('a').href = waHref(); footWa.querySelector('a').textContent = WHATSAPP_DISPLAY; footWa.querySelector('.wl').textContent = t('wa.label', 'WhatsApp'); }
     a.href = waHref(); a.setAttribute('aria-label', t('wa.btn', 'Chat on WhatsApp'));
     a.innerHTML = `${WA_SVG}<span class="hk-wa-txt">${esc(t('wa.short', 'Need help?'))}</span>`;
     /* Pages can also offer it inline (e.g. Contact us): <div data-hk-whatsapp hidden>…</div> */
@@ -460,7 +470,7 @@
   }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+  window.Hikaya = { refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
 
   /* ---------------- Boot ---------------- */
   mount();

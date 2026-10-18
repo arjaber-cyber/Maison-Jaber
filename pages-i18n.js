@@ -71,7 +71,7 @@
     inc_print: { en: 'Premium print quality', ar: 'طباعة فاخرة' },
     inc_box: { en: 'Signature gift box', ar: 'علبة الهدايا المميزة' },
     inc_tissue: { en: 'Tissue and gold star seal', ar: 'ورق ناعم وختم النجمة الذهبية' },
-    inc_ribbon: { en: 'Satin ribbon and tag', ar: 'شريط ساتان وبطاقة' },
+    inc_ribbon: { en: 'Satin ribbon', ar: 'شريط ساتان' },
     inc_delivery: { en: 'Delivered to your door', ar: 'توصيل حتى بابك' },
     also_love: { en: 'They may also love', ar: 'قد يحبون أيضًا' },
     pages: { en: '{n} pages', ar: '{n} صفحة' },
@@ -154,7 +154,7 @@
     fq13: { en: "How are uploaded photos used?", ar: "كيف تُستخدم الصور المرفوعة؟" },
     fa13: { en: "Only to create the book you ordered. Photos are never used for advertising or shared beyond what's needed to make your book.", ar: "فقط لصنع الكتاب الذي طلبته، لا تُستخدم الصور في الإعلانات ولا تُشارك إلا بالقدر اللازم لصنع كتابك" },
     fq14: { en: "How long are photos kept?", ar: "إلى متى تُحفظ الصور؟" },
-    fa14: { en: "Uploaded photos are deleted automatically after 15 days. You can ask us to delete them sooner at any time.", ar: "تُحذف الصور المرفوعة تلقائيًا بعد 15 يومًا، ويمكنك طلب حذفها قبل ذلك في أي وقت" },
+    fa14: { en: "Uploaded photos are deleted automatically within 15 days of upload, even if the order is not completed. You can ask us to delete them sooner at any time.", ar: "تُحذف الصور المرفوعة تلقائيًا خلال 15 يومًا من رفعها، حتى لو لم يكتمل الطلب، ويمكنك طلب حذفها قبل ذلك في أي وقت" },
     fq15: { en: "Who can upload a child's photo?", ar: "من يمكنه رفع صورة الطفل؟" },
     fa15: { en: "Only a parent or legal guardian, using a photo they have the right to use.", ar: "الوالدان أو الوصي القانوني فقط، بصورة يحق لهم استخدامها" },
     fq16: { en: "Which languages are available?", ar: "ما اللغات المتاحة؟" },
@@ -182,7 +182,7 @@
     change_story: { en: 'Change story', ar: 'تغيير القصة' },
     wz_story_t: { en: "Choose their story", ar: "اختر قصتهم" },
     wz_story_s: { en: "Pick the adventure you want to make theirs.", ar: "اختر المغامرة التي تريد أن تجعلها لهم" },
-    wz_details_t: { en: "Tell us about them", ar: "أخبرنا عنهم" },
+    wz_details_t: { en: "Tell us about them", ar: "أخبرنا عن طفلك" },
     wz_details_s: { en: "Their first name, age, and how the story should talk about them.", ar: "الاسم الأول والعمر، وكيف تتحدث القصة عنهم" },
     wz_photo_t: { en: "Add a photo of them", ar: "أضف صورة لهم" },
     wz_photo_s: { en: "A clear, front-facing photo so we can illustrate them as the hero.", ar: "صورة واضحة من الأمام لنرسمهم أبطالًا للقصة" },
@@ -335,7 +335,7 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.home6 = T.home6 || {};
   // Theme IDs the dashboard can assign that had no label of their own yet.
-  T.home6.th_emotions = T.home6.th_emotions || { en: 'Feelings', ar: 'المشاعر' };
+  T.home6.th_emotions = T.home6.th_emotions || { en: 'Emotions', ar: 'المشاعر' };
   T.home6.th_imagination = T.home6.th_imagination || { en: 'Imagination', ar: 'الخيال' };
 })();
 /* Launch QA pass (Oct 2026): shared launch copy. Arabic strings carry no full stops by brand rule. */
@@ -528,8 +528,8 @@
   "ar": "هل تغليف الهدية مشمول؟"
  },
  "a11": {
-  "en": "Yes, at no extra cost. Every book arrives in our signature gift box with tissue, a satin ribbon and a tag. We can deliver straight to the person you're gifting, and you can add a gift message at checkout.",
-  "ar": "نعم ودون أي تكلفة إضافية، فكل كتاب يصل في علبة الهدايا المميزة مع ورق مناديل وشريط ساتان وبطاقة، ويمكننا توصيله مباشرة لمن تهديه، ويمكنك إضافة رسالة إهداء عند الدفع"
+  "en": "Yes, at no extra cost. Every book arrives in our signature gift box with tissue and a satin ribbon. We can deliver straight to the person you're gifting: just enter their address at checkout.",
+  "ar": "نعم ودون أي تكلفة إضافية، فكل كتاب يصل في علبة الهدايا المميزة مع ورق مناديل وشريط ساتان، ويمكننا توصيله مباشرة لمن تهديه، فقط أدخل عنوانه عند الدفع"
  },
  "g_delivery": {
   "en": "Delivery and tracking",
@@ -620,8 +620,8 @@
   "ar": "إلى متى تحتفظون بالصور؟"
  },
  "a21": {
-  "en": "Uploaded photos are deleted within 15 days. You can ask us to delete them sooner at any time by emailing hello@maison-jaber.com.",
-  "ar": "تُحذف الصور المرفوعة خلال 15 يومًا، ويمكنك أن تطلب حذفها قبل ذلك في أي وقت عبر البريد hello@maison-jaber.com"
+  "en": "Uploaded photos are deleted automatically within 15 days of the day they were uploaded, whether or not the order is completed. You can ask us to delete them sooner at any time by emailing hello@maison-jaber.com.",
+  "ar": "تُحذف الصور المرفوعة تلقائيًا خلال 15 يومًا من يوم رفعها، سواء اكتمل الطلب أم لا، ويمكنك أن تطلب حذفها قبل ذلك في أي وقت عبر البريد hello@maison-jaber.com"
  },
  "q22": {
   "en": "Who can upload a child's photo?",
@@ -667,6 +667,11 @@
   /* QA fixes (Oct 2026): cart/checkout labels, gift recipient, name check. Arabic without full stops. */
   T.qa = {
     optional: { en: '(optional)', ar: '(اختياري)' },
+    co_empty_t: { en: 'Your cart is empty', ar: 'سلة التسوق فارغة' },
+    co_empty_d: { en: 'Add a personalised book to your cart first, then come back here to enter delivery and payment details.', ar: 'أضف كتابًا مخصصًا إلى السلة أولًا، ثم عد إلى هنا لإدخال بيانات التوصيل والدفع' },
+    co_empty_browse: { en: 'Browse Stories', ar: 'تصفّح القصص' },
+    co_empty_create: { en: 'Create a Book', ar: 'اصنع كتابًا' },
+    err_email: { en: 'Please enter a valid email address.', ar: 'يرجى إدخال بريد إلكتروني صحيح' },
     phone_ph: { en: 'e.g. +971 50 123 4567', ar: '+971 50 123 4567' },
     gift_note: { en: 'Sending it straight to them? Add their name and phone, and put their address in the address fields above', ar: 'هل ترسله إليهم مباشرة؟ أضف اسمهم ورقم هاتفهم، واكتب عنوانهم في حقول العنوان أعلاه' },
     recipient_name: { en: "Recipient's name", ar: 'اسم المستلم' },
@@ -765,10 +770,13 @@
     page: { en: 'Page {n}', ar: 'الصفحة {n}' },
     open: { en: 'Look inside', ar: 'تصفّح الكتاب' },
     close: { en: 'Close preview', ar: 'إغلاق المعاينة' },
-    sub2: { en: 'A peek inside. Your book is illustrated with your child as the hero.', ar: 'نظرة إلى داخل الكتاب، وكتابك يُرسم وطفلك هو البطل' },
+    sub2: { en: 'A peek at a few selected pages. Your book is illustrated with your child as the hero.', ar: 'نظرة على صفحات مختارة من الكتاب، وكتابك يُرسم وطفلك هو البطل' },
     hint2: { en: 'Use the arrows, swipe, or drag a page corner', ar: 'استخدم الأسهم أو اسحب الصفحة أو زاويتها' },
-    page_of: { en: 'Page {n} of {total}', ar: 'الصفحة {n} من {total}' },
-    pages_of: { en: 'Pages {a}–{b} of {total}', ar: 'الصفحتان {a}–{b} من {total}' },
+    show_text: { en: 'Show text', ar: 'اعرض النص' },
+    hide_text: { en: 'Hide text', ar: 'أخفِ النص' },
+    no_text: { en: 'No story text on this page.', ar: 'لا يوجد نص في هذه الصفحة' },
+    page_of: { en: 'Sample {n} of {total}', ar: 'المقتطف {n} من {total}' },
+    pages_of: { en: 'Samples {a}–{b} of {total}', ar: 'المقتطفان {a}–{b} من {total}' },
     pages: { en: 'Pages {a}–{b}', ar: 'الصفحتان {a}–{b}' },
   };
 })();

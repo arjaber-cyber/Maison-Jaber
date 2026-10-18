@@ -24,7 +24,8 @@
     // Hero
     hero_h1: { en: 'Their name.<br>Their story.<br>A memory they\'ll keep.', ar: 'اسمهم<br>قصتهم<br>ذكرى تبقى معهم' },
     hero_sub: { en: 'Personalised hardcover storybooks with your child at the heart of the adventure. You choose the story, we make it theirs, then print it, gift-box it and deliver it.', ar: 'كتب قصص بغلاف فاخر يكون طفلك فيها بطل المغامرة، أنت تختار القصة، ونحن نجعلها له، ثم نطبعها ونغلّفها في علبة هدية ونوصلها إليك' },
-    hero_alt: { en: 'A child reading her personalised Hikaya hardcover, with her name on the cover', ar: 'طفلة تقرأ كتاب حكاية المخصّص لها واسمها على الغلاف' },
+    hero_alt: { en: 'A child reading an example personalised Hikaya hardcover with her name on the cover', ar: 'طفلة تقرأ نموذجًا لكتاب حكاية مخصّص واسمها على الغلاف' },
+    hero_note: { en: 'Example book for illustration', ar: 'كتاب توضيحي للعرض فقط' },
     fact_hardcover: { en: 'Premium hardcover', ar: 'غلاف مقوّى فاخر' },
     fact_child: { en: 'Your child as the hero', ar: 'طفلك هو البطل' },
     fact_box: { en: 'Gift box included', ar: 'علبة الهدية مشمولة' },
@@ -43,7 +44,7 @@
     f_age: { en: 'Age', ar: 'العمر' },
     f_photo: { en: 'Photo', ar: 'الصورة' },
     f_photo_ok: { en: 'Photo added', ar: 'تمت إضافة الصورة' },
-    f_photo_del: { en: 'Deleted after 15 days', ar: 'تُحذف بعد 15 يومًا' },
+    f_photo_del: { en: 'Deleted within 15 days', ar: 'تُحذف خلال 15 يومًا' },
     f_next: { en: 'Next', ar: 'التالي' },
     chip_age: { en: 'Age 5', ar: 'العمر 5' },
     chip_photo: { en: 'Photo', ar: 'الصورة' },
@@ -52,7 +53,7 @@
     s4_t: { en: 'We print, pack and deliver', ar: 'نطبع ونغلّف ونوصل' },
     s4_d: { en: 'Their story is printed as a hardcover book, packed in our signature gift box and delivered ready for their moment.', ar: 'تُطبع قصتهم في كتاب بغلاف مقوّى، وتُغلّف في علبة الهدايا المميزة، وتصل جاهزة للحظتهم الخاصة' },
     s4_alt: { en: 'An open Hikaya gift box with cream tissue and a gold star seal', ar: 'علبة هدايا حكاية مفتوحة مع ورق ناعم وختم نجمة ذهبية' },
-    privacy: { en: 'Your child\'s photo is only used to create their book, and is deleted after 15 days.', ar: 'تُستخدم صورة طفلك لصنع كتابه فقط، وتُحذف بعد 15 يومًا' },
+    privacy: { en: 'Your child\'s photo is only used to create their book, and is deleted within 15 days.', ar: 'تُستخدم صورة طفلك لصنع كتابه فقط، وتُحذف خلال 15 يومًا' },
 
     // Shelves
     new_title: { en: 'Their next adventure', ar: 'مغامرتهم القادمة' },
@@ -85,7 +86,7 @@
     pkg_sub: { en: 'Every Hikaya book comes in our signature gift packaging, because opening their story should feel as special as reading it.', ar: 'كل كتاب من حكاية يصل في تغليف الهدايا المميز، لأن فتح قصتهم يجب أن يكون مميزًا كقراءتها' },
     pkg_1: { en: 'Their personalised hardcover', ar: 'كتابهم المخصّص بغلاف مقوّى' },
     pkg_2: { en: 'Rigid cream keepsake box', ar: 'علبة تذكارية متينة بلون كريمي' },
-    pkg_3: { en: 'Satin ribbon and Hikaya tag', ar: 'شريط ساتان وبطاقة حكاية' },
+    pkg_3: { en: 'Caramel satin ribbon', ar: 'شريط ساتان بلون الكراميل' },
     pkg_4: { en: 'Tissue sealed with our gold star', ar: 'ورق ناعم مختوم بنجمتنا الذهبية' },
     pkg_5: { en: 'Included with every order, at no extra cost', ar: 'مشمول مع كل طلب دون أي تكلفة إضافية' },
     pkg_direct: { en: 'Giving it to someone else? We can deliver it straight to them, gift-boxed.', ar: 'تهديه لشخص آخر؟ يمكننا توصيله إليه مباشرة في علبة الهدية' },

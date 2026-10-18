@@ -7,7 +7,9 @@
 // Env: SUPABASE_SERVICE_ROLE_KEY.
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const BUCKET = 'order-photos';
-const KEEP_DAYS = 15;
+/* QA-06: a photo uploaded on day D is deleted in the first daily run on day D+14 (02:30 UTC),
+   so every photo is gone within 15 days of upload, as promised, whether or not the order was paid. */
+const KEEP_DAYS = 14;
 
 async function list(key, prefix) {
   const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${BUCKET}`, {
@@ -25,7 +27,7 @@ exports.handler = async () => {
   const cutoff = new Date(Date.now() - KEEP_DAYS * 24 * 3600 * 1000).toISOString().slice(0, 10);
   let removed = 0;
   try {
-    const folders = (await list(key, '')).map(f => f.name).filter(n => /^\d{4}-\d{2}-\d{2}$/.test(n) && n < cutoff);
+    const folders = (await list(key, '')).map(f => f.name).filter(n => /^\d{4}-\d{2}-\d{2}$/.test(n) && n <= cutoff);
     for (const folder of folders) {
       for (;;) {
         const files = (await list(key, folder + '/')).map(f => `${folder}/${f.name}`).filter(p => !p.endsWith('/'));
