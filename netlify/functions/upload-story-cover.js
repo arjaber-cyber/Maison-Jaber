@@ -2,6 +2,7 @@
 //
 // Admin-only: uploads (or removes) the cover photo for one story.
 // Body: { slug, base64Data, mimeType }  -- or { slug, remove: true }
+// Add lang: 'ar' to set the Arabic cover (stories.cover_image_url_ar), shown on the Arabic site.
 // The image is stored in the public "site-photos" bucket under stories/ and
 // its URL saved on the story row (stories.cover_image_url).
 
@@ -20,6 +21,8 @@ exports.handler = async (event) => {
   let p;
   try { p = JSON.parse(event.body); } catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request.' }) }; }
   const { slug, base64Data, mimeType, remove } = p;
+  const AR = p.lang === 'ar';
+  const FIELD = AR ? 'cover_image_url_ar' : 'cover_image_url';
   if (!slug || !/^[a-z0-9-]{1,120}$/.test(slug)) return { statusCode: 400, body: JSON.stringify({ error: 'Invalid story.' }) };
 
   const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
@@ -29,7 +32,7 @@ exports.handler = async (event) => {
     if (!base64Data || !TYPES[mimeType]) return { statusCode: 400, body: JSON.stringify({ error: 'Please choose a JPG, PNG or WebP image.' }) };
     const buf = Buffer.from(base64Data, 'base64');
     if (!buf.length || buf.length > 5 * 1024 * 1024) return { statusCode: 400, body: JSON.stringify({ error: 'Image must be under 5 MB.' }) };
-    const path = `stories/${slug}-${Date.now()}.${TYPES[mimeType]}`;
+    const path = `stories/${AR ? 'ar/' : ''}${slug}-${Date.now()}.${TYPES[mimeType]}`;
     const up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`, {
       method: 'POST', headers: { ...headers, 'Content-Type': mimeType, 'x-upsert': 'true' }, body: buf,
     });
@@ -44,15 +47,15 @@ exports.handler = async (event) => {
   // Remember the old file so we can clean it up after the switch.
   let oldUrl = null;
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=cover_image_url`, { headers });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=${FIELD}`, { headers });
     const rows = await r.json();
-    oldUrl = rows && rows[0] ? rows[0].cover_image_url : null;
+    oldUrl = rows && rows[0] ? rows[0][FIELD] : null;
     if (!rows || !rows[0]) return { statusCode: 404, body: JSON.stringify({ error: 'Save the story first, then add its photo.' }) };
   } catch { /* ignore */ }
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}`, {
     method: 'PATCH', headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=representation' },
-    body: JSON.stringify({ cover_image_url: url, updated_at: new Date().toISOString() }),
+    body: JSON.stringify({ [FIELD]: url, updated_at: new Date().toISOString() }),
   });
   if (!res.ok) return { statusCode: 502, body: JSON.stringify({ error: 'Could not save the photo on the story.' }) };
 

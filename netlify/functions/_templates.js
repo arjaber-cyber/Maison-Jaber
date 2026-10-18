@@ -50,7 +50,7 @@ function storyTitle(item, lang, arTitles) {
 function itemsBlock(items, lang, arTitles, covers) {
   return items.map(i => {
     const meta = [i.childName ? tr(lang, 'For ', 'لـ ') + '<strong>' + esc(i.childName) + '</strong>' : '', ageText(i.ageEdition, lang), bookLangText(i.bookLanguage, lang)].filter(Boolean).join(' &middot; ');
-    const cover = (covers && i.slug && covers[i.slug]) || i.coverUrl || null;
+    const cover = (covers && i.slug && ((i.bookLanguage === 'ar' && covers[i.slug + ':ar']) || covers[i.slug])) || i.coverUrl || null;
     const msg = i.dedication ? `<br><span style="font-style:italic;">${tr(lang, 'Your message on the first page', 'رسالتك في الصفحة الأولى')}: “${esc(i.dedication)}”</span>` : '';
     return ui.storyCard(esc(storyTitle(i, lang, arTitles)), meta + msg, cover, lang);
   }).join('');

@@ -850,11 +850,11 @@
     });
   }
 
-  async function uploadStoryCover(slug, file) {
+  async function uploadStoryCover(slug, file, lang) {
     const img = await resizeImage(file);
     const res = await fetch('/.netlify/functions/upload-story-cover', {
       method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword },
-      body: JSON.stringify({ slug, base64Data: img.base64Data, mimeType: img.mimeType }),
+      body: JSON.stringify({ slug, base64Data: img.base64Data, mimeType: img.mimeType, lang: lang === 'ar' ? 'ar' : undefined }),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Upload failed.');
@@ -862,6 +862,7 @@
   }
 
   const openPreviewSlugs = new Set();
+  const openArSlugs = new Set();
   async function storyPreviewAction(body) {
     try {
       const r = await fetch('/.netlify/functions/story-previews', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword }, body: JSON.stringify(body) });
@@ -897,6 +898,7 @@
             <button type="button" data-act="edit">Edit</button>
             <button type="button" data-act="photo">${s.cover_image_url ? 'Change photo' : 'Add photo'}</button>
             <button type="button" data-act="previews">Inside photos (${(s.preview_images || []).length + (s.open_book_image_url ? 1 : 0) + (s.back_cover_url ? 1 : 0)})</button>
+            <button type="button" data-act="arabic" lang="ar" title="Arabic cover, inside pages and back cover, shown when the site is in Arabic">Arabic artwork · العربية (${(s.cover_image_url_ar ? 1 : 0) + (s.preview_images_ar || []).length + (s.back_cover_url_ar ? 1 : 0)})</button>
             ${s.cover_image_url ? '<button type="button" data-act="nophoto">Remove photo</button>' : ''}
             <button type="button" class="danger" data-act="delete">Delete</button>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-file>
@@ -931,6 +933,37 @@
                   <div class="pt-actions"><button type="button" data-bc="replace">Replace</button><button type="button" data-bc="remove" class="danger">Remove</button></div></div>`
               : `<button type="button" class="upload-btn" data-bc="add">+ Add back cover</button>`}</div>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-bc-file>
+          </div>
+          <div class="preview-panel" data-ar-panel style="display:${openArSlugs.has(s.slug) ? 'block' : 'none'};">
+            <div class="size-hint"><strong>Arabic artwork</strong>: shown instead of the English images when a visitor uses the site in Arabic (story cards, story page, "Look inside", cart and Arabic-book order emails). Anything left empty falls back to the English image.</div>
+            <div class="size-hint" style="margin-top:10px;"><strong>Arabic front cover</strong>. Square, at least <strong>1200 × 1200 px</strong>.</div>
+            <div class="open-book-slot">${s.cover_image_url_ar
+              ? `<div class="preview-thumb"><img src="${stEsc(s.cover_image_url_ar)}" alt="Arabic cover" loading="lazy">
+                  <div class="pt-actions"><button type="button" data-arc="replace">Replace</button><button type="button" data-arc="remove" class="danger">Remove</button></div></div>`
+              : `<button type="button" class="upload-btn" data-arc="add">+ Add Arabic cover</button>`}</div>
+            <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-arc-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
+            <div class="size-hint"><strong>Arabic inside pages (max 6)</strong> for "Look inside": Arabic cover → these pages → Arabic back cover. Single <strong>square pages, at least 1000 × 1000 px</strong>.</div>
+            <div class="preview-thumbs">${(s.preview_images_ar || []).map((u, i, arr) => `
+              <div class="preview-thumb">
+                <img src="${stEsc(u)}" alt="Arabic page ${i + 1}" loading="lazy">
+                <div class="pt-actions">
+                  <button type="button" data-arpv="left" data-url="${stEsc(u)}" ${i === 0 ? 'disabled' : ''} title="Move earlier">&#8592;</button>
+                  <button type="button" data-arpv="right" data-url="${stEsc(u)}" ${i === arr.length - 1 ? 'disabled' : ''} title="Move later">&#8594;</button>
+                  <button type="button" data-arpv="remove" data-url="${stEsc(u)}" class="danger" title="Remove">Remove</button>
+                </div>
+              </div>`).join('') || '<span style="font-size:12px; color:var(--ink-soft);">No Arabic pages yet (the English pages are shown).</span>'}</div>
+            ${(s.preview_images_ar || []).length >= 6
+              ? '<p style="font-size:12px; color:var(--ink-soft); margin-top:10px;">6 of 6 pages added. Remove one to add another.</p>'
+              : `<button type="button" class="upload-btn" data-arpv="add" style="margin-top:10px;">+ Add Arabic inside pages (${(s.preview_images_ar || []).length} of 6)</button>`}
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-arpv-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
+            <div class="size-hint"><strong>Arabic back cover</strong>. Square, at least <strong>1000 × 1000 px</strong>.</div>
+            <div class="open-book-slot">${s.back_cover_url_ar
+              ? `<div class="preview-thumb"><img src="${stEsc(s.back_cover_url_ar)}" alt="Arabic back cover" loading="lazy">
+                  <div class="pt-actions"><button type="button" data-arbc="replace">Replace</button><button type="button" data-arbc="remove" class="danger">Remove</button></div></div>`
+              : `<button type="button" class="upload-btn" data-arbc="add">+ Add Arabic back cover</button>`}</div>
+            <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-arbc-file>
           </div>
         </div>
       `).join('') : '<p style="font-size:13px; color:var(--ink-soft);">No stories in the catalog yet — add one below.</p>';
@@ -1026,6 +1059,78 @@
           openPreviewSlugs.add(slug);
           loadStories(adminPassword);
         });
+        /* ---- Arabic artwork panel ---- */
+        const arPanel = card.querySelector('[data-ar-panel]');
+        const arDone = (msg) => { openArSlugs.add(slug); if (msg) status.textContent = msg; loadStories(adminPassword); };
+        card.querySelector('[data-act="arabic"]').onclick = () => {
+          const open = arPanel.style.display === 'none';
+          arPanel.style.display = open ? 'block' : 'none';
+          if (open) openArSlugs.add(slug); else openArSlugs.delete(slug);
+        };
+        const arcFile = arPanel.querySelector('[data-arc-file]');
+        arPanel.querySelectorAll('[data-arc="add"],[data-arc="replace"]').forEach(b => b.onclick = () => arcFile.click());
+        arcFile.onchange = async () => {
+          const f = arcFile.files[0]; if (!f) return;
+          if (!(await confirmImageFits(f, 1200, 1200, story.title + ' Arabic cover'))) { arcFile.value = ''; return; }
+          status.textContent = 'Uploading Arabic cover…';
+          try { await uploadStoryCover(slug, f, 'ar'); arDone('Arabic cover saved'); }
+          catch (e) { status.textContent = e.message; }
+        };
+        const arcRm = arPanel.querySelector('[data-arc="remove"]');
+        if (arcRm) arcRm.onclick = async () => {
+          if (!confirm('Remove the Arabic cover? The English cover will be shown on the Arabic site.')) return;
+          status.textContent = 'Removing…';
+          const r = await fetch('/.netlify/functions/upload-story-cover', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': adminPassword }, body: JSON.stringify({ slug, remove: true, lang: 'ar' }) });
+          const d = await r.json().catch(() => ({}));
+          if (!r.ok) { status.textContent = d.error || 'Could not remove.'; return; }
+          arDone();
+        };
+        const arpvFile = arPanel.querySelector('[data-arpv-file]');
+        const arpvAdd = arPanel.querySelector('[data-arpv="add"]');
+        if (arpvAdd) arpvAdd.onclick = () => arpvFile.click();
+        arpvFile.onchange = async () => {
+          const files = [...arpvFile.files]; if (!files.length) return;
+          for (let n = 0; n < files.length; n++) {
+            status.textContent = `Uploading Arabic page ${n + 1} of ${files.length}…`;
+            try {
+              const d = await imageSize(files[n]);
+              if (d && d.w < 1000 && !confirm(`"${files[n].name}" is only ${d.w} px wide, so it may look blurry when opened full-size. Upload it anyway?`)) continue;
+              const img = await resizeImage(files[n], 2000);
+              const r = await storyPreviewAction({ slug, lang: 'ar', action: 'add', base64Data: img.base64Data, mimeType: img.mimeType });
+              if (r.error) { status.textContent = r.error; return; }
+            } catch (e) { status.textContent = e.message; return; }
+          }
+          arDone('Arabic pages saved');
+        };
+        arPanel.querySelectorAll('[data-arpv="left"],[data-arpv="right"],[data-arpv="remove"]').forEach(b => b.onclick = async () => {
+          if (b.dataset.arpv === 'remove' && !confirm('Remove this Arabic page?')) return;
+          status.textContent = 'Saving…';
+          const r = await storyPreviewAction(b.dataset.arpv === 'remove'
+            ? { slug, lang: 'ar', action: 'remove', url: b.dataset.url }
+            : { slug, lang: 'ar', action: 'move', url: b.dataset.url, dir: b.dataset.arpv === 'left' ? -1 : 1 });
+          if (r.error) { status.textContent = r.error; return; }
+          arDone();
+        });
+        const arbcFile = arPanel.querySelector('[data-arbc-file]');
+        arPanel.querySelectorAll('[data-arbc="add"],[data-arbc="replace"]').forEach(b => b.onclick = () => arbcFile.click());
+        arbcFile.onchange = async () => {
+          const f = arbcFile.files[0]; if (!f) return;
+          try {
+            status.textContent = 'Uploading Arabic back cover…';
+            const img = await resizeImage(f, 2000);
+            const r = await storyPreviewAction({ slug, lang: 'ar', action: 'set-back-cover', base64Data: img.base64Data, mimeType: img.mimeType });
+            if (r.error) { status.textContent = r.error; return; }
+          } catch (e) { status.textContent = e.message; return; }
+          arDone('Arabic back cover saved');
+        };
+        const arbcRm = arPanel.querySelector('[data-arbc="remove"]');
+        if (arbcRm) arbcRm.onclick = async () => {
+          if (!confirm('Remove the Arabic back cover?')) return;
+          status.textContent = 'Removing…';
+          const r = await storyPreviewAction({ slug, lang: 'ar', action: 'remove-back-cover' });
+          if (r.error) { status.textContent = r.error; return; }
+          arDone();
+        };
         card.querySelector('[data-act="photo"]').onclick = () => fileIn.click();
         fileIn.onchange = async () => {
           if (!fileIn.files[0]) return;

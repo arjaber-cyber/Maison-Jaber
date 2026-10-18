@@ -9,6 +9,8 @@
 //   { slug, action: 'remove-open-book' }             -> removes the open book photo
 //   { slug, action: 'set-back-cover', base64Data, mimeType } -> sets the back cover (last page of "Look inside")
 //   { slug, action: 'remove-back-cover' }            -> removes the back cover
+// Add lang: 'ar' to any action to manage the Arabic inside pages / back cover
+// (stories.preview_images_ar, back_cover_url_ar) shown on the Arabic site. The open-book photo is shared.
 // Images live in the public "site-photos" bucket under stories/previews/.
 // The ordered list is stored in stories.preview_images (JSON array of URLs).
 // "Look inside" on the story page shows: front cover, these pages (max 6), back cover.
@@ -31,6 +33,9 @@ exports.handler = async (event) => {
   let p;
   try { p = JSON.parse(event.body); } catch { return json(400, { error: 'Invalid request.' }); }
   const { slug, action } = p;
+  const AR = p.lang === 'ar';
+  const PV = AR ? 'preview_images_ar' : 'preview_images';
+  const BC = AR ? 'back_cover_url_ar' : 'back_cover_url';
   if (!slug || !/^[a-z0-9-]{1,120}$/.test(slug)) return json(400, { error: 'Invalid story.' });
 
   const headers = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
@@ -38,12 +43,12 @@ exports.handler = async (event) => {
   // Current list
   let list;
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=preview_images,open_book_image_url,back_cover_url`, { headers });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}&select=${PV},open_book_image_url,${BC}`, { headers });
     const rows = await r.json();
     if (!Array.isArray(rows) || !rows[0]) return json(404, { error: 'Save the story first, then add previews.' });
-    list = Array.isArray(rows[0].preview_images) ? rows[0].preview_images : [];
+    list = Array.isArray(rows[0][PV]) ? rows[0][PV] : [];
     var openBook = rows[0].open_book_image_url || null;
-    var backCover = rows[0].back_cover_url || null;
+    var backCover = rows[0][BC] || null;
   } catch { return json(502, { error: 'Could not read the story.' }); }
 
   async function deleteFile(url) {
@@ -59,8 +64,8 @@ exports.handler = async (event) => {
   const SINGLE = {
     'set-open-book': { field: 'open_book_image_url', dir: 'open-book', old: openBook, key: 'openBookImageUrl' },
     'remove-open-book': { field: 'open_book_image_url', old: openBook, key: 'openBookImageUrl' },
-    'set-back-cover': { field: 'back_cover_url', dir: 'back-cover', old: backCover, key: 'backCoverUrl' },
-    'remove-back-cover': { field: 'back_cover_url', old: backCover, key: 'backCoverUrl' },
+    'set-back-cover': { field: BC, dir: AR ? 'back-cover/ar' : 'back-cover', old: backCover, key: 'backCoverUrl' },
+    'remove-back-cover': { field: BC, old: backCover, key: 'backCoverUrl' },
   };
   if (SINGLE[action]) {
     const cfg = SINGLE[action];
@@ -93,7 +98,7 @@ exports.handler = async (event) => {
     if (list.length >= MAX_PREVIEWS) return json(400, { error: `"Look inside" shows up to ${MAX_PREVIEWS} pages. Remove one first.` });
     const buf = Buffer.from(base64Data, 'base64');
     if (!buf.length || buf.length > 5 * 1024 * 1024) return json(400, { error: 'Image must be under 5 MB.' });
-    const path = `stories/previews/${slug}-${Date.now()}-${Math.floor(Math.random() * 1e4)}.${TYPES[mimeType]}`;
+    const path = `stories/previews/${AR ? 'ar/' : ''}${slug}-${Date.now()}-${Math.floor(Math.random() * 1e4)}.${TYPES[mimeType]}`;
     const up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`, {
       method: 'POST', headers: { ...headers, 'Content-Type': mimeType, 'x-upsert': 'true' }, body: buf,
     });
@@ -114,7 +119,7 @@ exports.handler = async (event) => {
 
   const res = await fetch(`${SUPABASE_URL}/rest/v1/stories?slug=eq.${slug}`, {
     method: 'PATCH', headers: { ...headers, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
-    body: JSON.stringify({ preview_images: list, updated_at: new Date().toISOString() }),
+    body: JSON.stringify({ [PV]: list, updated_at: new Date().toISOString() }),
   });
   if (!res.ok) return json(502, { error: 'Could not save the change.' });
 

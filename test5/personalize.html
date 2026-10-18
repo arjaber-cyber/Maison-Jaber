@@ -681,10 +681,10 @@
       }
       (data.stories || []).forEach(story => {
         STORY_THEMES[story.title] = story.theme;
-        STORY_CATALOG[story.title] = story;
+        STORY_CATALOG[story.title] = (window.Hikaya && window.Hikaya.localizeStory) ? window.Hikaya.localizeStory(story) : story;
         if (story.slug) SLUG_TO_TITLE[story.slug] = story.title;
         const existing = [...document.querySelectorAll('#story-grid .story-pick')].find(c => c.dataset.value === story.title);
-        if (existing) { renderCardText(existing); applyCoverPhoto(existing.querySelector('.cover'), story); return; }
+        if (existing) { renderCardText(existing); applyCoverPhoto(existing.querySelector('.cover'), STORY_CATALOG[story.title]); return; }
         {
           let card = document.createElement('div');
           card.className = 'story-pick';
@@ -699,7 +699,7 @@
           grid.appendChild(card);
           card = upgradeCard(card);
           renderCardText(card);
-          applyCoverPhoto(card.querySelector('.cover'), story);
+          applyCoverPhoto(card.querySelector('.cover'), STORY_CATALOG[story.title]);
         }
       });
       // If the page was pre-loaded with ?story= pointing at a story that
@@ -1335,7 +1335,8 @@
     return {
       story: document.getElementById('story-input').value,
       slug: (storyInfo && storyInfo.slug) || null,
-      coverUrl: (storyInfo && storyInfo.cover_image_url) || null,
+      // Cart thumbnail matches the book's language: Arabic book -> Arabic cover (when uploaded).
+      coverUrl: (storyInfo && ((bookLang() === 'ar' && storyInfo.cover_image_url_ar) || storyInfo.cover_image_url_en || storyInfo.cover_image_url)) || null,
       theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
       childName: bookName(), // the name exactly as printed, in the book language
       childNameTyped: nameInput.value.trim(),

@@ -83,11 +83,13 @@ async function sendConfirmation(order) {
   // Story covers (and Arabic titles for Arabic emails) from the catalogue, best effort.
   let arTitles = null, covers = null;
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug,title_ar,cover_image_url`, { headers: H });
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?select=slug,title_ar,cover_image_url,cover_image_url_ar`, { headers: H });
     if (r.ok) {
       const rows = await r.json();
       arTitles = Object.fromEntries(rows.filter(x => x.slug && x.title_ar).map(x => [x.slug, x.title_ar]));
       covers = Object.fromEntries(rows.filter(x => x.slug && x.cover_image_url).map(x => [x.slug, x.cover_image_url]));
+      // Arabic books show the Arabic cover (key "slug:ar"), when one is uploaded.
+      rows.filter(x => x.slug && x.cover_image_url_ar).forEach(x => { covers[x.slug + ':ar'] = x.cover_image_url_ar; });
     }
   } catch {}
   const mail = orderConfirmed(order, arTitles, covers);
