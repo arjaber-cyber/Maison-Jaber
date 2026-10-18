@@ -54,12 +54,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/christmas-star/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/christmas-star/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/christmas-star/p1.jpg",
-      "https://maison-jaber.com/story-assets/christmas-star/p2.jpg",
-      "https://maison-jaber.com/story-assets/christmas-star/p3.jpg",
-      "https://maison-jaber.com/story-assets/christmas-star/p4.jpg",
-      "https://maison-jaber.com/story-assets/christmas-star/p5.jpg",
-      "https://maison-jaber.com/story-assets/christmas-star/p6.jpg"
+      "https://maison-jaber.com/story-assets/christmas-star/l1.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/l2.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/l3.jpg",
+      "https://maison-jaber.com/story-assets/christmas-star/l4.jpg"
     ],
     "sort_order": 1,
     "featured": false,
@@ -106,12 +104,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p1.jpg",
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p2.jpg",
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p3.jpg",
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p4.jpg",
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p5.jpg",
-      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/p6.jpg"
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/l1.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/l2.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/l3.jpg",
+      "https://maison-jaber.com/story-assets/door-of-a-thousand-stars/l4.jpg"
     ],
     "sort_order": 2,
     "featured": false,
@@ -157,12 +153,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/storm-above-the-city/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/storm-above-the-city/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p1.jpg",
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p2.jpg",
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p3.jpg",
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p4.jpg",
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p5.jpg",
-      "https://maison-jaber.com/story-assets/storm-above-the-city/p6.jpg"
+      "https://maison-jaber.com/story-assets/storm-above-the-city/l1.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/l2.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/l3.jpg",
+      "https://maison-jaber.com/story-assets/storm-above-the-city/l4.jpg"
     ],
     "sort_order": 3,
     "featured": false,
@@ -207,12 +201,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/to-the-rescue/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/to-the-rescue/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/to-the-rescue/p1.jpg",
-      "https://maison-jaber.com/story-assets/to-the-rescue/p2.jpg",
-      "https://maison-jaber.com/story-assets/to-the-rescue/p3.jpg",
-      "https://maison-jaber.com/story-assets/to-the-rescue/p4.jpg",
-      "https://maison-jaber.com/story-assets/to-the-rescue/p5.jpg",
-      "https://maison-jaber.com/story-assets/to-the-rescue/p6.jpg"
+      "https://maison-jaber.com/story-assets/to-the-rescue/l1.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/l2.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/l3.jpg",
+      "https://maison-jaber.com/story-assets/to-the-rescue/l4.jpg"
     ],
     "sort_order": 4,
     "featured": false,
@@ -258,12 +250,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p1.jpg",
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p2.jpg",
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p3.jpg",
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p4.jpg",
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p5.jpg",
-      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/p6.jpg"
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/l1.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/l2.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/l3.jpg",
+      "https://maison-jaber.com/story-assets/why-is-baby-looking-at-me/l4.jpg"
     ],
     "sort_order": 5,
     "featured": false,
@@ -308,12 +298,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/grandpas-wild-safari/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/grandpas-wild-safari/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p1.jpg",
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p2.jpg",
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p3.jpg",
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p4.jpg",
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p5.jpg",
-      "https://maison-jaber.com/story-assets/grandpas-wild-safari/p6.jpg"
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/l1.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/l2.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/l3.jpg",
+      "https://maison-jaber.com/story-assets/grandpas-wild-safari/l4.jpg"
     ],
     "sort_order": 6,
     "featured": false,
@@ -359,12 +347,10 @@ const BUILT_IN_STORIES = [
     "cover_image_url": "https://maison-jaber.com/story-assets/silver-wing-mission/cover.jpg",
     "back_cover_url": "https://maison-jaber.com/story-assets/silver-wing-mission/back.jpg",
     "preview_images": [
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p1.jpg",
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p2.jpg",
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p3.jpg",
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p4.jpg",
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p5.jpg",
-      "https://maison-jaber.com/story-assets/silver-wing-mission/p6.jpg"
+      "https://maison-jaber.com/story-assets/silver-wing-mission/l1.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/l2.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/l3.jpg",
+      "https://maison-jaber.com/story-assets/silver-wing-mission/l4.jpg"
     ],
     "sort_order": 7,
     "featured": false,
