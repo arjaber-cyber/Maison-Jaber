@@ -3,7 +3,10 @@
    pages turn with a real page-curl (drag a corner, swipe, arrows or ← → keys).
    Shows: front cover → up to 6 inside pages → back cover. Nothing else.
    Page-turn engine: StPageFlip (vendor/page-flip.browser.js, MIT).
-   Usage: HikayaFlipbook.open({ cover, pages: [...], back, title, t, ctaHref }) */
+   Usage: HikayaFlipbook.open({ cover, pages: [...], back, title, t, ctaHref, rtl })
+   rtl: true for Arabic books, which open from the other side. The page-turn engine is left-to-right
+   only, so the book is loaded back-to-front and starts at its last page (the front cover): turning
+   then runs right-to-left with the same page curl, drag and swipe. */
 (function () {
   'use strict';
   const MAX_PAGES = 6;
@@ -20,8 +23,20 @@
     return { pageW: Math.floor(Math.max(200, Math.min(portrait ? w : w / 2, h))), portrait };
   }
 
+  // Engine page index -> page in reading order (0 = front cover). Same thing unless rtl.
+  const L = i => (opts && opts.rtl ? total - 1 - i : i);
+  const startIdx = () => (opts && opts.rtl ? total - 1 : 0);
+
   function label(i) {
     const t = opts.t;
+    if (opts.rtl) {
+      const a = L(i), n = total - 2;
+      if (a === 0) return t('lx.cover', 'Cover');
+      if (a >= total - 1) return t('fb.back', 'Back cover');
+      if (flip.getOrientation() === 'portrait') return tpl(t('fb.page_of', 'Page {n} of {total}'), { n: a, total: n });
+      const b = L(i + 1), lo = Math.max(1, Math.min(a, b)), hi = Math.min(n, Math.max(a, b));
+      return lo === hi ? tpl(t('fb.page_of', 'Page {n} of {total}'), { n: lo, total: n }) : tpl(t('fb.pages_of', 'Pages {a}–{b} of {total}'), { a: lo, b: hi, total: n });
+    }
     if (i === 0) return t('lx.cover', 'Cover');
     if (i >= total - 1) return t('fb.back', 'Back cover');
     const n = total - 2; // inside pages
@@ -34,7 +49,10 @@
     viewer.querySelector('.lx-count').textContent = label(i);
     viewer.querySelector('[data-lx="prev"]').disabled = i === 0;
     viewer.querySelector('[data-lx="next"]').disabled = i >= total - 1;
-    viewer.querySelector('.lx-end').hidden = i < total - 1;
+    viewer.querySelector('.lx-end').hidden = L(i) < total - 1;
+    // Arrow buttons keep their places (left = flipPrev, right = flipNext); in an Arabic book the left one moves forward.
+    viewer.querySelector('[data-lx="prev"]').setAttribute('aria-label', opts.rtl ? opts.t('fb.next', 'Next page') : opts.t('fb.prev', 'Previous page'));
+    viewer.querySelector('[data-lx="next"]').setAttribute('aria-label', opts.rtl ? opts.t('fb.prev', 'Previous page') : opts.t('fb.next', 'Next page'));
     // Keep the closed book centred: shift half a page while only the front or back cover shows.
     const mover = viewer.querySelector('.lx-mover');
     if (flip.getOrientation() === 'portrait') { mover.style.transform = 'none'; return; }
@@ -44,9 +62,13 @@
 
   function build() {
     const { t, title } = opts;
-    const pages = [opts.cover].concat(opts.pages.filter(Boolean).slice(0, MAX_PAGES)).concat(opts.back ? [opts.back] : []).filter(Boolean);
+    let pages = [opts.cover].concat(opts.pages.filter(Boolean).slice(0, MAX_PAGES)).concat(opts.back ? [opts.back] : []).filter(Boolean);
+    const n0 = pages.length;
+    const inReadingOrder = j => (opts.rtl ? n0 - 1 - j : j);
+    if (opts.rtl) pages = pages.slice().reverse();
     const shelf = viewer.querySelector('.lx-shelf');
-    shelf.innerHTML = `<div class="lx-mover"><div class="lx-book">${pages.map((src, i) => {
+    shelf.innerHTML = `<div class="lx-mover"><div class="lx-book">${pages.map((src, j) => {
+      const i = inReadingOrder(j);
       const hard = i === 0 || (opts.back && i === pages.length - 1);
       const alt = i === 0 ? tpl(t('lx.cover_alt', 'Cover of {title}'), { title })
         : hard ? tpl(t('fb.back_alt', 'Back cover of {title}'), { title })
@@ -63,7 +85,8 @@
     flip.loadFromHTML(book.querySelectorAll('.lx-page'));
     total = flip.getPageCount();
     flip.on('flip', e => update(e.data));
-    update(0);
+    if (startIdx()) flip.turnToPage(startIdx());
+    update(flip.getCurrentPageIndex());
   }
 
   function destroy() {
@@ -117,7 +140,7 @@
     window.addEventListener('resize', () => {
       if (!viewer.classList.contains('is-on')) return;
       clearTimeout(rt);
-      rt = setTimeout(() => { const at = flip ? flip.getCurrentPageIndex() : 0; destroy(); build(); if (at && flip) { flip.turnToPage(Math.min(at, total - 1)); update(flip.getCurrentPageIndex()); } }, 250);
+      rt = setTimeout(() => { const at = flip ? flip.getCurrentPageIndex() : 0; destroy(); build(); if (flip && at !== flip.getCurrentPageIndex()) { flip.turnToPage(Math.min(at, total - 1)); update(flip.getCurrentPageIndex()); } }, 250);
     });
     return viewer;
   }
@@ -141,7 +164,7 @@
     build();
     viewer.querySelector('[data-lx="close"]').focus({ preventScroll: true });
     // Show the closed book for a beat, then open the cover.
-    openTimer = setTimeout(() => { if (flip && flip.getCurrentPageIndex() === 0) flip.flipNext(); }, reduced() ? 0 : 700);
+    openTimer = setTimeout(() => { if (flip && flip.getCurrentPageIndex() === startIdx()) { opts.rtl ? flip.flipPrev() : flip.flipNext(); } }, reduced() ? 0 : 700);
   }
 
   function close() {
@@ -152,7 +175,7 @@
       setTimeout(destroy, 350);
       if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
     };
-    if (flip && flip.getCurrentPageIndex() !== 0 && !reduced()) { flip.flip(0); setTimeout(shut, 900); } else shut();
+    if (flip && flip.getCurrentPageIndex() !== startIdx() && !reduced()) { flip.flip(startIdx()); setTimeout(shut, 900); } else shut();
   }
 
   window.HikayaFlipbook = { open, close, MAX_PAGES };

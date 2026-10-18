@@ -172,7 +172,9 @@
       const lookBtn = document.getElementById('st-look');
       lookBtn.hidden = !canLook;
       lookBtn.querySelector('span').textContent = t('fb.open', 'Look inside');
-      openLook = canLook ? () => window.HikayaFlipbook.open({ cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t, ctaHref: H.personaliseHref(s) }) : null;
+      // Arabic books open from the other side: turn right-to-left when the Arabic pages are shown.
+      const rtlBook = H.lang() === 'ar' && Array.isArray(s.preview_images_ar) && s.preview_images_ar.filter(Boolean).length > 0;
+      openLook = canLook ? () => window.HikayaFlipbook.open({ cover: s.cover_image_url, pages: flipPages, back: s.back_cover_url, title: plain, t, ctaHref: H.personaliseHref(s), rtl: rtlBook }) : null;
       // Story cards link here with "#inside": open the book straight away (once).
       if (canLook && location.hash === '#inside' && !lookOpenedFromHash) { lookOpenedFromHash = true; setTimeout(openLook, 300); }
       // Inside the book (side column): hidden when the story has its "Look inside" book. Only for stories
