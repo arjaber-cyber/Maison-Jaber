@@ -102,6 +102,30 @@ window.HIKAYA_PREVIEW_TEXT = {
    "احتاج التحدّي التالي إلى الأربعة معًا. أمامهم، مسار متعرّج يمتدّ فوق العشب. قالت ميا: «علينا الوصول إلى الطرف الآخر من دون أن نخرج عن الخطوط.» اكتشف نوح طريقًا أقصر. وعدّ سامي المسافات. وساعدت ليزا الجميع على اتّباع المسار. خطوة بخطوة، وصلوا إلى الطرف الآخر. ابتسم نوح ابتسامة واسعة. هذه المرّة، لم يكن خارج المجموعة. كان واحدًا من الفريق!",
    "ركض الأربعة نحو القمر. عبرت ليزا خطّ النهاية أوّلًا، وخلفها مباشرة نوح وميا وسامي. صاح سامي: «نجحنا!» ضحكوا وهتفوا، وهم لا يزالون يلتقطون أنفاسهم. كانت ابتسامة نوح أوسع من أيّ ابتسامة رأتها ليزا على وجهه ذلك اليوم. ثم وصل ليو، ونظر إلى نوح مبتسمًا. «انتبه! ربما تصطدم مركبتك المصنوعة من علبة حبوب الإفطار بالقمر!» وانتظر أن يضحك الجميع."
   ]
+ },
+ "the-last-box": {
+  "en": [
+   "There were boxes in the hallway. Boxes in the kitchen. Boxes beside the sofa. And one box sitting right in the middle of Salma’s bedroom. Tomorrow, they were moving.",
+   "“The blue cup can’t go yet,” said Salma. “I might need a drink.” So the blue cup stayed. “And my blanket can’t go either.” “Why not?” Mum asked. Salma thought very hard. “The sofa might get lonely.”",
+   "In the living room was the corner where blankets became castles. The sofa became a mountain. Cushions became stepping stones. And once, Mum had been a dragon. A very bad dragon. She kept laughing.",
+   "In the hallway, Salma stopped. “Goodbye, squeaky floorboard.” SQUEAK. Salma stepped on it again. SQUEAK. And once more. SQUEAK. “That one really wants a long goodbye,” Mum said. Salma laughed."
+  ]
+ },
+ "the-cracked-blue-vase": {
+  "en": [
+   "On the table by the window stood a bright blue vase. It held three yellow flowers that leaned toward the sun. Leo liked to smell them every morning.",
+   "The vase stood on a mountain of soggy napkins. Leo frowned. “This doesn’t look fixed.”",
+   "Maybe tape would work. Leo carefully pressed a little strip over the crack. The tape slid off. Leo tried again. This time it stuck— to Leo’s finger.",
+   "Maybe the vase simply needed less water. Leo carried it carefully toward the sink. Drip. One drop landed on the floor. Drip. Then another."
+  ]
+ },
+ "the-christmas-list": {
+  "en": [
+   "At the top of the paper, Noah wrote: MY CHRISTMAS LIST. Then came: A red racing car. A giant dinosaur. A rocket with flashing lights. And a robot that could hopefully make toast. Noah smiled. “Perfect.”",
+   "By Wednesday, the list went under the bed. By Thursday, it curled around the chair. By Friday… it reached the bedroom door. Noah stepped over it carefully. Christmas lists, apparently, could become dangerous.",
+   "Later, Grandma handed Noah a small homemade card. It had crooked stars. Too much glitter. And a reindeer that looked a little like a potato. “I made it for you,” Grandma said. Noah looked at it carefully. It was not on the Christmas list. But somehow… it felt very special.",
+   "The next day, Noah saw a neighbour struggling with shopping bags. “Can I help?” One bag was heavy. The next was heavier. And the last one smelled suspiciously like Christmas cake. The neighbour smiled. “Thank you, Noah.” Noah added: Help someone. ✓"
+  ]
  }
 };
 /* Returns the transcript for one preview image URL, or '' when none matches. */

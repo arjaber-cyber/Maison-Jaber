@@ -381,6 +381,159 @@ const BUILT_IN_STORIES = [
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
     "detail_url": null
+  },
+  {
+    "slug": "the-last-box",
+    "title": "The Last Box",
+    "title_ar": "الصندوق الأخير",
+    "theme": "adventure",
+    "collection": "Change, Family, Feelings",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "change",
+      "family",
+      "emotions"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Boxes in every room and one very important box still open! A gentle, heart-warming story about saying goodbye to an old home, keeping your favourite memories close and helping a new house start to feel like home.",
+    "premise": {
+      "en": "Boxes in every room and one very important box still open! A gentle, heart-warming story about saying goodbye to an old home, keeping your favourite memories close and helping a new house start to feel like home.",
+      "ar": "صناديق في كل غرفة، وصندوق واحد مهم جدًا ما زال مفتوحًا! قصة دافئة ولطيفة عن وداع البيت القديم، والاحتفاظ بأجمل الذكريات، ومساعدة البيت الجديد على أن يصبح بيتًا حقيقيًا"
+    },
+    "card_note": {
+      "en": "For a move to a new home",
+      "ar": "لمن ينتقل إلى بيت جديد"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/the-last-box/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/the-last-box/back.jpg",
+    "cover_image_url_ar": null,
+    "back_cover_url_ar": null,
+    "preview_images_ar": [],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/the-last-box/l1.jpg",
+      "https://maison-jaber.com/story-assets/the-last-box/l2.jpg",
+      "https://maison-jaber.com/story-assets/the-last-box/l3.jpg",
+      "https://maison-jaber.com/story-assets/the-last-box/l4.jpg"
+    ],
+    "sort_order": 8,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
+    "slug": "the-cracked-blue-vase",
+    "title": "The Cracked Blue Vase",
+    "title_ar": "المزهرية الزرقاء المشروخة",
+    "theme": "adventure",
+    "collection": "Honesty, Feelings, Responsibility",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "honesty",
+      "emotions",
+      "responsibility"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "One tiny crack, a mountain of soggy napkins and a very sticky plan! A funny, gentle story about little mistakes, the worry of keeping a secret and how much lighter everything feels once you ask for help.",
+    "premise": {
+      "en": "One tiny crack, a mountain of soggy napkins and a very sticky plan! A funny, gentle story about little mistakes, the worry of keeping a secret and how much lighter everything feels once you ask for help.",
+      "ar": "شرخ صغير، وجبل من المناديل المبلّلة، وخطة لاصقة جدًا! قصة مرحة ولطيفة عن الأخطاء الصغيرة، وثقل القلق حين نخفي سرًّا، وكم يخفّ كل شيء حين نطلب المساعدة"
+    },
+    "card_note": {
+      "en": "Owning up, gently",
+      "ar": "عن الصدق بلطف"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/the-cracked-blue-vase/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/the-cracked-blue-vase/back.jpg",
+    "cover_image_url_ar": null,
+    "back_cover_url_ar": null,
+    "preview_images_ar": [],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/the-cracked-blue-vase/l1.jpg",
+      "https://maison-jaber.com/story-assets/the-cracked-blue-vase/l2.jpg",
+      "https://maison-jaber.com/story-assets/the-cracked-blue-vase/l3.jpg",
+      "https://maison-jaber.com/story-assets/the-cracked-blue-vase/l4.jpg"
+    ],
+    "sort_order": 9,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
+    "slug": "the-christmas-list",
+    "title": "The Christmas List That Grew and Grew",
+    "title_ar": "قائمة الميلاد التي كبرت وكبرت",
+    "theme": "adventure",
+    "collection": "Kindness, Family, Growing up, Christmas",
+    "age_ranges": "4-6,6-8",
+    "age_bands": [
+      "4-6",
+      "6-8"
+    ],
+    "moments": [
+      "kindness",
+      "family",
+      "growing"
+    ],
+    "occasions": [
+      "christmas",
+      "birthday",
+      "justbecause"
+    ],
+    "description": "A Christmas list so long it curls right out of the bedroom door! A warm, funny festive story about wanting, giving and discovering that the best part of Christmas is making someone smile.",
+    "premise": {
+      "en": "A Christmas list so long it curls right out of the bedroom door! A warm, funny festive story about wanting, giving and discovering that the best part of Christmas is making someone smile.",
+      "ar": "قائمة ميلاد طويلة جدًا حتى خرجت من باب غرفة النوم! قصة ميلادية دافئة ومضحكة عن الرغبة والعطاء، واكتشاف أن أجمل ما في الميلاد هو أن ترسم ابتسامة على وجه أحدهم"
+    },
+    "card_note": {
+      "en": "A Christmas story about giving",
+      "ar": "قصة ميلادية عن العطاء"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/the-christmas-list/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/the-christmas-list/back.jpg",
+    "cover_image_url_ar": null,
+    "back_cover_url_ar": null,
+    "preview_images_ar": [],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/the-christmas-list/l1.jpg",
+      "https://maison-jaber.com/story-assets/the-christmas-list/l2.jpg",
+      "https://maison-jaber.com/story-assets/the-christmas-list/l3.jpg",
+      "https://maison-jaber.com/story-assets/the-christmas-list/l4.jpg"
+    ],
+    "sort_order": 10,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
   }
 ];
 
