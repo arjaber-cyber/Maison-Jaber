@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
+<!-- Robots: indexable public page. During the soft launch it is kept out of search by the X-Robots-Tag LAUNCH SWITCH in netlify.toml; the staging copy stays noindex there permanently. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -20,7 +20,7 @@
 <main id="main" tabindex="-1">
 
 <div class="wrap">
-  <nav class="crumbs" aria-label="Breadcrumb"><ol>
+  <nav class="crumbs" aria-label="Breadcrumb" data-i18n-aria="a11y.breadcrumb"><ol>
     <li><a href="stories.html" data-i18n="pg.crumbs_stories">Stories</a></li>
     <li aria-current="page" id="crumb-title"></li>
   </ol></nav>
@@ -29,14 +29,14 @@
     <p data-i18n="pg.not_found_d">It may have moved. Browse the full collection instead.</p>
     <p style="margin-top:18px"><a class="btn btn-primary" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a></p>
   </div>
-  <div id="pdp-root">
+  <div id="pdp-root" aria-busy="true">
     <section class="pdp" aria-labelledby="st-title" data-sticky-after>
       <div class="gallery">
         <div class="main" id="st-main"></div>
-        <ul class="thumbs" id="st-thumbs" aria-label="Book images"></ul>
+        <ul class="thumbs" id="st-thumbs" aria-label="Book images" data-i18n-aria="a11y.book_images"></ul>
       </div>
       <div class="buy">
-        <h1 id="st-title"></h1>
+        <h1 id="st-title"></h1><p class="sr-only" id="st-loading" role="status" data-i18n="a11y.loading_story">Loading your story</p>
         <p class="ages" id="st-ages"></p>
         <ul class="chips" id="st-chips"></ul>
         <p class="premise" id="st-premise"></p>
@@ -87,8 +87,8 @@
         <h2 id="more-title" class="small" data-i18n="pg.also_love">They may also love</h2>
         <div class="shelf-controls">
           <a class="text-link" href="stories.html"><span data-i18n="home6.view_all">View all</span> <span class="arr" aria-hidden="true">→</span></a>
-          <button class="arrow-btn" data-dir="-1" aria-controls="track-more" aria-label="Previous stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-          <button class="arrow-btn" data-dir="1" aria-controls="track-more" aria-label="Next stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          <button class="arrow-btn" data-dir="-1" aria-controls="track-more" aria-label="Previous stories" data-i18n-aria="a11y.prev_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="arrow-btn" data-dir="1" aria-controls="track-more" aria-label="Next stories" data-i18n-aria="a11y.next_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         </div>
       </div>
       <ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title"></ul>

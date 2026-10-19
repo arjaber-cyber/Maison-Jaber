@@ -301,6 +301,7 @@
       <h2 class="sr-only" data-i18n="cart.order_summary">Order Summary</h2>
       <div class="summary-cover empty" id="summary-cover" data-i18n="personalize.summary_pick_story">Pick a story to begin</div>
       <h3 id="summary-story-title" data-i18n="personalize.summary_no_story">No story chosen yet</h3>
+      <script>/* A story named in the URL: never paint "No story chosen yet" while it loads */(function(){try{if(new URLSearchParams(location.search).get('story')){var h=document.getElementById('summary-story-title');h.removeAttribute('data-i18n');h.textContent=(document.documentElement.lang==='ar'?'جارٍ تحميل قصتك':'Loading your story')+'…';var c=document.getElementById('summary-cover');c.removeAttribute('data-i18n');c.textContent=''}}catch(e){}})();</script>
       <button type="button" class="summary-change" id="summary-change-story" data-i18n="pg.change_story">Change story</button>
       <div class="summary-row"><span data-i18n="personalize.summary_age">Age edition</span><span id="summary-age">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
@@ -376,7 +377,7 @@
           </ul>
         </div>
         <div class="photo-upload" id="photo-upload">
-          <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" />
+          <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" data-i18n-aria="a11y.child_photo" />
           <svg class="up-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>
           <div class="hint-main" data-i18n="lx.photo_tap">Tap to add a photo</div>
           <div class="hint-sub" data-i18n="lx.photo_more">One clear photo is enough. You can add a second for a better likeness.</div>
@@ -404,7 +405,7 @@
           </div>
           <div id="extra-char-upload-wrap" style="display:none;">
             <div class="photo-upload" id="extra-photo-upload">
-              <input type="file" id="extra-char-photos" accept="image/*" />
+              <input type="file" id="extra-char-photos" accept="image/*" aria-label="Add a photo of the extra character" data-i18n-aria="a11y.extra_photo" />
               <div class="hint-main" data-i18n="personalize.click_add_photos">Click to add photos</div>
             </div>
             <div class="photo-thumbs" id="extra-photo-thumbs"></div>
@@ -563,6 +564,19 @@
   function resolveStory(v) { if (!v) return null; if (STORY_THEMES[v]) return v; return SLUG_TO_TITLE[v] || null; }
   // When the parent already chose a story on its page, skip the story step entirely.
   let storyLocked = false;
+  /* QA 19 Oct 2026: a story named in the URL (?story=slug) that isn't known until the catalogue loads.
+     While it loads we show the details step (as the resolved page will) and a "Loading your story" state,
+     never a false "No story chosen yet", and the order can't be added to the cart. */
+  let storyPending = false;
+  function setStoryPending(on) {
+    storyPending = on;
+    const sum = document.querySelector('.order-summary'); if (sum) { if (on) sum.setAttribute('aria-busy', 'true'); else sum.removeAttribute('aria-busy'); }
+    if (on) {
+      const tt = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
+      const st = document.getElementById('summary-story-title'); st.removeAttribute('data-i18n'); st.textContent = tt('a11y.loading_story', 'Loading your story') + '…';
+      const cv = document.getElementById('summary-cover'); cv.removeAttribute('data-i18n'); cv.textContent = '';
+    }
+  }
   function lockStory() {
     storyLocked = true;
     if (typeof currentStepName === 'undefined' || currentStepName === 'story') {
@@ -707,11 +721,13 @@
       // that we actually know about it.
       const urlStory = new URLSearchParams(window.location.search).get('story');
       const pre = resolveStory(urlStory);
+      if (storyPending) { setStoryPending(false); if (!pre) unlockStory(); }
       if (pre && document.getElementById('story-input').value !== pre) { selectStory(pre); lockStory(); }
       else if (document.getElementById('story-input').value) selectStory(document.getElementById('story-input').value, { keepGrid: document.getElementById('story-grid').style.display !== 'none', silent: true });
       renderAll();
     } catch {
       // Catalog fetch failed -- the 3 built-in stories still work fine.
+      if (storyPending) { setStoryPending(false); unlockStory(); renderAll(); }
     }
   }
   loadStoryCatalog();
@@ -1230,6 +1246,7 @@
     document.querySelectorAll('#story-grid .story-pick').forEach(renderCardText);
     const cur = document.getElementById('story-input').value;
     if (cur) selectStory(cur, { keepGrid: document.getElementById('story-grid').style.display !== 'none' });
+    else if (storyPending) setStoryPending(true);
     else {
       document.getElementById('summary-cover').textContent = t('personalize.summary_pick_story', 'Pick a story to begin');
       document.getElementById('summary-story-title').textContent = t('personalize.summary_no_story', 'No story chosen yet');
@@ -1327,6 +1344,7 @@
   const urlStory = new URLSearchParams(window.location.search).get('story');
   const preStory = resolveStory(urlStory);
   if (preStory) { selectStory(preStory); lockStory(); }
+  else if (urlStory) { setStoryPending(true); lockStory(); }
 
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
@@ -1426,7 +1444,7 @@
   }
   let saving = false;
   continueBtn.addEventListener('click', async () => {
-    if (saving || continueBtn.disabled) return;
+    if (saving || continueBtn.disabled || storyPending || !document.getElementById('story-input').value) return;
     if (!langState().ok) { langCheck(); ensureBookName(); return; }
     saving = true; continueBtn.disabled = true; continueBtn.setAttribute('aria-busy', 'true');
     const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');

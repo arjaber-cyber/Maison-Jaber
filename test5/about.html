@@ -2,9 +2,11 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
+<!-- Robots: indexable public page. During the soft launch it is kept out of search by the X-Robots-Tag LAUNCH SWITCH in netlify.toml; the staging copy stays noindex there permanently. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<link rel="canonical" href="https://maison-jaber.com/hikaya/about.html" />
+<meta property="og:url" content="https://maison-jaber.com/hikaya/about.html" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Our Story | Hikaya by Maison Jaber</title>
 <meta name="description" content="Why we started Hikaya: books children can keep, where they see themselves as the hero. From our family to yours." />
@@ -52,7 +54,7 @@
   <p data-i18n="pg.os_p9">And maybe one day, many years from now, they will find that same book on a shelf or inside an old box. They might smile at the pictures. Remember who used to read it with them. Remember the people around them and the moments they shared.</p>
   <p class="pull small" data-i18n="pg.os_p10">That thought means a lot to us.</p>
 </article>
-<section class="wrap story-cards" aria-label="How we make Hikaya">
+<section class="wrap story-cards" aria-label="How we make Hikaya" data-i18n-aria="a11y.how_we_make">
   <div class="scard">
     <h2 data-i18n="pg.os_care_t">Made with care</h2>
     <p data-i18n="pg.os_c1">We use new technology to help us do something very old-fashioned: make a beautiful storybook worth keeping.</p>

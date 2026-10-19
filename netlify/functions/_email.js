@@ -19,8 +19,8 @@
 /* Mailboxes (Zoho): hello@ is the customer-facing address, info@ receives the business alerts. */
 const CUSTOMER_EMAIL = 'hello@maison-jaber.com';
 const OWNER_INBOX = process.env.CONTACT_INBOX_EMAIL || 'info@maison-jaber.com';
-/* Where the live shop pages are. The redesign lives under /test5/ until launch. */
-const SITE_URL = (process.env.SITE_URL || 'https://maison-jaber.com/test5/').replace(/\/?$/, '/');
+/* Where the live shop pages are: the public shop is maison-jaber.com/hikaya/ (served from the /test5/ files). */
+const SITE_URL = (process.env.SITE_URL || 'https://maison-jaber.com/hikaya/').replace(/\/?$/, '/');
 const WHATSAPP = '971508011769';
 const WHATSAPP_DISPLAY = '+971 50 801 1769';
 

@@ -25,7 +25,7 @@
   const fmtDay = d => d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Dubai' }) : '';
   const svg = p => `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
   const $ = id => document.getElementById(id);
-  const SHOP_URL = 'https://maison-jaber.com/test5/stories.html';
+  const SHOP_URL = 'https://maison-jaber.com/hikaya/stories.html';
 
   let pw = null, codes = [], templates = [], reds = [], lastCreated = [];
   const f = { q: '', status: 'all', tag: 'all' };

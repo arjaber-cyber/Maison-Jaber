@@ -3,16 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <script>/* /hikaya without a trailing slash breaks every relative CSS/image path: add the slash before anything loads */(function(){var l=location;if(/^\/hikaya$/i.test(l.pathname)){l.replace("/hikaya/"+l.search+l.hash)}})();</script>
-<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
+<!-- Robots: indexable public page. During the soft launch it is kept out of search by the X-Robots-Tag LAUNCH SWITCH in netlify.toml; the staging copy stays noindex there permanently. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<link rel="canonical" href="https://maison-jaber.com/hikaya/" />
+<meta property="og:url" content="https://maison-jaber.com/hikaya/" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Hikaya by Maison Jaber — Personalised storybooks with your child as the hero</title>
 <meta name="description" content="Choose a story, add your child's name, age and photo, and we create, print and gift-box a hardcover storybook with them as the hero. Delivered across the UAE and GCC." />
-<link rel="canonical" href="https://maison-jaber.com/" />
 <meta property="og:title" content="Hikaya by Maison Jaber — Their name. Their story." />
 <meta property="og:description" content="Personalised hardcover storybooks, made for your child and delivered gift-boxed." />
-<meta property="og:image" content="https://maison-jaber.com/test5/images/hom-hero-01.webp" />
+<meta property="og:image" content="https://maison-jaber.com/hikaya/images/og-hikaya.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Hikaya by Maison Jaber" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,7 +28,7 @@
 <link rel="preload" as="image" href="images/hom-hero-01-m.webp" media="(max-width: 767px)" />
 
 <link rel="stylesheet" href="hikaya.css" />
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Hikaya by Maison Jaber","legalName":"Maison Jaber FZ-LLC","url":"https://maison-jaber.com/","email":"hello@maison-jaber.com","logo":"https://maison-jaber.com/test5/images/logo-hikaya.webp","areaServed":["AE","SA","QA","KW","BH","OM"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Hikaya by Maison Jaber","legalName":"Maison Jaber FZ-LLC","url":"https://maison-jaber.com/hikaya/","email":"hello@maison-jaber.com","logo":"https://maison-jaber.com/hikaya/images/logo-hikaya.png","areaServed":["AE","SA","QA","KW","BH","OM"]}</script>
 </head>
 
 <body>
@@ -131,8 +137,8 @@
       </div>
       <div class="shelf-controls">
         <a class="text-link" href="stories.html"><span data-i18n="home6.view_all">View all</span> <span class="arr" aria-hidden="true">→</span></a>
-        <button class="arrow-btn" data-dir="-1" aria-controls="track-new" aria-label="Previous stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-        <button class="arrow-btn" data-dir="1" aria-controls="track-new" aria-label="Next stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="-1" aria-controls="track-new" aria-label="Previous stories" data-i18n-aria="a11y.prev_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="1" aria-controls="track-new" aria-label="Next stories" data-i18n-aria="a11y.next_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
     </div>
     <ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title"></ul>
@@ -162,8 +168,8 @@
       </div>
       <div class="shelf-controls">
         <a class="text-link" href="stories.html"><span data-i18n="home6.view_all">View all</span> <span class="arr" aria-hidden="true">→</span></a>
-        <button class="arrow-btn" data-dir="-1" aria-controls="track-best" aria-label="Previous stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-        <button class="arrow-btn" data-dir="1" aria-controls="track-best" aria-label="Next stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="-1" aria-controls="track-best" aria-label="Previous stories" data-i18n-aria="a11y.prev_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button class="arrow-btn" data-dir="1" aria-controls="track-best" aria-label="Next stories" data-i18n-aria="a11y.next_stories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
     </div>
     <ul class="track" id="track-best" tabindex="0" aria-labelledby="best-title"></ul>

@@ -2,9 +2,11 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
+<!-- Robots: indexable public page. During the soft launch it is kept out of search by the X-Robots-Tag LAUNCH SWITCH in netlify.toml; the staging copy stays noindex there permanently. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<link rel="canonical" href="https://maison-jaber.com/hikaya/stories.html" />
+<meta property="og:url" content="https://maison-jaber.com/hikaya/stories.html" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Stories | Hikaya by Maison Jaber</title>
 <meta name="description" content="Browse personalised Hikaya storybooks by age and theme. Every book is made for your child and arrives gift-boxed." />
@@ -26,7 +28,7 @@
     <p class="lede" data-i18n="pg.col_sub">Explore adventures created around childhood moments, big feelings and little milestones.</p>
   </div></div>
 </section>
-<section class="wrap" aria-label="Story collection">
+<section class="wrap" aria-label="Story collection" data-i18n-aria="a11y.collection">
   <div class="occ-banner" id="occ-banner" hidden>
     <span class="occ-banner-ico" id="occ-banner-ico"></span>
     <div><h2 id="occ-banner-t"></h2><p id="occ-banner-d" data-i18n="occ.banner_d">Every story arrives gift-boxed, and we can deliver straight to the child. Add a gift message at checkout.</p></div>

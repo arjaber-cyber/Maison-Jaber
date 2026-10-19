@@ -24,7 +24,7 @@ const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Cont
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 const TYPES = ['percent', 'fixed', 'free_shipping', 'free_order'];
 const TAGS = ['review', 'campaign', 'influencer', 'compensation', 'gift', 'staff', 'test'];
-const SHOP_URL = process.env.SHOP_URL || 'https://maison-jaber.com/test5/stories.html';
+const SHOP_URL = process.env.SHOP_URL || 'https://maison-jaber.com/hikaya/stories.html';
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no 0/O/1/I: easy to read out loud
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 

@@ -1164,3 +1164,28 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 @media (max-width: 767px) { .hero-note { bottom: auto; top: 10px; font-size: 11px; } }
 /* Footer sign-up row: keep the Sign up button on screen on phones (it was pushed past the edge). */
 @media (max-width: 767px) { .foot-news .fn-row { flex: 1 1 100%; width: 100%; max-width: 100%; min-width: 0; } .foot-news .fn-row .btn { flex: none; padding-inline: 18px; } }
+
+/* ===== QA 19 Oct 2026 — narrow-screen delivery bar =====
+   The delivery message and the region/language controls share one row only while both fit.
+   When they don't (e.g. "Delivery to Saudi Arabia: SAR 30" at 320px), the controls wrap onto
+   their own full row instead of squeezing the message into a tall narrow column or pushing
+   the Arabic button past the screen edge. Logical properties keep RTL correct. */
+.utility .wrap { flex-wrap: wrap; row-gap: 0; column-gap: 12px; }
+.utility .msg { flex: 1 1 auto; min-width: 0; margin: 0; padding-block: 6px; overflow-wrap: anywhere; }
+.utility .controls { flex: 0 1 auto; margin-inline-start: auto; max-width: 100%; flex-wrap: wrap; justify-content: flex-end; }
+.util-btn { white-space: nowrap; }
+.region .util-btn #region-label { white-space: nowrap; }
+@media (max-width: 479px) {
+  .utility .wrap { column-gap: 8px; padding-block: 2px; }
+  .utility .msg { flex-basis: 100%; justify-content: center; text-align: center; padding-block: 6px 0; }
+  .utility .controls { flex-basis: 100%; justify-content: center; margin-inline-start: 0; }
+  .utility .util-btn { padding-inline: 6px; }
+  .region-menu { inset-inline-end: auto; inset-inline-start: 50%; transform: translateX(-50%); max-width: calc(100vw - 24px); }
+  [dir="rtl"] .region-menu { transform: translateX(50%); }
+}
+.faq-soft { margin-top: 8px; color: var(--ink-soft); font-size: .95em; }
+.pay-aed { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-weight: 700; }
+.pay-aed-note { margin-top: 6px; color: var(--ink-soft); font-size: 12.5px; line-height: 1.45; }
+/* Story page: reserve the title line while the story loads (no blank/jumping h1) */
+#pdp-root[aria-busy="true"] #st-title:empty::before { content: ""; display: block; height: 1.1em; width: min(70%, 420px); border-radius: 8px; background: linear-gradient(90deg, var(--sand) 0%, var(--card) 50%, var(--sand) 100%); background-size: 200% 100%; animation: hk-sk 1.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { #pdp-root[aria-busy="true"] #st-title:empty::before { animation: none; } }

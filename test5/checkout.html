@@ -342,7 +342,7 @@
             </button>
           </div>
           <div class="map-frame">
-            <div id="address-map" role="application" aria-label="Delivery location map"></div>
+            <div id="address-map" role="application" aria-label="Delivery location map" data-i18n-aria="a11y.map"></div>
           </div>
           <div class="map-hint" id="map-hint" data-i18n="checkout.map_hint">Pick your address from the list, or tap the map / drag the pin to your building — the address fills in automatically.</div>
         </div>
@@ -400,6 +400,7 @@
       <div class="price-row" id="extra-char-row" style="display:none;"><span data-i18n="cart.extra_character_fee">Extra character photo</span><span class="note" id="extra-char-note"></span></div>
       <div class="price-row"><span data-i18n="checkout.delivery">Delivery</span><span class="note" id="price-delivery">Confirmed by region</span></div>
       <div class="price-row total"><span data-i18n="checkout.est_total">Estimated total</span><span class="note" id="price-total">Confirmed at checkout</span></div>
+      <div id="pay-aed-slot" aria-live="polite"></div>
       <p class="summary-eta" data-hk-eta>Delivery to UAE: about 5 working days</p>
       <ul class="summary-trust">
         <li data-i18n="lx.tr_secure">Secure payment</li>
@@ -729,6 +730,7 @@
 
     document.getElementById('price-delivery').textContent = final.deliveryFee === 0 ? t('checkout.free', 'Free') : fmt(final.deliveryFee);
     document.getElementById('price-total').textContent = fmt(final.total);
+    { const slot = document.getElementById('pay-aed-slot'); if (slot && window.hikayaAedHtml) slot.innerHTML = final.total > 0 ? window.hikayaAedHtml(final.total, region) : ''; }
     if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
     // Keep the payment box in step when the total becomes (or stops being) free.
     if (paymentArea && paymentArea.dataset.free !== undefined && paymentArea.dataset.free !== String(final.total === 0)) setTimeout(renderPaymentSection, 0);
@@ -823,7 +825,7 @@
         </div>
         <div class="card-fields-note">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          ${t('checkout.secure_note', 'Secure card payment via PayTabs, charged in')} ${region.currency}
+          ${t('checkout.secure_note', 'Secure card payment via PayTabs, charged in')} AED
         </div>`;
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = t('checkout.place_order_btn', 'Place Order');
@@ -856,7 +858,7 @@
           ${METHOD_META[selectedPaymentMethod].icon}
           <div>
             <h4>${t('checkout.wallet_title', 'Pay with')} ${walletName}</h4>
-            <p>${t('checkout.wallet_body', 'One-tap payment from your device wallet (connects once the merchant account is live), charged in')} ${region.currency}</p>
+            <p>${t('checkout.wallet_body', 'One-tap payment from your device wallet (connects once the merchant account is live), charged in')} AED</p>
           </div>
         </div>`;
       placeOrderBtn.disabled = false;

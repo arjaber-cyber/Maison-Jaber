@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Only the live production pages belong here. The /test5/ staging copy is
-     deliberately excluded (it is also served with "noindex"). When the redesign
-     moves to the production routes, list those URLs here instead. -->
+<!-- Public Hikaya shop pages. During the soft launch these are still served with
+     "X-Robots-Tag: noindex" (LAUNCH SWITCH in netlify.toml); they are listed now so
+     search engines pick them up as soon as that switch is removed on 1 Nov 2026.
+     Add a story URL here whenever a new story goes live. /test5/ is staging: never list it. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://maison-jaber.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+  <url><loc>https://maison-jaber.com/</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/stories.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/age-groups.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/our-world.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/about.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/help.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/contact.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/privacy.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/terms.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/refund-policy.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=christmas-star</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=door-of-a-thousand-stars</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=storm-above-the-city</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=to-the-rescue</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=why-is-baby-looking-at-me</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=grandpas-wild-safari</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=silver-wing-mission</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=the-last-box</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=the-cracked-blue-vase</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=the-christmas-list</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/story.html?s=teddys-night-adventure</loc></url>
 </urlset>

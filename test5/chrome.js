@@ -122,11 +122,17 @@
   const regionObj = k => (window.HIKAYA_REGIONS || {})[k || regionKey()];
   const countryName = k => t('home6_regions.' + k, k);
   const fmt = (amount, r) => window.hikayaFormatPrice ? window.hikayaFormatPrice(amount, r) : `${r ? r.symbol : 'AED'} ${Number(amount)}`;
-  /* Delivery estimate per country (working days): UAE and KSA about 5, the rest of the GCC about 7. */
+  /* Delivery estimate per country (working days): UAE and KSA about 5, the rest of the GCC about 7.
+     This is the ONE source for every delivery estimate on the site (story, personalise, checkout, FAQs).
+     SOFT_LAUNCH_END: until this moment (UAE time) every estimate carries the soft-launch qualifier
+     ("allow up to one extra week") and the home banner shows; both disappear on their own afterwards. */
   const ETA_DAYS = { UAE: 5, Saudi: 5, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
+  const SOFT_LAUNCH_END = Date.parse('2026-11-01T00:00:00+04:00');
+  const softLaunch = () => Date.now() < SOFT_LAUNCH_END;
+  const softNote = () => softLaunch() ? t('lx.eta_soft', ' (soft launch: allow up to one extra week)') : '';
   function etaDays(k) { return ETA_DAYS[k || regionKey()] || 7; }
-  function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)); }
-  function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)); }
+  function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)) + softNote(); }
+  function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)) + softNote(); }
   function deliveryText(k) {
     const r = regionObj(k);
     if ((k || regionKey()) === 'UAE' || !r || !r.deliveryFee) return t('home6.del_uae', 'Free delivery across the UAE');
@@ -136,11 +142,15 @@
     const k = regionKey(); const r = regionObj(k);
     const label = document.getElementById('region-label');
     if (label) label.textContent = `${countryName(k)} (${r ? r.currency : 'AED'})`;
+    const rb = document.getElementById('region-btn'); if (rb) rb.setAttribute('aria-label', `${t('a11y.region', 'Choose your country and currency')}: ${countryName(k)} (${r ? r.currency : 'AED'})`); // QA-07: the accessible name keeps the current country, in the page language
     const msg = document.getElementById('delivery-msg');
     if (msg) msg.textContent = deliveryText(k);
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
+    /* Soft-launch qualifier next to FAQ delivery answers; the home banner hides itself after launch. */
+    document.querySelectorAll('[data-hk-soft-note]').forEach(el => { el.hidden = !softLaunch(); el.textContent = t('lx.eta_soft_faq', 'During our soft launch (until 1 November 2026), please allow up to one extra week.'); });
+    document.querySelectorAll('.soft-launch').forEach(el => { el.hidden = !softLaunch(); });
     document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(); });
     document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
@@ -474,11 +484,37 @@
   }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+  window.Hikaya = { setCanonical, softLaunch, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+
+  /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
+     The /hikaya/ shop is served from the /test5/ files. Relative links already stay inside
+     whichever path the page was opened from; this safety net also catches any absolute
+     /test5/ link (old cached HTML, CMS text) on a production page and keeps it in /hikaya/,
+     with its query string and #hash intact. Staging (/test5/) pages are left untouched. */
+  const PROD_BASE = /^\/hikaya(\/|$)/i.test(location.pathname) ? '/hikaya/' : '';
+  function keepNamespace(root) {
+    if (!PROD_BASE) return;
+    (root || document).querySelectorAll('a[href]').forEach(a => {
+      let u; try { u = new URL(a.getAttribute('href'), location.href); } catch (_) { return; }
+      if (u.origin !== location.origin || !/^\/test5\//i.test(u.pathname)) return;
+      let p = PROD_BASE + u.pathname.replace(/^\/test5\//i, '');
+      if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) p += '.html';
+      a.setAttribute('href', p + u.search + u.hash);
+    });
+  }
+  /* Canonical URL for the page being viewed, always on the public /hikaya/ path. */
+  function setCanonical(url) {
+    let l = document.querySelector('link[rel="canonical"]');
+    if (!l) { l = document.createElement('link'); l.rel = 'canonical'; document.head.appendChild(l); }
+    l.href = url;
+    const og = document.querySelector('meta[property="og:url"]'); if (og) og.content = url;
+  }
 
   /* ---------------- Boot ---------------- */
   mount();
   function boot() {
+    keepNamespace();
+    if (PROD_BASE && window.MutationObserver) new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) { if (n.matches('a[href]')) keepNamespace(n.parentNode); else keepNamespace(n); } }))).observe(document.body, { childList: true, subtree: true });
     initRegion(); initLang(); initNav(); initSticky(); initCarousels();
     renderLang(); renderRegion(); renderWhatsApp();
     document.addEventListener('hikaya:langchange', renderWhatsApp);

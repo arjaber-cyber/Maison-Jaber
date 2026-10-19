@@ -1,5 +1,18 @@
 User-agent: *
 Allow: /
+# Private / personal-data pages of the public shop (also carry <meta name="robots" content="noindex">)
+Disallow: /hikaya/admin.html
+Disallow: /hikaya/account.html
+Disallow: /hikaya/login.html
+Disallow: /hikaya/checkout.html
+Disallow: /hikaya/personalize.html
+Disallow: /hikaya/cart.html
+Disallow: /hikaya/book-added.html
+Disallow: /hikaya/invoice.html
+Disallow: /hikaya/track-order.html
+Disallow: /hikaya/search.html
+# Staging copy: left crawlable on purpose so search engines can see its
+# "X-Robots-Tag: noindex" header (netlify.toml) and drop any URLs they found earlier.
 Disallow: /test5/admin.html
 Disallow: /test5/account.html
 Disallow: /test5/checkout.html

@@ -121,6 +121,7 @@
     const slug = qs.get('s') || qs.get('story');
     const s = all.find(x => x.slug === slug) || (slug ? null : all[0]);
     const root = document.getElementById('pdp-root');
+    root.removeAttribute('aria-busy'); const ld = document.getElementById('st-loading'); if (ld) ld.remove();
     if (!s) { document.getElementById('not-found').hidden = false; root.hidden = true; delete document.body.dataset.waTopic; H.refreshWhatsApp && H.refreshWhatsApp(); return; }
     let openLook = null, lookOpenedFromHash = false;
     function images() {
@@ -130,6 +131,8 @@
     function render() {
       const plain = H.titlePlain(s);
       document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
+      /* One canonical per story, on the public /hikaya/ path, whatever URL variant was opened. */
+      if (H.setCanonical) H.setCanonical('https://maison-jaber.com/hikaya/story.html?s=' + encodeURIComponent(s.slug));
       const md = document.querySelector('meta[name="description"]'); if (md) md.content = H.premise(s) || md.content;
       document.getElementById('crumb-title').textContent = plain;
       document.body.dataset.waTopic = plain; if (H.refreshWhatsApp) H.refreshWhatsApp(); // QA-02: WhatsApp message names this book, in the current language
@@ -203,7 +206,7 @@
         const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };
         let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
         ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
-          offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: location.origin + location.pathname + '?s=' + encodeURIComponent(s.slug) } });
+          offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: 'https://maison-jaber.com/hikaya/story.html?s=' + encodeURIComponent(s.slug) } });
       } catch (_) {}
       // they may also love
       const band = (s.age_bands || [])[0];
@@ -221,7 +224,7 @@
       const b = e.target.closest('[data-lb]'); if (!b) return;
       const pv = images(); let i = Number(b.dataset.lb);
       const lb = document.createElement('div'); lb.className = 'lightbox'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
-      lb.innerHTML = `<img alt=""><button class="x" aria-label="Close">×</button>`;
+      lb.innerHTML = `<img alt=""><button class="x" aria-label="${esc(t('a11y.close', 'Close'))}">×</button>`;
       const show = () => { lb.querySelector('img').src = pv[i]; };
       const close = () => { lb.remove(); document.removeEventListener('keydown', key); b.focus(); };
       const key = ev => { if (ev.key === 'Escape') close(); if (ev.key === 'ArrowRight') { i = (i + 1) % pv.length; show(); } if (ev.key === 'ArrowLeft') { i = (i - 1 + pv.length) % pv.length; show(); } };

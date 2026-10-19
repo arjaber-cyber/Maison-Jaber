@@ -2,6 +2,14 @@
   functions = "netlify/functions"
   publish = "."
 
+# QA 19 Oct 2026 (route fix): Netlify "Pretty URLs" post-processing rewrote every
+# relative link in the served HTML against the files' real folder, so
+# href="stories.html" was published as href='/test5/stories' on /hikaya/ pages.
+# Keep it off: relative links then resolve inside whichever path the page is
+# served from (/hikaya/ in production, /test5/ on staging).
+[build.processing.html]
+  pretty_urls = false
+
 [functions."send-abandoned-reminders"]
   schedule = "0 */6 * * *"
 
@@ -18,7 +26,14 @@
   for = "/test5/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
-# Soft launch: the shop is public at /hikaya/ but kept out of Google until the 1 Nov launch.
+# ============================ LAUNCH SWITCH ============================
+# Soft launch: the shop is public at /hikaya/ but kept out of Google until the
+# 1 Nov 2026 launch. These two header blocks are the ONLY thing keeping the
+# public /hikaya/ pages out of search (the page HTML no longer carries its own
+# noindex). To go live in search: delete the two blocks below, deploy, then
+# check https://maison-jaber.com/hikaya/ no longer returns X-Robots-Tag.
+# Private pages (cart, checkout, account, admin, personalise...) keep their own
+# <meta name="robots" content="noindex"> and robots.txt rules after launch.
 [[headers]]
   for = "/hikaya/*"
   [headers.values]
@@ -27,6 +42,7 @@
   for = "/hikaya"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+# ========================== END LAUNCH SWITCH ===========================
 [[headers]]
   for = "/test/*"
   [headers.values]

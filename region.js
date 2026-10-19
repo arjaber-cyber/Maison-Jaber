@@ -23,6 +23,22 @@ window.HIKAYA_REGIONS = {
   Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 17.75, deliveryFee: 3, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
 };
 // GCC-only launch: visitors outside the GCC default to UAE (AED) pricing.
+/* QA 19 Oct 2026 (currency): the payment gateway (Ziina) always charges in AED. For non-AED regions,
+   every order summary shows the exact AED amount that will be charged, worked out with the same
+   rates and rounding as the server (netlify/functions/_pricing.js: round2(total x rate)). */
+window.hikayaChargedAed = function (total, region) {
+  const rate = (window.HIKAYA_AED_RATES || {})[region && region.currency] || 1;
+  const t2 = Math.round(Number(total) * 100) / 100; // the server rounds the local total first, then converts
+  return Math.round(t2 * rate * 100) / 100;
+};
+window.hikayaAedHtml = function (total, region) {
+  if (!region || region.currency === 'AED') return '';
+  const tr = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
+  const aed = window.hikayaChargedAed(total, region);
+  const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  return '<div class="pay-aed"><span>' + esc(tr('lx.pay_aed', 'Charged in AED')) + '</span><span dir="ltr">AED ' + aed.toFixed(2) + '</span></div>'
+    + '<p class="pay-aed-note">' + esc(tr('lx.pay_aed_note', 'Prices are shown in {cur}. Our payment partner charges the equivalent in UAE dirhams (AED); your bank may show a small conversion fee.').replace('{cur}', region.currency)) + '</p>';
+};
 
 (function () {
   const REGION_KEY = 'hikaya_region';
