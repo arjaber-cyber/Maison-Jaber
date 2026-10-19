@@ -16,7 +16,7 @@
 */
 
 (function () {
-  const isHome = /(^|\/)index\.html$/.test(window.location.pathname) || /\/test5\/?$/.test(window.location.pathname);
+  const isHome = /(^|\/)index\.html$/.test(window.location.pathname) || /\/(test5|hikaya)\/?$/.test(window.location.pathname);
   const howItWorksHref = isHome ? '#how-it-works' : 'index.html#how-it-works';
   const giftsHref = isHome ? '#gifts' : 'index.html#gifts';
 

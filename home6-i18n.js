@@ -5,6 +5,7 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.home6 = {
     skip: { en: 'Skip to content', ar: 'انتقل إلى المحتوى' },
+    soft_launch: { en: '<strong>Soft launch</strong> · Our official launch is on 1 November 2026', ar: '<strong>إطلاق تجريبي</strong> · الإطلاق الرسمي في 1 نوفمبر 2026' },
 
     // Utility bar ({country} and {fee} are filled in by home6.js)
     del_uae: { en: 'Free delivery across the UAE', ar: 'توصيل مجاني لجميع أنحاء الإمارات' },

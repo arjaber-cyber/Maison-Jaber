@@ -18,6 +18,15 @@
   for = "/test5/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+# Soft launch: the shop is public at /hikaya/ but kept out of Google until the 1 Nov launch.
+[[headers]]
+  for = "/hikaya/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
 [[headers]]
   for = "/test/*"
   [headers.values]
@@ -60,5 +69,32 @@
 [[redirects]]
   from = "https://www.maison-jaber.com/.well-known/apple-developer-merchantid-domain-association"
   to = "/.well-known/apple-developer-merchantid-domain-association"
+  status = 200
+  force = true
+
+# Soft launch: maison-jaber.com/hikaya/ serves the redesign (files live in /test5/).
+[[redirects]]
+  from = "/hikaya"
+  to = "/hikaya/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/hikaya/story-bravest-little-one.html"
+  to = "/hikaya/story.html?s=door-of-a-thousand-stars"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/hikaya/story-cloud-ship.html"
+  to = "/hikaya/story.html?s=why-is-baby-looking-at-me"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/hikaya/story-star-who-couldnt-sleep.html"
+  to = "/hikaya/story.html?s=to-the-rescue"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/hikaya/*"
+  to = "/test5/:splat"
   status = 200
   force = true
