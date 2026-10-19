@@ -117,6 +117,12 @@ window.HIKAYA_PREVIEW_TEXT = {
    "The vase stood on a mountain of soggy napkins. Leo frowned. “This doesn’t look fixed.”",
    "Maybe tape would work. Leo carefully pressed a little strip over the crack. The tape slid off. Leo tried again. This time it stuck— to Leo’s finger.",
    "Maybe the vase simply needed less water. Leo carried it carefully toward the sink. Drip. One drop landed on the floor. Drip. Then another."
+  ],
+  "ar": [
+   "على الطاولة قرب النافذة وقفت مزهرية زرقاء زاهية. فيها ثلاث زهرات صفراء تميل نحو الشمس. كان ليو يحبّ شمّها كل صباح.",
+   "وقفت المزهرية فوق جبل من المناديل المبلّلة. قطّب ليو الحاجبين. «ما زالت تسرّب الماء».",
+   "ربما ينفع الشريط اللاصق. ضغط ليو شريطًا صغيرًا على الشقّ بحذر. انزلق الشريط. حاول ليو من جديد. هذه المرّة التصق— بإصبع ليو.",
+   "ربما تحتاج المزهرية إلى ماء أقلّ فحسب. حملها ليو بحذر نحو حوض الغسيل. قطرة. سقطت قطرة على الأرض. قطرة. ثم أخرى."
   ]
  },
  "the-christmas-list": {
@@ -125,6 +131,12 @@ window.HIKAYA_PREVIEW_TEXT = {
    "By Wednesday, the list went under the bed. By Thursday, it curled around the chair. By Friday… it reached the bedroom door. Noah stepped over it carefully. Christmas lists, apparently, could become dangerous.",
    "Later, Grandma handed Noah a small homemade card. It had crooked stars. Too much glitter. And a reindeer that looked a little like a potato. “I made it for you,” Grandma said. Noah looked at it carefully. It was not on the Christmas list. But somehow… it felt very special.",
    "The next day, Noah saw a neighbour struggling with shopping bags. “Can I help?” One bag was heavy. The next was heavier. And the last one smelled suspiciously like Christmas cake. The neighbour smiled. “Thank you, Noah.” Noah added: Help someone. ✓"
+  ],
+  "ar": [
+   "في أعلى الورقة، كتب نواه: قائمة أمنياتي لعيد الميلاد. ثم جاءت: سيارة سباق حمراء. ديناصور عملاق. صاروخ بأضواء تومض. وروبوت، لعلّه يستطيع صنع الخبز المحمّص. ابتسم نواه. «ممتاز».",
+   "بحلول الأربعاء، امتدّت القائمة إلى تحت السرير. وبحلول الخميس، التفّت حول الكرسي. وبحلول الجمعة... وصلت إلى باب غرفة النوم. خطا نواه فوقها بحذر. يبدو أن قوائم أمنيات عيد الميلاد قد تصبح خطيرة.",
+   "لاحقًا، أعطت الجدّة نواه بطاقة صغيرة صنعتها بنفسها. كانت عليها نجوم مائلة. ومسحوق لامع أكثر من اللازم. وغزال رنّة يشبه حبّة بطاطا قليلًا. قالت الجدّة: «صنعتُها لك». تأمّل نواه البطاقة بعناية. لم تكن ضمن قائمة أمنيات عيد الميلاد. لكن لسبب ما... بدت مميّزة جدًّا.",
+   "في اليوم التالي، رأى نواه جارةً تجد صعوبة في حمل أكياس التسوّق. «هل أستطيع المساعدة؟» كان أحد الأكياس ثقيلًا. والتالي أثقل. أمّا الأخير، فكانت تفوح منه رائحة مريبة... تشبه كعكة عيد الميلاد. ابتسمت الجارة. «شكرًا يا نواه». أضاف نواه: مساعدة شخص ما. ✓"
   ]
  }
 };
