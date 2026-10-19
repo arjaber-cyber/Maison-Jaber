@@ -138,6 +138,20 @@ window.HIKAYA_PREVIEW_TEXT = {
    "لاحقًا، أعطت الجدّة نواه بطاقة صغيرة صنعتها بنفسها. كانت عليها نجوم مائلة. ومسحوق لامع أكثر من اللازم. وغزال رنّة يشبه حبّة بطاطا قليلًا. قالت الجدّة: «صنعتُها لك». تأمّل نواه البطاقة بعناية. لم تكن ضمن قائمة أمنيات عيد الميلاد. لكن لسبب ما... بدت مميّزة جدًّا.",
    "في اليوم التالي، رأى نواه جارةً تجد صعوبة في حمل أكياس التسوّق. «هل أستطيع المساعدة؟» كان أحد الأكياس ثقيلًا. والتالي أثقل. أمّا الأخير، فكانت تفوح منه رائحة مريبة... تشبه كعكة عيد الميلاد. ابتسمت الجارة. «شكرًا يا نواه». أضاف نواه: مساعدة شخص ما. ✓"
   ]
+ },
+ "teddys-night-adventure": {
+  "en": [
+   "“Teddy?” “Yes?” “You can talk?” Teddy looked surprised. “Of course.” Then he whispered, “Just not when grown-ups are looking.”",
+   "Teddy stretched his little arms. Then suddenly stopped. “Oh no.” “What?” “My bedtime blanket is missing!” Tom looked around. “In the dark?” Teddy nodded. “Excellent adventure weather.”",
+   "But under the sock was something else. A little fuzzy thread. The same color as Teddy’s blanket. Tom pointed. “Look!” The thread went across the rug. Teddy’s eyes grew wide. “A clue!”",
+   "Tom lifted one arm. The tall shadow lifted an arm. Teddy raised both paws. The bear-shaped shadow did the same. Tom started laughing. “It’s us!” Soon they were making their shadows dance. Teddy was terrible at dancing."
+  ],
+  "ar": [
+   "«تيدي؟» «نعم؟» «أنت تتكلّم؟» بدا تيدي متفاجئًا. «طبعًا». ثمّ همس: «لكن ليس حين ينظر إلينا الكبار».",
+   "مدّ تيدي ذراعيه الصغيرتين. ثمّ توقّف فجأة. «يا إلهي!» «ماذا؟» «بطّانيّتي الصغيرة اختفت!» تلفّت توم حوله. «في الظلام؟» أومأ تيدي. «هذا أفضل جوّ للمغامرات».",
+   "لكن تحت الجورب كان هناك شيء آخر. خيط صغير زغِب. بلون بطّانيّة تيدي نفسه. أشار توم إليه. «انظر!» امتدّ الخيط عبر السجّادة. اتّسعت عينا تيدي. «دليل!»",
+   "رفع توم ذراعًا، فرفع الظلّ الطويل ذراعًا. ورفع تيدي كفّيه، ففعل ظلّه الشيء نفسه. انفجر توم ضاحكًا. «إنّه نحن!» وسرعان ما جعلا ظلّيهما يرقصان. كان تيدي سيّئًا جدًّا في الرقص."
+  ]
  }
 };
 /* Returns the transcript for one preview image URL, or '' when none matches. */

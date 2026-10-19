@@ -534,6 +534,57 @@ const BUILT_IN_STORIES = [
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
     "detail_url": null
+  },
+  {
+    "slug": "teddys-night-adventure",
+    "title": "Teddy's Night Adventure",
+    "title_ar": "مغامرة تيدي الليلية",
+    "theme": "lullaby",
+    "collection": "Bedtime, Courage, Friendship",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "bedtime",
+      "courage",
+      "friendship"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "When Teddy starts talking, bedtime becomes an adventure! A cosy, gently funny story about following a tiny clue through a dark bedroom, finding familiar surprises and discovering that being brave can mean feeling a little scared together.",
+    "premise": {
+      "en": "When Teddy starts talking, bedtime becomes an adventure! A cosy, gently funny story about following a tiny clue through a dark bedroom, finding familiar surprises and discovering that being brave can mean feeling a little scared together.",
+      "ar": "عندما يبدأ تيدي بالكلام، يتحوّل وقت النوم إلى مغامرة! قصة دافئة ومرحة عن تتبّع خيط صغير في غرفة مظلمة، واكتشاف مفاجآت مألوفة، وأن الشجاعة قد تعني أحيانًا أن نشعر ببعض الخوف معًا"
+    },
+    "card_note": {
+      "en": "For little ones afraid of the dark",
+      "ar": "للصغار الذين يخافون الظلام"
+    },
+    "cover_gradient": "lullaby",
+    "cover_image_url": "https://maison-jaber.com/story-assets/teddys-night-adventure/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/teddys-night-adventure/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/teddys-night-adventure/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/teddys-night-adventure/back-ar.jpg",
+    "preview_images_ar": ["https://maison-jaber.com/story-assets/teddys-night-adventure/l1-ar.jpg", "https://maison-jaber.com/story-assets/teddys-night-adventure/l2-ar.jpg", "https://maison-jaber.com/story-assets/teddys-night-adventure/l3-ar.jpg", "https://maison-jaber.com/story-assets/teddys-night-adventure/l4-ar.jpg"],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/teddys-night-adventure/l1.jpg",
+      "https://maison-jaber.com/story-assets/teddys-night-adventure/l2.jpg",
+      "https://maison-jaber.com/story-assets/teddys-night-adventure/l3.jpg",
+      "https://maison-jaber.com/story-assets/teddys-night-adventure/l4.jpg"
+    ],
+    "sort_order": 11,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
   }
 ];
 
