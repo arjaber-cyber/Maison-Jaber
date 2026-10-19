@@ -585,6 +585,63 @@ const BUILT_IN_STORIES = [
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
     "detail_url": null
+  },
+  {
+    "slug": "house-of-missing-things",
+    "title": "The House of Missing Things",
+    "title_ar": "منزل الأشياء الضائعة",
+    "theme": "adventure",
+    "collection": "Responsibility, Growing up, Family",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "responsibility",
+      "growing",
+      "family"
+    ],
+    "occasions": [
+      "school",
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "One missing trainer, a vanished water bottle and a library book nowhere to be found! A funny little detective story about following the clues, remembering where things were last used and discovering that when everything has a home, finding it isn't a mystery.",
+    "premise": {
+      "en": "One missing trainer, a vanished water bottle and a library book nowhere to be found! A funny little detective story about following the clues, remembering where things were last used and discovering that when everything has a home, finding it isn't a mystery.",
+      "ar": "فردة حذاء مفقودة، وزجاجة ماء اختفت، وكتاب مكتبة لا أثر له! قصة تحقيق صغيرة ومرحة عن تتبّع الأدلة، وتذكّر آخر مكان استخدمنا فيه أشياءنا، واكتشاف أنه حين يكون لكل شيء مكان، لا يعود العثور عليه لغزًا"
+    },
+    "card_note": {
+      "en": "For little detectives who lose things",
+      "ar": "للمحققين الصغار الذين يضيّعون أشياءهم"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/house-of-missing-things/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/house-of-missing-things/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/house-of-missing-things/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/house-of-missing-things/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l1.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l2.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l3.jpg",
+      "https://maison-jaber.com/story-assets/house-of-missing-things/l4.jpg"
+    ],
+    "sort_order": 12,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
   }
 ];
 

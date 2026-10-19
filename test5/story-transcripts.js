@@ -152,6 +152,20 @@ window.HIKAYA_PREVIEW_TEXT = {
    "لكن تحت الجورب كان هناك شيء آخر. خيط صغير زغِب. بلون بطّانيّة تيدي نفسه. أشار توم إليه. «انظر!» امتدّ الخيط عبر السجّادة. اتّسعت عينا تيدي. «دليل!»",
    "رفع توم ذراعًا، فرفع الظلّ الطويل ذراعًا. ورفع تيدي كفّيه، ففعل ظلّه الشيء نفسه. انفجر توم ضاحكًا. «إنّه نحن!» وسرعان ما جعلا ظلّيهما يرقصان. كان تيدي سيّئًا جدًّا في الرقص."
   ]
+ },
+ "house-of-missing-things": {
+  "en": [
+   "Alex reached for his trainers. One trainer was waiting by the door. The other one was not. Alex stared at the empty spot. Then at the trainer. Then back at the empty spot. “That,” he said slowly, “is suspicious.”",
+   "This was no longer a normal Sunday evening. This was a case. Alex grabbed a little notebook and a pencil. He placed Teddy beside him. “You are my assistant,” he whispered. Teddy said nothing. “Excellent. Very professional.”",
+   "Next, Alex went to get his water bottle ready. He reached for its usual place in the kitchen. Nothing. He checked again. Still nothing. Alex narrowed his eyes. “One missing thing is an accident,” he told Teddy. “Two is a mystery.”",
+   "There was only one person left to question. Teddy. Alex sat directly in front of him. “Teddy,” he said, “where were you last night?” Teddy refused to answer. Then Alex noticed something. A sock was sitting on Teddy’s head. Alex blinked. “My sock?”"
+  ],
+  "ar": [
+   "مدّ نور يده ليأخذ الحذاء الرياضي. كانت إحدى فردتي الحذاء تنتظر عند الباب. أما الأخرى، فلم تكن هناك. حدّق نور في المكان الفارغ. ثم في فردة الحذاء. ثم في المكان الفارغ من جديد. وقال ببطء: «هذا أمر مريب»",
+   "لم يعد هذا مساء أحد عاديًا. إنها قضية تستحق التحقيق. أمسك نور بدفتر صغير وقلم رصاص. وأجلس تيدي بجانبه. وهمس: «أنت مساعدي». لم يقل تيدي شيئًا. «ممتاز. هذا منتهى الاحتراف»",
+   "بعد ذلك، ذهب نور لتجهيز زجاجة الماء. مدّ يده إلى مكانها المعتاد في المطبخ. لا شيء. بحث مرة أخرى. ما زالت غير موجودة. ضيّق نور عينيه. وقال لتيدي: «اختفاء شيء واحد قد يكون صدفة». «أما اختفاء شيئين، فهو لغز»",
+   "لم يبقَ إلا واحد لاستجوابه. تيدي. جلس نور أمامه مباشرة. وقال: «تيدي، أين كنت ليلة أمس؟» رفض تيدي الإجابة. ثم لاحظ نور شيئًا. كان هناك جورب فوق رأس تيدي. رمش نور بعينيه. «جوربي؟»"
+  ]
  }
 };
 /* Returns the transcript for one preview image URL, or '' when none matches. */
