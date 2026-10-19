@@ -436,7 +436,7 @@ const BUILT_IN_STORIES = [
   {
     "slug": "the-cracked-blue-vase",
     "title": "The Cracked Blue Vase",
-    "title_ar": "المزهرية الزرقاء المشروخة",
+    "title_ar": "المزهرية الزرقاء المكسورة",
     "theme": "adventure",
     "collection": "Honesty, Feelings, Responsibility",
     "age_ranges": "2-4,4-6",
