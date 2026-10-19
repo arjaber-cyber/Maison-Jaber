@@ -775,8 +775,8 @@
     show_text: { en: 'Show text', ar: 'اعرض النص' },
     hide_text: { en: 'Hide text', ar: 'أخفِ النص' },
     no_text: { en: 'No story text on this page.', ar: 'لا يوجد نص في هذه الصفحة' },
-    page_of: { en: 'Sample {n} of {total}', ar: 'المقتطف {n} من {total}' },
-    pages_of: { en: 'Samples {a}–{b} of {total}', ar: 'المقتطفان {a}–{b} من {total}' },
+    page_of: { en: 'Sample {n} of {total}', ar: 'الصفحة {n} من {total}' },
+    pages_of: { en: 'Samples {a}–{b} of {total}', ar: 'الصفحتان {a}–{b} من {total}' },
     pages: { en: 'Pages {a}–{b}', ar: 'الصفحتان {a}–{b}' },
   };
 })();
