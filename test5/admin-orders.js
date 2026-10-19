@@ -329,6 +329,8 @@
             <dt>Email</dt><dd>${o.email ? `<a href="mailto:${esc(o.email)}?subject=${encodeURIComponent('Your Hikaya order ' + (o.order_number || ''))}">${esc(o.email)}</a>` : '—'}</dd>
             <dt>Phone</dt><dd>${o.phone ? `${esc(o.phone)}${phone ? ` · <a target="_blank" rel="noopener" href="https://wa.me/${phone}">WhatsApp</a>` : ''}` : '—'}</dd>
             <dt>Address</dt><dd>${esc([o.address, o.city, o.country].filter(Boolean).join(', ') || '—')}</dd>
+            ${o.unit_number ? `<dt>Flat / Villa</dt><dd>${esc(o.unit_number)}</dd>` : ''}
+            <dt>Map pin</dt><dd>${o.location_lat != null && o.location_lng != null ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${+o.location_lat},${+o.location_lng}">Open in Google Maps</a>` : '<span class="op-muted">No pin dropped</span>'}</dd>
             <dt>Promotions</dt><dd>${o.marketing_opt_in ? 'Yes, opted in to emails &amp; messages' : '<span class="op-muted">Not opted in</span>'}</dd>
             ${o.info_confirmed_at || o.photo_consent_at ? `<dt>Consents</dt><dd>${o.info_confirmed_at ? 'Info confirmed' : ''}${o.info_confirmed_at && o.photo_consent_at ? ' · ' : ''}${o.photo_consent_at ? 'Photo use authorised (15-day deletion)' : ''}</dd>` : ''}
             ${o.courier || o.tracking_number ? `<dt>Courier</dt><dd>${esc(o.courier || '—')}${o.tracking_number ? ' · ' + (o.tracking_url ? `<a target="_blank" rel="noopener" href="${esc(o.tracking_url)}">${esc(o.tracking_number)}</a>` : esc(o.tracking_number)) : ''}</dd>` : ''}

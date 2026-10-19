@@ -70,7 +70,13 @@ exports.handler = async (event) => {
   // Gift sent straight to someone else: keep the recipient with the delivery address,
   // so whoever packs and ships the order sees it next to the address.
   // ("Is this a gift?" was removed from checkout: every book ships gift-packaged anyway.)
-  const deliveryAddress = String(o.address).trim();
+  // Flat / villa number is its own field at checkout; it is kept on its own and also put in front of
+  // the map-picked address, so emails, invoices and the admin all show the full delivery address.
+  const unitNumber = String(o.unitNumber || '').trim().slice(0, 40);
+  const pickedAddress = String(o.address).trim();
+  const deliveryAddress = unitNumber ? `${unitNumber}, ${pickedAddress}` : pickedAddress;
+  const coord = (v, max) => { const n = Number(v); return v !== null && v !== '' && Number.isFinite(n) && Math.abs(n) <= max ? n : null; };
+  const locationLat = coord(o.locationLat, 90), locationLng = coord(o.locationLng, 180);
   const nowIso = new Date().toISOString();
 
   // 1) Save the order first, so nothing is ever paid without a record.
@@ -80,6 +86,7 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       order_number: orderNumber, full_name: String(o.fullName).trim(), email, phone: String(o.phone).trim(),
       address: deliveryAddress, city: String(o.city).trim(), country: o.country,
+      unit_number: unitNumber || null, location_lat: locationLat, location_lng: locationLng,
       payment_method: free ? 'free' : 'ziina', amount: price.total, currency: price.currency, charged_aed: price.chargedAed,
       is_gift: false, gift_message: null,
       marketing_opt_in: o.marketingOptIn === true, info_confirmed_at: nowIso, photo_consent_at: nowIso,
