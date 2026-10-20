@@ -417,7 +417,7 @@ const BUILT_IN_STORIES = [
     "back_cover_url": "https://maison-jaber.com/story-assets/the-last-box/back.jpg",
     "cover_image_url_ar": "https://maison-jaber.com/story-assets/the-last-box/cover-ar.jpg",
     "back_cover_url_ar": "https://maison-jaber.com/story-assets/the-last-box/back-ar.jpg",
-    "preview_images_ar": [],
+    "preview_images_ar": ["https://maison-jaber.com/story-assets/the-last-box/l1-ar.jpg", "https://maison-jaber.com/story-assets/the-last-box/l2-ar.jpg", "https://maison-jaber.com/story-assets/the-last-box/l3-ar.jpg", "https://maison-jaber.com/story-assets/the-last-box/l4-ar.jpg"],
     "preview_images": [
       "https://maison-jaber.com/story-assets/the-last-box/l1.jpg",
       "https://maison-jaber.com/story-assets/the-last-box/l2.jpg",

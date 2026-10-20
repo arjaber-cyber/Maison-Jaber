@@ -109,6 +109,12 @@ window.HIKAYA_PREVIEW_TEXT = {
    "“The blue cup can’t go yet,” said Salma. “I might need a drink.” So the blue cup stayed. “And my blanket can’t go either.” “Why not?” Mum asked. Salma thought very hard. “The sofa might get lonely.”",
    "In the living room was the corner where blankets became castles. The sofa became a mountain. Cushions became stepping stones. And once, Mum had been a dragon. A very bad dragon. She kept laughing.",
    "In the hallway, Salma stopped. “Goodbye, squeaky floorboard.” SQUEAK. Salma stepped on it again. SQUEAK. And once more. SQUEAK. “That one really wants a long goodbye,” Mum said. Salma laughed."
+  ],
+  "ar": [
+   "صناديق في الممر. وصناديق في المطبخ. وصناديق بجوار الأريكة. وصندوق في وسط غرفة سلمى تمامًا. غدًا، سينتقلون إلى بيت جديد.",
+   "«لا تضعي الكوب الأزرق بعد. قد أحتاج إلى شربة ماء.» فبقي الكوب مكانه. «وبطانيتي أيضًا!» «لماذا؟» سألت ماما. فكّرت سلمى مليًّا. «قد تشعر الأريكة بالوحدة.»",
+   "وفي ركن غرفة الجلوس، كانت البطانيات تصير قلاعًا. والأريكة جبلًا. والوسائد حجارةً للعبور. ومرّة، صارت ماما تنينًا. تنينًا لا يُخيف أحدًا... فقد ظلّت تضحك!",
+   "توقّفت سلمى في الممر. «وداعًا يا لوح الأرضية الذي يصرّ!» صرررير! خطت عليه ثانيةً. صرررير! ومرّة أخرى. صرررير! قالت ماما: «يبدو أنه يريد وداعًا طويلًا!» ضحكت سلمى."
   ]
  },
  "the-cracked-blue-vase": {
