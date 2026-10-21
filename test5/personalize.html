@@ -668,13 +668,15 @@
     // Clicking the story that is already chosen still confirms it (no change event fires).
     label.addEventListener('click', e => {
       if (e.target === radio) return;
-      if (radio.checked && document.getElementById('story-input').value === radio.value) { pickByPointer = false; selectStory(radio.value); }
+      if (radio.checked && document.getElementById('story-input').value === radio.value) { pickByPointer = false; selectStory(radio.value); showPickedStory(); }
     });
     radio.addEventListener('change', () => {
       if (!radio.checked) return;
       // Pointer picks collapse the grid (existing behaviour); arrow-key browsing keeps it open.
+      const collapsing = pickByPointer;
       selectStory(radio.value, { keepGrid: !pickByPointer });
       pickByPointer = false;
+      if (collapsing) showPickedStory();
     });
     radio.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -684,6 +686,19 @@
     });
     card.replaceWith(label);
     return label;
+  }
+  /* QA 21 Oct 2026: picking a story low in the list collapses the grid into the small chip, so the
+     page gets much shorter and the visitor was left looking at the footer. Bring the chosen story and
+     the Continue button back into view. */
+  function showPickedStory() {
+    const target = document.getElementById('wizard-step-story');
+    if (!target) return;
+    requestAnimationFrame(() => {
+      const header = document.querySelector('header, .site-header, #hk-head');
+      const offset = (header && getComputedStyle(header).position !== 'static' ? header.getBoundingClientRect().height : 0) + 12;
+      const y = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+    });
   }
   function syncPickState(storyName) {
     document.querySelectorAll('#story-grid .story-pick').forEach(c => {
