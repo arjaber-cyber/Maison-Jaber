@@ -64,6 +64,12 @@ exports.handler = async (event) => {
     story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childNameTyped: String(i.childNameTyped || i.childName || '').slice(0, 60), photoConsent: i.photoConsent === true, photoConsentAt: i.photoConsentAt ? String(i.photoConsentAt).slice(0, 40) : null, childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
     gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
     photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
+    // Family members who appear in the story: a free photo each, or an AI-illustrated character.
+    supportingChoice: ['photos', 'avatar'].includes(i.supportingChoice) ? i.supportingChoice : null,
+    supportingCharacters: (Array.isArray(i.supportingCharacters) ? i.supportingCharacters : [])
+      .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother'].includes(c.role)).slice(0, 4)
+      .map(c => ({ role: c.role, photoPaths: paths(c.photoPaths).slice(0, 2) })),
+    supportingPhotoConsent: i.supportingPhotoConsent === true,
   }));
   const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
 

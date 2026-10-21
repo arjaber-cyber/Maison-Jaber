@@ -62,12 +62,17 @@ exports.handler = async (event) => {
     });
     if (one) {
       for (const o of orders) {
-        const all = o.items.flatMap(it => [...(it.photoPaths || []), ...(it.extraCharacterPhotoPaths || [])]);
+        const famPaths = it => (Array.isArray(it.supportingCharacters) ? it.supportingCharacters : []).flatMap(c => c.photoPaths || []);
+        const all = o.items.flatMap(it => [...(it.photoPaths || []), ...(it.extraCharacterPhotoPaths || []), ...famPaths(it)]);
         const urls = await signed(all);
         o.items = o.items.map(it => ({
           ...it,
           photos: [...(it.photos || []), ...(it.photoPaths || []).filter(p => urls[p]).map((p, k) => ({ name: `photo-${k + 1}`, type: 'image/jpeg', dataUrl: urls[p] }))],
           extraCharacterPhotos: [...(it.extraCharacterPhotos || []), ...(it.extraCharacterPhotoPaths || []).filter(p => urls[p]).map((p, k) => ({ name: `extra-${k + 1}`, type: 'image/jpeg', dataUrl: urls[p] }))],
+          // Family photos: signed link per role; a path with no link has already been deleted (15-day rule).
+          supportingCharacters: (Array.isArray(it.supportingCharacters) ? it.supportingCharacters : []).map(c => ({
+            ...c, photos: (c.photoPaths || []).map((p, k) => ({ name: `${c.role}-${k + 1}`, type: 'image/jpeg', dataUrl: urls[p] || null })),
+          })),
         }));
       }
     }

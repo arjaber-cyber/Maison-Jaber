@@ -250,6 +250,24 @@
   .consent-box { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 4px 0 12px; font-size: 12.5px; font-weight: 600; line-height: 1.5; cursor: pointer; }
   .consent-box input { width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0; accent-color: var(--coral); }
   .consent-box.need { border-color: #9b2c1f; }
+  /* Supporting characters (family members who appear in the story) */
+  .fam-card { background: var(--bg-soft, #F3E8D8); border-radius: 16px; padding: 20px 22px; margin-bottom: 14px; }
+  .fam-card h4 { font-size: 17px; margin: 0 0 8px; }
+  .fam-card p { font-size: 13.5px; line-height: 1.6; color: var(--ink, #2E2018); font-weight: 600; margin: 0 0 8px; }
+  .fam-card .fam-free { color: var(--coral-deep, #8A5638); font-weight: 800; }
+  .fam-privacy { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: var(--ink-soft, #7d6a5a); font-weight: 600; line-height: 1.5; margin: 10px 0 0; }
+  .fam-privacy svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; stroke: currentColor; fill: none; }
+  .fam-choice { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 0; }
+  .fam-choice .extra-char-btn { flex: 1 1 180px; }
+  .fam-slots { display: grid; gap: 12px; margin-top: 14px; }
+  .fam-slot { background: #fff; border: 1.5px solid var(--line, #DFC9AE); border-radius: 14px; padding: 14px; }
+  .fam-slot h5 { font-size: 14px; margin: 0 0 2px; }
+  .fam-slot .fam-hint { font-size: 12px; color: var(--ink-soft, #7d6a5a); font-weight: 600; margin: 0 0 10px; }
+  .fam-slot .photo-upload { margin-bottom: 8px; padding: 14px; }
+  .fam-slot .photo-thumbs { margin-bottom: 0; }
+  .fam-note { font-size: 13px; line-height: 1.6; font-weight: 600; background: #fff; border-radius: 12px; padding: 14px 16px; margin-top: 14px; border: 1.5px solid var(--line, #DFC9AE); }
+  .fam-note button { background: none; border: 0; padding: 0; color: var(--coral-deep, #8A5638); font-weight: 800; text-decoration: underline; cursor: pointer; font: inherit; }
+  .fam-need { font-size: 12.5px; color: var(--coral-deep, #b5563b); font-weight: 700; margin: 10px 0 0; }
   .name-modal-backdrop { position: fixed; inset: 0; background: rgba(46,32,24,0.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px; }
   .name-modal-backdrop[hidden] { display: none; }
   .name-modal { background: #fff; border-radius: 18px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
@@ -418,6 +436,33 @@
         </div>
       </div>
 
+      <!-- Step: Family members who appear in the story (only for stories that have them) -->
+      <div class="wizard-step" data-step="family" id="wizard-step-family">
+        <div class="fam-card">
+          <h4 id="fam-title"></h4>
+          <p id="fam-body"></p>
+          <p id="fam-offer"></p>
+          <div class="fam-choice">
+            <button type="button" class="extra-char-btn" id="fam-yes" data-fam="photos" aria-pressed="false"></button>
+            <button type="button" class="extra-char-btn" id="fam-no" data-fam="avatar" aria-pressed="false"></button>
+          </div>
+          <p class="fam-privacy"><svg viewBox="0 0 24 24" stroke-width="1.8" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg><span id="fam-privacy"></span></p>
+        </div>
+        <div id="fam-upload" hidden>
+          <div class="fam-slots" id="fam-slots"></div>
+          <label class="consent-box" id="fam-consent-box" hidden style="margin-top:12px;">
+            <input type="checkbox" id="fam-consent" />
+            <span id="fam-consent-text"></span>
+          </label>
+          <p class="fam-need" id="fam-need" hidden></p>
+        </div>
+        <div class="fam-note" id="fam-avatar-note" hidden></div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="family">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="family" id="family-next-btn" disabled data-i18n="pg.next">Continue →</button>
+        </div>
+      </div>
+
       <!-- Step: Dedication -->
 
       <!-- Step: Review -->
@@ -488,6 +533,7 @@
 </main>
 <div id="hk-foot"></div>
 
+<script src="family.js"></script>
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   const supabase = createClient(
@@ -771,7 +817,9 @@
       extraCharChoice = null;
       document.getElementById('extra-char-upload-wrap').style.display = 'none';
       extraPhotoFiles = [];
+      resetFam();
     }
+    renderFam();
     if (storyInfo && storyInfo.has_extra_character) {
       const name = storyInfo.extra_character_name;
       const fee = storyInfo.extra_character_fee_aed;
@@ -1082,6 +1130,147 @@
     checkDetailsComplete();
   });
 
+  /* ---------- Family members who appear in the story (Oct 2026) ----------
+     Stories listed in family.js have supporting characters (Mum, Dad, Grandpa, Grandma) who appear
+     in one or more illustrations. Parents can add a free photo of each; anyone left without a photo
+     is drawn as an AI-illustrated character. Same checks, private storage and 15-day deletion as the
+     child's photo. */
+  let famChoice = null;   // 'photos' | 'avatar' | null
+  let famFiles = {};      // role -> [photo entry] (one photo per person)
+  const FAM = () => window.HikayaFamily || { rolesFor: () => [], label: r => r, joinWho: r => r.join(', ') };
+  function famRoles() {
+    const rec = STORY_CATALOG[document.getElementById('story-input').value];
+    return rec && rec.slug ? FAM().rolesFor(rec.slug) : [];
+  }
+  const famLang = () => (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+  const famName = () => typedName() || (famLang() === 'ar' ? 'طفلكم' : 'your child');
+  const famVerified = () => Object.values(famFiles).some(list => list.some(p => p.status === 'verified'));
+  const famChecking = () => Object.values(famFiles).some(list => list.some(p => p.status === 'checking'));
+  function famOk() {
+    if (!famRoles().length) return true;
+    if (famChoice === 'avatar') return true;
+    if (famChoice !== 'photos') return false;
+    return famVerified() && !famChecking() && document.getElementById('fam-consent').checked;
+  }
+
+  /* All wording for this step, in the site language. Arabic has no full stops, by design. */
+  function famText() {
+    const roles = famRoles(), F = FAM(), l = famLang(), name = famName();
+    const story = storyDisplayName(document.getElementById('story-input').value);
+    const two = roles.length > 1;
+    const who = F.joinWho(roles, l);
+    if (l === 'ar') {
+      const R = F.ROLES || {};
+      const fem = roles.every(r => R[r] && R[r].fem);
+      const lil = w => 'لل' + String(w).replace(/^ال/, '');
+      const whoLi = roles.map(r => F.label(r, 'ar')).map((w, i) => i === 0 ? lil(w) : 'و' + w).join(' ');
+      const real = two ? (fem ? 'الحقيقيتين' : 'الحقيقيين') : (fem ? 'الحقيقية' : 'الحقيقي');
+      const g = two
+        ? (fem ? { acc: 'فهما ترافقان', app: 'وتظهران', pic: 'صورتيهما', draw: 'سنرسمهما', yes: 'نعم، أضيفوا صورتيهما' }
+               : { acc: 'فهما يرافقان', app: 'ويظهران', pic: 'صورتيهما', draw: 'سنرسمهما', yes: 'نعم، أضيفوا صورتيهما' })
+        : (fem ? { acc: 'فهي ترافق', app: 'وتظهر', pic: 'صورتها', draw: 'سنرسمها', yes: 'نعم، أضيفوا صورة ' + who }
+               : { acc: 'فهو يرافق', app: 'ويظهر', pic: 'صورته', draw: 'سنرسمه', yes: 'نعم، أضيفوا صورة ' + who });
+      return {
+        stepLabel: 'العائلة', stepTitle: 'العائلة في القصة', stepSub: 'لهم مكان في الكتاب أيضاً، أضيفوا صورهم مجاناً أو دعونا نرسمهم لكم',
+        title: two ? 'في هذه القصة شخصان مميزان أيضاً' : 'في هذه القصة شخص مميز آخر',
+        body: `في «${story}» لا تكتمل المغامرة من دون ${who}، ${g.acc} ${name} ${g.app} في رسمة أو أكثر من رسومات الكتاب`,
+        offer: `تخيّلوا فرحة ${name} بلقاء ${who} ${real} بين صفحات القصة، أضيفوا ${g.pic} و${g.draw} في القصة <span class="fam-free">مجاناً</span> 💛`,
+        yes: g.yes, no: 'ليس هذه المرة',
+        privacy: `تُعامل هذه الصور تماماً كصورة ${name}: تُستخدم لصنع هذا الكتاب فقط، ولا تُشارك مع أحد، وتُحذف تلقائياً خلال 15 يوماً`,
+        consent: 'أؤكد أن لدي إذناً باستخدام هذه الصور لصنع هذا الكتاب فقط',
+        slotTitle: r => 'صورة ' + F.label(r, 'ar'),
+        slotHint: r => 'صورة واضحة للوجه، من دون أشخاص آخرين' + (two ? `، ويمكنكم تركها فارغة وسنصمم ${lil(F.label(r, 'ar'))} شخصية مرسومة بالذكاء الاصطناعي` : ''),
+        tap: 'اضغطوا لإضافة صورة',
+        avatar: two
+          ? `لا بأس أبداً، سنصمم ${whoLi} شخصيتين مرسومتين بالذكاء الاصطناعي ${fem ? 'تنسجمان' : 'تنسجمان'} مع أجواء القصة، لتبقى حكاية ${name} دافئة ومكتملة`
+          : `لا بأس أبداً، سنصمم ${whoLi} شخصية مرسومة بالذكاء الاصطناعي تنسجم مع أجواء القصة، لتبقى حكاية ${name} دافئة ومكتملة`,
+        change: 'غيّرتم رأيكم؟ أضيفوا صورة',
+        need: 'أضيفوا صورة واحدة على الأقل، أو اختاروا «ليس هذه المرة»',
+        rowPhoto: 'تمت إضافة الصورة ✓', rowAvatar: 'شخصية مرسومة بالذكاء الاصطناعي',
+      };
+    }
+    const R = F.ROLES || {};
+    const obj = two ? 'them' : (R[roles[0]] && R[roles[0]].fem ? 'her' : 'him');
+    return {
+      stepLabel: 'Family', stepTitle: 'Family in the story', stepSub: 'They have a place in the book too. Add their photo for free, or we will illustrate them for you.',
+      title: two ? 'Some special people are in this story too' : 'Someone special is in this story too',
+      body: two
+        ? `In “${story}”, ${name} shares the adventure with ${who}, who appear in one or more of the book's illustrations.`
+        : `In “${story}”, ${name} isn't on this adventure alone: ${who} is right there too, appearing in one or more of the book's illustrations.`,
+      offer: `Imagine ${name} turning the pages and finding their very own ${who} there. Add ${two ? 'their photos' : 'a photo'} and we'll illustrate ${obj} into the story, <span class="fam-free">completely free</span> 💛`,
+      yes: two ? 'Yes, add their photos' : `Yes, add ${who}'s photo`, no: 'Not this time',
+      privacy: `${two ? 'Their photos are' : 'Their photo is'} treated exactly like ${name}'s: used only to create this book, never shared, and deleted automatically within 15 days.`,
+      consent: 'I confirm I have permission to use these photos, to create this book only.',
+      slotTitle: r => `${F.label(r, 'en')}'s photo`,
+      slotHint: r => 'A clear photo of their face, with no one else in it.' + (two ? ` Leave it empty and we'll create an AI-illustrated ${F.label(r, 'en')} instead.` : ''),
+      tap: 'Tap to add a photo',
+      avatar: `That's perfectly okay. We'll create ${two ? '' : 'a '}warm, AI-illustrated ${who} who ${two ? 'fit' : 'fits'} beautifully into the story, so ${name}'s adventure still feels complete.`,
+      change: 'Changed your mind? Add a photo',
+      need: 'Please add at least one photo, or choose “Not this time”.',
+      rowPhoto: 'Photo added ✓', rowAvatar: 'AI-illustrated character',
+    };
+  }
+
+  function renderFam() {
+    const roles = famRoles();
+    if (!roles.length) return;
+    const tx = famText();
+    document.getElementById('fam-title').textContent = tx.title;
+    document.getElementById('fam-body').textContent = tx.body;
+    document.getElementById('fam-offer').innerHTML = escHtml(tx.offer).replace(/&lt;span class=&quot;fam-free&quot;&gt;(.*?)&lt;\/span&gt;/, '<span class="fam-free">$1</span>');
+    document.getElementById('fam-yes').textContent = tx.yes;
+    document.getElementById('fam-no').textContent = tx.no;
+    document.getElementById('fam-privacy').textContent = tx.privacy;
+    document.getElementById('fam-consent-text').textContent = tx.consent;
+    ['fam-yes', 'fam-no'].forEach(id => { const b = document.getElementById(id), on = b.dataset.fam === famChoice; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', String(on)); });
+    document.getElementById('fam-upload').hidden = famChoice !== 'photos';
+    const note = document.getElementById('fam-avatar-note');
+    note.hidden = famChoice !== 'avatar';
+    if (famChoice === 'avatar') {
+      note.innerHTML = '';
+      note.appendChild(document.createTextNode(tx.avatar + ' '));
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = tx.change;
+      b.addEventListener('click', () => setFamChoice('photos'));
+      note.appendChild(b);
+    }
+    // One upload slot per family member.
+    const slots = document.getElementById('fam-slots');
+    slots.innerHTML = '';
+    roles.forEach(role => {
+      famFiles[role] = famFiles[role] || [];
+      const box = document.createElement('div'); box.className = 'fam-slot';
+      box.innerHTML = `<h5></h5><p class="fam-hint"></p>
+        <div class="photo-upload"><input type="file" accept="image/*" /><div class="hint-main"></div></div>
+        <div class="photo-thumbs"></div><div class="photo-retry-note" style="display:none;"></div>`;
+      box.querySelector('h5').textContent = tx.slotTitle(role);
+      box.querySelector('.fam-hint').textContent = tx.slotHint(role);
+      box.querySelector('.hint-main').textContent = tx.tap;
+      const input = box.querySelector('input'); input.setAttribute('aria-label', tx.slotTitle(role));
+      const thumbs = box.querySelector('.photo-thumbs'), retry = box.querySelector('.photo-retry-note');
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0]; input.value = '';
+        if (!file) return;
+        const entry = { file, status: 'checking', reason: null };
+        famFiles[role] = [entry]; // one photo per person: a new one replaces the old
+        renderThumbs(famFiles[role], thumbs, retry, false);
+        checkDetailsComplete();
+        checkPhoto(entry, () => { renderThumbs(famFiles[role], thumbs, retry, false); checkDetailsComplete(); });
+      });
+      renderThumbs(famFiles[role], thumbs, retry, false);
+      slots.appendChild(box);
+    });
+  }
+  function setFamChoice(v) {
+    famChoice = v;
+    renderFam();
+    checkDetailsComplete();
+  }
+  document.getElementById('fam-yes').addEventListener('click', () => setFamChoice('photos'));
+  document.getElementById('fam-no').addEventListener('click', () => setFamChoice('avatar'));
+  document.getElementById('fam-consent').addEventListener('change', () => { document.getElementById('fam-consent-box').classList.remove('need'); checkDetailsComplete(); });
+  document.getElementById('child-name').addEventListener('input', () => { if (currentStepName === 'family') renderFam(); });
+  function resetFam() { famChoice = null; famFiles = {}; const c = document.getElementById('fam-consent'); if (c) c.checked = false; }
+
   // Generic thumbnail renderer -- used for both the child's photos and, if
   // this story has one, the optional extra character's photos.
   function renderThumbs(files, thumbsEl, retryNoteEl, updateSummaryCount) {
@@ -1142,7 +1331,7 @@
   document.getElementById('photo-consent').addEventListener('change', e => { document.getElementById('photo-consent-box').classList.remove('need'); checkDetailsComplete(); });
   function checkDetailsComplete() {
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
-    const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking');
+    const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking') || famChecking();
 
     const storyChosen = document.getElementById('story-input').value;
     const storyInfo = STORY_CATALOG[storyChosen];
@@ -1166,6 +1355,15 @@
     if (photoNextBtn) photoNextBtn.disabled = !(hasVerifiedPhoto && photoConsent);
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
+    const familyNextBtn = document.getElementById('family-next-btn');
+    if (familyNextBtn) familyNextBtn.disabled = !famOk();
+    const famConsentBox = document.getElementById('fam-consent-box');
+    if (famConsentBox) famConsentBox.hidden = !(famChoice === 'photos' && Object.values(famFiles).some(l => l.length));
+    const famNeed = document.getElementById('fam-need');
+    if (famNeed) {
+      const empty = famChoice === 'photos' && !Object.values(famFiles).some(l => l.length);
+      famNeed.hidden = !empty; if (empty) famNeed.textContent = famText().need;
+    }
 
     const ready = storyChosen
       && nameOk()
@@ -1173,6 +1371,7 @@
       && hasVerifiedPhoto
       && photoConsent
       && extraCharOk
+      && famOk()
       && langState().ok;
     continueBtn.disabled = !ready;
     if (stillChecking) {
@@ -1196,6 +1395,7 @@
   function activeSteps() {
     const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
     const steps = storyLocked ? ['details', 'photo'] : ['story', 'details', 'photo'];
+    if (famRoles().length) steps.push('family');
     if (storyInfo && storyInfo.has_extra_character) steps.push('extra');
     steps.push('review');
     return steps;
@@ -1207,6 +1407,7 @@
     details: () => t('lx.st_child', 'Child'),
     photo: () => t('lx.st_photo', 'Photo'),
     extra: () => t('lx.st_extra', 'Extra character'),
+    family: () => famText().stepLabel,
     review: () => t('lx.st_review', 'Review'),
   };
 
@@ -1233,6 +1434,12 @@
     review: ['pg.wz_review_t', 'Check and add to cart', 'pg.wz_review_s', 'Make sure everything looks right. You can also write your own message for the first page.'],
   };
   function renderStepHeading(stepName) {
+    if (stepName === 'family') {
+      const tx = famText();
+      document.getElementById('wizard-title').textContent = tx.stepTitle;
+      const fs = document.getElementById('wizard-sub'); if (fs) fs.textContent = tx.stepSub;
+      return;
+    }
     const h = STEP_HEADINGS[stepName]; if (!h) return;
     const tt = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
     document.getElementById('wizard-title').textContent = tt(h[0], h[1]);
@@ -1267,6 +1474,7 @@
     document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
     const target = document.getElementById('wizard-step-' + stepName);
     if (target) target.classList.add('active');
+    if (stepName === 'family') renderFam();
     if (stepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
     renderWizardProgress();
     const formCol = document.querySelector('.order-form-col');
@@ -1321,6 +1529,13 @@
         : t('personalize.summary_extra_no', 'Generated for you');
       rows.push({ label: storyInfo.extra_character_name, value: extraVal, step: 'extra' });
     }
+    if (famRoles().length) {
+      const tx = famText();
+      famRoles().forEach(role => {
+        const has = famChoice === 'photos' && (famFiles[role] || []).some(p => p.status === 'verified');
+        rows.push({ label: FAM().label(role, famLang()), value: has ? tx.rowPhoto : tx.rowAvatar, step: 'family' });
+      });
+    }
 
     document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', name || t('lx.st_child', 'your child'));
     const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
@@ -1369,6 +1584,10 @@
       extraCharacterName: hasExtra ? storyInfo.extra_character_name : null,
       extraCharacterFeeAed: hasExtra ? storyInfo.extra_character_fee_aed : 0,
       extraCharacterPhotoCount: hasExtra ? extraPhotoFiles.filter(p => p.status === 'verified').length : 0,
+      // Family members in the story: photo paths are filled in after upload; an empty list = AI-illustrated.
+      supportingChoice: famRoles().length ? (famChoice || 'avatar') : null,
+      supportingCharacters: famRoles().map(role => ({ role, photoPaths: [] })),
+      supportingPhotoConsent: famChoice === 'photos' && famVerified() ? document.getElementById('fam-consent').checked : false,
     };
   }
 
@@ -1397,6 +1616,7 @@
     renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
     extraPhotoFiles = [];
     extraCharChoice = null;
+    resetFam();
     document.getElementById('extra-char-upload-wrap').style.display = 'none';
     document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
     checkDetailsComplete();
@@ -1450,7 +1670,9 @@
     const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
     const item = buildCartItemFromForm();
     const verifiedExtraPhotos = item.extraCharacterName ? extraPhotoFiles.filter(p => p.status === 'verified') : [];
-    const all = verifiedPhotos.concat(verifiedExtraPhotos);
+    // Family photos, tagged with whose they are, go up with the child's.
+    const famUploads = famChoice === 'photos' ? famRoles().flatMap(role => (famFiles[role] || []).filter(p => p.status === 'verified').map(p => ({ role, entry: p }))) : [];
+    const all = verifiedPhotos.concat(verifiedExtraPhotos, famUploads.map(x => x.entry));
     try {
       const blobs = await Promise.all(all.map(e => resizePhoto(e.file, 2400, 0.9)));
       const done = new Array(blobs.length).fill(0);
@@ -1458,7 +1680,10 @@
       const paths = await Promise.all(blobs.map((b, i) => uploadOne(b, f => { done[i] = f; showUpload(done.reduce((a, x) => a + x, 0) / blobs.length); })));
       showUpload(1);
       item.photoPaths = paths.slice(0, verifiedPhotos.length);
-      item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length);
+      item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length, verifiedPhotos.length + verifiedExtraPhotos.length);
+      const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length);
+      famUploads.forEach((x, k) => { const c = item.supportingCharacters.find(sc => sc.role === x.role); if (c && famPaths[k]) c.photoPaths.push(famPaths[k]); });
+      if (item.supportingCharacters.length && !item.supportingCharacters.some(c => c.photoPaths.length)) item.supportingChoice = 'avatar';
       // A small thumbnail so the cart can show the photo on this device (well within storage limits).
       try { const th = await resizePhoto(verifiedPhotos[0].file, 240, 0.8); item.photoThumb = 'data:image/jpeg;base64,' + await blobToBase64(th); } catch (_) {}
     } catch (err) {

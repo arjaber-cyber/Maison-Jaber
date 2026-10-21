@@ -85,13 +85,27 @@
     return (Date.now() - new Date(sinceStage(o)).getTime()) / DAY > s.sla;
   }
   const items = o => { if (Array.isArray(o.items)) return o.items; try { return JSON.parse(o.items || '[]'); } catch (_) { return []; } };
+  /* Family members who appear in the story (Mum, Dad, Grandpa, Grandma): a customer photo or an AI-illustrated character. */
+  const famOf = it => (Array.isArray(it.supportingCharacters) ? it.supportingCharacters : []);
+  const famRole = r => ({ mother: 'Mother', father: 'Father', grandfather: 'Grandfather', grandmother: 'Grandmother' }[r] || r);
+  const famHas = c => Array.isArray(c.photoPaths) && c.photoPaths.length > 0;
+  function famBadge(o) {
+    const all = items(o).flatMap(famOf); if (!all.length) return '';
+    const n = all.filter(famHas).length;
+    return n ? `<span class="op-badge info" title="Family photos the customer added">👪 ${n} family photo${n > 1 ? 's' : ''}</span>` : '<span class="op-badge" title="No family photos: use AI-illustrated characters">👪 AI avatars</span>';
+  }
+  function famBox(it) {
+    const list = famOf(it); if (!list.length) return '';
+    const declined = it.supportingChoice === 'avatar';
+    return `<div class="op-fam"><small>Family in the story${declined ? ' · customer chose AI avatars' : ''}</small>${list.map(c => `<div>${esc(famRole(c.role))}: ${famHas(c) ? '<b>customer photo</b> <span class="op-muted">(below)</span>' : 'AI avatar' + (declined ? '' : ' <span class="op-muted">(no photo added)</span>')}</div>`).join('')}</div>`;
+  }
   const kidsLine = o => items(o).map(i => `${esc(i.childName || '—')} · ${esc(i.story || '')}`).join(' + ') || 'Order';
   const svg = (p, c) => `<svg class="${c || 'ic'}" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 
   /* ---------- State ---------- */
   let pw = null, orders = [];
   const open = new Set(), full = new Map();
-  const f = { q: '', stage: 'active', pay: 'all', type: 'all', view: (function () { try { return localStorage.getItem('hk_admin_view') || 'list'; } catch (_) { return 'list'; } })() };
+  const f = { q: '', stage: 'active', pay: 'all', type: 'all', fam: 'all', view: (function () { try { return localStorage.getItem('hk_admin_view') || 'list'; } catch (_) { return 'list'; } })() };
   const $ = id => document.getElementById(id);
 
   async function api(path, opts) {
@@ -157,12 +171,14 @@
         <label class="op-search">${svg('<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>')}<input type="search" id="op-q" placeholder="Search order no., child, customer, phone, city…" value="${esc(f.q)}"></label>
         <select id="op-pay" aria-label="Payment"><option value="all">All payments</option>${Object.entries(PAY).filter(([k]) => k !== 'awaiting_payment').map(([k, [l]]) => `<option value="${k}">${l}</option>`).join('')}</select>
         <select id="op-type" aria-label="Order type"><option value="all">All order types</option><option value="sale">Sales only</option><option value="free">Free &amp; internal only</option>${Object.entries(TYPES).filter(([k]) => k !== 'sale').map(([k, t]) => `<option value="${k}">${t.label}</option>`).join('')}</select>
+        <select id="op-fam" aria-label="Family photos"><option value="all">Family: all</option><option value="photos">Has family photos</option><option value="avatar">AI avatars only</option></select>
         <div class="op-seg" role="group" aria-label="View"><button data-view="list">List</button><button data-view="board">Board</button></div>
         <button class="op-btn ghost" id="op-refresh" title="Refresh">${svg('<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>')}<span>Refresh</span></button>
         <button class="op-btn ghost" id="op-export">${svg('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>')}<span>Export CSV</span></button>
       </div>
       <div id="op-main"></div>`;
-    $('op-pay').value = f.pay; $('op-type').value = f.type;
+    $('op-pay').value = f.pay; $('op-type').value = f.type; $('op-fam').value = f.fam;
+    $('op-fam').onchange = e => { f.fam = e.target.value; renderMain(); renderFlow(); };
     $('op-type').onchange = e => { f.type = e.target.value; renderMain(); renderFlow(); };
     $('op-q').oninput = e => { f.q = e.target.value; renderMain(); renderFlow(); };
     $('op-pay').onchange = e => { f.pay = e.target.value; renderMain(); renderFlow(); };
@@ -184,6 +200,11 @@
     if (f.type === 'sale' && !isSale(o)) return false;
     if (f.type === 'free' && isSale(o)) return false;
     if (!['all', 'sale', 'free'].includes(f.type) && typeOf(o) !== f.type) return false;
+    if (f.fam !== 'all') {
+      const fam = items(o).flatMap(famOf); const n = fam.filter(famHas).length;
+      if (f.fam === 'photos' && !n) return false;
+      if (f.fam === 'avatar' && (!fam.length || n)) return false;
+    }
     const q = f.q.trim().toLowerCase();
     if (q) {
       const kids = o._items.map(i => `${i.childName || ''} ${i.story || ''}`).join(' ');
@@ -305,7 +326,7 @@
         <div class="op-head-main">
           <div class="op-title">${kidsLine(o)}</div>
           <div class="op-sub"><span class="no">${esc(o.order_number || '')}</span> · ${esc(o.full_name || o.email || '')}${o.city ? ' · ' + esc(o.city) : ''}${o.country ? ', ' + esc(o.country) : ''}</div>
-          <div class="op-badges">${stBadge}<span class="op-badge ${payC}">${payL}</span>${its.length > 1 ? `<span class="op-badge">${its.length} books</span>` : ''}${lang.length ? `<span class="op-badge">${lang.map(l => l === 'ar' ? 'Arabic' : 'English').filter((v, i, a) => a.indexOf(v) === i).join(' + ')} book</span>` : ''}${isSale(o) ? '' : `<span class="op-badge type">${esc(TYPES[typeOf(o)].label)}</span>`}${o.is_gift ? '<span class="op-badge info">Sent as a gift</span>' : ''}${o.promo_code ? `<span class="op-badge">Code ${esc(o.promo_code)}</span>` : ''}${isLate(o) ? `<span class="op-badge warn">${esc(ago(sinceStage(o)))} in this step</span>` : ''}</div>
+          <div class="op-badges">${stBadge}<span class="op-badge ${payC}">${payL}</span>${its.length > 1 ? `<span class="op-badge">${its.length} books</span>` : ''}${lang.length ? `<span class="op-badge">${lang.map(l => l === 'ar' ? 'Arabic' : 'English').filter((v, i, a) => a.indexOf(v) === i).join(' + ')} book</span>` : ''}${famBadge(o)}${isSale(o) ? '' : `<span class="op-badge type">${esc(TYPES[typeOf(o)].label)}</span>`}${o.is_gift ? '<span class="op-badge info">Sent as a gift</span>' : ''}${o.promo_code ? `<span class="op-badge">Code ${esc(o.promo_code)}</span>` : ''}${isLate(o) ? `<span class="op-badge warn">${esc(ago(sinceStage(o)))} in this step</span>` : ''}</div>
         </div>
         <div class="op-head-side">
           <div class="op-amt">${isSale(o) ? fmtAED(aed(o)) : `<span class="op-free">Free</span>`}</div>${isSale(o) ? '' : `<div class="op-date">value ${fmtAED(Math.round(retail(o)))}</div>`}
@@ -322,7 +343,8 @@
             <div class="op-item"><strong>${esc(it.story || '—')}</strong>
               <div class="op-item-m">${esc(it.childName || '—')}${it.childNameTyped && it.childNameTyped !== it.childName ? ' <span class="op-muted">(typed as ' + esc(it.childNameTyped) + ')</span>' : ''}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
               ${it.dedication ? `<div class="op-quote"><small style="display:block; font-style:normal; font-weight:700; opacity:.7;">First-page message (print this instead of the standard one)</small>“${esc(it.dedication)}”</div>` : ''}
-              <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
+              ${famBox(it)}
+              <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length + famOf(it).filter(famHas).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
             </div>`).join('')}</section>
           <section class="op-box"><h4>Customer &amp; delivery</h4><dl class="op-kv">
             <dt>Name</dt><dd>${esc(o.full_name || '—')}</dd>
@@ -463,7 +485,7 @@
   }
 
   async function photos(o, el) {
-    const needs = o._items.some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length);
+    const needs = o._items.some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length || famOf(i).some(famHas));
     if (!needs) return;
     let its = full.get(o.id);
     if (!its) {
@@ -472,9 +494,12 @@
     }
     its.forEach((it, n) => {
       const box = el.querySelector(`[data-photos="${n}"]`); if (!box) return;
-      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' }))]
+      const famPics = famOf(it).flatMap(c => (c.photos || []).map(p => ({ ...p, who: famRole(c.role) })));
+      const famGone = famPics.filter(p => !p.dataUrl).map(p => p.who);
+      const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' })), ...famPics]
         .filter(p => p.dataUrl && (/^data:image\//.test(p.dataUrl) || p.dataUrl.indexOf('https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/sign/') === 0));
-      box.innerHTML = pics.length ? pics.map((p, k) => `<a href="${p.dataUrl}" download="${esc((o.order_number || 'order') + '-' + p.who + '-' + (k + 1))}" title="${esc(p.who)}: click to download"><img src="${p.dataUrl}" alt="${esc(p.who)}"><span>${esc(p.who)}</span></a>`).join('') : '<span class="op-muted">No photos</span>';
+      box.innerHTML = (pics.length ? pics.map((p, k) => `<a href="${p.dataUrl}" download="${esc((o.order_number || 'order') + '-' + p.who + '-' + (k + 1))}" title="${esc(p.who)}: click to download"><img src="${p.dataUrl}" alt="${esc(p.who)}"><span>${esc(p.who)}</span></a>`).join('') : '<span class="op-muted">No photos</span>')
+        + (famGone.length ? `<span class="op-muted" style="display:block; width:100%;">${esc(famGone.join(', '))}: photo deleted (15-day policy)</span>` : '');
     });
   }
 
@@ -482,7 +507,7 @@
     const cell = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
     const head = ['order_number', 'placed', 'order_type', 'counts_as_revenue', 'step', 'step_since', 'payment_status', 'payment_method', 'total_aed', 'list_value_aed', 'code_discount_aed', 'paid_currency', 'paid_amount', 'full_name', 'email', 'phone', 'address', 'city', 'country', 'courier', 'tracking_number', 'is_gift', 'gift_message', 'promo_code', 'bundle_discount_pct', 'books', 'admin_notes'];
     const rows = orders.filter(o => match(o)).map(o => [o.order_number, o.created_at, TYPES[typeOf(o)].label, earned(o) ? 'yes' : 'no', stageOf(o) === 'cancelled' ? 'Cancelled' : S(stageOf(o)).label, sinceStage(o), o.payment_status, o.payment_method, aed(o) == null ? '' : aed(o).toFixed(2), o.list_value_aed ?? '', o.promo_discount_aed ?? '', o.currency, o.amount, o.full_name, o.email, o.phone, o.address, o.city, o.country, o.courier, o.tracking_number, o.is_gift, o.gift_message, o.promo_code, o.bundle_discount_pct,
-      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}`).join('; '), o.admin_notes].map(cell).join(','));
+      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}${famOf(i).length ? ' [family: ' + famOf(i).map(c => famRole(c.role) + ' ' + (famHas(c) ? 'photo' : 'AI avatar')).join(', ') + ']' : ''}`).join('; '), o.admin_notes].map(cell).join(','));
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['﻿' + [head.join(','), ...rows].join('\n')], { type: 'text/csv' }));
     a.download = `hikaya-orders-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
