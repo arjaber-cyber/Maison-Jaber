@@ -301,19 +301,15 @@
   .wizard-nav .btn-back { display: none !important; }
   .wizard-nav { margin-top: 14px; }
   .wizard-nav .btn-next, #continue-order-btn { width: 100%; justify-content: center; }
+  @media (min-width: 901px) {
+    body[data-flow] .order-layout > .order-summary { position: sticky; top: calc(var(--hk-head-h, 100px) + 16px); max-height: calc(100vh - var(--hk-head-h, 100px) - 32px); overflow-y: auto; scrollbar-width: thin; }
+    body[data-flow] .order-summary .summary-cover { width: clamp(180px, calc(100vh - var(--hk-head-h, 100px) - 330px), 100%); margin-inline: auto; }
+  }
   @media (max-width: 560px) { .wizard-step { padding: 0 14px; } .wizard-step.active { padding-bottom: 16px; } .ws-title { font-size: 20px; } }
   /* Compact pronoun choice: a two-option pill row, not big tiles */
   body[data-flow] .gender-toggle { gap: 8px; }
   body[data-flow] .gender-toggle .gender-btn { flex-direction: row; justify-content: center; gap: 8px; padding: 11px 12px; border-radius: 999px; font-size: 14px; }
   body[data-flow] .gender-toggle .gender-btn svg { width: 18px; height: 18px; }
-  /* Age as one-tap chips (the number field stays in the form, out of sight) */
-  .age-native { position: absolute !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-  .age-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .age-chip { min-width: 44px; height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--taupe, #E6D7C4); background: var(--white, #fff); font: inherit; font-size: 15px; font-weight: 700; color: var(--ink, #2E2018); cursor: pointer; }
-  .age-chip:hover { border-color: var(--brand, #8B5A3C); }
-  .age-chip.selected { background: var(--brand, #8B5A3C); border-color: var(--brand, #8B5A3C); color: #fff; }
-  .age-chip:focus-visible { outline: 3px solid var(--coral-deep, #563622); outline-offset: 2px; }
-  .field.age-field { position: relative; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -389,7 +385,8 @@
       <div class="wizard-step" data-step="details" id="wizard-step-details">
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
-          <div class="field"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
+          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
+          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
           <div class="field">
             <span class="field-label" id="gender-label" data-i18n="personalize.gender_label">Which pronouns should we use?</span>
             <div class="gender-toggle" role="group" aria-labelledby="gender-label">
@@ -404,7 +401,6 @@
             </div>
             <input type="hidden" id="child-gender" name="child_gender" />
           </div>
-          <div class="field full age-field"><label class="field-label" for="child-age" id="age-label"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" class="age-native" tabindex="-1" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><div class="age-chips" id="age-chips" role="group" aria-labelledby="age-label"></div><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
@@ -578,6 +574,10 @@
 
   let photoFiles = [];
   let extraPhotoFiles = [];
+  (function () { // keep the story column clear of the sticky site header
+    const setH = () => { const h = document.querySelector('header, .site-header, #hk-head'); const v = h && getComputedStyle(h).position !== 'static' ? h.getBoundingClientRect().height : 0; document.documentElement.style.setProperty('--hk-head-h', Math.round(v) + 'px'); };
+    setH(); window.addEventListener('load', setH); window.addEventListener('resize', setH); setTimeout(setH, 1500);
+  })();
   var accReady = false; // set once the wizard state below exists
   const ageInputEl = document.getElementById('child-age');
 
@@ -623,22 +623,6 @@
     return t('pz.age_err', 'Please enter a whole-number age from {min} to {max} for this story.').replace('{min}', lim.min).replace('{max}', lim.max);
   }
   let ageTouched = false;
-  function renderAgeChips(st) {
-    const box = document.getElementById('age-chips'); if (!box) return;
-    const key = st.lim.min + '-' + st.lim.max;
-    if (box.dataset.range !== key) {
-      box.dataset.range = key;
-      let html = '';
-      for (let a = Number(st.lim.min); a <= Number(st.lim.max); a++) html += `<button type="button" class="age-chip" data-age="${a}" aria-pressed="false">${a}</button>`;
-      box.innerHTML = html;
-      box.querySelectorAll('.age-chip').forEach(b => b.addEventListener('click', () => {
-        ageInputEl.value = b.dataset.age; ageTouched = true;
-        ageInputEl.dispatchEvent(new Event('input', { bubbles: true }));
-      }));
-    }
-    const cur = String(ageInputEl.value || '').trim();
-    box.querySelectorAll('.age-chip').forEach(b => { const on = b.dataset.age === cur; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-  }
   function renderAge(showError) {
     const st = ageState();
     ageInputEl.min = st.lim.min; ageInputEl.max = st.lim.max;
@@ -648,7 +632,6 @@
     const show = !st.ok && !st.empty && (showError || ageTouched);
     errEl.hidden = !show; errEl.textContent = show ? ageErrorText(st.lim) : '';
     if (show) ageInputEl.setAttribute('aria-invalid', 'true'); else ageInputEl.removeAttribute('aria-invalid');
-    renderAgeChips(st);
     return st;
   }
 
