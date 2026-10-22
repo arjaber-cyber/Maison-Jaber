@@ -37,6 +37,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   const pixelConfigured = cfg.META_PIXEL_ID && cfg.META_PIXEL_ID !== '000000000000000';
   const clarityConfigured = !!cfg.CLARITY_PROJECT_ID;
   let gaLoaded = false;
+  const earlyEvents = []; // GA events fired before consent, replayed if GA loads later
   let pixelLoaded = false;
   let clarityLoaded = false;
   const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
@@ -76,7 +77,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
     window.gtag('config', cfg.GA_MEASUREMENT_ID);
-    firePageEvents();
+    // Shop steps that happened before the visitor accepted cookies.
+    earlyEvents.forEach(function (ev) { window.gtag('event', ev[0], ev[1]); });
+    earlyEvents.length = 0;
   }
 
   function loadClarity() {
@@ -141,6 +144,33 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     /* eslint-enable */
   }
 
+  /* Cookie-free visitor counter (netlify/functions/visit.js). Counts every
+     visitor, consent or not, because nothing here identifies anyone: no
+     cookies, nothing stored on the device, and the server only keeps an
+     anonymous daily hash. Page views + shop steps only. */
+  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, whatsapp_click: 1, newsletter_signup: 1 };
+  let noCount = false;
+  try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
+  function countEvent(name, params) {
+    if (untracked || noCount || !COUNTED[name]) return;
+    params = params || {};
+    let q = null; try { q = new URLSearchParams(location.search); } catch (e) {}
+    const body = JSON.stringify({
+      e: name,
+      p: location.pathname,
+      r: document.referrer || '',
+      us: q && q.get('utm_source'), um: q && q.get('utm_medium'), uc: q && q.get('utm_campaign'),
+      ck: !!(q && (q.get('fbclid') || q.get('gclid'))),
+      l: (document.documentElement.lang || '').slice(0, 5),
+      s: params.step || null, st: params.story || null, v: params.value != null ? params.value : null,
+    });
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon('/.netlify/functions/visit', new Blob([body], { type: 'text/plain' }))) return;
+    } catch (e) {}
+    try { fetch('/.netlify/functions/visit', { method: 'POST', body: body, keepalive: true, headers: { 'Content-Type': 'text/plain' } }).catch(function () {}); } catch (e) {}
+  }
+  countEvent('pageview');
+
   function tryLoadAll() {
     if (untracked) return;
     loadClarity();
@@ -148,7 +178,10 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     loadPixel();
   }
 
-  document.addEventListener('DOMContentLoaded', tryLoadAll);
+  document.addEventListener('DOMContentLoaded', function () {
+    tryLoadAll();
+    if (!untracked) firePageEvents(); // shop steps are counted with or without cookie consent
+  });
   // Consent granted later in the same visit (e.g. via the banner, or
   // reopening Cookie Settings) should start tracking immediately, not
   // require a page reload.
@@ -160,7 +193,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // Usage: window.hikayaTrackEvent('begin_checkout', { value: 149, currency: 'AED' })
   window.hikayaTrackEvent = function (eventName, params) {
     params = params || {};
+    countEvent(eventName, params);
     if (gaLoaded && window.gtag) window.gtag('event', eventName, params);
+    else if (earlyEvents.length < 30) earlyEvents.push([eventName, params]);
     if (clarityLoaded && window.clarity) window.clarity('event', eventName);
     if (pixelLoaded && window.fbq) {
       // Meta uses its own standard-event names for the common ones; fall
