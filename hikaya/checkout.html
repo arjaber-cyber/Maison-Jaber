@@ -182,8 +182,31 @@
   .cod-box svg { width: 26px; height: 26px; stroke: var(--coral); fill: none; flex-shrink: 0; margin-top: 2px; }
   .cod-box h4 { font-size: 14.5px; margin-bottom: 4px; }
   .cod-box p { font-size: 12.5px; color: var(--ink-soft); margin: 0; }
-  .pay-brands { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 8px; direction: ltr; }
-  .pay-brands span { font-size: 11px; font-weight: 700; letter-spacing: .02em; color: var(--ink); background: #fff; border: 1px solid rgba(0,0,0,.12); border-radius: 6px; padding: 3px 8px; line-height: 1.3; }
+  .pay-secure-note { font-size: 13px; color: var(--ink-soft); margin: -4px 0 12px; }
+  .pay-list { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; }
+  .pay-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 16px 18px; background: #fff; border: 0; border-top: 1px solid var(--line); font-family: inherit; font-size: 14.5px; font-weight: 600; color: var(--ink); cursor: pointer; text-align: start; position: relative; }
+  .pay-list > .pay-row:first-child { border-top: 0; }
+  .pay-row.active { background: var(--bg-soft); box-shadow: inset 0 0 0 1.5px var(--ink); z-index: 1; }
+  .pay-radio { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.25); background: #fff; flex-shrink: 0; position: relative; }
+  .pay-row.active .pay-radio { border: 6px solid var(--ink); }
+  .pay-row-label { flex: 1; min-width: 0; }
+  .pay-chips { display: flex; gap: 5px; flex-shrink: 0; direction: ltr; }
+  .pay-chip { display: inline-flex; align-items: center; justify-content: center; height: 24px; min-width: 38px; padding: 0 7px; border-radius: 4px; font-size: 10.5px; font-weight: 800; line-height: 1; white-space: nowrap; border: 1px solid rgba(0,0,0,.12); }
+  .pay-chip.c-visa { background: #1434CB; color: #fff; font-style: italic; letter-spacing: .04em; border-color: #1434CB; }
+  .pay-chip.c-mc { background: #222; color: #fff; border-color: #222; font-size: 9.5px; }
+  .pay-chip.c-apple { background: #000; color: #fff; border-color: #000; }
+  .pay-chip.c-gpay { background: #fff; color: #3c4043; }
+  .pay-chip.c-tabby { background: #3EEDBF; color: #111; border-color: #3EEDBF; font-size: 12px; }
+  .pay-panel { background: var(--bg-soft); border-top: 1px solid var(--line); padding: 4px 6px; }
+  .pay-panel .cod-box { background: transparent; border: 0; padding: 14px 12px; justify-content: center; text-align: center; }
+  .pay-panel .cod-box > svg, .pay-panel .cod-box h4 { display: none; }
+  .pay-panel .cod-box p { font-size: 13.5px; color: var(--ink); }
+  .pay-panel .cod-box p + p { margin-top: 6px; color: var(--ink-soft); font-size: 12.5px; }
+  .pay-panel .card-fields { border: 0; background: transparent; }
+  @media (max-width: 480px) {
+    .pay-row { padding: 14px; gap: 10px; font-size: 14px; }
+    .pay-chip.c-apple, .pay-chip.c-gpay { display: none; }
+  }
 
   .other-region-box {
     border: 1.5px dashed rgba(184,149,75,0.4); border-radius: var(--radius); padding: 20px; text-align: center;
@@ -768,6 +791,13 @@
     tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tamara', 'Tamara') },
   };
 
+  // Brand marks shown on each payment row (plain styled text, not image logos).
+  const PAY_CHIPS = {
+    ziina: [['c-visa', 'VISA'], ['c-mc', 'Mastercard'], ['c-apple', 'Apple Pay'], ['c-gpay', 'G Pay']],
+    card: [['c-visa', 'VISA'], ['c-mc', 'Mastercard']],
+    tabby: [['c-tabby', 'tabby']],
+  };
+
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
     const region = REGIONS[currentRegionKey];
@@ -783,18 +813,7 @@
       return;
     }
 
-    let selectorHtml = '';
-    if (methods.length > 1) {
-      if (!selectedPaymentMethod || !methods.includes(selectedPaymentMethod)) {
-        selectedPaymentMethod = methods[0];
-      }
-      selectorHtml = `<div class="pay-methods">${methods.map(m => `
-        <button type="button" class="pay-method-btn ${m === selectedPaymentMethod ? 'active' : ''}" data-method="${m}">
-          ${METHOD_META[m].icon} ${METHOD_META[m].label()}
-        </button>`).join('')}</div>`;
-    } else {
-      selectedPaymentMethod = methods[0];
-    }
+    if (!selectedPaymentMethod || !methods.includes(selectedPaymentMethod)) selectedPaymentMethod = methods[0];
 
     let bodyHtml = '';
     if (fpAll.total === 0 && methods.includes('ziina')) {
@@ -820,9 +839,7 @@
         <div class="cod-box ziina-box">
           ${METHOD_META.ziina.icon}
           <div>
-            <h4>${t('pg.ziina_title', 'Pay by card')}</h4>
-            <div class="pay-brands" aria-hidden="true"><span>VISA</span><span>Mastercard</span><span>Apple Pay</span><span>Google Pay</span></div>
-            <p>${t('pg.ziina_body', "Visa, Mastercard, Apple Pay or Google Pay. You'll pay on Ziina's secure page, and we never see your card details.")}</p>
+            <p>${t('pg.ziina_redirect_note', "You'll be redirected to Ziina's secure page to pay by card, Apple Pay or Google Pay and complete your purchase.")}</p>
             ${conv}
           </div>
         </div>`;
@@ -906,11 +923,25 @@
       placeOrderBtn.textContent = `${t('checkout.pay_with', 'Pay with')} ${bnplName}`;
     }
 
-    paymentArea.innerHTML = selectorHtml + bodyHtml;
+    // Shopify-style list: one row per method (radio, name, brand marks); the chosen row opens its panel.
+    const rows = methods.map(m => {
+      const on = m === selectedPaymentMethod;
+      const chips = (PAY_CHIPS[m] || []).map(c => `<span class="pay-chip ${c[0]}">${c[1]}</span>`).join('');
+      return `
+        <button type="button" class="pay-row ${on ? 'active' : ''}" data-method="${m}" role="radio" aria-checked="${on}">
+          <span class="pay-radio" aria-hidden="true"></span>
+          <span class="pay-row-label">${METHOD_META[m].label()}</span>
+          ${chips ? `<span class="pay-chips" aria-hidden="true">${chips}</span>` : ''}
+        </button>
+        ${on ? `<div class="pay-panel">${bodyHtml}</div>` : ''}`;
+    }).join('');
+    paymentArea.innerHTML = `<p class="pay-secure-note">${t('pg.pay_secure_note', 'All transactions are secure and encrypted.')}</p>
+      <div class="pay-list" role="radiogroup" aria-label="${t('checkout.payment_title', 'Payment')}">${rows}</div>`;
     if (cartIsEmpty()) placeOrderBtn.disabled = true; // QA-03
 
-    paymentArea.querySelectorAll('.pay-method-btn').forEach(btn => {
+    paymentArea.querySelectorAll('.pay-row').forEach(btn => {
       btn.addEventListener('click', () => {
+        if (selectedPaymentMethod === btn.dataset.method) return;
         selectedPaymentMethod = btn.dataset.method;
         renderPaymentSection();
       });
