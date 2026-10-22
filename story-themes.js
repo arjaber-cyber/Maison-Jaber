@@ -2,7 +2,7 @@
    The admin dashboard turns a story's free-text "collection label" into these
    theme IDs, and the storefront translates the IDs (EN/AR) everywhere a theme
    is shown: cards, filters, Our World, search, the personalise picker.
-   Groups match the six site themes in test5/chrome.js (THEMES). */
+   Groups match the six site themes in hikaya/chrome.js (THEMES). */
 (function () {
   const GROUPS = [
     { id: 'courage', en: 'Courage', ar: 'الشجاعة' },

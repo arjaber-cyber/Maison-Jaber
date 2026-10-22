@@ -2,7 +2,7 @@
 <!-- Public Hikaya shop pages. During the soft launch these are still served with
      "X-Robots-Tag: noindex" (LAUNCH SWITCH in netlify.toml); they are listed now so
      search engines pick them up as soon as that switch is removed on 1 Nov 2026.
-     Add a story URL here whenever a new story goes live. /test5/ is staging: never list it. -->
+     Add a story URL here whenever a new story goes live. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://maison-jaber.com/</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/</loc></url>

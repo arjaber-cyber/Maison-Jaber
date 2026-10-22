@@ -5,8 +5,7 @@
 # QA 19 Oct 2026 (route fix): Netlify "Pretty URLs" post-processing rewrote every
 # relative link in the served HTML against the files' real folder, so
 # href="stories.html" was published as href='/test5/stories' on /hikaya/ pages.
-# Keep it off: relative links then resolve inside whichever path the page is
-# served from (/hikaya/ in production, /test5/ on staging).
+# Keep it off: relative links then resolve inside /hikaya/.
 [build.processing.html]
   pretty_urls = false
 
@@ -21,11 +20,6 @@
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"
 
-# Staging copies of the site must never be indexed by search engines.
-[[headers]]
-  for = "/test5/*"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
 # ============================ LAUNCH SWITCH ============================
 # Soft launch: the shop is public at /hikaya/ but kept out of Google until the
 # 1 Nov 2026 launch. These two header blocks are the ONLY thing keeping the
@@ -61,21 +55,6 @@
     X-Robots-Tag = "noindex, nofollow"
 
 # Old fixed story pages (stale titles and EUR prices) now point to the live story page.
-[[redirects]]
-  from = "/test5/story-bravest-little-one.html"
-  to = "/test5/story.html?s=door-of-a-thousand-stars"
-  status = 301
-  force = true
-[[redirects]]
-  from = "/test5/story-cloud-ship.html"
-  to = "/test5/story.html?s=why-is-baby-looking-at-me"
-  status = 301
-  force = true
-[[redirects]]
-  from = "/test5/story-star-who-couldnt-sleep.html"
-  to = "/test5/story.html?s=to-the-rescue"
-  status = 301
-  force = true
 
 [[headers]]
   for = "/.well-known/apple-developer-merchantid-domain-association"
@@ -88,7 +67,7 @@
   status = 200
   force = true
 
-# Soft launch: maison-jaber.com/hikaya/ serves the redesign (files live in /test5/).
+# Soft launch: maison-jaber.com/hikaya/ serves the shop (files live in /hikaya/).
 [[redirects]]
   from = "/hikaya/story-bravest-little-one.html"
   to = "/hikaya/story.html?s=door-of-a-thousand-stars"
@@ -104,8 +83,15 @@
   to = "/hikaya/story.html?s=to-the-rescue"
   status = 301
   force = true
+# /test5/ was the staging copy; it is retired (22 Oct 2026) and the files now live in /hikaya/.
+# Old /test5/ links (emails, bookmarks, ads) go to the same page on /hikaya/.
 [[redirects]]
-  from = "/hikaya/*"
-  to = "/test5/:splat"
-  status = 200
+  from = "/test5"
+  to = "/hikaya/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/test5/*"
+  to = "/hikaya/:splat"
+  status = 301
   force = true

@@ -4,7 +4,7 @@
 // Why: /hikaya without the slash still served the homepage, but its relative links
 // (hikaya.css, images/...) then resolved against the site root and 404'd, so the
 // visitor got an unstyled page. Instagram ad clicks were landing there. The inline
-// script in test5/index.html already fixes this for browsers that run JavaScript,
+// script in hikaya/index.html already fixes this for browsers that run JavaScript,
 // but the browser's preloader and link-preview bots fetch the CSS before it runs.
 // /Hikaya (capital H) and /Hikaya/... were plain 404s.
 //

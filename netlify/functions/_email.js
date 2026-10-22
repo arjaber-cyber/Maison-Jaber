@@ -11,7 +11,7 @@
 //        RESEND_API_KEY = <your Resend API key>
 //        EMAIL_FROM     = Hikaya by Maison Jaber <hello@maison-jaber.com>   (optional, this is the default)
 //        CONTACT_INBOX_EMAIL = info@maison-jaber.com                        (optional, this is the default)
-//        SITE_URL       = https://maison-jaber.com/                         (optional; set at launch when the redesign leaves /test5/)
+//        SITE_URL       = https://maison-jaber.com/                         (optional)
 //   3. Redeploy. Until RESEND_API_KEY is set, sendEmail() logs a warning
 //      and returns without sending -- so nothing crashes, it just quietly
 //      doesn't send until it's configured.
@@ -19,7 +19,7 @@
 /* Mailboxes (Zoho): hello@ is the customer-facing address, info@ receives the business alerts. */
 const CUSTOMER_EMAIL = 'hello@maison-jaber.com';
 const OWNER_INBOX = process.env.CONTACT_INBOX_EMAIL || 'info@maison-jaber.com';
-/* Where the live shop pages are: the public shop is maison-jaber.com/hikaya/ (served from the /test5/ files). */
+/* Where the live shop pages are: the public shop is maison-jaber.com/hikaya/. */
 const SITE_URL = (process.env.SITE_URL || 'https://maison-jaber.com/hikaya/').replace(/\/?$/, '/');
 const WHATSAPP = '971508011769';
 const WHATSAPP_DISPLAY = '+971 50 801 1769';
@@ -85,7 +85,7 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
 }
 
 /* ---------- Template building blocks ----------
-   Same design system as the website (test5/hikaya.css): ivory background, brand-brown
+   Same design system as the website (hikaya/hikaya.css): ivory background, brand-brown
    buttons, Cormorant Garamond headings, Manrope body, Caveat accents, dark-brown footer.
    Inline styles only, because email clients ignore stylesheets. Web fonts load in Apple
    Mail / iOS; Gmail and Outlook fall back to Georgia and Arial. */

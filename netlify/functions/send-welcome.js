@@ -1,7 +1,7 @@
 // netlify/functions/send-welcome.js
 //
 // One-time welcome email after a customer's first sign-in (Google, Facebook
-// or email link). Called by test5/welcome.js with the customer's session.
+// or email link). Called by hikaya/welcome.js with the customer's session.
 //
 // Sent once per account: the account is marked with app_metadata.welcome_sent
 // (no extra table needed). Accounts created more than 7 days ago never get it,
