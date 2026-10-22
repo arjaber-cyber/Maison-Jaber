@@ -866,7 +866,7 @@ body.dev .dev-only { display: block; }
 body[data-flow] .summary-cover { aspect-ratio: 1 / 1; background-size: cover; background-position: center; }
 body[data-flow] .story-pick .cover { aspect-ratio: 1 / 1; height: auto; background-size: cover; background-position: center; }
 body[data-flow] .story-pick .cover img { width: 100%; height: 100%; object-fit: cover; }
-body[data-flow] .summary-book .cover-mini { aspect-ratio: 1 / 1; height: auto; background-size: cover; background-position: center; }
+body[data-flow] .summary-book .cover-mini { width: 84px; height: 84px; aspect-ratio: 1 / 1; align-self: flex-start; background-size: cover; background-position: center; }
 .inside .pv-grid button { aspect-ratio: 1 / 1; }
 .inside .pv-grid img { object-fit: cover; }
 
