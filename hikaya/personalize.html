@@ -279,6 +279,41 @@
   .nm-actions .btn-back { font-size: 12.5px; padding: 12px 14px; }
   .nm-actions .btn-primary { flex: 1; justify-content: center; }
   .review-edit { font-size: 11.5px; text-decoration: underline; color: var(--ink-soft); font-weight: 700; margin-left: 8px; cursor: pointer; background: none; border: none; }
+  /* ===== One-page accordion (22 Oct 2026): every step sits on this page as a collapsible card.
+     Only the open step shows its body; finished steps collapse to a one-line summary with Edit. ===== */
+  body[data-flow] .wizard-progress, body[data-flow] .wizard-count, #wizard-title, #wizard-sub { display: none !important; }
+  .wizard-step { display: block; background: var(--white, #fff); border: 1px solid var(--taupe, #E6D7C4); border-radius: 16px; margin: 0 0 12px; padding: 0 20px; transition: box-shadow .2s ease, border-color .2s ease; }
+  .wizard-step.ws-off { display: none; }
+  .wizard-step.active { padding-bottom: 20px; border-color: var(--brand, #8B5A3C); box-shadow: 0 10px 26px rgba(70,45,25,.08); }
+  .wizard-step:not(.active) > :not(.ws-head) { display: none !important; }
+  .ws-head { display: flex; align-items: center; gap: 12px; width: 100%; padding: 16px 0; background: none; border: 0; text-align: start; font: inherit; color: var(--ink, #2E2018); cursor: default; }
+  .ws-head.can-open { cursor: pointer; }
+  .ws-head:focus-visible { outline: 3px solid var(--coral-deep, #563622); outline-offset: 2px; border-radius: 10px; }
+  .ws-num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; border: 1px solid var(--taupe, #E6D7C4); color: var(--ink-soft, #7d6a5a); background: var(--card, #FBF6EE); }
+  .wizard-step.active .ws-num, .wizard-step.ws-done .ws-num { background: var(--brand, #8B5A3C); border-color: var(--brand, #8B5A3C); color: #fff; }
+  .ws-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+  .ws-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; line-height: 1.15; }
+  .ws-sub { font-size: 13px; font-weight: 500; color: var(--ink-soft, #7d6a5a); line-height: 1.45; }
+  .ws-sum { font-size: 13px; font-weight: 600; color: var(--ink-soft, #7d6a5a); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ws-edit { margin-inline-start: auto; font-size: 13px; font-weight: 700; color: var(--brand, #8B5A3C); text-decoration: underline; flex-shrink: 0; }
+  .wizard-step.ws-locked .ws-head { opacity: .5; }
+  .wizard-step.active .ws-head { padding-bottom: 12px; }
+  .wizard-nav .btn-back { display: none !important; }
+  .wizard-nav { margin-top: 14px; }
+  .wizard-nav .btn-next, #continue-order-btn { width: 100%; justify-content: center; }
+  @media (max-width: 560px) { .wizard-step { padding: 0 14px; } .wizard-step.active { padding-bottom: 16px; } .ws-title { font-size: 20px; } }
+  /* Compact pronoun choice: a two-option pill row, not big tiles */
+  body[data-flow] .gender-toggle { gap: 8px; }
+  body[data-flow] .gender-toggle .gender-btn { flex-direction: row; justify-content: center; gap: 8px; padding: 11px 12px; border-radius: 999px; font-size: 14px; }
+  body[data-flow] .gender-toggle .gender-btn svg { width: 18px; height: 18px; }
+  /* Age as one-tap chips (the number field stays in the form, out of sight) */
+  .age-native { position: absolute !important; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .age-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .age-chip { min-width: 44px; height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--taupe, #E6D7C4); background: var(--white, #fff); font: inherit; font-size: 15px; font-weight: 700; color: var(--ink, #2E2018); cursor: pointer; }
+  .age-chip:hover { border-color: var(--brand, #8B5A3C); }
+  .age-chip.selected { background: var(--brand, #8B5A3C); border-color: var(--brand, #8B5A3C); color: #fff; }
+  .age-chip:focus-visible { outline: 3px solid var(--coral-deep, #563622); outline-offset: 2px; }
+  .field.age-field { position: relative; }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -354,8 +389,7 @@
       <div class="wizard-step" data-step="details" id="wizard-step-details">
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
-          <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
-          <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
+          <div class="field"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
           <div class="field">
             <span class="field-label" id="gender-label" data-i18n="personalize.gender_label">Which pronouns should we use?</span>
             <div class="gender-toggle" role="group" aria-labelledby="gender-label">
@@ -370,6 +404,7 @@
             </div>
             <input type="hidden" id="child-gender" name="child_gender" />
           </div>
+          <div class="field full age-field"><label class="field-label" for="child-age" id="age-label"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" class="age-native" tabindex="-1" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><div class="age-chips" id="age-chips" role="group" aria-labelledby="age-label"></div><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="details">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
@@ -543,6 +578,7 @@
 
   let photoFiles = [];
   let extraPhotoFiles = [];
+  var accReady = false; // set once the wizard state below exists
   const ageInputEl = document.getElementById('child-age');
 
   // Safe wrapper: never throws even if i18n.js hasn't finished loading yet.
@@ -587,6 +623,22 @@
     return t('pz.age_err', 'Please enter a whole-number age from {min} to {max} for this story.').replace('{min}', lim.min).replace('{max}', lim.max);
   }
   let ageTouched = false;
+  function renderAgeChips(st) {
+    const box = document.getElementById('age-chips'); if (!box) return;
+    const key = st.lim.min + '-' + st.lim.max;
+    if (box.dataset.range !== key) {
+      box.dataset.range = key;
+      let html = '';
+      for (let a = Number(st.lim.min); a <= Number(st.lim.max); a++) html += `<button type="button" class="age-chip" data-age="${a}" aria-pressed="false">${a}</button>`;
+      box.innerHTML = html;
+      box.querySelectorAll('.age-chip').forEach(b => b.addEventListener('click', () => {
+        ageInputEl.value = b.dataset.age; ageTouched = true;
+        ageInputEl.dispatchEvent(new Event('input', { bubbles: true }));
+      }));
+    }
+    const cur = String(ageInputEl.value || '').trim();
+    box.querySelectorAll('.age-chip').forEach(b => { const on = b.dataset.age === cur; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+  }
   function renderAge(showError) {
     const st = ageState();
     ageInputEl.min = st.lim.min; ageInputEl.max = st.lim.max;
@@ -596,6 +648,7 @@
     const show = !st.ok && !st.empty && (showError || ageTouched);
     errEl.hidden = !show; errEl.textContent = show ? ageErrorText(st.lim) : '';
     if (show) ageInputEl.setAttribute('aria-invalid', 'true'); else ageInputEl.removeAttribute('aria-invalid');
+    renderAgeChips(st);
     return st;
   }
 
@@ -1023,6 +1076,7 @@
       document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
       btn.classList.add('selected'); btn.setAttribute('aria-pressed', 'true');
       document.getElementById('child-gender').value = btn.dataset.value;
+      if (accReady) renderWizardProgress();
     });
   });
 
@@ -1389,6 +1443,7 @@
       && famOk()
       && langState().ok;
     continueBtn.disabled = !ready;
+    if (accReady) renderWizardProgress();
     if (stillChecking) {
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
     } else {
@@ -1416,6 +1471,7 @@
     return steps;
   }
   let currentStepName = 'story';
+  accReady = true;
 
   const STEP_LABELS = {
     story: () => t('lx.st_story', 'Story'),
@@ -1426,19 +1482,73 @@
     review: () => t('lx.st_review', 'Review'),
   };
 
+  /* One-page accordion: each active step gets a header card. Finished steps show a short
+     summary and can be reopened; a step only opens once every step before it is complete. */
+  function stepComplete(step) {
+    const storyChosen = document.getElementById('story-input').value;
+    const info = STORY_CATALOG[storyChosen];
+    switch (step) {
+      case 'story': return !!storyChosen;
+      case 'details': return nameOk() && ageState().ok;
+      case 'photo': return photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked;
+      case 'family': return famOk();
+      case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && extraPhotoFiles.some(p => p.status === 'verified')));
+      default: return false;
+    }
+  }
+  function stepTitle(step) {
+    if (step === 'family') { const tx = famText(); return [tx.stepTitle, tx.stepSub]; }
+    const h = STEP_HEADINGS[step]; if (!h) return ['', ''];
+    const tt = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
+    return [tt(h[0], h[1]), tt(h[2], h[3])];
+  }
+  function stepSummary(step) {
+    const info = STORY_CATALOG[document.getElementById('story-input').value];
+    if (step === 'story') return storyDisplayName(document.getElementById('story-input').value) || '';
+    if (step === 'details') {
+      const g = document.querySelector('.gender-btn.selected span');
+      return [nameInput.value.trim(), ageInputEl.value ? t('personalize.summary_age_label', 'Age') + ' ' + ageInputEl.value : '', g ? g.textContent.trim() : ''].filter(Boolean).join(' · ');
+    }
+    if (step === 'photo') { const n = photoFiles.filter(p => p.status === 'verified').length; return n ? '✓ ' + t('personalize.summary_photos', 'Photos') + ': ' + n : ''; }
+    if (step === 'family') { if (!famChoice) return ''; const tx = famText(); return famChoice === 'photos' ? tx.rowPhoto : tx.rowAvatar; }
+    if (step === 'extra' && info && extraCharChoice) return extraCharChoice === 'yes' ? t('personalize.summary_extra_yes', 'Real photo (+fee)') : t('personalize.summary_extra_no', 'Generated for you');
+    return '';
+  }
+  function openStep(step) {
+    if (step === currentStepName) return;
+    showWizardStep(step);
+  }
   function renderWizardProgress() {
-    const firstBack = document.querySelector('[data-step-back="details"]');
-    if (firstBack) firstBack.style.visibility = storyLocked ? 'hidden' : '';
     const steps = activeSteps();
-    const currentIndex = steps.indexOf(currentStepName);
-    document.getElementById('wizard-progress').innerHTML = steps.map((s, i) => `
-      <div class="w-step ${i < currentIndex ? 'done' : i === currentIndex ? 'active' : ''}"${i === currentIndex ? ' aria-current="step"' : ''}>
-        <span class="w-dot">${i < currentIndex ? '&#10003;' : i + 1}</span><span>${STEP_LABELS[s]()}</span>
-      </div>
-      ${i < steps.length - 1 ? '<div class="w-line"></div>' : ''}
-    `).join('');
-    const cnt = document.getElementById('wizard-count');
-    if (cnt) cnt.textContent = t('lx.step_of', 'Step {n} of {total}').replace('{n}', currentIndex + 1).replace('{total}', steps.length) + ' · ' + STEP_LABELS[currentStepName]();
+    document.querySelectorAll('.wizard-step[data-step]').forEach(el => {
+      const step = el.dataset.step;
+      const idx = steps.indexOf(step);
+      el.classList.toggle('ws-off', idx === -1);
+      if (idx === -1) return;
+      let head = el.querySelector(':scope > .ws-head');
+      if (!head) {
+        head = document.createElement('button');
+        head.type = 'button'; head.className = 'ws-head';
+        head.innerHTML = '<span class="ws-num"></span><span class="ws-txt"><span class="ws-title"></span><span class="ws-sub"></span><span class="ws-sum"></span></span><span class="ws-edit"></span>';
+        head.addEventListener('click', () => { if (head.classList.contains('can-open')) openStep(step); });
+        el.insertBefore(head, el.firstChild);
+      }
+      const isActive = step === currentStepName;
+      const reachable = steps.slice(0, idx).every(stepComplete);
+      const done = !isActive && step !== 'review' && reachable && stepComplete(step);
+      el.classList.toggle('ws-done', done);
+      el.classList.toggle('ws-locked', !isActive && !reachable);
+      head.classList.toggle('can-open', !isActive && reachable);
+      head.disabled = !isActive && !reachable;
+      head.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      if (isActive) head.setAttribute('aria-current', 'step'); else head.removeAttribute('aria-current');
+      const [title, sub] = stepTitle(step);
+      head.querySelector('.ws-num').innerHTML = done ? '&#10003;' : String(idx + 1);
+      head.querySelector('.ws-title').textContent = title;
+      const subEl = head.querySelector('.ws-sub'); subEl.textContent = sub; subEl.hidden = !isActive;
+      const sum = head.querySelector('.ws-sum'); const sv = isActive ? '' : stepSummary(step); sum.textContent = sv; sum.hidden = !sv;
+      const ed = head.querySelector('.ws-edit'); ed.textContent = t('personalize.wizard_edit', 'Edit'); ed.hidden = !(done);
+    });
   }
 
   const STEP_HEADINGS = {
@@ -1492,8 +1602,13 @@
     if (stepName === 'family') renderFam();
     if (stepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
     renderWizardProgress();
-    const formCol = document.querySelector('.order-form-col');
-    if (formCol) formCol.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (target) requestAnimationFrame(() => {
+      const header = document.querySelector('header, .site-header, #hk-head');
+      const offset = (header && getComputedStyle(header).position !== 'static' ? header.getBoundingClientRect().height : 0) + 12;
+      const y = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      const head = target.querySelector(':scope > .ws-head'); if (head) head.focus({ preventScroll: true });
+    });
   }
 
   function goNext(fromStep) {
@@ -1506,7 +1621,11 @@
     if (fromStep === 'story' && !document.getElementById('story-input').value) return;
     const steps = activeSteps();
     const idx = steps.indexOf(fromStep);
-    if (idx > -1 && idx < steps.length - 1) showWizardStep(steps[idx + 1]);
+    if (idx > -1 && idx < steps.length - 1) {
+      // Jump to the first unfinished step after this one (after an Edit, finished steps stay closed).
+      const next = steps.slice(idx + 1).find(st => st === 'review' || !stepComplete(st)) || steps[idx + 1];
+      showWizardStep(next);
+    }
   }
   function goBack(fromStep) {
     const steps = activeSteps();
