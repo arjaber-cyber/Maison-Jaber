@@ -1627,11 +1627,17 @@
   function reviewMsgValue() {
     const d = document.getElementById('dedication').value.trim();
     if (d) return '“' + (d.length > 60 ? d.slice(0, 60) + '…' : d) + '”';
-    return t('qa.msg_ours_short', "We'll write one for {name}").replace('{name}', bookName() || nameInput.value.trim() || t('lx.st_child', 'your child'));
+    return document.documentElement.lang === 'ar' ? 'تكتبها حكاية' : 'Written by Hikaya';
+  }
+  function msgEditLabel() {
+    const ar = document.documentElement.lang === 'ar';
+    if (document.getElementById('dedication').value.trim()) return t('personalize.wizard_edit', 'Edit');
+    return ar ? 'اكتبوا رسالتكم' : 'Write your own';
   }
   document.getElementById('dedication').addEventListener('input', () => {
     const b = document.querySelector('#review-summary .review-edit[data-goto="msg"]');
     if (b && b.previousSibling) b.previousSibling.textContent = reviewMsgValue();
+    if (b) b.textContent = msgEditLabel();
   });
   ['msg-cancel', 'msg-inspire'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('click', () => setTimeout(() => document.getElementById('dedication').dispatchEvent(new Event('input')), 0)); });
   function renderReviewSummary() {
@@ -1671,7 +1677,7 @@
     const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
     document.getElementById('nx3').textContent = t('lx.nx3', 'Delivered gift-boxed: {eta}.').replace('{eta}', eta.charAt(0).toLowerCase() === eta.charAt(0) ? eta : eta.charAt(0).toLowerCase() + eta.slice(1));
     document.getElementById('review-summary').innerHTML = rows.map(r => `
-      <div class="review-row"><span>${escHtml(r.label)}</span><span>${escHtml(r.value)}<button type="button" class="review-edit" data-goto="${r.step}">${t('personalize.wizard_edit', 'Edit')}</button></span></div>
+      <div class="review-row"><span>${escHtml(r.label)}</span><span>${escHtml(r.value)}<button type="button" class="review-edit" data-goto="${r.step}">${r.step === 'msg' ? escHtml(msgEditLabel()) : t('personalize.wizard_edit', 'Edit')}</button></span></div>
     `).join('');
     document.querySelectorAll('.review-edit').forEach(btn => {
       btn.addEventListener('click', () => {
