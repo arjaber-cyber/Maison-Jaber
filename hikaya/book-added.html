@@ -92,6 +92,29 @@
   .cross-sell-card .thumb.lullaby { background: linear-gradient(160deg, #d8bdd0, #7d5a6b); }
   .cross-sell-card .thumb span { color: #fff; font-size: 12.5px; font-weight: 700; line-height: 1.25; }
   .cross-sell-card .label { padding: 8px 10px; font-size: 12px; font-weight: 700; }
+  /* Compact layout (22 Oct 2026): everything important fits on one screen, no scrolling */
+  body[data-flow="added"] .page { min-height: 0; justify-content: flex-start; padding: clamp(20px, 4vh, 40px) 16px 40px; }
+  body[data-flow="added"] .card { max-width: 560px; padding: 26px 28px; text-align: start; }
+  .added-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+  body[data-flow="added"] .check-ring { width: 48px; height: 48px; margin: 0; flex-shrink: 0; }
+  body[data-flow="added"] .check-ring svg { width: 22px; height: 22px; }
+  body[data-flow="added"] .script-note { font-size: 19px; margin: 0; line-height: 1.1; }
+  body[data-flow="added"] .card h1 { font-size: clamp(26px, 3.2vw, 32px); line-height: 1.1; margin: 0; }
+  body[data-flow="added"] .item-chip { margin-bottom: 18px; padding: 12px; text-align: start; }
+  body[data-flow="added"] .item-chip .swatch { width: 84px; height: 84px; }
+  body[data-flow="added"] .cart-count { margin: 6px 0 0; font-size: 12.5px; }
+  body[data-flow="added"] .cart-count:empty { display: none; }
+  .added-actions { display: grid; grid-template-columns: 1fr 1.3fr; gap: 10px; }
+  .added-actions .btn-secondary, .added-actions .btn-primary { margin: 0; padding: 14px 12px; font-size: 14.5px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  .added-links { display: flex; justify-content: center; gap: 10px; margin-top: 14px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  .added-links a { text-decoration: underline; text-underline-offset: 3px; }
+  .added-links a:hover { color: var(--coral-deep); }
+  body[data-flow="added"] .cross-sell { margin-top: 26px; max-width: 560px; }
+  @media (max-width: 520px) {
+    .added-actions { grid-template-columns: 1fr; }
+    .added-actions .btn-primary { order: -1; }
+    body[data-flow="added"] .card { padding: 20px 18px; }
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="hikaya.css" />
@@ -103,32 +126,34 @@
 <div class="page">
   <div class="page-bg" id="page-bg" style="background-image:url('images/giftbox-open-pair.jpg');"></div>
 
-  <a href="index.html" class="wordmark"><img src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber"></a>
-
   <div class="card">
-    <div class="check-ring">
-      <svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg>
+    <div class="added-head">
+      <div class="check-ring"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+      <div>
+        <span class="script-note" id="script-note">Lovely choice ♡</span>
+        <h1 data-i18n="personalize.added_to_cart_title">Added to your cart</h1>
+      </div>
     </div>
-    <span class="script-note">Lovely choice ♡</span>
-    <h1>Added to your cart</h1>
-    <p class="sub">This book is saved and ready. Add another child's story, or head to checkout whenever you're ready.</p>
 
     <div class="item-chip" id="item-chip">
       <div class="swatch" id="item-swatch"></div>
       <div>
         <div class="name" id="item-name">—</div>
         <div class="meta" id="item-meta"></div>
+        <div class="cart-count" id="cart-count-note"></div>
       </div>
     </div>
 
-    <div class="cart-count" id="cart-count-note"></div>
-
-    <button type="button" class="btn-secondary" id="add-another-btn">+ Add Another Book</button>
-    <a class="btn-secondary" href="cart.html" style="display:block; margin-bottom:12px;">View Cart</a>
-    <a class="btn-primary" href="checkout.html" id="checkout-link">Continue to Checkout &rarr;</a>
+    <div class="added-actions">
+      <button type="button" class="btn-secondary" id="add-another-btn" data-i18n="personalize.add_another_btn">+ Add Another Book</button>
+      <a class="btn-primary" href="checkout.html" id="checkout-link">Continue to Checkout &rarr;</a>
+    </div>
+    <div class="added-links">
+      <a href="cart.html" id="view-cart-link">View cart</a>
+      <span aria-hidden="true">·</span>
+      <a href="personalize.html" data-i18n="personalize.back_to_order">Back to edit details</a>
+    </div>
   </div>
-
-  <a href="personalize.html" class="back-link">&larr; Back to edit details</a>
 
   <div class="cross-sell" id="cross-sell" style="display:none;">
     <div class="cross-sell-title" id="cross-sell-title">You might also like</div>
@@ -160,16 +185,21 @@
     };
     setMeta();
     document.addEventListener('hikaya:langchange', setMeta);
+    const setSmall = () => {
+      const ar = document.documentElement.lang === 'ar';
+      document.getElementById('script-note').textContent = ar ? 'اختيار جميل ♡' : 'Lovely choice ♡';
+      document.getElementById('view-cart-link').textContent = ar ? 'عرض السلة' : 'View cart';
+      const n = cart.length, cl = document.getElementById('checkout-link');
+      cl.textContent = (n > 1 ? tt('personalize.go_to_checkout_n', 'Continue to Checkout ({count})').replace('{count}', n) : tt('personalize.go_to_checkout_btn', 'Continue to Checkout')) + (ar ? ' ←' : ' →');
+      document.getElementById('cart-count-note').textContent = n > 1 ? tt('personalize.cart_count_label', 'You have {count} books in your cart.').replace('{count}', n) : '';
+    };
+    setSmall();
+    document.addEventListener('hikaya:langchange', setSmall);
+    window.addEventListener('load', setSmall);
 
     const count = cart.length;
     const countNote = document.getElementById('cart-count-note');
     const checkoutLink = document.getElementById('checkout-link');
-    if (count > 1) {
-      countNote.innerHTML = `You now have <strong>${count} books</strong> in your cart.`;
-      checkoutLink.innerHTML = `Continue to Checkout (${count}) &rarr;`;
-    } else {
-      countNote.textContent = '';
-    }
 
     document.getElementById('add-another-btn').addEventListener('click', () => {
       window.location.href = 'personalize.html?new=1';
