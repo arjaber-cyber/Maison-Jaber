@@ -24,6 +24,8 @@
     user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>',
     bag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>',
     menu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    ig: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>',
+    tt: '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.8 3.9 4v3.1c-1.4.1-2.7-.3-3.9-1.1v6.3c0 3.5-2.6 5.8-5.7 5.8-3.2 0-5.6-2.5-5.4-5.7.2-3 2.8-5.3 6-5v3.2c-.4-.1-.8-.2-1.2-.1-1.3.1-2.2 1.1-2.1 2.3.1 1.1 1 2 2.2 2 1.3 0 2.2-1 2.2-2.4V3h4z"/></svg>',
   };
 
   function topHtml() {
@@ -74,6 +76,13 @@
       <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
       <p class="about" data-i18n="home6.foot_about">Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.</p>
       <p class="about foot-contact"><a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a><br><span id="hk-wa-foot" hidden><span class="wl"></span>: <a href="#" target="_blank" rel="noopener" dir="ltr"></a><br></span><span data-i18n="lx.foot_team">A real team, based in the UAE</span></p>
+      <div class="foot-social">
+        <p class="fs-t" data-i18n="lx.follow_t">Follow our stories</p>
+        <ul class="fs-links">
+          <li><a href="https://www.instagram.com/hikaya.mj/" target="_blank" rel="noopener me" aria-label="Hikaya on Instagram (opens in a new tab)" data-i18n-aria="lx.follow_ig">${ICON.ig}<span dir="ltr">@hikaya.mj</span></a></li>
+          <li><a href="https://www.tiktok.com/@hikaya073" target="_blank" rel="noopener me" aria-label="Hikaya on TikTok (opens in a new tab)" data-i18n-aria="lx.follow_tt">${ICON.tt}<span dir="ltr">@hikaya073</span></a></li>
+        </ul>
+      </div>
     </div>
     <div><h2 data-i18n="home6.foot_story">Our Story</h2><ul>
       <li><a href="about.html" data-i18n="home6.nav_about">Our Story</a></li>

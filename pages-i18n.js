@@ -358,6 +358,10 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.lx = {
     foot_team: { en: 'A real team, based in the UAE', ar: 'فريق حقيقي مقرّه الإمارات' },
+    follow_t: { en: 'Follow our stories', ar: 'تابعوا قصصنا' },
+    follow_l: { en: 'Follow us', ar: 'تابعونا' },
+    follow_ig: { en: 'Hikaya on Instagram (opens in a new tab)', ar: 'حكاية على إنستغرام (تفتح في نافذة جديدة)' },
+    follow_tt: { en: 'Hikaya on TikTok (opens in a new tab)', ar: 'حكاية على تيك توك (تفتح في نافذة جديدة)' },
     cover_alt: { en: 'Cover of {title}', ar: 'غلاف قصة {title}' },
     cover: { en: 'Cover', ar: 'الغلاف' },
     sample_n: { en: 'Sample page {n}', ar: 'صفحة نموذجية {n}' },

@@ -1252,3 +1252,14 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 #hk-top { display: block; min-height: 113px; }
 @media (min-width: 768px) { #hk-top { min-height: 127px; } }
 @media (min-width: 1024px) { #hk-top { min-height: 121px; } }
+
+/* Footer social links (Instagram, TikTok) */
+.site-footer .foot-social { margin-top: 20px; }
+.site-footer .foot-social .fs-t { font-family: var(--serif, inherit); font-style: italic; font-size: 14px; color: #FFF8EE; margin: 0 0 10px; }
+.site-footer .foot-social .fs-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.site-footer .foot-social a { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 8px 14px 8px 10px; border: 1px solid rgba(199,165,108,.45); border-radius: 999px; color: #E6D6C2; font-size: 13px; text-decoration: none; transition: border-color .2s, background-color .2s, color .2s; }
+.site-footer .foot-social a svg { flex: none; color: var(--gold, #C7A56C); transition: color .2s; }
+.site-footer .foot-social a:hover, .site-footer .foot-social a:focus-visible { background: rgba(199,165,108,.12); border-color: var(--gold, #C7A56C); color: #fff; text-decoration: none; }
+.site-footer .foot-social a:hover svg { color: #fff; }
+[dir="rtl"] .site-footer .foot-social a { padding: 8px 10px 8px 14px; }
+[dir="rtl"] .site-footer .foot-social .fs-t { font-style: normal; }
