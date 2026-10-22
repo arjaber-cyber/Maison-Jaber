@@ -5,10 +5,12 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.home6 = {
     skip: { en: 'Skip to content', ar: 'انتقل إلى المحتوى' },
-    soft_launch: { en: '<strong>Soft launch</strong> · Our official launch is on 1 November 2026 · Orders placed during the soft launch may take up to one extra week to deliver', ar: '<strong>إطلاق تجريبي</strong> · الإطلاق الرسمي في 1 نوفمبر 2026 · قد يستغرق توصيل الطلبات خلال فترة الإطلاق التجريبي أسبوعًا إضافيًا' },
+    // Kept to one short line (22 Oct 2026). The "allow up to one extra week" delivery note stays on the story page, personalise and checkout.
+    soft_launch: { en: '<strong>Soft launch</strong> · Official launch on 1 November', ar: '<strong>إطلاق تجريبي</strong> · الإطلاق الرسمي في 1 نوفمبر' },
 
     // Utility bar ({country} and {fee} are filled in by home6.js)
     del_uae: { en: 'Free delivery across the UAE', ar: 'توصيل مجاني لجميع أنحاء الإمارات' },
+    del_uae_short: { en: 'Free UAE delivery', ar: 'توصيل مجاني بالإمارات' },
     del_gcc: { en: 'Delivery to {country}: {fee}. Free on 2 or more books', ar: 'التوصيل إلى {country}: {fee}، مجاني عند طلب كتابين أو أكثر' },
 
     nav_stories: { en: 'Stories', ar: 'القصص' },

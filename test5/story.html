@@ -5,6 +5,7 @@
 <!-- Robots: indexable public page. During the soft launch it is kept out of search by the X-Robots-Tag LAUNCH SWITCH in netlify.toml; the staging copy stays noindex there permanently. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<script>/* Start downloading this story's cover straight away (it is drawn by script later). Wrong guesses cost nothing visible. */(function(){try{var m=/[?&]s=([a-z0-9-]+)/.exec(location.search);if(!m)return;var ar=localStorage.getItem("hikaya_lang")==="ar";var l=document.createElement("link");l.rel="preload";l.as="image";l.href="/story-assets/"+m[1]+"/cover"+(ar?"-ar":"")+".jpg";l.setAttribute("fetchpriority","high");document.head.appendChild(l)}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Story | Hikaya by Maison Jaber</title>
 <meta name="description" content="A personalised Hikaya storybook with your child as the hero, printed in hardcover and delivered gift-boxed." />
@@ -12,7 +13,9 @@
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<!-- Fonts load without blocking the first paint. -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" /></noscript>
 <link rel="stylesheet" href="hikaya.css" />
 </head>
 <body data-page="story">
@@ -30,7 +33,7 @@
     <p style="margin-top:18px"><a class="btn btn-primary" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a></p>
   </div>
   <div id="pdp-root" aria-busy="true">
-    <section class="pdp" aria-labelledby="st-title" data-sticky-after>
+    <section class="pdp" aria-labelledby="st-title">
       <div class="gallery">
         <div class="main" id="st-main"></div>
         <ul class="thumbs" id="st-thumbs" aria-label="Book images" data-i18n-aria="a11y.book_images"></ul>
@@ -42,11 +45,11 @@
         <p class="premise" id="st-premise"></p>
         <div class="pdp-price" id="st-price"></div>
         <ul class="buy-facts">
-          <li data-i18n="lx.fact_format">Personalised square hardcover</li>
+          <li data-i18n="lx.fact_format">Personalised square hardcover · 20 pages · 21×21 cm</li>
           <li data-i18n="pg.incl_box">Includes our signature gift packaging</li>
           <li data-hk-eta>Delivery to UAE: about 5 working days</li>
         </ul>
-        <a class="btn btn-primary" id="st-cta" href="personalize.html"><span data-i18n="lx.personalise">Personalise this story</span> <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-primary" id="st-cta" href="personalize.html" data-sticky-after><span data-i18n="lx.personalise">Personalise this story</span> <span class="arr" aria-hidden="true">→</span></a>
         <button type="button" class="btn btn-secondary lx-open" id="st-look" data-look-inside hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.5C5.5 4.5 8.5 4.5 12 6.5c3.5-2 6.5-2 9-1v13c-2.5-1-5.5-1-9 1-3.5-2-6.5-2-9-1z"/><path d="M12 6.5v13"/></svg><span data-i18n="fb.open">Look inside</span></button>
         <p class="ship"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h11v10H2zM13 9h4.5L21 12.5V16h-8"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span data-hk-delivery></span></p>
         <p class="buy-trust"><a href="privacy.html" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a> · <span data-i18n="lx.tr_secure">Secure payment</span> · <span data-i18n="lx.tr_box">Gift packaging included</span></p>

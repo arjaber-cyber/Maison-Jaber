@@ -381,7 +381,7 @@
     catalog_wait: { en: 'New stories are on their way. Please check back soon.', ar: 'قصص جديدة في الطريق، عُد إلينا قريبًا' },
     filter_aria: { en: 'Filter stories', ar: 'تصفية القصص' },
     empty_t: { en: 'No stories match these filters', ar: 'لا توجد قصص تطابق هذا الاختيار' },
-    fact_format: { en: 'Personalised square hardcover', ar: 'كتاب مخصّص مربّع بغلاف مقوّى' },
+    fact_format: { en: 'Personalised square hardcover · 20 pages · 21×21 cm', ar: 'كتاب مخصّص مربّع بغلاف مقوّى · 20 صفحة · 21×21 سم' },
     close: { en: 'Close', ar: 'إغلاق' },
     trust_t: { en: 'Why parents trust Hikaya', ar: 'لماذا يثق الأهل بحكاية' },
     tr_book: { en: 'Personalised hardcover', ar: 'كتاب مخصّص بغلاف مقوّى' },

@@ -1189,3 +1189,66 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 /* Story page: reserve the title line while the story loads (no blank/jumping h1) */
 #pdp-root[aria-busy="true"] #st-title:empty::before { content: ""; display: block; height: 1.1em; width: min(70%, 420px); border-radius: 8px; background: linear-gradient(90deg, var(--sand) 0%, var(--card) 50%, var(--sand) 100%); background-size: 200% 100%; animation: hk-sk 1.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { #pdp-root[aria-busy="true"] #st-title:empty::before { animation: none; } }
+
+/* =========================================================
+   PHONE FIRST SCREEN (22 Oct 2026, from the mobile review)
+   Phones only (≤767px) unless noted. Desktop and tablet layouts are unchanged.
+   ========================================================= */
+/* Crossed-out "was" price: full strength so it passes contrast (all sizes). */
+.hk-was { opacity: 1; }
+.btn .hk-was, .btn-primary .hk-was { opacity: .8; }
+
+/* Hero trust line: phones only. */
+.hero-trust { display: none; }
+
+/* Delivery bar: short message on phones so it shares one row with country + language. */
+.dl-short { display: none; }
+
+@media (max-width: 767px) {
+  /* Homepage hero, option B: headline on the photo, then price, buttons and trust line in the first screen. */
+  .hero-media { aspect-ratio: 1 / 1.06; }
+  .hero-media img { object-position: 50% 30%; }
+  .hero:not(.ar-cover) .hero-media::after { height: 60%; background: linear-gradient(to bottom, rgba(30, 18, 10, 0), rgba(30, 18, 10, .8)); }
+  .hero .hero-copy { margin-top: 0; padding-block: 14px 30px; display: flex; flex-direction: column; }
+  .hero:not(.ar-cover) .hero-copy h1 { position: absolute; inset-inline: 0; bottom: 100%; margin: 0; padding-bottom: 16px; color: #fff; font-size: clamp(2.05rem, 9.4vw, 2.6rem); line-height: 1.03; text-shadow: 0 1px 14px rgba(0, 0, 0, .3); }
+  .hero .hero-copy .lede, .hero .hero-copy .hand { display: none; }
+  .hero .hero-copy h1 { order: 0; }
+  .hero .hero-assure { order: 1; margin: 0 0 12px; font-size: 14px; }
+  .hero .hero-ctas { order: 2; gap: 10px; }
+  .hero .hero-trust { order: 3; display: block; margin: 12px 0 0; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
+  .hero .hero-trust a { color: inherit; }
+
+  /* Arabic on phones: an Arabic book cover on a sand band, headline below it (no text over the cover's own title). */
+  .hero.ar-cover .hero-media { aspect-ratio: auto; height: 264px; background: var(--sand); display: flex; align-items: center; justify-content: center; }
+  .hero.ar-cover .hero-media::after { display: none; }
+  .hero.ar-cover .hero-media picture { display: block; width: 224px; height: 224px; }
+  .hero.ar-cover .hero-media img { width: 224px; height: 224px; object-fit: cover; object-position: 50% 50%; border-radius: 8px; box-shadow: 0 12px 26px rgba(60, 35, 20, .25); }
+  .hero.ar-cover .hero-note { top: 10px; bottom: auto; }
+  .hero.ar-cover .hero-copy h1 { font-size: clamp(1.9rem, 8.4vw, 2.2rem); line-height: 1.25; margin-bottom: 10px; }
+
+  /* Delivery bar: one row when it fits (UAE); a longer GCC message still wraps onto its own row. */
+  .dl-full { display: none; }
+  .dl-short { display: inline; }
+  .utility .msg { flex-basis: auto; justify-content: flex-start; text-align: start; padding-block: 6px; }
+  .utility .controls { flex-basis: auto; justify-content: flex-end; margin-inline-start: auto; }
+  .utility .msg svg { display: none; }
+  .utility .util-btn { padding-inline: 4px; min-width: 34px; }
+  .utility .wrap { column-gap: 6px; }
+
+  /* Stories page: short title, no big photo, filters as one scrollable row of pills. */
+  body[data-page="stories"] .page-hero .hero-media { display: none; }
+  body[data-page="stories"] .page-hero .hero-copy { margin-top: 0; padding-block: 16px 0; }
+  body[data-page="stories"] .page-hero h1 { font-size: 1.9rem; margin-bottom: 4px; }
+  body[data-page="stories"] .page-hero .lede { font-size: 14px; margin: 0; }
+  .filters { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-block: 12px; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); margin-bottom: 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters .select { flex: none; min-width: 0; }
+  .filters .select select { width: auto; min-height: 42px; font-size: 16px; padding-block: 8px; }
+  .filters .reset { flex: none; }
+  .filters .count { flex: none; width: auto; align-self: center; white-space: nowrap; }
+}
+
+/* Reserve the space of the header that chrome.js draws in, so the page doesn't jump when it appears. */
+#hk-top { display: block; min-height: 113px; }
+@media (min-width: 768px) { #hk-top { min-height: 127px; } }
+@media (min-width: 1024px) { #hk-top { min-height: 121px; } }

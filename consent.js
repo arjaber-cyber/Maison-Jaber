@@ -54,31 +54,56 @@
         #hikaya-consent-banner button.hc-primary { border: none; background: #A67443; color: #fff; }
         #hikaya-consent-banner button.hc-link { border: none; padding: 7px 4px; text-decoration: underline; font-weight: 600; }
         #hikaya-consent-banner label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; margin-bottom: 7px; }
+        #hikaya-consent-banner .hc-short { display: none; }
+        #hikaya-consent-banner[dir="rtl"] { font-family: "Cairo", "Inter", sans-serif; }
         @media (max-width: 560px) {
-          #hikaya-consent-banner { left: 10px; right: 10px; bottom: 10px; max-width: none; padding: 12px 14px; }
-          #hikaya-consent-banner p { font-size: 12px; margin-bottom: 8px; }
+          /* Phones: a slim strip (one short line + buttons) so it doesn't cover the page's headline. */
+          #hikaya-consent-banner { left: 8px; right: 8px; bottom: 8px; max-width: none; padding: 9px 12px; border-radius: 12px; }
+          #hikaya-consent-banner p { font-size: 12px; margin-bottom: 7px; }
+          #hikaya-consent-banner .hc-long { display: none; }
+          #hikaya-consent-banner .hc-short { display: inline; }
+          #hikaya-consent-banner .hc-row { flex-wrap: nowrap; gap: 6px; }
+          #hikaya-consent-banner button { min-height: 36px; padding: 6px 12px; }
         }`;
       document.head.appendChild(st);
     }
     const banner = document.createElement('div');
     banner.id = 'hikaya-consent-banner';
     banner.setAttribute('role', 'dialog');
-    banner.setAttribute('aria-label', 'Cookie preferences');
+    /* English or Arabic, following the site language (no full stops in Arabic copy). */
+    const ar = document.documentElement.lang === 'ar';
+    const L = ar ? {
+      aria: 'تفضيلات ملفات تعريف الارتباط',
+      long: 'نستخدم ملفات تعريف الارتباط الأساسية، وبموافقتك فقط ملفات التحليلات (Google Analytics و Microsoft Clarity) لتحسين الموقع',
+      short: 'ملفات تعريف الارتباط للتحليلات بموافقتك فقط',
+      policy: 'سياسة الخصوصية', accept: 'قبول الكل', reject: 'رفض', customize: 'تخصيص',
+      choose: 'اختر ما يناسبك', essential: 'أساسية (مفعّلة دائمًا: السلة، اللغة، المنطقة)',
+      analytics: 'التحليلات (Google Analytics و Microsoft Clarity)', marketing: 'التسويق (Meta Pixel)', save: 'حفظ التفضيلات',
+    } : {
+      aria: 'Cookie preferences',
+      long: 'We use essential cookies, and, only with your OK, analytics (Google Analytics and Microsoft Clarity) to improve the site.',
+      short: 'Cookies for analytics, only with your OK.',
+      policy: 'Privacy Policy', accept: 'Accept All', reject: 'Reject', customize: 'Customize',
+      choose: "Choose what you're comfortable with:", essential: 'Essential (always on: cart, language, region)',
+      analytics: 'Analytics (Google Analytics, Microsoft Clarity)', marketing: 'Marketing (Meta Pixel)', save: 'Save Preferences',
+    };
+    banner.setAttribute('aria-label', L.aria);
+    if (ar) banner.setAttribute('dir', 'rtl');
     banner.innerHTML = `
         <div id="hikaya-consent-simple">
-          <p>We use essential cookies, and, only with your OK, analytics (Google Analytics and Microsoft Clarity) to improve the site. <a href="privacy.html">Privacy Policy</a></p>
+          <p><span class="hc-long">${L.long}</span><span class="hc-short">${L.short}</span> <a href="privacy.html">${L.policy}</a></p>
           <div class="hc-row">
-            <button type="button" id="hikaya-consent-accept" class="hc-primary">Accept All</button>
-            <button type="button" id="hikaya-consent-reject">Reject</button>
-            <button type="button" id="hikaya-consent-customize" class="hc-link">Customize</button>
+            <button type="button" id="hikaya-consent-accept" class="hc-primary">${L.accept}</button>
+            <button type="button" id="hikaya-consent-reject">${L.reject}</button>
+            <button type="button" id="hikaya-consent-customize" class="hc-link">${L.customize}</button>
           </div>
         </div>
         <div id="hikaya-consent-detail" style="display:none;">
-          <p style="font-weight:700;">Choose what you're comfortable with:</p>
-          <label style="opacity:0.7;"><input type="checkbox" checked disabled /> Essential (always on: cart, language, region)</label>
-          <label><input type="checkbox" id="hikaya-consent-analytics" /> Analytics (Google Analytics, Microsoft Clarity)</label>
-          <label style="margin-bottom:12px;"><input type="checkbox" id="hikaya-consent-marketing" /> Marketing (Meta Pixel)</label>
-          <button type="button" id="hikaya-consent-save" class="hc-primary">Save Preferences</button>
+          <p style="font-weight:700;">${L.choose}</p>
+          <label style="opacity:0.7;"><input type="checkbox" checked disabled /> ${L.essential}</label>
+          <label><input type="checkbox" id="hikaya-consent-analytics" /> ${L.analytics}</label>
+          <label style="margin-bottom:12px;"><input type="checkbox" id="hikaya-consent-marketing" /> ${L.marketing}</label>
+          <button type="button" id="hikaya-consent-save" class="hc-primary">${L.save}</button>
         </div>`;
     document.body.appendChild(banner);
 

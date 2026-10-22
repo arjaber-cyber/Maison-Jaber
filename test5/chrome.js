@@ -33,7 +33,7 @@
     return `
 <a class="skip" href="#main" data-i18n="home6.skip">Skip to content</a>
 <div class="utility" role="region" aria-label="Delivery and region" data-i18n-aria="a11y.utility"><div class="wrap">
-  <p class="msg">${ICON.truck}<span id="delivery-msg">Free delivery across the UAE</span></p>
+  <p class="msg">${ICON.truck}<span id="delivery-msg"><span class="dl-full">Free delivery across the UAE</span><span class="dl-short">Free UAE delivery</span></span></p>
   <div class="controls">
     <div class="region">
       <button class="util-btn" id="region-btn" aria-haspopup="true" aria-expanded="false" aria-controls="region-menu" data-i18n-aria="a11y.region">${ICON.globe}<span id="region-label">UAE (AED)</span>${ICON.chev}</button>
@@ -144,7 +144,8 @@
     if (label) label.textContent = `${countryName(k)} (${r ? r.currency : 'AED'})`;
     const rb = document.getElementById('region-btn'); if (rb) rb.setAttribute('aria-label', `${t('a11y.region', 'Choose your country and currency')}: ${countryName(k)} (${r ? r.currency : 'AED'})`); // QA-07: the accessible name keeps the current country, in the page language
     const msg = document.getElementById('delivery-msg');
-    if (msg) msg.textContent = deliveryText(k);
+    /* Phones show a short version so the message and the country/language buttons fit on one row (UAE only; GCC text wraps as before). */
+    if (msg) { const full = deliveryText(k); const short = (k || regionKey()) === 'UAE' ? t('home6.del_uae_short', 'Free UAE delivery') : full; msg.innerHTML = `<span class="dl-full">${esc(full)}</span><span class="dl-short">${esc(short)}</span>`; }
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
@@ -344,7 +345,15 @@
   const THEME_KEYS = { screen: 'th_screen', growing: 'th_growing' };
   function bandNums(bands) { return (bands || []).flatMap(b => String(b).split('-').map(Number)).filter(n => !isNaN(n)); }
   function rangeText(a, b) { return t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', a).replace('{b}', b); }
-  function ageText(bands) { const n = bandNums(bands); return n.length ? rangeText(Math.min(...n), Math.max(...n)) : ''; }
+  /* Ages are shown as the site's bands (2–4 · 4–6 · 6–8), matching the filters and personalise steps:
+     "Ages 4–6 · 6–8" / "من 4 إلى 6 ومن 6 إلى 8 سنوات". A single band reads "Ages 6–8". */
+  function ageText(bands) {
+    const list = (bands || []).map(b => String(b).split('-').map(Number)).filter(p => p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])).sort((x, y) => x[0] - y[0]);
+    if (!list.length) return '';
+    if (list.length === 1) return rangeText(list[0][0], list[0][1]);
+    if (lang() === 'ar') return 'من ' + list.map(p => `${p[0]} إلى ${p[1]}`).join(' ومن ') + ' سنوات';
+    return t('a11y.ages_prefix', 'Ages') + ' ' + list.map(p => `${p[0]}–${p[1]}`).join(' · ');
+  }
   function themeLabel(m) { if (!m) return ''; const g = groupOf(m); return g ? groupLabel(g) : t('home6.' + (THEME_KEYS[m] || 'th_' + m), m.charAt(0).toUpperCase() + m.slice(1)); }
   function arTitle(s) { return s.title_ar || (s.title_i18n && s.title_i18n.ar) || s.ar || ''; }
   function title(s) { return (lang() === 'ar' && arTitle(s)) ? arTitle(s) : s.title; }
@@ -370,7 +379,9 @@
     const alt = opts.alt ? esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) })) : '';
     /* QA-09: cards use the 600px cover (cover-600.jpg) when it exists next to the full-size file; the story page keeps the large cover. */
     const small = !opts.eager && /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(s.cover || '') ? s.cover.replace(/\.jpg$/, '-600.jpg') : '';
-    const srcset = small ? ` srcset="${esc(small)} 600w, ${esc(s.cover)} 1200w" sizes="(max-width: 520px) 92vw, (max-width: 900px) 46vw, 300px"` : '';
+    /* sizes = how wide a card really is: ~62vw in the phone carousels, ~46vw in the phone grid, ~300px on desktop.
+       (It used to say 92vw on phones, which made phones download the 1200px file for a ~230px card.) */
+    const srcset = small ? ` srcset="${esc(small)} 600w, ${esc(s.cover)} 1200w" sizes="(max-width: 767px) 62vw, (max-width: 1023px) 34vw, 300px"` : '';
     const img = s.cover ? `<img src="${esc(small || s.cover)}"${srcset} alt="${alt}"${opts.eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async" width="560" height="560" />` : '';
     return `<div class="cover${extraClass ? ' ' + extraClass : ''}">${img}${s.cover ? '' : `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>`}</div>`;
   }

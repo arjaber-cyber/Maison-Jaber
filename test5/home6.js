@@ -12,7 +12,8 @@
     const newest = [...all].sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')) || byOrder(b, a));
     // "Best Sellers": stories marked Featured in the dashboard first, then the dashboard order.
     const best = [...all].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || byOrder(a, b));
-    [['track-new', newest], ['track-best', best]].forEach(([id, list]) => {
+    // The homepage shows a short shelf (6) with "View all"; the full collection lives on stories.html.
+    [['track-new', newest.slice(0, 6)], ['track-best', best]].forEach(([id, list]) => {
       const tr = document.getElementById(id); if (!tr) return;
       tr.removeAttribute('aria-busy');
       tr.innerHTML = list.map(s => H.cardHtml(s)).join('');
@@ -51,7 +52,20 @@
     io.observe(stage);
   }
 
-  function boot() { render(); renderOccasions(); initReveal(); }
+  /* Arabic hero on phones: the hero photo shows an English book, so Arabic visitors on a phone see an
+     Arabic book cover instead (a sample story, labelled "example book" like the photo). Desktop is unchanged. */
+  const AR_HERO = '/story-assets/door-of-a-thousand-stars/cover-ar-600.jpg';
+  function heroLang() {
+    const hero = document.querySelector('.hero'); if (!hero) return;
+    const src = hero.querySelector('picture source[media*="max-width"]'); const img = hero.querySelector('picture img');
+    if (!src || !img) return;
+    if (!src.dataset.enSrcset) src.dataset.enSrcset = src.getAttribute('srcset');
+    const ar = H.lang() === 'ar';
+    hero.classList.toggle('ar-cover', ar);
+    src.setAttribute('srcset', ar ? AR_HERO : src.dataset.enSrcset);
+  }
+
+  function boot() { heroLang(); render(); renderOccasions(); initReveal(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); });
+  document.addEventListener('hikaya:langchange', () => { heroLang(); render(); renderOccasions(); });
 })();
