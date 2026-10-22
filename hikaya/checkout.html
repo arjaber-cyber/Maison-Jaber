@@ -117,6 +117,8 @@
   .map-field { margin-top: 4px; }
   #gift-message-field textarea { resize: vertical; min-height: 64px; }
   .opt-mark { font-weight: 500; color: var(--ink-soft); text-transform: none; letter-spacing: 0; }
+  .co-msg { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+  .co-msg a { color: var(--ink); font-weight: 700; text-decoration: underline; margin-inline-start: 4px; }
   .gift-recipient-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 8px; }
   #gift-recipient-field .form-grid { margin: 0; }
   .gift-message-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
@@ -691,7 +693,8 @@
         <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>
-          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}${item.dedication ? ' &middot; ✉ ' + t('qa.msg_yours', 'Your message') : ''}</p>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}</p>
+          <p class="co-msg">✉ ${item.dedication ? t('qa.msg_yours', 'Your message') : t('qa.msg_ours_short', "We'll write one for {name}").replace('{name}', String(item.childName || t('lx.st_child', 'your child')).replace(/[&<>"]/g, '') )} <a href="cart.html?msg=${encodeURIComponent(item.id)}">${item.dedication ? t('qa.msg_edit', 'Edit message') : t('qa.msg_add', 'Add your own message')}</a></p>
           ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
           ${window.HikayaFamily && window.HikayaFamily.summary(item) ? `<p>👪 ${window.HikayaFamily.summary(item)}</p>` : ''}
           <button type="button" class="remove-item" data-id="${item.id}">${t('checkout.remove', 'Remove')}</button>
@@ -1184,9 +1187,18 @@
     const AR_RE = /[\u0600-\u06FF]/, LATIN_RE = /[A-Za-z]/;
     const badItem = order.items.find(i => {
       if (!i.photoConsent) return true;
-      const n = String(i.childName || ''), d = String(i.dedication || '');
-      return i.bookLanguage === 'ar' ? (!AR_RE.test(n) || LATIN_RE.test(n) || LATIN_RE.test(d)) : (!LATIN_RE.test(n) || AR_RE.test(n) || AR_RE.test(d));
+      const n = String(i.childName || '');
+      return i.bookLanguage === 'ar' ? (!AR_RE.test(n) || LATIN_RE.test(n)) : (!LATIN_RE.test(n) || AR_RE.test(n));
     });
+    const badMsgIdx = order.items.findIndex(i => { const d = String(i.dedication || ''); return i.bookLanguage === 'ar' ? LATIN_RE.test(d) : AR_RE.test(d); });
+    if (!badItem && badMsgIdx >= 0) {
+      showErr('qa.msg_fix_cart', "The first-page message on one of your books isn't in the book's language. Please edit it in your cart, it only takes a moment.");
+      const box = document.getElementById('payment-error'), a = document.createElement('a');
+      a.href = 'cart.html?msg=' + encodeURIComponent(cart[badMsgIdx].id); a.textContent = t('qa.msg_fix_link', 'Edit in cart');
+      a.style.cssText = 'display:inline-block; margin-top:6px; font-weight:700; text-decoration:underline; color:inherit;';
+      box.appendChild(document.createElement('br')); box.appendChild(a);
+      return;
+    }
     if (badItem) { showErr('bl.err_item', 'One of the books in your cart needs updating: the name and first-page message must be in the book language, and the photo permission must be given. Please remove it from your cart and create it again.'); return; }
 
 

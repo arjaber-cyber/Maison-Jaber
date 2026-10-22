@@ -48,6 +48,18 @@
   .cart-item .info { flex: 1; min-width: 0; }
   .cart-item .info h3 { font-size: 17px; margin-bottom: 4px; }
   .cart-item .info .meta { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  .cart-msg { margin-top: 8px; font-size: 13px; }
+  .cart-msg .msg-state { color: var(--ink-soft); font-weight: 600; }
+  .cart-msg .msg-state q { font-style: italic; font-weight: 500; quotes: "“" "”"; }
+  .cart-msg .msg-state.none { color: var(--coral-deep, #a2482f); }
+  .cart-msg .msg-link { display: inline; text-align: start; background: none; border: 0; padding: 0; margin-inline-start: 6px; font: inherit; font-weight: 700; color: var(--ink); text-decoration: underline; cursor: pointer; }
+  .cart-msg-edit { margin-top: 8px; }
+  .cart-msg-edit textarea { width: 100%; min-height: 84px; resize: vertical; font: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--line, #d9cfc3); border-radius: 10px; background: #fff; }
+  .cart-msg-edit .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 8px; }
+  .cart-msg-edit .save { padding: 8px 16px; border-radius: 999px; border: 0; background: var(--ink, #3b2a20); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  .cart-msg-edit .ghost { text-align: start; background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--ink-soft); text-decoration: underline; cursor: pointer; }
+  .cart-msg-edit .err { color: var(--coral-deep, #a2482f); font-weight: 600; margin-top: 6px; }
+  .cart-msg-edit .count { margin-inline-start: auto; color: var(--ink-soft); font-size: 12px; }
   .cart-item .price { font-weight: 800; font-size: 15px; white-space: nowrap; text-align: end; }
   .cart-item .price .hk-was { display: block; font-size: 12.5px; }
   .cart-item .remove-btn {
@@ -145,10 +157,63 @@
     return window.hikayaFormatPrice ? window.hikayaFormatPrice(n, region) : `${region.symbol} ${n}`;
   }
 
+  /* ---- First-page message: shown on every book, and editable right here in the cart ---- */
+  // The open editor survives re-renders (language/region changes), along with what was typed.
+  let msgOpenId = null, msgDraft = null;
+  const MSG_MAX = 300, MSG_AR = /[؀-ۿ]/, MSG_LATIN = /[A-Za-z]/;
+  const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  function msgLangOk(item, text) { return item.bookLanguage === 'ar' ? !MSG_LATIN.test(text) : !MSG_AR.test(text); }
+  function msgHtml(item) {
+    const name = escH(item.childName || t('lx.st_child', 'your child'));
+    const state = item.dedication
+      ? `<span class="msg-state">✉ ${escH(t('qa.msg_yours', 'Your message'))}: <q dir="auto">${escH(item.dedication.length > 90 ? item.dedication.slice(0, 90) + '…' : item.dedication)}</q></span><button type="button" class="msg-link" data-msg-open="${escH(item.id)}">${escH(t('qa.msg_edit', 'Edit message'))}</button>`
+      : `<span class="msg-state none">✉ ${escH(t('qa.msg_none', "No personal message yet, we'll write a warm one for {name}")).replace('{name}', name)}</span><button type="button" class="msg-link" data-msg-open="${escH(item.id)}">${escH(t('qa.msg_add', 'Add your own message'))}</button>`;
+    return `<div class="cart-msg" data-msg-for="${escH(item.id)}">${state}</div>`;
+  }
+  function openMsgEditor(id) {
+    const item = window.hikayaCart.getCart().find(i => i.id === id); if (!item) return;
+    const box = document.querySelector(`.cart-msg[data-msg-for="${CSS.escape(id)}"]`); if (!box) return;
+    if (msgOpenId !== id) msgDraft = null;
+    msgOpenId = id;
+    const ph = item.bookLanguage === 'ar' ? 'مثال: إلى ' + (item.childName || 'بطلنا') + '، لتذكّرك كل صفحة بكم نحبك، ماما وبابا' : 'e.g. To ' + (item.childName || 'our little hero') + ', may every page remind you how loved you are. Mama and Baba';
+    box.innerHTML = `<div class="cart-msg-edit">
+        <textarea maxlength="${MSG_MAX}" dir="${item.bookLanguage === 'ar' ? 'rtl' : 'ltr'}" lang="${item.bookLanguage === 'ar' ? 'ar' : 'en'}" aria-label="${escH(t('qa.msg_label', 'Your message'))}" placeholder="${escH(ph)}">${escH(msgDraft != null ? msgDraft : (item.dedication || ''))}</textarea>
+        <div class="err" role="alert" hidden></div>
+        <div class="row">
+          <button type="button" class="save">${escH(t('qa.msg_save', 'Save message'))}</button>
+          <button type="button" class="ghost cancel">${escH(t('qa.msg_close', 'Cancel'))}</button>
+          ${item.dedication ? `<button type="button" class="ghost clear">${escH(t('qa.msg_use_ours', 'Remove it and let Hikaya write one'))}</button>` : ''}
+          <span class="count"></span>
+        </div>
+        <p class="msg-state" style="margin-top:6px; font-size:12px;">${escH(t('qa.msg_note', 'We print it on the first page exactly as you write it, so please check names and spelling.'))}</p>
+      </div>`;
+    const ta = box.querySelector('textarea'), err = box.querySelector('.err'), count = box.querySelector('.count');
+    const paint = () => { count.textContent = `${ta.value.length}/${MSG_MAX}`; };
+    paint(); ta.addEventListener('input', () => { paint(); err.hidden = true; msgDraft = ta.value; });
+    ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+    box.querySelector('.save').addEventListener('click', () => {
+      const v = ta.value.trim();
+      if (v && !msgLangOk(item, v)) {
+        err.textContent = item.bookLanguage === 'ar' ? t('qa.msg_err_ar', 'This book is in Arabic, so the message must be written in Arabic too') : t('qa.msg_err_en', 'This book is in English, so the message must be written in English too');
+        err.hidden = false; ta.focus(); return;
+      }
+      window.hikayaCart.updateItem(id, { dedication: v });
+      msgOpenId = msgDraft = null; render();
+    });
+    box.querySelector('.cancel').addEventListener('click', () => { msgOpenId = msgDraft = null; render(); });
+    const clr = box.querySelector('.clear');
+    if (clr) clr.addEventListener('click', () => { window.hikayaCart.updateItem(id, { dedication: '' }); msgOpenId = msgDraft = null; render(); });
+  }
+  function wireMessages(root) {
+    root.querySelectorAll('[data-msg-open]').forEach(b => b.addEventListener('click', () => openMsgEditor(b.dataset.msgOpen)));
+  }
+
   function render() {
     if (!window.hikayaCart || !window.hikayaRegion) return;
     const cart = window.hikayaCart.getCart();
     const region = window.hikayaRegion();
+    // Arriving from checkout's "Edit in cart": open that book's message editor straight away.
+    const focusMsg = new URLSearchParams(location.search).get('msg');
     const itemsWrap = document.getElementById('cart-items');
     const summarySlot = document.getElementById('summary-slot');
     const upsellSlot = document.getElementById('upsell-banner-slot');
@@ -187,7 +252,8 @@
         <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
         <div class="info">
           <h3>${item.story}</h3>
-          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}${item.dedication ? ' · ✉ ' + t('qa.msg_yours', 'Your message') : ''}</div>
+          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}</div>
+          ${msgHtml(item)}
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           ${window.HikayaFamily && window.HikayaFamily.summary(item) ? `<div class="meta">👪 ${window.HikayaFamily.summary(item)}</div>` : ''}
           <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
@@ -197,6 +263,9 @@
     `).join('');
 
     if (window.hikayaCart.paintCovers) window.hikayaCart.paintCovers(itemsWrap, '.cover[data-item-id]');
+    wireMessages(itemsWrap);
+    if (focusMsg && !render.focused && cart.some(i => i.id === focusMsg)) { render.focused = true; msgOpenId = focusMsg; const el = document.querySelector(`.cart-msg[data-msg-for="${CSS.escape(focusMsg)}"]`); if (el) el.scrollIntoView({ block: 'center' }); }
+    if (msgOpenId && cart.some(i => i.id === msgOpenId)) openMsgEditor(msgOpenId);
 
     itemsWrap.querySelectorAll('.remove-btn').forEach(btn => {
       btn.addEventListener('click', () => {

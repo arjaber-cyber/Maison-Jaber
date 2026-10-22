@@ -44,6 +44,11 @@ window.HIKAYA_BUNDLE_TIERS = [
     return item.id;
   }
 
+  // Change fields on one book already in the cart (e.g. the first-page message).
+  function updateItem(id, changes) {
+    saveCart(getCart().map(i => (i.id === id ? Object.assign({}, i, changes) : i)));
+  }
+
   function removeFromCart(id) {
     saveCart(getCart().filter(i => i.id !== id));
   }
@@ -131,7 +136,7 @@ window.HIKAYA_BUNDLE_TIERS = [
   }
 
   window.hikayaCart = {
-    getCart, addToCart, removeFromCart, clearCart,
+    getCart, addToCart, removeFromCart, clearCart, updateItem,
     bundleTierFor, computeCartPricing, updateCartBadges,
     loadStories, storyFor, coverFor, paintCover, paintCovers,
   };
