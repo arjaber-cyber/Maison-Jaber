@@ -454,7 +454,12 @@
 
   /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
   const coEmpty = document.getElementById('co-empty');
-  const isZiinaReturn = () => new URLSearchParams(location.search).has('ziina');
+  const isZiinaReturn = () => { const q = new URLSearchParams(location.search); return q.has('ziina') || q.has('tabby'); };
+  /* Tabby (Pay in 4): UAE only. Hidden until the live keys arrive, except for testing with ?tabbytest=1
+     (remembered for this browser tab). Go live: set window.HIKAYA_TABBY_LIVE = true in region.js. */
+  const tabbyOn = () => { try { if (new URLSearchParams(location.search).get('tabbytest') === '1') sessionStorage.setItem('hk_tabby_test', '1'); return window.HIKAYA_TABBY_LIVE === true || sessionStorage.getItem('hk_tabby_test') === '1'; } catch (e) { return window.HIKAYA_TABBY_LIVE === true; } };
+  const tabbyTesting = () => window.HIKAYA_TABBY_LIVE !== true;
+  const methodsFor = (key, region) => (key === 'UAE' && tabbyOn() && !region.methods.includes('tabby')) ? region.methods.concat('tabby') : region.methods;
   function cartIsEmpty() { return !(window.hikayaCart && window.hikayaCart.getCart().length); }
   function applyEmptyGuard() {
     const empty = cartIsEmpty() && !isZiinaReturn();
@@ -754,18 +759,19 @@
     cod: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg>', label: () => t('checkout.method_cod', 'Cash on Delivery') },
     applepay: { icon: '<svg viewBox="0 0 24 24"><path d="M16.5 8.5c-.3-2-2-3.3-3.8-3-.2-1.4-1.2-2.5-2.6-2.5-1.6 0-2.4 1.3-2.4 2.6 0 1.6 1.2 2.7 2.6 2.7"/><rect x="3" y="9" width="18" height="12" rx="2.5"/></svg>', label: () => t('checkout.method_applepay', 'Apple Pay') },
     googlepay: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>', label: () => t('checkout.method_googlepay', 'Google Pay') },
-    tabby: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tabby', 'Tabby') },
+    tabby: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tabby', 'Pay in 4 with Tabby') },
     tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tamara', 'Tamara') },
   };
 
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
     const region = REGIONS[currentRegionKey];
+    const methods = methodsFor(currentRegionKey, region);
     const fpAll = (window.hikayaCart && window.hikayaCart.getCart().length) ? computeFinalPricing(region) : { total: -1 };
     paymentArea.dataset.free = String(fpAll.total === 0); // set before updatePricing so it can't loop back here
     updatePricing();
 
-    if (region.methods[0] === 'contact') {
+    if (methods[0] === 'contact') {
       paymentArea.innerHTML = `<div class="other-region-box">${t('checkout.other_region_note', "We don't yet have automatic checkout for this region — please contact us and we'll arrange payment and delivery with you directly.")} <a href="help.html" style="text-decoration:underline;">${t('checkout.contact_us_link', 'contact us')}</a></div>`;
       placeOrderBtn.disabled = true;
       placeOrderBtn.textContent = t('checkout.contact_to_order_btn', 'Contact Us to Order');
@@ -773,20 +779,20 @@
     }
 
     let selectorHtml = '';
-    if (region.methods.length > 1) {
-      if (!selectedPaymentMethod || !region.methods.includes(selectedPaymentMethod)) {
-        selectedPaymentMethod = region.methods[0];
+    if (methods.length > 1) {
+      if (!selectedPaymentMethod || !methods.includes(selectedPaymentMethod)) {
+        selectedPaymentMethod = methods[0];
       }
-      selectorHtml = `<div class="pay-methods">${region.methods.map(m => `
+      selectorHtml = `<div class="pay-methods">${methods.map(m => `
         <button type="button" class="pay-method-btn ${m === selectedPaymentMethod ? 'active' : ''}" data-method="${m}">
           ${METHOD_META[m].icon} ${METHOD_META[m].label()}
         </button>`).join('')}</div>`;
     } else {
-      selectedPaymentMethod = region.methods[0];
+      selectedPaymentMethod = methods[0];
     }
 
     let bodyHtml = '';
-    if (fpAll.total === 0 && region.methods.includes('ziina')) {
+    if (fpAll.total === 0 && methods.includes('ziina')) {
       selectedPaymentMethod = 'ziina';
       paymentArea.innerHTML = `
         <div class="cod-box ziina-box">
@@ -865,7 +871,22 @@
         </div>`;
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = `${t('checkout.pay_with', 'Pay with')} ${walletName}`;
-    } else if (selectedPaymentMethod === 'tabby' || selectedPaymentMethod === 'tamara') {
+    } else if (selectedPaymentMethod === 'tabby') {
+      const fp = computeFinalPricing(region);
+      const quarter = Math.round(fp.total / 4 * 100) / 100;
+      const qTxt = window.hikayaFormatPrice ? window.hikayaFormatPrice(quarter, region) : 'AED ' + quarter.toFixed(2);
+      bodyHtml = `
+        <div class="cod-box ziina-box">
+          ${METHOD_META.tabby.icon}
+          <div>
+            <h4>${t('pg.tabby_title', 'Pay in 4 with Tabby')}</h4>
+            <p>${t('pg.tabby_body', "4 interest-free payments of {amount}. No fees. You'll finish on Tabby's secure page.").replace('{amount}', qTxt)}</p>
+            ${tabbyTesting() ? `<p class="ziina-conv">${t('pg.tabby_test', 'Test mode: use a Tabby test buyer (e.g. otp.success@tabby.ai, +971500000001, code 8888). No real money.')}</p>` : ''}
+          </div>
+        </div>`;
+      placeOrderBtn.disabled = false;
+      placeOrderBtn.textContent = t('pg.tabby_btn', 'Continue to Tabby');
+    } else if (selectedPaymentMethod === 'tamara') {
       const bnplName = METHOD_META[selectedPaymentMethod].label();
       bodyHtml = `
         <div class="cod-box">
@@ -1197,13 +1218,14 @@
       if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber, trackingToken);
     }
 
-    // Ziina: the server re-prices the cart, saves the order, and returns Ziina's payment page.
-    if (selectedPaymentMethod === 'ziina') {
+    // Ziina / Tabby: the server re-prices the cart, saves the order, and returns the provider's payment page.
+    if (selectedPaymentMethod === 'ziina' || selectedPaymentMethod === 'tabby') {
+      const viaTabby = selectedPaymentMethod === 'tabby' && !(finalPricing && finalPricing.total === 0);
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const headers = { 'Content-Type': 'application/json' };
         if (session) headers.Authorization = `Bearer ${session.access_token}`;
-        const res = await fetch('/.netlify/functions/create-ziina-payment', {
+        const res = await fetch(viaTabby ? '/.netlify/functions/create-tabby-payment' : '/.netlify/functions/create-ziina-payment', {
           method: 'POST', headers, body: JSON.stringify({ ...order, returnPath: location.pathname }),
         });
         const data = await res.json().catch(() => ({}));
@@ -1214,7 +1236,7 @@
         }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
         try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email })); } catch {}
-        placeOrderBtn.textContent = t('pg.ziina_redirect', 'Taking you to secure payment…');
+        placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
       } catch (err) {
         errorBox.textContent = (err && err.message) || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
@@ -1333,8 +1355,11 @@ window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
 <script>
 /* Back from Ziina: confirm the payment with our server (which asks Ziina), then show the result. */
 document.addEventListener('DOMContentLoaded', function () {
-  var q = new URLSearchParams(location.search); var order = q.get('order'), pi = q.get('pi'), how = q.get('ziina');
+  var q = new URLSearchParams(location.search); var order = q.get('order');
+  var viaTabby = q.has('tabby');
+  var pi = viaTabby ? q.get('payment_id') : q.get('pi'), how = viaTabby ? q.get('tabby') : q.get('ziina');
   if (!order || !pi || !how) return;
+  if (viaTabby && how === 'failure') how = 'failed';
   var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
   var box = document.createElement('div'); box.className = 'ziina-return'; box.setAttribute('role', 'status');
   var anchor = document.querySelector('.checkout-progress') || document.querySelector('main') || document.body.firstElementChild;
@@ -1345,7 +1370,7 @@ document.addEventListener('DOMContentLoaded', function () {
     try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
     if (window.hikayaCart) window.hikayaCart.clearCart();
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
-    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'ziina' });
+    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: viaTabby ? 'tabby' : 'ziina' });
     box.remove();
     if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     history.replaceState(null, '', location.pathname);
@@ -1354,10 +1379,12 @@ document.addEventListener('DOMContentLoaded', function () {
   say(t('pg.ziina_confirming', 'Confirming your payment…'));
   var tries = 0;
   (function check() {
-    fetch('/.netlify/functions/ziina-order-status?order=' + encodeURIComponent(order) + '&pi=' + encodeURIComponent(pi), { cache: 'no-store' })
+    fetch(viaTabby ? '/.netlify/functions/tabby-order-status?order=' + encodeURIComponent(order) + '&payment_id=' + encodeURIComponent(pi) : '/.netlify/functions/ziina-order-status?order=' + encodeURIComponent(order) + '&pi=' + encodeURIComponent(pi), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (d.paid) return done();
+        if (viaTabby && d.status === 'canceled') { say(t('pg.ziina_cancelled', 'Payment cancelled. Your cart is still here whenever you are ready.'), 'warn'); return history.replaceState(null, '', location.pathname); }
+        if (viaTabby && d.status === 'failed') { say(t('pg.tabby_failed', "Tabby couldn't approve this purchase, so you haven't been charged. Please choose another payment method."), 'warn'); return history.replaceState(null, '', location.pathname); }
         if (d.status === 'failed' || d.status === 'canceled') { say(t('pg.ziina_failed', "Your payment didn't go through, so you haven't been charged. Please try again."), 'warn'); return history.replaceState(null, '', location.pathname); }
         if (++tries < 10) return setTimeout(check, 2000);
         say(t('pg.ziina_slow', "We're still confirming your payment with the bank. We'll email you as soon as it's confirmed. Your reference is {order}.").replace('{order}', order));
