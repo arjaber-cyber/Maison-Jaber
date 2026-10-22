@@ -194,6 +194,7 @@
     pay_ziina: { en: "Pay by card", ar: "الدفع بالبطاقة" },
     ziina_title: { en: "Pay by card", ar: "الدفع بالبطاقة" },
     ziina_body: { en: "Visa, Mastercard, Apple Pay or Google Pay. You'll pay on Ziina's secure page, and we never see your card details.", ar: "فيزا أو ماستركارد أو Apple Pay أو Google Pay، ستدفع عبر صفحة Ziina الآمنة ولا نطّلع أبدًا على بيانات بطاقتك" },
+    err_choose_pay: { en: "Please choose a payment method.", ar: "يرجى اختيار طريقة الدفع" },
     pay_secure_note: { en: "All transactions are secure and encrypted.", ar: "جميع المعاملات آمنة ومشفّرة" },
     ziina_redirect_note: { en: "You'll be redirected to Ziina's secure page to pay by card, Apple Pay or Google Pay and complete your purchase.", ar: "سيتم تحويلك إلى صفحة Ziina الآمنة للدفع بالبطاقة أو Apple Pay أو Google Pay وإتمام طلبك" },
     ziina_conv: { en: "You'll be charged {aed} (about {local}).", ar: "سيتم خصم {aed} (ما يعادل تقريبًا {local})" },

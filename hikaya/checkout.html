@@ -774,6 +774,7 @@
   const paymentArea = document.getElementById('payment-area');
   const placeOrderBtn = document.getElementById('place-order');
   let selectedPaymentMethod = null;
+  let paymentChosen = false; // rows start closed; the panel opens once the customer picks one
 
   const METHOD_META = {
     ziina: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>', label: () => t('pg.pay_ziina', 'Pay by card') },
@@ -920,7 +921,7 @@
 
     // Shopify-style list: one row per method (radio, name, brand marks); the chosen row opens its panel.
     const rows = methods.map(m => {
-      const on = m === selectedPaymentMethod;
+      const on = paymentChosen && m === selectedPaymentMethod;
       const chips = (PAY_CHIPS[m] || []).map(c => `<img class="pay-icon${c[2] ? ' ' + c[2] : ''}" src="images/pay/${c[0]}.svg" alt="${c[1]}" width="38" height="24">`).join('');
       return `
         <button type="button" class="pay-row ${on ? 'active' : ''}" data-method="${m}" role="radio" aria-checked="${on}">
@@ -936,8 +937,10 @@
 
     paymentArea.querySelectorAll('.pay-row').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (selectedPaymentMethod === btn.dataset.method) return;
+        if (paymentChosen && selectedPaymentMethod === btn.dataset.method) return;
         selectedPaymentMethod = btn.dataset.method;
+        paymentChosen = true;
+        const err = document.getElementById('payment-error'); if (err && err.dataset.payErr) { err.style.display = 'none'; delete err.dataset.payErr; }
         renderPaymentSection();
       });
     });
@@ -1185,6 +1188,13 @@
     if (cart.length === 0) { showErr('checkout.cart_empty', 'Your cart is empty.'); return; }
 
     const finalPricing = computeFinalPricing(region);
+
+    if (!paymentChosen && finalPricing.total !== 0) {
+      showErr('pg.err_choose_pay', 'Please choose a payment method.');
+      errorBox.dataset.payErr = '1';
+      paymentArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     const order = {
       fullName: document.getElementById('full-name').value,
