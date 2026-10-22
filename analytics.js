@@ -42,7 +42,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   let clarityLoaded = false;
   const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   // Internal / personal-document pages are never tracked.
-  const untracked = /^(admin|invoice)\.html$/.test(page);
+  const untracked = /^(admin|invoice)(\.html)?$/.test(page); // also /hikaya/admin without .html
 
   /* Privacy: anything showing a child's photo or name, or an account's
      personal details, is hidden from Clarity recordings and heatmaps.
@@ -52,7 +52,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     '#photo-upload', '#photo-thumbs', '#extra-photo-upload', '#extra-photo-thumbs',
     '#child-name', '#item-meta', '#od-sub', '#od-number',
   ];
-  const MASK_WHOLE_PAGE = /^(account|track-order|login)\.html$/.test(page);
+  const MASK_WHOLE_PAGE = /^(account|track-order|login)(\.html)?$/.test(page);
   function applyMasks() {
     if (MASK_WHOLE_PAGE && document.body) document.body.setAttribute('data-clarity-mask', 'true');
     MASK_SELECTORS.forEach(function (sel) {
@@ -152,7 +152,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   let noCount = false;
   try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
   function countEvent(name, params) {
-    if (untracked || noCount || !COUNTED[name]) return;
+    if (untracked || noCount || !COUNTED[name] || /^\/test/.test(location.pathname)) return; // staging copies are not real visitors
     params = params || {};
     let q = null; try { q = new URLSearchParams(location.search); } catch (e) {}
     const body = JSON.stringify({
