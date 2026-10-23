@@ -16,25 +16,10 @@
 
 const { priceOrder, reserveDiscount, settleDiscount, PROMO_MESSAGES, REGIONS, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY } = require('./_pricing');
 const { checkOrderRules } = require('./_orderRules');
-const { tabby, secretKey, merchantCode, isTestKey, money } = require('./_tabby');
+const { tabby, secretKey, merchantCode, isTestKey, money, uaePhone, rejectMessage, rejectionReason, buyerHistory } = require('./_tabby');
 
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 const SB = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
-
-// Tabby wants an international number. Accept the usual UAE ways of typing it.
-function uaePhone(raw) {
-  let p = String(raw || '').replace(/[\s()-]/g, '');
-  if (p.startsWith('00')) p = '+' + p.slice(2);
-  if (/^05\d{8}$/.test(p)) p = '+971' + p.slice(1);
-  if (/^5\d{8}$/.test(p)) p = '+971' + p;
-  if (/^971\d{8,9}$/.test(p)) p = '+' + p;
-  return p;
-}
-
-const REJECT_MSG = {
-  en: "Tabby can't approve this purchase right now, so you haven't been charged. Please choose another payment method.",
-  ar: 'تعذّر على تابي الموافقة على هذا الطلب حاليًا، ولم يتم خصم أي مبلغ، يرجى اختيار طريقة دفع أخرى',
-};
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' });
@@ -158,13 +143,8 @@ exports.handler = async (event) => {
   const linesTotal = items.reduce((s, i) => s + Number(i.unit_price) * i.quantity, 0) + price.breakdown.deliveryFee;
   const discount = Math.max(0, Math.round((linesTotal - price.chargedAed) * 100) / 100);
 
-  // Returning customers: number of earlier paid orders (Tabby's "loyalty level").
-  let loyalty = 0;
-  try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?email=eq.${encodeURIComponent(email)}&payment_status=in.(paid,waived)&select=id`, { headers: { ...SB, Prefer: 'count=exact', Range: '0-0' } });
-    const m = /\/(\d+)$/.exec(r.headers.get('content-range') || '');
-    if (m) loyalty = Number(m[1]);
-  } catch {}
+  // Returning customers: real earlier orders (Tabby's checklist wants real buyer_history / order_history).
+  const history = await buyerHistory(email, registeredSince);
 
   const path = /^\/[a-z0-9/_-]*checkout\.html$/i.test(o.returnPath || '') ? o.returnPath : '/checkout.html';
   const back = `https://${host}${path}?order=${encodeURIComponent(orderNumber)}&tabby=`;
@@ -186,8 +166,8 @@ exports.handler = async (event) => {
             tax_amount: '0.00', shipping_amount: money(price.breakdown.deliveryFee), discount_amount: money(discount),
             items,
           },
-          buyer_history: { registered_since: registeredSince || nowIso, loyalty_level: loyalty },
-          order_history: [],
+          buyer_history: history.buyer_history,
+          order_history: history.order_history,
         },
         lang: siteLang,
         merchant_code: merchantCode(),
@@ -205,14 +185,14 @@ exports.handler = async (event) => {
 
   if (!session.ok || s.status !== 'created' || !webUrl || !paymentId) {
     const rejected = session.ok && s.status === 'rejected';
-    const reason = rejected && s.configuration && s.configuration.products && s.configuration.products.installments && s.configuration.products.installments.rejection_reason;
+    const reason = rejected ? rejectionReason(s) : null;
     if (!rejected) console.error('tabby session failed', session.status, JSON.stringify(s).slice(0, 400));
     await patchOrder({
       payment_status: rejected ? 'failed' : 'payment_start_failed', order_status: 'cancelled',
-      admin_notes: rejected ? `Tabby did not approve at checkout${reason ? ' (' + reason + ')' : ''}.` : `Tabby session failed (${session.status}).`,
+      admin_notes: rejected ? `Tabby did not approve at checkout (${reason}).` : `Tabby session failed (${session.status}).`,
     });
     if (price.promo) await settleDiscount(saved.id, false);
-    if (rejected) return json(400, { error: REJECT_MSG[siteLang], rejected: true, reason: reason || 'not_available' });
+    if (rejected) return json(400, { error: rejectMessage(reason, siteLang), rejected: true, reason });
     return json(502, { error: 'We could not reach Tabby. Please try again in a moment, or choose another payment method.' });
   }
 

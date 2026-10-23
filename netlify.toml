@@ -16,6 +16,10 @@
 [functions."daily-emails"]
   schedule = "0 4 * * *"
 
+# Tabby safety net: captures approved payments whose customer closed the tab before returning.
+[functions."tabby-sweep"]
+  schedule = "17 * * * *"
+
 # Deletes uploaded child photos older than 15 days (our promise to parents).
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"

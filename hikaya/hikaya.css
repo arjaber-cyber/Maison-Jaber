@@ -1263,3 +1263,7 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 .site-footer .foot-social a:hover svg { color: #fff; }
 [dir="rtl"] .site-footer .foot-social a { padding: 8px 10px 8px 14px; }
 [dir="rtl"] .site-footer .foot-social .fs-t { font-style: normal; }
+
+/* Tabby promo snippets (product + cart). Tabby renders its own content inside. */
+.tabby-promo { margin: 10px 0 14px; max-width: 100%; overflow: hidden; }
+.tabby-promo[hidden] { display: none; }

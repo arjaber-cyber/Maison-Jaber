@@ -22,6 +22,46 @@ window.HIKAYA_REGIONS = {
   Bahrain:  { zone: 'GCC', countryCodes: ['BH'], currency: 'BHD', symbol: 'BHD', bookWas: 20.5, bookNow: 17.25, deliveryFee: 3, methods: ['ziina'], label: 'Bahrain', shortLabel: 'Bahrain' },
   Oman:     { zone: 'GCC', countryCodes: ['OM'], currency: 'OMR', symbol: 'OMR', bookWas: 21, bookNow: 17.75, deliveryFee: 3, methods: ['ziina'], label: 'Oman', shortLabel: 'Oman' }
 };
+/* ---------------- Tabby (Pay later, UAE / AED only) ----------------
+   Public key + merchant code only (safe in the browser; the secret key lives in Netlify).
+   Hidden from customers until go-live: open any page with ?tabbytest=1 to see it (remembered for that tab).
+   GO LIVE: put the live pk_ key below and set HIKAYA_TABBY_LIVE = true (and the live sk_ key in Netlify). */
+window.HIKAYA_TABBY_LIVE = false;
+window.HIKAYA_TABBY = { publicKey: 'pk_test_01a15f1b-953b-9caa-ed99-07a93db262d2', merchantCode: 'MJAE' };
+window.hikayaTabbyOn = function () {
+  try {
+    if (new URLSearchParams(location.search).get('tabbytest') === '1') sessionStorage.setItem('hk_tabby_test', '1');
+    return window.HIKAYA_TABBY_LIVE === true || sessionStorage.getItem('hk_tabby_test') === '1';
+  } catch (e) { return window.HIKAYA_TABBY_LIVE === true; }
+};
+/* Mounts Tabby's own snippet: kind 'promo' (product / cart, source 'product'|'cart') or 'card' (checkout).
+   Re-call with the new price whenever it changes (Tabby's documented way to update). Does nothing outside the UAE. */
+(function () {
+  var loading = {};
+  function load(src) {
+    if (!loading[src]) loading[src] = new Promise(function (ok, bad) {
+      var s = document.createElement('script'); s.src = src; s.async = true; s.onload = ok; s.onerror = bad; document.head.appendChild(s);
+    });
+    return loading[src];
+  }
+  window.hikayaTabbyWidget = function (kind, selector, price, source) {
+    var el = document.querySelector(selector);
+    if (!el) return;
+    var card = kind === 'card'; // checkout decides itself (it only offers Tabby for UAE delivery)
+    var region = window.hikayaRegion ? window.hikayaRegion() : null;
+    var aed = card || !region || region.currency === 'AED';
+    if (!window.hikayaTabbyOn() || !aed || !(Number(price) > 0)) { el.hidden = true; el.innerHTML = ''; return; }
+    el.hidden = false;
+    var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    load(card ? 'https://checkout.tabby.ai/tabby-card.js' : 'https://checkout.tabby.ai/tabby-promo.js').then(function () {
+      var opts = { selector: selector, currency: 'AED', price: Number(price).toFixed(2), lang: lang, shouldInheritBg: false,
+        publicKey: window.HIKAYA_TABBY.publicKey, merchantCode: window.HIKAYA_TABBY.merchantCode };
+      if (!card) opts.source = source === 'cart' ? 'cart' : 'product';
+      try { el.innerHTML = ''; card ? new window.TabbyCard(opts) : new window.TabbyPromo(opts); } catch (e) { el.hidden = true; }
+    }).catch(function () { el.hidden = true; });
+  };
+})();
+
 // GCC-only launch: visitors outside the GCC default to UAE (AED) pricing.
 /* QA 19 Oct 2026 (currency): the payment gateway (Ziina) always charges in AED. For non-AED regions,
    every order summary shows the exact AED amount that will be charged, worked out with the same

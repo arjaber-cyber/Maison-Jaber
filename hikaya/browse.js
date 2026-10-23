@@ -218,6 +218,8 @@
       const was = H.priceWas();
       document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
       document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(); });
+      // Tabby promo snippet under the price (UAE / AED only; hidden until Tabby is switched on, see region.js).
+      if (window.hikayaTabbyWidget && window.hikayaRegion) window.hikayaTabbyWidget('promo', '#tabby-promo-product', window.hikayaRegion().bookNow, 'product');
     }
     document.getElementById('pdp-root').addEventListener('click', e => { if (e.target.closest('[data-look-inside]') && openLook) { e.preventDefault(); openLook(); } });
     document.getElementById('st-inside').addEventListener('click', e => {

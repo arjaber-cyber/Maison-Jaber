@@ -387,7 +387,7 @@
             <button type="button" class="op-btn" data-cm="delay" title="Emails the customer the new estimated delivery date">Send delay notice</button>
           </div></section>` : ''}
         <div class="op-foot">
-          ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : '<button class="op-btn" data-pay="refunded">Mark refunded</button>'}
+          ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : (o.payment_method === 'tabby' ? '<button class="op-btn" data-tabby-refund title="Refunds the full amount through Tabby, then marks the order refunded">Refund via Tabby</button>' : '<button class="op-btn" data-pay="refunded">Mark refunded</button>')}
           ${o.tracking_token ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?t=${encodeURIComponent(o.tracking_token)}">Invoice</a> <button type="button" class="op-btn" data-copy-track="${esc(o.tracking_token)}" title="Copy the private tracking link to send to the customer">Copy tracking link</button>` : ''}
           ${st === 'cancelled' ? '' : '<button class="op-btn danger" data-cancel>Cancel order</button>'}
           <span class="op-status" data-status role="status"></span>
@@ -428,6 +428,18 @@
       if (b.dataset.pay === 'refunded' && o.email) p.notifyCustomer = confirm(`Email ${o.email} that the refund has been issued?`);
       save(o, p, `Marked ${PAY[b.dataset.pay][0].toLowerCase()}`);
     });
+    const tr = el.querySelector('[data-tabby-refund]');
+    if (tr) tr.onclick = async () => {
+      if (!confirm(`Refund order ${o.order_number || ''} in full through Tabby? This sends the money back to the customer and cannot be undone.`)) return;
+      tr.disabled = true; status(el, 'Sending refund to Tabby…');
+      try {
+        const d = await api('tabby-refund', { method: 'POST', body: JSON.stringify({ orderId: o.id }) });
+        if (d.message && !d.alreadyRefunded) { tr.disabled = false; status(el, d.message, true); return; }
+        const p = { paymentStatus: 'refunded' };
+        if (o.email) p.notifyCustomer = confirm(`Tabby refund ${d.alreadyRefunded ? 'was already done' : 'of AED ' + d.refunded + ' sent'}. Email ${o.email} that the refund has been issued?`);
+        save(o, p, 'Refunded via Tabby');
+      } catch (err) { tr.disabled = false; status(el, err.message, true); }
+    };
     el.querySelectorAll('[data-cm]').forEach(b => b.onclick = () => {
       const kind = b.dataset.cm, note = el.querySelector('[data-cm-note]').value.trim(), newDate = el.querySelector('[data-cm-date]').value;
       if (kind === 'delay' && !newDate) { status(el, 'Pick the new delivery date first.', true); el.querySelector('[data-cm-date]').focus(); return; }
