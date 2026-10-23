@@ -60,7 +60,16 @@ window.hikayaTabbyOn = function () {
       var opts = { selector: selector, currency: 'AED', price: Number(price).toFixed(2), lang: lang, shouldInheritBg: false,
         publicKey: window.HIKAYA_TABBY.publicKey, merchantCode: window.HIKAYA_TABBY.merchantCode };
       if (!card) opts.source = source === 'cart' ? 'cart' : 'product';
-      try { el.innerHTML = ''; card ? new window.TabbyCard(opts) : new window.TabbyPromo(opts); } catch (e) { el.hidden = true; }
+      // Swap in a fresh, empty box each time: Tabby's widget does not re-render into a box it has
+      // already used (e.g. after switching EN <-> AR or a cart change it stayed blank).
+      try {
+        var cur = document.querySelector(selector);
+        if (!cur) return;
+        var fresh = cur.cloneNode(false);
+        fresh.hidden = false;
+        cur.parentNode.replaceChild(fresh, cur);
+        card ? new window.TabbyCard(opts) : new window.TabbyPromo(opts);
+      } catch (e) { var x = document.querySelector(selector); if (x) x.hidden = true; }
     }).catch(function () { el.hidden = true; });
   };
 })();
