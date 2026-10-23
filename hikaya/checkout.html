@@ -204,7 +204,11 @@
   .pay-panel .card-fields { border: 0; background: transparent; }
   @media (max-width: 480px) {
     .pay-row { padding: 14px; gap: 10px; font-size: 14px; }
-    .pay-icon.wallet { display: none; }
+    .pay-chips { gap: 4px; }
+    .pay-icon { width: 32px; height: 20px; }
+  }
+  @media (max-width: 360px) {
+    .pay-icon { width: 28px; height: 18px; }
   }
 
   .other-region-box {
@@ -220,7 +224,8 @@
   .trust-bar { text-align: center; margin-top: 18px; }
   .trust-line { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--text-on-light-soft); margin-bottom: 10px; }
   .trust-line svg { width: 15px; height: 15px; stroke: #3d5a26; flex-shrink: 0; }
-  .trust-logos { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .trust-logos { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; direction: ltr; }
+  .trust-logos img { width: 38px; height: 24px; display: block; }
   .trust-logos span { font-size: 11px; font-weight: 800; color: var(--text-on-light-soft); border: 1px solid var(--line-soft, #ddd); border-radius: 6px; padding: 4px 9px; }
 
   /* Summary sidebar */
@@ -386,11 +391,11 @@
 
     <div class="approval">
       <input type="checkbox" id="final-approval" required aria-required="true" />
-      <label for="final-approval" data-i18n="bl.approval">I confirm that all the information I have shared is correct: my child's name as it will be printed, age, photo, book language, first-page message, and my contact and delivery details. I understand the book goes into production exactly as entered once payment is made.</label>
+      <label for="final-approval" data-i18n="bl.approval">My order details are correct. The book will be printed exactly as entered.</label>
     </div>
     <div class="approval">
       <input type="checkbox" id="marketing-optin" />
-      <label for="marketing-optin"><span data-i18n="bl.marketing">I'm happy to receive emails and messages (including WhatsApp and SMS) from Hikaya by Maison Jaber about new stories, offers and promotions. I can unsubscribe at any time.</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label>
+      <label for="marketing-optin"><span data-i18n="bl.marketing">Send me new stories and offers by email, WhatsApp or SMS.</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label>
     </div>
 
     <button class="btn-primary" id="place-order" disabled data-i18n="pg.ziina_btn">Continue to secure payment</button>
@@ -403,7 +408,7 @@
         <span data-i18n="checkout.trust_secure">Secure checkout — your details are encrypted</span>
       </div>
       <div class="trust-logos" aria-hidden="true">
-        <span>VISA</span><span>Mastercard</span><span> Pay</span><span>G Pay</span>
+        <img src="images/pay/visa.svg" alt="" width="38" height="24"><img src="images/pay/master.svg" alt="" width="38" height="24"><img src="images/pay/apple_pay.svg" alt="" width="38" height="24"><img src="images/pay/google_pay.svg" alt="" width="38" height="24">
       </div>
     </div>
   </div>
@@ -839,7 +844,7 @@
         <div class="cod-box ziina-box">
           ${METHOD_META.ziina.icon}
           <div>
-            <p>${t('pg.ziina_redirect_note', "You'll be redirected to Ziina's secure page to pay by card, Apple Pay or Google Pay and complete your purchase.")}</p>
+            <p>${t('pg.ziina_redirect_note', "You'll pay on Ziina's secure page with card, Apple Pay or Google Pay.")}</p>
             ${conv}
           </div>
         </div>`;
