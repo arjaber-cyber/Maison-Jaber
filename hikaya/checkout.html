@@ -469,11 +469,13 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { mountFacebookSignIn } from './facebook-auth.js';
   import { maybeSendWelcome } from './welcome.js';
 
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+    SUPABASE_ANON
   );
 
   const accountStep = document.getElementById('account-step');
@@ -545,8 +547,10 @@
     onSignedIn: () => refreshAuthUI(),
     onError: (msg) => alert(msg)
   });
-  document.getElementById('facebook-signin').addEventListener('click', async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: window.location.href } });
+  mountFacebookSignIn(supabase, document.getElementById('facebook-signin'), {
+    anonKey: SUPABASE_ANON,
+    redirectTo: window.location.href,
+    onError: (msg) => alert(msg)
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
     if (applyEmptyGuard()) return;

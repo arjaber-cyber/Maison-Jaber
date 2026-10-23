@@ -124,10 +124,12 @@
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { maybeSendWelcome } from './welcome.js';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { mountFacebookSignIn } from './facebook-auth.js';
 
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E'
+    SUPABASE_ANON
   );
 
   const statusEl = document.getElementById('status');
@@ -158,11 +160,10 @@
     onError: (msg) => { statusEl.className = 'status error'; statusEl.textContent = msg; }
   });
 
-  document.getElementById('facebook-btn').addEventListener('click', async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'facebook',
-      options: { redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo) }
-    });
+  mountFacebookSignIn(supabase, document.getElementById('facebook-btn'), {
+    anonKey: SUPABASE_ANON,
+    redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo),
+    onError: (msg) => { statusEl.className = 'status error'; statusEl.textContent = msg; }
   });
 
   document.getElementById('email-form').addEventListener('submit', async (e) => {
