@@ -1474,8 +1474,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var q = new URLSearchParams(location.search); var order = q.get('order');
   var viaTabby = q.has('tabby');
   var pi = viaTabby ? q.get('payment_id') : q.get('pi'), how = viaTabby ? q.get('tabby') : q.get('ziina');
-  if (!order || !pi || !how) return;
   if (viaTabby && how === 'failure') how = 'failed';
+  /* Tabby's cancel / failure return may come back without a payment_id: still show the message
+     (Tabby checklist), we just can't ask Tabby about that payment from here (webhook + sweep do). */
+  var tabbyNotPaid = viaTabby && (how === 'cancel' || how === 'failed');
+  if (!order || !how || (!pi && !tabbyNotPaid)) return;
   var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
   var box = document.createElement('div'); box.className = 'ziina-return'; box.setAttribute('role', 'status');
   var anchor = document.querySelector('.checkout-progress') || document.querySelector('main') || document.body.firstElementChild;
@@ -1491,9 +1494,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     history.replaceState(null, '', location.pathname);
   }
-  if (how === 'cancel') {
-    if (viaTabby) fetch('/.netlify/functions/tabby-order-status?order=' + encodeURIComponent(order) + '&payment_id=' + encodeURIComponent(pi), { cache: 'no-store' }).catch(function () {});
-    say(viaTabby ? t('pg.tabby_cancelled', 'You aborted the payment. Please retry or choose another payment method.') : t('pg.ziina_cancelled', 'Payment cancelled. Your cart is still here whenever you are ready.'), 'warn');
+  function showTop() { try { window.scrollTo(0, 0); box.scrollIntoView({ block: 'center' }); } catch (e) {} }
+  if (how === 'cancel' || tabbyNotPaid) {
+    // Tabby cancel / failure: show Tabby's wording straight away; the order is updated in the background.
+    if (viaTabby && pi) fetch('/.netlify/functions/tabby-order-status?order=' + encodeURIComponent(order) + '&payment_id=' + encodeURIComponent(pi), { cache: 'no-store' }).catch(function () {});
+    var msg = !viaTabby ? t('pg.ziina_cancelled', 'Payment cancelled. Your cart is still here whenever you are ready.')
+      : how === 'cancel' ? t('pg.tabby_cancelled', 'You aborted the payment. Please retry or choose another payment method.')
+      : t('pg.tabby_failed', 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.');
+    say(msg, 'warn'); showTop();
     history.replaceState(null, '', location.pathname); return;
   }
   say(t('pg.ziina_confirming', 'Confirming your payment…'));
