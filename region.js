@@ -24,14 +24,17 @@ window.HIKAYA_REGIONS = {
 };
 /* ---------------- Tabby (Pay later, UAE / AED only) ----------------
    Public key + merchant code only (safe in the browser; the secret key lives in Netlify).
-   Hidden from customers until go-live: open any page with ?tabbytest=1 to see it (remembered for that tab).
+   Hidden from customers until go-live: open any page with ?tabbytest=1 to see it (remembered in that browser; ?tabbytest=0 turns it off).
    GO LIVE: put the live pk_ key below and set HIKAYA_TABBY_LIVE = true (and the live sk_ key in Netlify). */
 window.HIKAYA_TABBY_LIVE = false;
 window.HIKAYA_TABBY = { publicKey: 'pk_test_01a15f1b-953b-9caa-ed99-07a93db262d2', merchantCode: 'MJAE' };
+/* ?tabbytest=1 switches test mode on for this browser (kept across tabs and sign-ins); ?tabbytest=0 switches it off. */
 window.hikayaTabbyOn = function () {
   try {
-    if (new URLSearchParams(location.search).get('tabbytest') === '1') sessionStorage.setItem('hk_tabby_test', '1');
-    return window.HIKAYA_TABBY_LIVE === true || sessionStorage.getItem('hk_tabby_test') === '1';
+    var q = new URLSearchParams(location.search).get('tabbytest');
+    if (q === '1') localStorage.setItem('hk_tabby_test', '1');
+    if (q === '0') localStorage.removeItem('hk_tabby_test');
+    return window.HIKAYA_TABBY_LIVE === true || localStorage.getItem('hk_tabby_test') === '1' || sessionStorage.getItem('hk_tabby_test') === '1';
   } catch (e) { return window.HIKAYA_TABBY_LIVE === true; }
 };
 /* Mounts Tabby's own snippet: kind 'promo' (product / cart, source 'product'|'cart') or 'card' (checkout).
