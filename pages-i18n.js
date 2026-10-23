@@ -79,7 +79,7 @@
     not_found_d: { en: 'It may have moved. Browse the full collection instead.', ar: 'ربما نُقلت، تصفّح المجموعة كاملة' },
     sib_title: { en: 'Add another story for a sibling?', ar: 'هل تضيف قصة أخرى للأخ أو الأخت؟' },
     // Order confirmation
-    od_title: { en: "Their story is officially on its way.", ar: "قصتهم في طريقها إليكم رسميًا" },
+    od_title: { en: "Your story is on its way", ar: "قصّتكم في الطريق إليكم" },
     od_sub: { en: "Thank you for creating a Hikaya story for {name}.", ar: "شكرًا لك على صنع قصة من حكاية لـ{name}" },
     od_sub_plain: { en: "Thank you for creating a Hikaya story.", ar: "شكرًا لك على صنع قصة من حكاية" },
     od_number: { en: "Order number", ar: "رقم الطلب" },
