@@ -15,5 +15,6 @@ Disallow: /test/
 Disallow: /test2/
 Disallow: /test3/
 Disallow: /test4/
+Disallow: /go/
 
 Sitemap: https://maison-jaber.com/sitemap.xml

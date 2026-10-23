@@ -76,7 +76,8 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
-    window.gtag('config', cfg.GA_MEASUREMENT_ID);
+    // The landing page's own address, with its campaign tags (they are removed from the address bar).
+    window.gtag('config', cfg.GA_MEASUREMENT_ID, { page_location: landingHref });
     // Shop steps that happened before the visitor accepted cookies.
     earlyEvents.forEach(function (ev) { window.gtag('event', ev[0], ev[1]); });
     earlyEvents.length = 0;
@@ -95,6 +96,13 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     /* eslint-enable */
     window.clarity('consent'); // visitor accepted analytics in our banner
     try { window.clarity('set', 'site_language', localStorage.getItem('hikaya_lang') || 'en'); } catch (e) {}
+    try {
+      const a = readAttr();
+      const t = a && a.last;
+      if (t) window.clarity('set', 'came_from', t.hk ? 'link ' + t.hk : (t.src || t.rh || 'direct') + (t.cmp ? ' / ' + t.cmp : ''));
+      const ord = sessionStorage.getItem('hk_clarity_order');
+      if (ord) window.hikayaTagOrder(ord);
+    } catch (e) {}
   }
 
   /* Funnel steps, so GA4 can show where shoppers drop off:
@@ -139,6 +147,12 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       t = b.createElement(e); t.async = true; t.src = v;
       s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
     })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    // Ad click id saved on landing (the address bar no longer has fbclid): give it to the Pixel.
+    try {
+      const a = readAttr();
+      const fbc = (a && a.last && a.last.fbc) || (a && a.first && a.first.fbc);
+      if (fbc && !cookie('_fbc')) document.cookie = '_fbc=' + encodeURIComponent(fbc) + '; path=/; max-age=' + 90 * 86400 + '; SameSite=Lax; Secure';
+    } catch (e) {}
     window.fbq('init', cfg.META_PIXEL_ID);
     window.fbq('track', 'PageView');
     /* eslint-enable */
@@ -171,6 +185,87 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   }
   countEvent('pageview');
 
+  /* ---------- Where this customer came from (Oct 2026) ----------
+     Remembers, on this device only, how the visitor first found us and how
+     they arrived most recently: the tagged link / ad / post (utm_* or our own
+     short link code "hk"), the site that sent them, and the page they landed
+     on. Checkout sends it with the order so the dashboard can show
+     "Order HK-123 came from: Instagram, Eid reel".
+     No names, emails or anything personal; kept 90 days. The tags are then
+     removed from the address bar so links look clean. */
+  const ATTR_KEY = 'hikaya_attr_v1';
+  const ATTR_DAYS = 90;
+  const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'ttclid', 'igshid'];
+  const landingHref = location.href;
+  const clip = (v, n) => (v == null || v === '' ? null : String(v).slice(0, n || 120));
+  function readAttr() {
+    try {
+      const a = JSON.parse(localStorage.getItem(ATTR_KEY) || 'null');
+      if (a && a.first && Date.now() - (a.first.ts || 0) < ATTR_DAYS * 864e5) return a;
+    } catch (e) {}
+    return null;
+  }
+  (function captureTouch() {
+    if (untracked || /^\/test/.test(location.pathname)) return;
+    let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
+    let refHost = null;
+    try { if (document.referrer) refHost = new URL(document.referrer).hostname.toLowerCase(); } catch (e) {}
+    const external = refHost && !/(^|\.)maison-jaber\.com$|netlify\.app$/.test(refHost);
+    const tagged = TRACK_PARAMS.some(function (k) { return q.get(k); });
+    const prev = readAttr();
+    if (!tagged && !external && prev) return; // moving around the site, or a plain return visit
+    const fbclid = q.get('fbclid');
+    const touch = {
+      src: clip(q.get('utm_source'), 60), med: clip(q.get('utm_medium'), 60), cmp: clip(q.get('utm_campaign')),
+      cnt: clip(q.get('utm_content')), trm: clip(q.get('utm_term')), hk: clip(q.get('hk'), 40),
+      rh: external ? clip(refHost) : null, lp: clip(location.pathname + (q.get('s') ? '?s=' + q.get('s') : ''), 160),
+      clk: fbclid ? 'meta' : q.get('gclid') ? 'google' : q.get('ttclid') ? 'tiktok' : null,
+      fbc: fbclid ? 'fb.1.' + Date.now() + '.' + clip(fbclid, 500) : null,
+      ts: Date.now(),
+    };
+    const next = { first: prev ? prev.first : touch, last: touch, n: ((prev && prev.n) || 0) + 1 };
+    try { localStorage.setItem(ATTR_KEY, JSON.stringify(next)); } catch (e) {}
+  })();
+  // Clean the address bar (the visit counter above has already read the tags).
+  (function stripTags() {
+    try {
+      const u = new URL(location.href);
+      let changed = false;
+      TRACK_PARAMS.forEach(function (k) { if (u.searchParams.has(k)) { u.searchParams.delete(k); changed = true; } });
+      if (changed) history.replaceState(history.state, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : '') + u.hash);
+    } catch (e) {}
+  })();
+
+  function cookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  /* What checkout sends with the order. Clarity's visitor/session ids let the
+     dashboard open this customer's recording; Meta's ids (fbc/fbp) are only
+     included when the visitor accepted marketing cookies. */
+  window.hikayaAttribution = function () {
+    const a = readAttr() || {};
+    const mk = hasConsent('marketing');
+    const strip = function (t) { if (!t) return null; const c = Object.assign({}, t); if (!mk) delete c.fbc; return c; };
+    const clck = (cookie('_clck') || '').split('|')[0] || null;
+    const clsk = (cookie('_clsk') || '').split('|')[0] || null;
+    return {
+      first: strip(a.first), last: strip(a.last), visits: a.n || null,
+      clarity: clck && clsk ? { u: clip(clck, 40), s: clip(clsk, 40) } : null,
+      fbp: mk ? clip(cookie('_fbp'), 120) : null,
+      marketing: mk, lang: (document.documentElement.lang || '').slice(0, 5),
+    };
+  };
+  // Tags this visit's Clarity recording with the order, so it can be found from the dashboard.
+  window.hikayaTagOrder = function (orderNumber) {
+    if (!orderNumber) return;
+    try { sessionStorage.setItem('hk_clarity_order', String(orderNumber)); } catch (e) {}
+    if (window.clarity) {
+      window.clarity('set', 'order_number', String(orderNumber));
+      window.clarity('upgrade', 'order'); // keep this recording in full
+    }
+  };
+
   function tryLoadAll() {
     if (untracked) return;
     loadClarity();
@@ -192,7 +287,10 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // no-ops otherwise.
   // Usage: window.hikayaTrackEvent('begin_checkout', { value: 149, currency: 'AED' })
   window.hikayaTrackEvent = function (eventName, params) {
-    params = params || {};
+    params = Object.assign({}, params || {});
+    // Optional id shared with the server (Meta Conversions API), so a purchase is never counted twice.
+    const eventId = params.event_id || null;
+    delete params.event_id;
     countEvent(eventName, params);
     if (gaLoaded && window.gtag) window.gtag('event', eventName, params);
     else if (earlyEvents.length < 30) earlyEvents.push([eventName, params]);
@@ -208,8 +306,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
         sign_up: 'CompleteRegistration',
       };
       const metaName = metaEventMap[eventName];
-      if (metaName) window.fbq('track', metaName, params);
-      else window.fbq('trackCustom', eventName, params);
+      const opts = eventId ? { eventID: String(eventId) } : undefined;
+      if (metaName) window.fbq('track', metaName, params, opts);
+      else window.fbq('trackCustom', eventName, params, opts);
     }
   };
 })();

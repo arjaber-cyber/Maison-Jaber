@@ -140,6 +140,7 @@
     foot_cart: { en: 'Cart', ar: 'السلة' },
     foot_privacy: { en: 'Privacy', ar: 'الخصوصية' },
     foot_terms: { en: 'Terms', ar: 'الشروط' },
+    foot_cookies: { en: 'Cookie settings', ar: 'إعدادات ملفات تعريف الارتباط' },
     foot_copy: { en: '© 2026 Maison Jaber. All rights reserved.', ar: '© 2026 ميزون جابر، جميع الحقوق محفوظة' },
   };
 

@@ -41,6 +41,11 @@ order can be paid for until these exist. Also still needed: `ADMIN_PASSWORD`,
 
 ## 🟡 Owner dashboard — solid, but incomplete
 
+- ✅ Done (Oct 2026): Customers tab — where each order came from (orders.attribution, saved by
+  checkout from analytics.js), /go/ short-link maker with per-post caption codes (tracked_links),
+  repeat customers, unpaid checkouts, WhatsApp clicks, Google searches (_gsc.js, needs GSC_* env),
+  Clarity recording per order, Meta Conversions API (_meta.js, needs META_PIXEL_ID + META_CAPI_TOKEN).
+  One-time SQL: supabase/2026-10-customer-tracking.sql
 - ✅ Done (Oct 2026): Discounts tab — templates, single/batch codes, email-locked codes,
   emailing codes, tracker (uses, discount given, sales). One discount per order (best of
   bundle vs code). 100% codes skip payment. Orders have a type (sale / gift / influencer /

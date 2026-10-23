@@ -42,7 +42,8 @@ exports.handler = async (event) => {
     const orders = rows.map(row => {
       let items = [];
       try { items = JSON.parse(row.items || '[]'); } catch { items = []; }
-      return { ...row, items };
+      const { attribution, admin_notes, ...pub } = row; // internal only: where they came from, team notes
+      return { ...pub, items };
     });
     return { statusCode: 200, body: JSON.stringify({ orders }) };
   } catch (err) {

@@ -1274,7 +1274,9 @@
       bundleDiscountPct: finalPricing.bundlePct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,
-      currency: region.currency
+      currency: region.currency,
+      // Where this customer came from (tagged link, ad, post, Google...), saved with the order.
+      attribution: window.hikayaAttribution ? window.hikayaAttribution() : null
     };
 
     if (!order.fullName || !order.email || !order.address || !order.unitNumber || !order.city || !order.phone) {
@@ -1313,9 +1315,11 @@
       document.getElementById('progress-step-2').classList.remove('active');
       document.getElementById('progress-step-3').classList.add('active');
 
+      if (window.hikayaTagOrder && orderNumber) window.hikayaTagOrder(orderNumber);
       if (window.hikayaTrackEvent) {
         window.hikayaTrackEvent('purchase', {
           value: order.amount, currency: order.currency, payment_method: order.paymentMethod,
+          transaction_id: orderNumber || undefined, event_id: orderNumber || undefined,
         });
       }
 
@@ -1351,7 +1355,8 @@
           renderPaymentSection();
         }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
-        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email })); } catch {}
+        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email, total: data.total, currency: data.currency, chargedAed: data.chargedAed })); } catch {}
+        if (window.hikayaTagOrder) window.hikayaTagOrder(data.orderNumber);
         placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
       } catch (err) {
@@ -1489,7 +1494,8 @@ document.addEventListener('DOMContentLoaded', function () {
     try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
     if (window.hikayaCart) window.hikayaCart.clearCart();
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
-    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: viaTabby ? 'tabby' : 'ziina' });
+    if (window.hikayaTagOrder) window.hikayaTagOrder(order);
+    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: viaTabby ? 'tabby' : 'ziina', value: pending.total, currency: pending.currency, transaction_id: order, event_id: order });
     box.remove();
     if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     history.replaceState(null, '', location.pathname);

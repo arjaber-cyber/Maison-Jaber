@@ -60,6 +60,17 @@
   const giveaway = o => counts(o) && !isSale(o) && typeOf(o) !== 'test' && ['paid', 'waived', 'pending_cod'].includes(o.payment_status);
 
   /* ---------- Helpers ---------- */
+  /* Where the customer came from + their Clarity recording (Customers tab has the totals). */
+  const CLARITY_PROJECT = 'yu5qjkitji';
+  function cameFrom(o) {
+    const a = o.attribution;
+    if (!a) return '';
+    const first = a.first_source && (a.first_source !== a.source || a.first_detail !== a.detail) ? `<br><span class="op-muted">First found us: ${esc(a.first_source)}${a.first_detail ? ' · ' + esc(a.first_detail) : ''}${a.first_seen ? ' (' + esc(fmtDate(a.first_seen)) + ')' : ''}</span>` : '';
+    const rec = a.clarity && a.clarity.u && a.clarity.s
+      ? `<a target="_blank" rel="noopener" href="https://clarity.microsoft.com/player/${CLARITY_PROJECT}/${encodeURIComponent(a.clarity.u)}/${encodeURIComponent(a.clarity.s)}">Watch their visit</a>`
+      : `<a target="_blank" rel="noopener" href="https://clarity.microsoft.com/projects/view/${CLARITY_PROJECT}/impressions" title="In Clarity, filter Custom tags: order_number = ${esc(o.order_number || '')}">Find their visit in Clarity</a> <span class="op-muted">(only if they accepted cookies)</span>`;
+    return `<dt>Came from</dt><dd><b>${esc(a.source || 'Unknown')}</b>${a.detail ? ' · ' + esc(a.detail) : ''}${a.landing ? `<br><span class="op-muted">Landed on ${esc(a.landing)}${a.visits > 1 ? ' · ' + esc(a.visits) + ' visits before ordering' : ''}</span>` : ''}${first}<br>${rec}</dd>`;
+  }
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const DAY = 864e5;
   const fmtDate = d => d ? new Date(d).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—';
@@ -353,6 +364,7 @@
             <dt>Address</dt><dd>${esc([o.address, o.city, o.country].filter(Boolean).join(', ') || '—')}</dd>
             ${o.unit_number ? `<dt>Flat / Villa</dt><dd>${esc(o.unit_number)}</dd>` : ''}
             <dt>Map pin</dt><dd>${o.location_lat != null && o.location_lng != null ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps?q=${+o.location_lat},${+o.location_lng}">Open in Google Maps</a>` : '<span class="op-muted">No pin dropped</span>'}</dd>
+            ${cameFrom(o)}
             <dt>Promotions</dt><dd>${o.marketing_opt_in ? 'Yes, opted in to emails &amp; messages' : '<span class="op-muted">Not opted in</span>'}</dd>
             ${o.info_confirmed_at || o.photo_consent_at ? `<dt>Consents</dt><dd>${o.info_confirmed_at ? 'Info confirmed' : ''}${o.info_confirmed_at && o.photo_consent_at ? ' · ' : ''}${o.photo_consent_at ? 'Photo use authorised (15-day deletion)' : ''}</dd>` : ''}
             ${o.courier || o.tracking_number ? `<dt>Courier</dt><dd>${esc(o.courier || '—')}${o.tracking_number ? ' · ' + (o.tracking_url ? `<a target="_blank" rel="noopener" href="${esc(o.tracking_url)}">${esc(o.tracking_number)}</a>` : esc(o.tracking_number)) : ''}</dd>` : ''}
@@ -517,9 +529,9 @@
 
   function exportCsv() {
     const cell = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
-    const head = ['order_number', 'placed', 'order_type', 'counts_as_revenue', 'step', 'step_since', 'payment_status', 'payment_method', 'total_aed', 'list_value_aed', 'code_discount_aed', 'paid_currency', 'paid_amount', 'full_name', 'email', 'phone', 'address', 'city', 'country', 'courier', 'tracking_number', 'is_gift', 'gift_message', 'promo_code', 'bundle_discount_pct', 'books', 'admin_notes'];
+    const head = ['order_number', 'placed', 'order_type', 'counts_as_revenue', 'step', 'step_since', 'payment_status', 'payment_method', 'total_aed', 'list_value_aed', 'code_discount_aed', 'paid_currency', 'paid_amount', 'full_name', 'email', 'phone', 'address', 'city', 'country', 'courier', 'tracking_number', 'is_gift', 'gift_message', 'promo_code', 'bundle_discount_pct', 'books', 'admin_notes', 'came_from', 'came_from_detail', 'first_found_us'];
     const rows = orders.filter(o => match(o)).map(o => [o.order_number, o.created_at, TYPES[typeOf(o)].label, earned(o) ? 'yes' : 'no', stageOf(o) === 'cancelled' ? 'Cancelled' : S(stageOf(o)).label, sinceStage(o), o.payment_status, o.payment_method, aed(o) == null ? '' : aed(o).toFixed(2), o.list_value_aed ?? '', o.promo_discount_aed ?? '', o.currency, o.amount, o.full_name, o.email, o.phone, o.address, o.city, o.country, o.courier, o.tracking_number, o.is_gift, o.gift_message, o.promo_code, o.bundle_discount_pct,
-      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}${famOf(i).length ? ' [family: ' + famOf(i).map(c => famRole(c.role) + ' ' + (famHas(c) ? 'photo' : 'AI avatar')).join(', ') + ']' : ''}`).join('; '), o.admin_notes].map(cell).join(','));
+      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}${famOf(i).length ? ' [family: ' + famOf(i).map(c => famRole(c.role) + ' ' + (famHas(c) ? 'photo' : 'AI avatar')).join(', ') + ']' : ''}`).join('; '), o.admin_notes, (o.attribution && o.attribution.source) || '', (o.attribution && o.attribution.detail) || '', (o.attribution && o.attribution.first_source) || ''].map(cell).join(','));
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['﻿' + [head.join(','), ...rows].join('\n')], { type: 'text/csv' }));
     a.download = `hikaya-orders-${new Date().toISOString().slice(0, 10)}.csv`; a.click();

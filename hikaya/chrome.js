@@ -113,7 +113,7 @@
   <div class="foot-bottom">
     <span data-i18n="home6.foot_copy">© 2026 Maison Jaber. All rights reserved.</span>
     <span class="powered" data-i18n="pg.powered">Powered by Maison Jaber FZ-LLC</span>
-    <span><a href="privacy.html" data-i18n="home6.foot_privacy">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" data-i18n="home6.foot_terms">Terms</a></span>
+    <span><a href="privacy.html" data-i18n="home6.foot_privacy">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" data-i18n="home6.foot_terms">Terms</a> &nbsp;·&nbsp; <a href="#" data-cookie-settings data-i18n="home6.foot_cookies">Cookie settings</a></span>
   </div>
 </div></footer>`;
   }

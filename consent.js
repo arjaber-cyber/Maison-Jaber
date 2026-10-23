@@ -74,18 +74,18 @@
     const ar = document.documentElement.lang === 'ar';
     const L = ar ? {
       aria: 'تفضيلات ملفات تعريف الارتباط',
-      long: 'نستخدم ملفات تعريف الارتباط الأساسية، وبموافقتك فقط ملفات التحليلات (Google Analytics و Microsoft Clarity) لتحسين الموقع',
-      short: 'ملفات تعريف الارتباط للتحليلات بموافقتك فقط',
+      long: 'نستخدم ملفات تعريف الارتباط الأساسية (السلة واللغة وكيف وصلت إلينا)، وبموافقتك فقط ملفات التحليلات (Google Analytics و Microsoft Clarity) والتسويق (Meta) لتحسين الموقع وإعلاناتنا',
+      short: 'ملفات التحليلات والتسويق بموافقتك فقط',
       policy: 'سياسة الخصوصية', accept: 'قبول الكل', reject: 'رفض', customize: 'تخصيص',
-      choose: 'اختر ما يناسبك', essential: 'أساسية (مفعّلة دائمًا: السلة، اللغة، المنطقة)',
-      analytics: 'التحليلات (Google Analytics و Microsoft Clarity)', marketing: 'التسويق (Meta Pixel)', save: 'حفظ التفضيلات',
+      choose: 'اختر ما يناسبك', essential: 'أساسية (مفعّلة دائمًا: السلة، اللغة، المنطقة، كيف وصلت إلينا)',
+      analytics: 'التحليلات (Google Analytics و Microsoft Clarity)', marketing: 'التسويق (Meta: لقياس إعلاناتنا)', save: 'حفظ التفضيلات',
     } : {
       aria: 'Cookie preferences',
-      long: 'We use essential cookies, and, only with your OK, analytics (Google Analytics and Microsoft Clarity) to improve the site.',
-      short: 'Cookies for analytics, only with your OK.',
+      long: 'We use essential cookies (cart, language, how you found us) and, only with your OK, analytics (Google Analytics, Microsoft Clarity) and marketing (Meta) cookies to improve the site and our ads.',
+      short: 'Analytics and marketing cookies, only with your OK.',
       policy: 'Privacy Policy', accept: 'Accept All', reject: 'Reject', customize: 'Customize',
-      choose: "Choose what you're comfortable with:", essential: 'Essential (always on: cart, language, region)',
-      analytics: 'Analytics (Google Analytics, Microsoft Clarity)', marketing: 'Marketing (Meta Pixel)', save: 'Save Preferences',
+      choose: "Choose what you're comfortable with:", essential: 'Essential (always on: cart, language, region, how you found us)',
+      analytics: 'Analytics (Google Analytics, Microsoft Clarity)', marketing: 'Marketing (Meta, to measure our ads)', save: 'Save Preferences',
     };
     banner.setAttribute('aria-label', L.aria);
     if (ar) banner.setAttribute('dir', 'rtl');
@@ -146,6 +146,11 @@
   window.hikayaConsent = getConsent;
   window.hikayaHasConsent = hasConsent;
   window.hikayaOpenConsentSettings = openSettings;
+  // Footer "Cookie settings" link on every page.
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('[data-cookie-settings]');
+    if (a) { e.preventDefault(); openSettings(); }
+  });
 
   document.addEventListener('DOMContentLoaded', () => {
     // Never on the owner dashboard.

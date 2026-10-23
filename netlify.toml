@@ -71,6 +71,13 @@
   status = 200
   force = true
 
+# Short tracked links made in the dashboard (Customers tab > Link maker): maison-jaber.com/go/eid-reel
+[[redirects]]
+  from = "/go/*"
+  to = "/.netlify/functions/go?c=:splat"
+  status = 200
+  force = true
+
 # Soft launch: maison-jaber.com/hikaya/ serves the shop (files live in /hikaya/).
 [[redirects]]
   from = "/hikaya/story-bravest-little-one.html"

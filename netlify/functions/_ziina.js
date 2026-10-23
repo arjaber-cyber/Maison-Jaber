@@ -6,6 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
+const { sendMetaPurchase } = require('./_meta');
 const { orderConfirmed, paymentNotCompleted } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
@@ -76,6 +77,8 @@ async function settleFromZiina(pi) {
 }
 
 async function sendConfirmation(order) {
+  // Tell Meta about the sale (server side). Only real paid sales with marketing consent; never blocks the emails.
+  await sendMetaPurchase(order);
   let items = [];
   try { items = JSON.parse(order.items || '[]'); } catch {}
   const waived = order.payment_status === 'waived';
@@ -105,6 +108,7 @@ async function sendConfirmation(order) {
       <p style="font-size:14px; color:#5b4a3d;"><strong>${esc(order.full_name)}</strong> · ${esc(order.email)}${order.phone ? ' · ' + esc(order.phone) : ''}<br>${esc(order.address)}, ${esc(order.city)}${order.country ? ', ' + esc(order.country) : ''}</p>
       <ul style="font-size:14px; line-height:1.8; color:#5b4a3d; padding-left:18px;">${books}</ul>
       <p style="font-size:14px; color:#5b4a3d;">${waived ? `Free order (${esc(order.order_type || 'gift')}) via code <strong>${esc(order.promo_code || '')}</strong> · not counted as revenue` : `Paid: <strong>AED ${Number(order.charged_aed).toFixed(2)}</strong>${localLine}`}${order.promo_code && !waived ? ' · code ' + esc(order.promo_code) : ''}${order.is_gift ? ' · Sent as a gift' : ''}</p>
+      ${order.attribution && order.attribution.source ? `<p style="font-size:14px; color:#5b4a3d;"><strong>Came from:</strong> ${esc(order.attribution.source)}${order.attribution.detail ? ' · ' + esc(order.attribution.detail) : ''}</p>` : ''}
       ${order.is_gift && order.gift_message ? `<p style="font-size:14px; color:#5b4a3d;"><strong>Gift message:</strong> ${esc(order.gift_message)}</p>` : ''}
       <p><a href="https://maison-jaber.com/hikaya/admin.html" style="color:#8A5638; font-weight:700;">Open the dashboard →</a></p>`),
   });

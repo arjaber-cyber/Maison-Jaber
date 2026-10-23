@@ -16,6 +16,7 @@
 
 const { priceOrder, reserveDiscount, settleDiscount, PROMO_MESSAGES, REGIONS, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY } = require('./_pricing');
 const { checkOrderRules } = require('./_orderRules');
+const { saveAttribution } = require('./_attribution');
 const { tabby, secretKey, merchantCode, isTestKey, money, uaePhone, rejectMessage, rejectionReason, buyerHistory } = require('./_tabby');
 
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
@@ -103,6 +104,8 @@ exports.handler = async (event) => {
     return json(500, { error: 'We could not start your order. Please try again.' });
   }
   const [saved] = await save.json();
+  // Where this customer came from (tagged link, ad, post, Google...). Best effort, never blocks the order.
+  await saveAttribution(saved.id, o.attribution, event);
 
   if (o.marketingOptIn === true) {
     await fetch(`${SUPABASE_URL}/rest/v1/newsletter_subscribers?on_conflict=email`, {

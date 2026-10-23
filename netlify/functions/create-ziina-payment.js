@@ -22,6 +22,7 @@ const { priceOrder, orderTypeForTag, reserveDiscount, settleDiscount, PROMO_MESS
 const { sendConfirmation } = require('./_ziina');
 
 const { checkOrderRules } = require('./_orderRules');
+const { saveAttribution } = require('./_attribution');
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 const testMode = () => ['true', '1', 'yes', 'on'].includes(String(process.env.ZIINA_TEST_MODE || '').trim().toLowerCase());
 
@@ -108,6 +109,8 @@ exports.handler = async (event) => {
     return json(500, { error: 'We could not start your order. Please try again.' });
   }
   const [saved] = await save.json();
+  // Where this customer came from (tagged link, ad, post, Google...). Best effort, never blocks the order.
+  await saveAttribution(saved.id, o.attribution, event);
 
   // Opted in to promotions at checkout: add them to the mailing list the CRM sends from.
   if (o.marketingOptIn === true) {

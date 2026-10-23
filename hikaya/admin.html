@@ -350,6 +350,30 @@
   .vz-tl-n { font-size:10.5px; font-weight:700; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
   .vz-tl-l { font-size:10px; font-weight:600; color:var(--ink-soft); white-space:nowrap; }
   .vz-table-wrap { overflow-x:auto; }
+  /* Customers tab */
+  .cu-kpis { grid-template-columns:repeat(6, minmax(0,1fr)); margin-bottom:16px; }
+  @media (max-width:1100px) { .cu-kpis { grid-template-columns:repeat(3, minmax(0,1fr)); } }
+  @media (max-width:600px) { .cu-kpis { grid-template-columns:1fr 1fr; } }
+  .cu-setup { background:#fdf4e3; border:1px solid #efd9ad; border-radius:16px; padding:16px 18px; margin-bottom:16px; font-size:13.5px; color:var(--ink); }
+  .cu-setup h2 { font-size:15px; margin:0 0 8px; } .cu-setup ol { margin:0 0 8px; padding-left:20px; line-height:1.6; } .cu-setup p { margin:0; color:var(--ink-soft); font-size:12.5px; }
+  .cu-setup code, .cu-note code { background:#fff; border-radius:6px; padding:1px 6px; font-size:12px; }
+  .cu-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .cu-note { background:var(--bg); border-radius:12px; padding:12px 14px; font-size:13px; line-height:1.6; color:var(--ink); }
+  .cu-note ol { margin:6px 0; padding-left:20px; }
+  .vz-table td small { display:block; font-weight:500; color:var(--ink-soft); font-size:11.5px; margin-top:2px; }
+  .cu-share { display:inline-block; vertical-align:middle; width:70px; height:7px; border-radius:7px; background:var(--bg-soft); overflow:hidden; margin-right:6px; }
+  .cu-share i { display:block; height:100%; background:var(--coral); }
+  .cu-top span { display:inline-block; background:var(--bg); border-radius:100px; padding:2px 9px; margin:2px 4px 2px 0; font-size:12px; font-weight:600; }
+  .cu-copy { border:1px dashed var(--line); background:var(--bg); border-radius:9px; padding:5px 9px; font:inherit; font-size:12.5px; font-weight:700; color:var(--ink); cursor:pointer; white-space:nowrap; direction:ltr; }
+  .cu-copy:hover { border-color:var(--coral); }
+  .cu-act { white-space:nowrap; text-align:right; } .cu-act .op-btn { padding:6px 10px; font-size:12.5px; margin-left:4px; }
+  .cu-off td { opacity:.55; }
+  .cu-links { margin-top:16px; }
+  .cu-url { font-size:18px; word-break:break-all; }
+  .cu-filters { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .cu-filters input[type=search] { padding:8px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; font-size:13.5px; min-width:220px; }
+  .cu-sub { font-size:14px; margin:18px 0 10px; }
+  .cu-gsc-tot { display:flex; gap:18px; flex-wrap:wrap; font-size:13.5px; margin-bottom:12px; } .cu-gsc-tot b { font-size:18px; }
   .vz-table { width:100%; border-collapse:collapse; font-size:13px; }
   .vz-table th { text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); padding:8px 10px; border-bottom:1px solid var(--line-soft); }
   .vz-table td { padding:9px 10px; border-bottom:1px solid var(--line-soft); font-variant-numeric:tabular-nums; }
@@ -452,6 +476,7 @@
 <script src="admin-orders.js"></script>
 <script src="admin-discounts.js"></script>
 <script src="admin-visits.js"></script>
+<script src="admin-customers.js"></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 </head>
@@ -476,6 +501,7 @@
 
 <nav class="op-tabs wrap" role="tablist" aria-label="Dashboard sections">
   <button role="tab" data-tab="orders" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>Orders</button>
+  <button role="tab" data-tab="customers" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</button>
   <button role="tab" data-tab="visitors" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Visitors</button>
   <button role="tab" data-tab="discounts" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Discounts</button>
   <button role="tab" data-tab="stories" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>Stories</button>
@@ -507,6 +533,13 @@
 </div>
 </div>
 
+</div>
+<div data-panel="customers" hidden>
+<div class="wrap page-head">
+  <h1>Customers</h1>
+  <p>Who your customers are, where each order came from, short links for your posts, repeat buyers and checkouts that were never paid. All amounts in AED.</p>
+</div>
+<div class="wrap" id="cu-root" style="margin-bottom:48px;"></div>
 </div>
 <div data-panel="visitors" hidden>
 <div class="wrap page-head">
@@ -705,6 +738,7 @@
     window.hkOrders.load(adminPassword);
     if (window.hkDiscounts) window.hkDiscounts.load(adminPassword);
     if (window.hkVisits) window.hkVisits.load(adminPassword);
+    if (window.hkCustomers) window.hkCustomers.load(adminPassword);
     // Personalize requests now arrive as real orders (cart + checkout); the old Netlify Forms feed is retired.
     loadSitePhotos(adminPassword);
     loadStories(adminPassword);
@@ -1504,7 +1538,7 @@
     try { history.replaceState(null, '', '#' + k); } catch (_) {}
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
-  const h = location.hash.slice(1); if (['orders', 'visitors', 'discounts', 'stories', 'photos'].includes(h)) show(h);
+  const h = location.hash.slice(1); if (['orders', 'customers', 'visitors', 'discounts', 'stories', 'photos'].includes(h)) show(h);
 })();
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(function(){document.documentElement.classList.remove('i18n-wait')})});</script>
