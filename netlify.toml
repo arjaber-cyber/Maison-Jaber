@@ -71,6 +71,13 @@
   status = 200
   force = true
 
+# Shortcut to the admin dashboard: maison-jaber.com/admin
+[[redirects]]
+  from = "/admin"
+  to = "/hikaya/admin.html"
+  status = 301
+  force = true
+
 # Short tracked links made in the dashboard (Customers tab > Link maker): maison-jaber.com/go/eid-reel
 [[redirects]]
   from = "/go/*"
