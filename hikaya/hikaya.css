@@ -852,6 +852,7 @@ body[data-flow] .review-dedication textarea { width: 100%; min-height: 90px; }
 @media (max-width: 767px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 body[data-flow] .summary-change { min-height: 44px; padding: 10px 0; display: inline-flex; align-items: center; }
 .foot-bottom .powered { color: #E6D6C2; }
+.foot-entity { margin: 18px 0 0; text-align: center; font-family: 'Cormorant Garamond', 'Libre Baskerville', Georgia, serif; font-size: 13.5px; font-style: italic; letter-spacing: .06em; color: #CDB79D; opacity: .85; }
 /* Ziina */
 body[data-flow] .ziina-box h4 { font-size: 15px; }
 body[data-flow] .ziina-conv { margin-top: 6px; font-weight: 700; color: var(--ink); }

@@ -115,6 +115,7 @@
     <span class="powered" data-i18n="pg.powered">Powered by Maison Jaber FZ-LLC</span>
     <span><a href="privacy.html" data-i18n="home6.foot_privacy">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" data-i18n="home6.foot_terms">Terms</a> &nbsp;·&nbsp; <a href="#" data-cookie-settings data-i18n="home6.foot_cookies">Cookie settings</a></span>
   </div>
+  <p class="foot-entity" lang="en" dir="ltr">Hikaya by Maison Jaber FZ-LLC &middot; UAE</p>
 </div></footer>`;
   }
 
