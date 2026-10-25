@@ -172,6 +172,20 @@ window.HIKAYA_PREVIEW_TEXT = {
    "بعد ذلك، ذهب نور لتجهيز زجاجة الماء. مدّ يده إلى مكانها المعتاد في المطبخ. لا شيء. بحث مرة أخرى. ما زالت غير موجودة. ضيّق نور عينيه. وقال لتيدي: «اختفاء شيء واحد قد يكون صدفة». «أما اختفاء شيئين، فهو لغز»",
    "لم يبقَ إلا واحد لاستجوابه. تيدي. جلس نور أمامه مباشرة. وقال: «تيدي، أين كنت ليلة أمس؟» رفض تيدي الإجابة. ثم لاحظ نور شيئًا. كان هناك جورب فوق رأس تيدي. رمش نور بعينيه. «جوربي؟»"
   ]
+ },
+ "just-one-more": {
+  "en": [
+   "The video ended. Before Laila could move, another appeared. This one had a dancing llama. Laila’s finger hovered over it. “Well…” “Just one more.” Tap.",
+   "Laila pulled back a blanket. Dad and Mom were sitting inside with pillows, snacks and flashlights. Dad gasped. “Oh no!” “The giant has found our secret castle!” “I’m not a giant!” said Laila. Dad looked worried. “That is exactly what a giant would say.”",
+   "Laila laughed. They crossed the pillow mountain. They hid from the terrible foot. They ate snacks in the flashlight cave. Soon Laila had forgotten all about the videos.",
+   "Laila chose where every light should go. One above the entrance. Three along the tunnel. And lots across the roof. When Dad switched them on, the whole fort sparkled. Laila stared. “Wow.”"
+  ],
+  "ar": [
+   "انتهى الفيديو. وقبل أن تتحرك ليلى، ظهر فيديو آخر. هذه المرة، كانت هناك لاما ترقص. بقيت إصبع ليلى معلّقة فوق الشاشة. «حسنًا...» «واحد آخر فقط.» نقرة.",
+   "أزاحت ليلى إحدى البطانيات. كان بابا وماما يجلسان في الداخل، ومعهما وسائد ووجبات خفيفة ومصابيح يدوية. شهق بابا. «يا للهول!» «لقد اكتشفت العملاقة قلعتنا السرية!» قالت ليلى: «أنا لست عملاقة!» بدا بابا قلقًا. «هذا بالضبط ما ستقوله أي عملاقة.»",
+   "ضحكت ليلى. عبروا جبل الوسائد. واختبؤوا من القدم المرعبة. وأكلوا وجبات خفيفة في كهف المصابيح اليدوية. وسرعان ما نسيت ليلى أمر الفيديوهات تمامًا.",
+   "اختارت ليلى مكان كل ضوء. واحد فوق المدخل. وثلاثة على طول النفق. والكثير منها على امتداد السقف. وعندما أضاءها بابا، تلألأ الحصن كله. حدّقت ليلى مندهشة. «واو.»"
+  ]
  }
 };
 /* Returns the transcript for one preview image URL, or '' when none matches. */

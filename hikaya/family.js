@@ -16,6 +16,7 @@
     'grandpas-wild-safari': ['grandfather'],
     'the-christmas-list': ['mother', 'grandmother'],
     'the-last-box': ['mother'],
+    'just-one-more': ['mother', 'father'],
   };
 
   const ROLES = {

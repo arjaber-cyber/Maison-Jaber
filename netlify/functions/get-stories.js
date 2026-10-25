@@ -642,6 +642,62 @@ const BUILT_IN_STORIES = [
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
     "detail_url": null
+  },
+  {
+    "slug": "just-one-more",
+    "title": "Just One More",
+    "title_ar": "فيديو واحد فقط",
+    "theme": "adventure",
+    "collection": "Screen time, Family, Imagination",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "screen",
+      "family",
+      "imagination"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Funny videos, a dancing llama and a giant blanket fort being built in the very next room! A cosy, funny story about the pull of “just one more”, putting the screen down and discovering that the best adventures are the ones we share together.",
+    "premise": {
+      "en": "Funny videos, a dancing llama and a giant blanket fort being built in the very next room! A cosy, funny story about the pull of “just one more”, putting the screen down and discovering that the best adventures are the ones we share together.",
+      "ar": "فيديوهات مضحكة، ولاما ترقص، وحصن عملاق من البطانيات يُبنى في الغرفة المجاورة! قصة دافئة ومضحكة عن إغراء «واحد آخر فقط»، وعن ترك الشاشة جانبًا، واكتشاف أن أجمل المغامرات هي التي نعيشها معًا"
+    },
+    "card_note": {
+      "en": "Gentle help with screen time",
+      "ar": "عن وقت الشاشة بلطف"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/just-one-more/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/just-one-more/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/just-one-more/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/just-one-more/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/just-one-more/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/just-one-more/l1.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l2.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l3.jpg",
+      "https://maison-jaber.com/story-assets/just-one-more/l4.jpg"
+    ],
+    "sort_order": 13,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
   }
 ];
 
