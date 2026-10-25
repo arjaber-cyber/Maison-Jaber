@@ -1208,9 +1208,9 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
   /* Homepage hero, option B: headline on the photo, then price, buttons and trust line in the first screen. */
   .hero-media { aspect-ratio: 1 / 1.06; }
   .hero-media img { object-position: 50% 30%; }
-  .hero:not(.ar-cover) .hero-media::after { height: 60%; background: linear-gradient(to bottom, rgba(30, 18, 10, 0), rgba(30, 18, 10, .8)); }
+  .hero .hero-media::after { height: 60%; background: linear-gradient(to bottom, rgba(30, 18, 10, 0), rgba(30, 18, 10, .8)); }
   .hero .hero-copy { margin-top: 0; padding-block: 14px 30px; display: flex; flex-direction: column; }
-  .hero:not(.ar-cover) .hero-copy h1 { position: absolute; inset-inline: 0; bottom: 100%; margin: 0; padding-bottom: 16px; color: #fff; font-size: clamp(2.05rem, 9.4vw, 2.6rem); line-height: 1.03; text-shadow: 0 1px 14px rgba(0, 0, 0, .3); }
+  .hero .hero-copy h1 { position: absolute; inset-inline: 0; bottom: 100%; margin: 0; padding-bottom: 16px; color: #fff; font-size: clamp(2.05rem, 9.4vw, 2.6rem); line-height: 1.03; text-shadow: 0 1px 14px rgba(0, 0, 0, .3); }
   .hero .hero-copy .lede, .hero .hero-copy .hand { display: none; }
   .hero .hero-copy h1 { order: 0; }
   .hero .hero-assure { order: 1; margin: 0 0 12px; font-size: 14px; }
@@ -1219,12 +1219,6 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
   .hero .hero-trust a { color: inherit; }
 
   /* Arabic on phones: an Arabic book cover on a sand band, headline below it (no text over the cover's own title). */
-  .hero.ar-cover .hero-media { aspect-ratio: auto; height: 264px; background: var(--sand); display: flex; align-items: center; justify-content: center; }
-  .hero.ar-cover .hero-media::after { display: none; }
-  .hero.ar-cover .hero-media picture { display: block; width: 224px; height: 224px; }
-  .hero.ar-cover .hero-media img { width: 224px; height: 224px; object-fit: cover; object-position: 50% 50%; border-radius: 8px; box-shadow: 0 12px 26px rgba(60, 35, 20, .25); }
-  .hero.ar-cover .hero-note { top: 10px; bottom: auto; }
-  .hero.ar-cover .hero-copy h1 { font-size: clamp(1.9rem, 8.4vw, 2.2rem); line-height: 1.25; margin-bottom: 10px; }
 
   /* Delivery bar: one row when it fits (UAE); a longer GCC message still wraps onto its own row. */
   .dl-full { display: none; }

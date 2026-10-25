@@ -52,20 +52,7 @@
     io.observe(stage);
   }
 
-  /* Arabic hero on phones: the hero photo shows an English book, so Arabic visitors on a phone see an
-     Arabic book cover instead (a sample story, labelled "example book" like the photo). Desktop is unchanged. */
-  const AR_HERO = '/story-assets/door-of-a-thousand-stars/cover-ar-600.jpg';
-  function heroLang() {
-    const hero = document.querySelector('.hero'); if (!hero) return;
-    const src = hero.querySelector('picture source[media*="max-width"]'); const img = hero.querySelector('picture img');
-    if (!src || !img) return;
-    if (!src.dataset.enSrcset) src.dataset.enSrcset = src.getAttribute('srcset');
-    const ar = H.lang() === 'ar';
-    hero.classList.toggle('ar-cover', ar);
-    src.setAttribute('srcset', ar ? AR_HERO : src.dataset.enSrcset);
-  }
-
-  function boot() { heroLang(); render(); renderOccasions(); initReveal(); }
+  function boot() { render(); renderOccasions(); initReveal(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  document.addEventListener('hikaya:langchange', () => { heroLang(); render(); renderOccasions(); });
+  document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); });
 })();
