@@ -56,7 +56,7 @@ exports.handler = async (event) => {
 
   let price;
   try {
-    price = await priceOrder({ regionKey: o.country, items: o.items, promoCode: o.promoCode, email });
+    price = await priceOrder({ regionKey: o.country, items: o.items, promoCode: o.promoCode, email, auth: event.headers.authorization || event.headers.Authorization });
   } catch (e) {
     return json(400, { error: e.userMessage || 'We could not price your order. Please try again.', reason: e.reason });
   }
@@ -121,7 +121,7 @@ exports.handler = async (event) => {
   // 1b) Hold the discount code for this order (atomic use-limit check).
   if (price.promo) {
     let r;
-    try { r = await reserveDiscount(price.promo.code, saved, price.chargedAed); }
+    try { r = await reserveDiscount(price.promo.code, saved, price.chargedAed, price.memberPhone); }
     catch (e) { console.error('reserve_discount failed', e.message); r = 'unavailable'; }
     if (r !== 'ok') {
       await patchOrder({ payment_status: 'code_rejected', order_status: 'cancelled', admin_notes: `Code ${price.promo.code} rejected at checkout: ${r}` });

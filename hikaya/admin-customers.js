@@ -148,6 +148,18 @@
     return `https://wa.me/${d}?text=${encodeURIComponent(msg)}`;
   }
 
+  function membersPanel() {
+    const m = data.members || { rows: [] };
+    const rows = m.rows || [];
+    return `<section class="dc-panel"><div class="dc-panel-head"><h2>Verified WhatsApp members</h2>
+        <p>Customers who verified their number by WhatsApp code (needed for discount codes). Only message the ones marked "Yes" with offers: they ticked the box to receive them.</p></div>
+      <div class="vz-note" style="margin-bottom:10px"><b>${num(m.total || 0)}</b> verified · <b>${num(m.optedIn || 0)}</b> agreed to offers</div>
+      ${rows.length ? `<div class="vz-table-wrap"><table class="vz-table"><thead><tr><th>Customer</th><th>WhatsApp</th><th>Offers OK?</th><th>Verified</th></tr></thead><tbody>
+        ${rows.slice(0, 200).map(r => `<tr><td>${esc(r.email || '—')}</td><td dir="ltr">${esc(r.phone)}</td><td>${r.marketing_optin ? '<span class="op-badge ok">Yes</span>' : (r.optout_at ? 'Unsubscribed' : 'No')}</td><td>${ago(r.verified_at)}</td></tr>`).join('')}
+      </tbody></table></div>` : '<div class="vz-empty">No verified members yet.</div>'}
+    </section>`;
+  }
+
   function unpaidPanel() {
     const rows = data.unpaid || [];
     return `<section class="dc-panel"><div class="dc-panel-head"><h2>Didn't finish paying</h2>
@@ -184,7 +196,7 @@
 
   function render() {
     const body = $('cu-body'); if (!body || !data) return;
-    body.innerHTML = setupBox(data.setup) + kpis(data.kpis) + sourcesPanel() + linksPanel() + customersPanel() + unpaidPanel() + searchPanel()
+    body.innerHTML = setupBox(data.setup) + kpis(data.kpis) + sourcesPanel() + linksPanel() + customersPanel() + membersPanel() + unpaidPanel() + searchPanel()
       + '<p class="vz-note">Sources come from the link or ad each customer arrived through, saved with their order. Visitor numbers and the shop funnel are in the Visitors tab.</p>';
     wire();
   }

@@ -5,7 +5,7 @@
 // real price is always recalculated in _pricing.js when the order is placed,
 // and the use is reserved atomically in Postgres (reserve_discount).
 //
-// POST { code, email? }
+// POST { code }   needs Authorization: Bearer <customer session>
 // 200 { valid: true, code, type, value }   value: % for percent, AED for fixed
 // 4xx { error, reason }                    reason: see PROMO_MESSAGES in _pricing.js
 //
@@ -13,7 +13,8 @@
 // dashboard (Discounts tab). Rule: one discount per order -- the customer
 // gets whichever is better, the bundle discount or the code.
 
-const { loadPromo } = require('./_pricing');
+const { loadPromo, PROMO_MESSAGES } = require('./_pricing');
+const { verifiedMember, authHeaderOf } = require('./_member');
 
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 
@@ -25,7 +26,13 @@ exports.handler = async (event) => {
 
   const code = String(payload.code || '').trim().toUpperCase();
   if (!code) return json(400, { error: 'Please enter a code.', reason: 'empty' });
-  const email = String(payload.email || '').trim();
+  // Members only: signed in with a verified WhatsApp number (see _member.js).
+  const member = await verifiedMember(authHeaderOf(event));
+  if (!member.user || !member.phone) {
+    const reason = member.reason || 'need_account';
+    return json(reason === 'unavailable' ? 503 : 401, { error: PROMO_MESSAGES[reason], reason });
+  }
+  const email = member.user.email;
 
   try {
     const promo = await loadPromo(code, { email: email || null });

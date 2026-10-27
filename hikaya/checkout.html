@@ -723,17 +723,40 @@
   }
   window.hkRemovePromo = removePromo;
 
-  promoBtn.addEventListener('click', async () => {
-    const code = promoInput.value.trim();
-    if (!code) return;
+  /* Discount codes are members-only (Oct 2026): signed in, with a verified
+     WhatsApp number. Guests are invited to sign in; signed-in customers who
+     haven't verified yet get the WhatsApp sheet, then the code is re-checked. */
+  const isAr = () => document.documentElement.lang === 'ar';
+  function showSignInForCode() {
+    promoMsg.className = 'promo-message error';
+    promoMsg.textContent = isAr() ? 'أكواد الخصم متاحة لأعضاء حكاية، سجّل الدخول أو أنشئ حساباً مجانياً لاستخدام الكود ' : 'Discount codes are for Hikaya members. ';
+    const a = document.createElement('a');
+    a.href = 'login.html?redirect=checkout.html';
+    a.textContent = isAr() ? 'تسجيل الدخول' : 'Sign in or create a free account';
+    a.style.cssText = 'text-decoration:underline;color:inherit;font-weight:700;';
+    a.addEventListener('click', () => { try { sessionStorage.setItem('hk_pending_code', promoInput.value.trim()); } catch {} });
+    promoMsg.appendChild(a);
+  }
+  async function checkCode(code, afterVerify) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { showSignInForCode(); return; }
     setPromoMsg('', t('checkout.promo_checking', 'Checking…'));
     try {
       const res = await fetch('/.netlify/functions/validate-discount-code', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, email: document.getElementById('email').value.trim() }),
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+        body: JSON.stringify({ code }),
       });
       const data = await res.json().catch(() => ({}));
+      if (data.reason === 'need_account') { appliedPromo = null; showSignInForCode(); renderPaymentSection(); return; }
+      if (data.reason === 'need_phone' && !afterVerify) {
+        setPromoMsg('', '');
+        const { openPhoneVerify } = await import('./phone-verify.js');
+        const ok = await openPhoneVerify(session, { reason: 'discount' });
+        if (ok) return checkCode(code, true);
+        setPromoMsg('error', isAr() ? 'وثّق رقم واتساب لاستخدام أكواد الخصم' : 'Verify your WhatsApp number to use discount codes.');
+        return;
+      }
       if (!res.ok || !data.valid) {
         appliedPromo = null;
         setPromoMsg('error', t('checkout.promo_' + (data.reason || 'invalid'), data.error || t('checkout.promo_invalid', "That code isn't valid.")));
@@ -750,7 +773,16 @@
       setPromoMsg('error', t('checkout.err_generic', 'Something went wrong. Please try again.'));
     }
     renderPaymentSection();
-  });
+  }
+  promoBtn.addEventListener('click', () => { const code = promoInput.value.trim(); if (code) checkCode(code); });
+  // Back from signing in to use a code: put the code back and check it again.
+  try {
+    const pending = sessionStorage.getItem('hk_pending_code');
+    if (pending) {
+      sessionStorage.removeItem('hk_pending_code');
+      supabase.auth.getSession().then(({ data: { session } }) => { if (session) { promoInput.value = pending; checkCode(pending); } });
+    }
+  } catch {}
 
   /* One discount per order: the customer gets whichever is better, the
      bundle discount or the code (a free-order code always wins). The server

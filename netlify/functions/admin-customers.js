@@ -229,14 +229,15 @@ exports.handler = async (event) => {
 
     const range = (event.queryStringParameters || {}).range || '30d';
     const from = rangeStart(range);
-    const [{ orders, hasAttribution }, { links, ok: linksOk }, whatsapp, search] = await Promise.all([
-      loadOrders(), loadLinks(), countEvents('whatsapp_click', from), searchSummary(28),
+    const [{ orders, hasAttribution }, { links, ok: linksOk }, whatsapp, search, members] = await Promise.all([
+      loadOrders(), loadLinks(), countEvents('whatsapp_click', from), searchSummary(28), loadMembers(),
     ]);
     return json(200, {
       range, from: from ? from.toISOString() : null,
       ...summarise(orders, links, from),
       whatsapp,
       search,
+      members,
       channels: Object.keys(CHANNELS),
       setup: { attribution: hasAttribution, links: linksOk, meta: metaEnabled(), google: gscConfigured() },
     });
@@ -248,3 +249,12 @@ exports.handler = async (event) => {
 };
 
 exports._summarise = summarise;
+
+// Verified WhatsApp members and their offers consent (customer_phones, Oct 2026).
+async function loadMembers() {
+  try {
+    const { data } = await sb('customer_phones?verified_at=not.is.null&select=email,phone,verified_at,marketing_optin,optin_at,optout_at&order=verified_at.desc&limit=1000');
+    const rows = data || [];
+    return { total: rows.length, optedIn: rows.filter(r => r.marketing_optin).length, rows };
+  } catch (e) { return { total: 0, optedIn: 0, rows: [], error: true }; }
+}

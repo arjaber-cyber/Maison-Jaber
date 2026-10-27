@@ -173,6 +173,15 @@
   </div>
 </section>
 
+<div class="wrap" id="hk-phone-card" hidden style="margin-top:18px;"></div>
+<style>
+  #hk-phone-card .pc{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between;background:var(--bg-soft,#F3EADF);border:1px solid var(--line-soft,#EEE4D6);border-radius:14px;padding:16px 18px;font-size:14px}
+  #hk-phone-card .pc b{font-weight:700}
+  #hk-phone-card .pc small{display:block;color:var(--ink-soft,#5E4A3D);font-size:12.5px;margin-top:2px}
+  #hk-phone-card .ok{color:#1F8A4C;font-weight:700}
+  #hk-phone-card label{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--ink-soft,#5E4A3D);max-width:46ch;cursor:pointer}
+  #hk-phone-card input{accent-color:var(--brand,#8A5638);margin-top:2px}
+</style>
 <div class="wrap account-layout">
   <nav class="account-nav">
     <a href="#" class="active" data-panel="orders" data-i18n="account.tab_orders">Orders</a>
@@ -237,6 +246,37 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { maybeSendWelcome } from './welcome.js';
+  import { openPhoneVerify, maybePromptPhone, phoneStatus } from './phone-verify.js';
+
+  // WhatsApp number + offers preference (members-only discount codes, Oct 2026).
+  async function renderPhoneCard(session) {
+    const box = document.getElementById('hk-phone-card');
+    const s = await phoneStatus(session);
+    if (!s || (!s.available && !s.verified)) { box.hidden = true; return; }
+    const ar = document.documentElement.lang === 'ar';
+    const e = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    box.hidden = false;
+    if (s.verified) {
+      box.innerHTML = `<div class="pc"><div><b>${ar ? 'رقم واتساب' : 'WhatsApp number'}</b> <span dir="ltr">${e(s.phone)}</span> <span class="ok">✓ ${ar ? 'موثّق' : 'Verified'}</span><small>${ar ? 'يمكنك استخدام أكواد الخصم للأعضاء' : 'You can use member discount codes.'}</small></div>
+        <label><input type="checkbox" id="hk-optin" ${s.marketingOptin ? 'checked' : ''}><span>${ar ? 'أرسلوا لي العروض والخصومات والقصص الجديدة عبر واتساب والبريد الإلكتروني ويمكنني إلغاء الاشتراك في أي وقت' : 'Send me offers, discounts and new stories by WhatsApp and email. I can unsubscribe anytime.'}</span></label></div>`;
+      const cb = document.getElementById('hk-optin');
+      cb.addEventListener('change', async () => {
+        cb.disabled = true;
+        try {
+          const r = await fetch('/.netlify/functions/phone-verify', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+            body: JSON.stringify({ action: 'optin', marketingOptin: cb.checked, lang: ar ? 'ar' : 'en', optinText: cb.nextElementSibling.textContent }) });
+          if (!r.ok) cb.checked = !cb.checked;
+        } catch { cb.checked = !cb.checked; }
+        cb.disabled = false;
+      });
+    } else {
+      box.innerHTML = `<div class="pc"><div><b>${ar ? 'أضف رقم واتساب الخاص بك' : 'Add your WhatsApp number'}</b><small>${ar ? 'لاستخدام أكواد الخصم للأعضاء وتلقي تحديثات طلبك، مرة واحدة فقط' : 'Unlocks member discount codes and order updates. You only do it once.'}</small></div>
+        <button class="btn-primary" type="button" id="hk-add-phone">${ar ? 'أضف الرقم' : 'Add number'}</button></div>`;
+      document.getElementById('hk-add-phone').addEventListener('click', async () => {
+        if (await openPhoneVerify(session)) renderPhoneCard(session);
+      });
+    }
+  }
 
   const supabase = createClient(
     'https://zxzlarlpoctpnnnvzced.supabase.co',
@@ -255,6 +295,7 @@
     document.querySelector('.page-hero p').textContent = 'Your orders, saved projects, and details, all in one place.';
     loadMyOrders(session.access_token, session.user.email);
     maybeSendWelcome(session);
+    renderPhoneCard(session).then(() => maybePromptPhone(session));
   }
 
   const STAGE_LABELS = {

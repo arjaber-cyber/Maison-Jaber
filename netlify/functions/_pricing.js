@@ -38,6 +38,8 @@ const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
+const { verifiedMember } = require('./_member');
+
 const BUILT_IN_STORIES = ['The Bravest Little One', 'The Cloud Ship', "The Star Who Couldn't Sleep"];
 
 const round2 = n => Math.round(n * 100) / 100;
@@ -93,6 +95,8 @@ const PROMO_MESSAGES = {
   used_by_you: "You've already used this code.",
   min_order: 'Your order is below the minimum for this code.',
   unavailable: "We couldn't check that code right now. Please try again.",
+  need_account: 'Discount codes are for Hikaya members. Sign in or create a free account to use this code.',
+  need_phone: 'One quick step: verify your WhatsApp number to use discount codes.',
 };
 const promoError = (reason, extra) => Object.assign(new Error(reason), { reason, userMessage: (extra && extra.message) || PROMO_MESSAGES[reason] || PROMO_MESSAGES.not_found });
 
@@ -127,7 +131,7 @@ function orderTypeForTag(tag) {
 }
 
 // items: [{ story, extraCharacterName? }]  (anything price-related from the browser is ignored)
-async function priceOrder({ regionKey, items, promoCode, email }) {
+async function priceOrder({ regionKey, items, promoCode, email, auth }) {
   const region = REGIONS[regionKey];
   if (!region) throw Object.assign(new Error('bad region'), { userMessage: 'We currently deliver to the UAE and GCC only.' });
   if (!Array.isArray(items) || !items.length) throw Object.assign(new Error('empty'), { userMessage: 'Your cart is empty.' });
@@ -153,7 +157,14 @@ async function priceOrder({ regionKey, items, promoCode, email }) {
   let bundleDiscountPct = tier.discountPct;
   let applied = null, promoNotBetter = false;
 
-  // Option B: the code instead (never both).
+  // Option B: the code instead (never both). Members only: signed in with a
+  // verified WhatsApp number, and checked against the account's own email.
+  let member = null;
+  if (promoCode) {
+    member = await verifiedMember(auth);
+    if (!member.user || !member.phone) throw promoError(member.reason || 'need_account');
+    email = member.user.email || email;
+  }
   const promo = await loadPromo(promoCode, { email });
   if (promo) {
     if (promo.minOrderAed != null && toAed(fullBooks) < promo.minOrderAed) {
@@ -180,7 +191,7 @@ async function priceOrder({ regionKey, items, promoCode, email }) {
     currency: region.currency, total, chargedAed,
     listValueAed: toAed(listValue),
     promoDiscountAed: applied ? round2(toAed(listValue) - chargedAed) : 0,
-    promo: applied, promoNotBetter,
+    promo: applied, promoNotBetter, memberPhone: applied && member ? member.phone : null,
     breakdown: { perBook: round2(booksTotal / items.length), booksTotal: round2(booksTotal), deliveryFee: round2(deliveryFee), extraFee: round2(extra), bundleDiscountPct, promo: applied ? applied.code : null },
   };
 }
@@ -196,10 +207,34 @@ async function rpc(fn, args) {
   if (!res.ok) throw new Error(`rpc ${fn} ${res.status} ${JSON.stringify(data).slice(0, 200)}`);
   return data;
 }
-const reserveDiscount = (code, order, total) => rpc('reserve_discount', {
-  p_code: code, p_order_id: order.id, p_order_number: order.order_number, p_email: order.email,
-  p_discount_aed: order.promo_discount_aed || 0, p_total_aed: total,
-});
+// The verified number is recorded on the redemption, and a code with a
+// per-customer limit is also refused when that number has already used it.
+async function reserveDiscount(code, order, total, memberPhone) {
+  const phone = memberPhone || null;
+  if (phone) {
+    try {
+      const c = await sb(`discount_codes?code=eq.${encodeURIComponent(String(code).toUpperCase())}&select=max_uses_per_email`);
+      const limit = c[0] && c[0].max_uses_per_email;
+      if (limit != null) {
+        const since = new Date(Date.now() - 2 * 3600e3).toISOString();
+        const used = await sb(`discount_redemptions?code=eq.${encodeURIComponent(String(code).toUpperCase())}&phone=eq.${encodeURIComponent(phone)}&or=(status.eq.redeemed,and(status.eq.reserved,created_at.gt.${since}))&select=id`);
+        if (used.length >= limit) return 'used_by_you';
+      }
+    } catch (e) { console.error('reserveDiscount phone check', e.message); }
+  }
+  const result = await rpc('reserve_discount', {
+    p_code: code, p_order_id: order.id, p_order_number: order.order_number, p_email: order.email,
+    p_discount_aed: order.promo_discount_aed || 0, p_total_aed: total,
+  });
+  if (result === 'ok' && phone) {
+    await fetch(`${SUPABASE_URL}/rest/v1/discount_redemptions?order_id=eq.${order.id}`, {
+      method: 'PATCH',
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    }).catch(e => console.error('redemption phone', e.message));
+  }
+  return result;
+}
 const settleDiscount = (orderId, success) => rpc('settle_discount', { p_order_id: orderId, p_success: !!success })
   .catch(e => { console.error('settle_discount failed', orderId, e.message); return null; });
 
