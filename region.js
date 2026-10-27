@@ -94,13 +94,27 @@ window.hikayaTamaraOn = function () {
    under a price. Re-call with the new price whenever it changes. Does nothing outside the UAE. */
 (function () {
   var loaded = null;
-  function load() {
-    if (!loaded) loaded = new Promise(function (ok, bad) {
-      var s = document.createElement('script'); s.defer = true; s.onload = ok; s.onerror = bad;
-      s.src = window.HIKAYA_TAMARA_LIVE === true ? 'https://cdn.tamara.co/widget-v2/tamara-widget.js' : 'https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js';
+  function inject(src) {
+    return new Promise(function (ok, bad) {
+      var s = document.createElement('script'); s.async = true; s.onload = ok; s.onerror = bad; s.src = src;
       document.head.appendChild(s);
     });
+  }
+  function load() {
+    // Sandbox script first while testing; if that address doesn't load, the main script (it reads the key's environment).
+    if (!loaded) loaded = (window.HIKAYA_TAMARA_LIVE === true
+      ? inject('https://cdn.tamara.co/widget-v2/tamara-widget.js')
+      : inject('https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js').catch(function () { return inject('https://cdn.tamara.co/widget-v2/tamara-widget.js'); }));
     return loaded;
+  }
+  /* Tamara's official UAE wording, used only if their widget doesn't render (plan amount = price / 4, whole dirhams). */
+  function fallback(el, price, lang) {
+    var per = Math.round(Number(price) / 4);
+    el.innerHTML = '<div class="tamara-fallback" style="display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid #e5ddd0;border-radius:10px;padding:14px 16px;background:#fff;font-size:15px;line-height:1.45;color:#2E2018">'
+      + '<span>' + (lang === 'ar'
+        ? 'ادفع ' + per + ' درهم شهريًا أو على 4 دفعات، بدون رسوم تأخير'
+        : 'Pay AED ' + per + '/mo or in 4 payments. No late fees.') + '</span>'
+      + '<strong style="font-size:16px;white-space:nowrap">' + (lang === 'ar' ? 'تمارا' : 'Tamara') + '</strong></div>';
   }
   window.hikayaTamaraWidget = function (selector, price, opts) {
     var el = document.querySelector(selector);
@@ -110,7 +124,7 @@ window.hikayaTamaraOn = function () {
     if (!window.hikayaTamaraOn() || !aed || !(Number(price) > 0)) { el.hidden = true; el.innerHTML = ''; return; }
     var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     /* Config must exist before the script runs; refreshed on every call so EN <-> AR switches carry over. */
-    window.tamaraWidgetConfig = { lang: lang, country: 'AE', publicKey: window.HIKAYA_TAMARA.publicKey,
+    window.tamaraWidgetConfig = { lang: lang, country: 'AE', currency: 'AED', publicKey: window.HIKAYA_TAMARA.publicKey,
       css: ':host{--font-primary:inherit !important;--font-secondary:inherit !important;}' };
     el.hidden = false;
     el.innerHTML = '';
@@ -120,9 +134,15 @@ window.hikayaTamaraOn = function () {
     w.setAttribute('inline-type', '2');
     w.setAttribute('config', '{"badgePosition":"' + (lang === 'ar' ? 'left' : 'right') + '","showExtraContent":""}');
     el.appendChild(w);
+    var rendered = function () {
+      var x = el.querySelector('tamara-widget');
+      return !!(x && ((x.shadowRoot && x.shadowRoot.childNodes.length) || x.children.length || x.offsetHeight > 8));
+    };
     load().then(function () {
       try { if (window.TamaraWidgetV2 && window.TamaraWidgetV2.refresh) window.TamaraWidgetV2.refresh(); } catch (e) {}
-    }).catch(function () { el.hidden = true; });
+    }).catch(function () {}).then(function () {
+      setTimeout(function () { if (el.isConnected && !rendered()) fallback(el, price, lang); }, 4000);
+    });
   };
 })();
 
