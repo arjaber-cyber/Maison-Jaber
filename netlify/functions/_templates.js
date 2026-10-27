@@ -75,32 +75,34 @@ function orderConfirmed(order, arTitles, covers) {
   // dir="auto" keeps an English address readable inside an Arabic email (and the reverse).
   const address = [order.address, order.city].filter(Boolean).map(x => `<span dir="auto">${esc(x)}</span>`).join('<br>') + (order.country ? `<br>${esc(countryName(order.country, lang))}` : '');
 
+  const hero = who || tr(lang, 'your little one', 'طفلك');
   const subject = tr(lang,
-    `Order confirmed${who ? `: ${names[0]}'s Hikaya book` : ''} · ${order.order_number || ''}`,
-    `تم تأكيد طلبك${who ? `: كتاب حكاية لـ ${names[0]}` : ''} · ${order.order_number || ''}`);
+    `${who ? names[0] + "'s" : 'Your'} story has begun ✦ Order ${order.order_number || ''}`,
+    `بدأت ${who ? 'قصة ' + names[0] : 'قصتكم'} ✦ طلب ${order.order_number || ''}`);
   const preheader = tr(lang,
-    `We're starting on ${who ? names[0] + "'s" : 'their'} book now. Delivery in about ${days} working days.`,
-    `بدأنا العمل على كتاب ${who ? names[0] : 'طفلك'} الآن، والتوصيل خلال ${days} أيام عمل تقريبًا`);
+    `Thank you! We're bringing ${who ? names[0] + "'s" : 'their'} storybook to life. It arrives in about ${days} working days.`,
+    `شكرًا لك! بدأنا نصنع كتاب ${who ? names[0] : 'طفلك'}، ويصلك خلال ${days} أيام عمل تقريبًا`);
 
   const body = [
-    ui.eyebrow(tr(lang, 'Order confirmed', 'تم تأكيد الطلب'), lang),
+    ui.eyebrow(tr(lang, '✦ Your story has begun', '✦ بدأت الحكاية'), lang),
     ui.h(tr(lang, `Thank you, ${first}!`, `شكرًا لك${first ? ' يا ' + first : ''}!`), lang),
     ui.p(tr(lang,
-      `${waived ? 'Your order is confirmed' : 'Your payment went through'} and we're starting on ${who ? `<strong>${who}</strong>'s` : 'their'} storybook now.`,
-      `${waived ? 'تم تأكيد طلبك' : 'تمّ الدفع بنجاح'}، وبدأنا العمل على كتاب ${who ? `<strong>${who}</strong>` : 'طفلك'} الآن`), lang),
+      `Your order is confirmed, and a little magic is already happening. Our team is now creating ${who ? `<strong>${who}</strong>'s` : 'their'} very own storybook, with ${who ? `<strong>${who}</strong>` : 'them'} as the hero on every page.`,
+      `تم تأكيد طلبك وبدأ السحر بالفعل، ويعمل فريقنا الآن على كتاب خاص بـ${who ? `<strong>${who}</strong>` : 'طفلك'}، ليكون البطل في كل صفحة`), lang),
     itemsBlock(items, lang, arTitles, covers),
     ui.rows([
       [tr(lang, 'Order number', 'رقم الطلب'), `<span dir="ltr">${no}</span>`],
       [tr(lang, waived ? 'Total' : 'Paid', waived ? 'الإجمالي' : 'المبلغ المدفوع'), paid],
       [tr(lang, 'Delivering to', 'عنوان التوصيل'), address],
-      [tr(lang, 'Estimated delivery', 'موعد التوصيل المتوقع'), tr(lang, `About ${days} working days, gift-boxed`, `خلال ${days} أيام عمل تقريبًا، في علبة هدية`)],
+      [tr(lang, 'Arriving in', 'يصلك خلال'), tr(lang, `About ${days} working days, wrapped in our Hikaya gift box`, `${days} أيام عمل تقريبًا، مغلّفًا في علبة هدايا حكاية`)],
     ], lang),
     '<div style="height:6px"></div>',
     ui.box(ui.p(tr(lang,
-      '<strong>Spotted a mistake?</strong> We print exactly the name, age and photo you sent, and there is no preview step. If anything needs changing, reply to this email as soon as you can. We can update it as long as production hasn\'t started.',
-      '<strong>هل لاحظت خطأ؟</strong> نطبع الاسم والعمر والصورة كما أرسلتها تمامًا، ولا توجد مرحلة معاينة، وإذا احتجت إلى أي تعديل فردّ على هذا البريد بأسرع وقت، ويمكننا التعديل ما دام الإنتاج لم يبدأ'), lang, true).replace('margin:0 0 14px', 'margin:0')),
-    ui.button(trackUrl(order), tr(lang, 'Track your order &rarr;', 'تتبّع طلبك &larr;'), lang),
-    waived ? '' : ui.p(`<a href="${esc(invoiceUrl(order))}" style="color:#8A5638; font-weight:700;">${tr(lang, 'Download your invoice', 'تنزيل الفاتورة')}</a>`, lang, true),
+      `<strong>One quick check ✦</strong> Please make sure ${who ? `<strong>${who}</strong>'s` : 'the'} name and details above look right. Want to change something? Just reply to this email before we start printing and we'll happily fix it.`,
+      `<strong>نظرة سريعة ✦</strong> تأكد من أن اسم ${who ? `<strong>${who}</strong>` : 'طفلك'} وبياناته أعلاه صحيحة، وإذا أردت تعديل أي شيء فردّ على هذا البريد قبل أن نبدأ الطباعة وسنعدّله لك بكل سرور`), lang, true).replace('margin:0 0 8px', 'margin:0')),
+    waived
+      ? ui.button(trackUrl(order), tr(lang, 'Follow your story &rarr;', 'تابع رحلة الكتاب &larr;'), lang)
+      : ui.buttons([trackUrl(order), tr(lang, 'Follow your story &rarr;', 'تابع رحلة الكتاب &larr;')], [invoiceUrl(order), tr(lang, 'View invoice', 'عرض الفاتورة')], lang),
     ui.sign(lang),
   ].join('');
   return { subject, html: emailShell(body, { lang, preheader }), lang };

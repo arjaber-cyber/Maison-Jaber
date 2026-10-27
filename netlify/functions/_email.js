@@ -20,7 +20,12 @@
 const CUSTOMER_EMAIL = 'hello@maison-jaber.com';
 const OWNER_INBOX = process.env.CONTACT_INBOX_EMAIL || 'info@maison-jaber.com';
 /* Where the live shop pages are: the public shop is maison-jaber.com/hikaya/. */
-const SITE_URL = (process.env.SITE_URL || 'https://maison-jaber.com/hikaya/').replace(/\/?$/, '/');
+/* The Netlify SITE_URL setting is the bare domain (other functions add their own paths), so make
+   sure email links always land inside the shop folder: maison-jaber.com/hikaya/... */
+const SITE_URL = (() => {
+  const base = String(process.env.SITE_URL || 'https://maison-jaber.com').replace(/\/+$/, '');
+  return /\/hikaya$/.test(base) ? base + '/' : base + '/hikaya/';
+})();
 const WHATSAPP = '971508011769';
 const WHATSAPP_DISPLAY = '+971 50 801 1769';
 
@@ -103,22 +108,31 @@ const HAND = { en: "Caveat,'Segoe Print','Bradley Hand',cursive", ar: "Amiri,Tah
 const L = lang => (lang === 'ar' ? 'ar' : 'en');
 
 const ui = {
-  eyebrow(text, lang) { return `<p style="margin:0 0 6px; font-family:${SANS[L(lang)]}; font-size:11px; font-weight:700; letter-spacing:${lang === 'ar' ? '0' : '.14em'}; text-transform:uppercase; color:${C.accent};">${text}</p>`; },
-  h(text, lang) { return `<h1 style="margin:0 0 6px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 21 : 24}px; line-height:${lang === 'ar' ? 1.45 : 1.15}; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h1>`; },
-  h3(text, lang) { return `<h3 style="margin:0 0 3px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 16 : 18}px; line-height:1.25; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h3>`; },
-  p(text, lang, small) { return `<p style="margin:0 0 ${small ? 8 : 12}px; font-family:${SANS[L(lang)]}; font-size:${small ? 12.5 : 14}px; line-height:1.55; color:${small ? C.mute : C.soft};">${text}</p>`; },
-  hand(text, lang) { return `<p style="margin:2px 0 4px; font-family:${HAND[L(lang)]}; font-size:${lang === 'ar' ? 17 : 22}px; line-height:1.1; color:${C.brand};">${text}</p>`; },
-  box(inner) { return `<div style="background:${C.page}; border-radius:12px; padding:12px 14px; margin:0 0 12px;">${inner}</div>`; },
+  eyebrow(text, lang) { return `<p class="hk-accent" style="margin:0 0 6px; font-family:${SANS[L(lang)]}; font-size:11px; font-weight:700; letter-spacing:${lang === 'ar' ? '0' : '.14em'}; text-transform:uppercase; color:${C.accent};">${text}</p>`; },
+  h(text, lang) { return `<h1 class="hk-ink" style="margin:0 0 6px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 21 : 24}px; line-height:${lang === 'ar' ? 1.45 : 1.15}; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h1>`; },
+  h3(text, lang) { return `<h3 class="hk-ink" style="margin:0 0 3px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 16 : 18}px; line-height:1.25; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h3>`; },
+  p(text, lang, small) { return `<p class="${small ? 'hk-mute' : 'hk-soft'}" style="margin:0 0 ${small ? 8 : 12}px; font-family:${SANS[L(lang)]}; font-size:${small ? 12.5 : 14}px; line-height:1.55; color:${small ? C.mute : C.soft};">${text}</p>`; },
+  hand(text, lang) { return `<p class="hk-brand" style="margin:2px 0 4px; font-family:${HAND[L(lang)]}; font-size:${lang === 'ar' ? 17 : 22}px; line-height:1.1; color:${C.brand};">${text}</p>`; },
+  box(inner) { return `<div class="hk-bg" style="background:${C.page}; border-radius:12px; padding:12px 14px; margin:0 0 12px;">${inner}</div>`; },
   /* A story line with its square cover, like the cart on the website. */
   storyCard(title, meta, cover, lang) {
     const img = cover ? `<td width="60" style="width:60px; vertical-align:top; padding-${lang === 'ar' ? 'left' : 'right'}:12px;"><img src="${esc(cover)}" width="60" height="60" alt="" style="display:block; width:60px; height:60px; border-radius:8px; object-fit:cover; border:0;"></td>` : '';
-    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page}; border-radius:12px; margin:0 0 10px;"><tr><td style="padding:10px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${img}<td style="vertical-align:middle;">${ui.h3(title, lang)}<p style="margin:0; font-family:${SANS[L(lang)]}; font-size:12.5px; line-height:1.5; color:${C.soft};">${meta}</p></td></tr></table></td></tr></table>`;
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="hk-bg" style="background:${C.page}; border-radius:12px; margin:0 0 10px;"><tr><td style="padding:10px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${img}<td style="vertical-align:middle;">${ui.h3(title, lang)}<p class="hk-soft" style="margin:0; font-family:${SANS[L(lang)]}; font-size:12.5px; line-height:1.5; color:${C.soft};">${meta}</p></td></tr></table></td></tr></table>`;
   },
   button(href, label, lang) {
-    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 14px;"><tr><td style="background:${C.brandDark}; border-radius:24px;"><a href="${esc(href)}" style="display:inline-block; padding:10px 22px; font-family:${SANS[L(lang)]}; font-size:14px; font-weight:700; line-height:20px; color:${C.white}; text-decoration:none; border-radius:24px;">${label}</a></td></tr></table>`;
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 14px;"><tr><td class="hk-btn" style="background:${C.brandDark}; border-radius:24px;"><a class="hk-btntext" href="${esc(href)}" style="display:inline-block; padding:10px 22px; font-family:${SANS[L(lang)]}; font-size:14px; font-weight:700; line-height:20px; color:${C.white}; text-decoration:none; border-radius:24px;">${label}</a></td></tr></table>`;
+  },
+  /* Outlined button, for a second action under the main one (e.g. the invoice). */
+  button2(href, label, lang) {
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;"><tr><td class="hk-card" style="background:${C.white}; border:1.5px solid ${C.brand}; border-radius:24px;"><a class="hk-brand" href="${esc(href)}" style="display:inline-block; padding:9px 20px; font-family:${SANS[L(lang)]}; font-size:13.5px; font-weight:700; line-height:20px; color:${C.brand}; text-decoration:none; border-radius:24px;">${label}</a></td></tr></table>`;
+  },
+  /* Two buttons side by side (they wrap on narrow screens). */
+  buttons(primary, secondary, lang) {
+    const side = lang === 'ar' ? 'left' : 'right';
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 14px;"><tr><td style="padding-${side}:8px; vertical-align:top;">${ui.button(primary[0], primary[1], lang).replace('margin:4px 0 14px', 'margin:0')}</td><td style="vertical-align:top;">${ui.button2(secondary[0], secondary[1], lang).replace('margin:0 0 14px', 'margin:0')}</td></tr></table>`;
   },
   row(label, value, lang) {
-    return `<tr><td style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:12.5px; color:${C.mute}; vertical-align:top; width:40%;">${label}</td><td style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:13.5px; line-height:1.45; color:${C.ink}; font-weight:700; vertical-align:top;">${value}</td></tr>`;
+    return `<tr><td class="hk-mute" style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:12.5px; color:${C.mute}; vertical-align:top; width:40%;">${label}</td><td class="hk-ink" style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:13.5px; line-height:1.45; color:${C.ink}; font-weight:700; vertical-align:top;">${value}</td></tr>`;
   },
   rows(list, lang) { return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0 14px;">${list.map(([l, v]) => ui.row(l, v, lang)).join('')}</table>`; },
   sign(lang) {
@@ -145,18 +159,25 @@ function emailShell(bodyHtml, opts) {
   const sep = `<span style="color:${C.mute};">&nbsp;&middot;&nbsp;</span>`;
   return `<!doctype html><html lang="${lang}" dir="${dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700&family=Caveat:wght@500&family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-<style>a{color:${C.brand};} @media (max-width:520px){ .hk-pad{padding-left:18px !important; padding-right:18px !important;} }</style></head>
-<body style="margin:0; padding:0; background:${C.page}; -webkit-text-size-adjust:100%;">${pre}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page};"><tr><td align="center" style="padding:18px 10px 14px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" style="max-width:480px; text-align:${align}; background:${C.white}; border:1px solid ${C.line}; border-radius:16px;">
+<style>a{color:${C.brand};} @media (max-width:520px){ .hk-pad{padding-left:18px !important; padding-right:18px !important;} }
+/* Outlook / Hotmail apps repaint emails dark; these put our own light colours back. */
+[data-ogsb] .hk-page{background-color:${C.page} !important;} [data-ogsb] .hk-card{background-color:${C.white} !important;}
+[data-ogsb] .hk-bg{background-color:${C.page} !important;} [data-ogsb] .hk-btn{background-color:${C.brandDark} !important;}
+[data-ogsc] .hk-ink{color:${C.ink} !important;} [data-ogsc] .hk-soft{color:${C.soft} !important;} [data-ogsc] .hk-mute{color:${C.mute} !important;}
+[data-ogsc] .hk-brand{color:${C.brand} !important;} [data-ogsc] .hk-accent{color:${C.accent} !important;} [data-ogsc] .hk-gold{color:${C.gold} !important;}
+[data-ogsc] .hk-btntext{color:${C.white} !important;}</style></head>
+<body class="hk-page" style="margin:0; padding:0; background:${C.page}; -webkit-text-size-adjust:100%;">${pre}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="hk-page" style="background:${C.page};"><tr><td align="center" class="hk-page" style="padding:18px 10px 14px; background:${C.page};">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" class="hk-card" style="max-width:480px; text-align:${align}; background:${C.white}; border:1px solid ${C.line}; border-radius:16px;">
     <tr><td style="padding:18px 20px 2px; text-align:center;">
       <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo.png" width="112" height="87" alt="Hikaya by Maison Jaber" style="display:inline-block; width:112px; height:auto; border:0;"></a>
+      <p class="hk-brand" style="margin:6px 0 0; font-family:${SERIF[lang]}; font-size:${lang === 'ar' ? 14 : 15}px; font-style:${lang === 'ar' ? 'normal' : 'italic'}; letter-spacing:.02em; color:${C.brand};"><span class="hk-gold" style="color:${C.gold};">&#10022;</span>&nbsp; ${T('Timeless stories, made just for them', 'قصص خالدة، صُنعت لهم وحدهم')} &nbsp;<span class="hk-gold" style="color:${C.gold};">&#10022;</span></p>
     </td></tr>
     <tr><td class="hk-pad" style="padding:10px 24px 2px; color:${C.ink};">
       ${bodyHtml}
     </td></tr>
     <tr><td class="hk-pad" style="padding:0 24px 16px;">
-      <p style="margin:0; padding-top:12px; border-top:1px solid ${C.line}; font-family:${SANS[lang]}; font-size:11.5px; line-height:1.55; color:${C.mute};">${help}</p>
+      <p class="hk-mute" style="margin:0; padding-top:12px; border-top:1px solid ${C.line}; font-family:${SANS[lang]}; font-size:11.5px; line-height:1.55; color:${C.mute};">${help}</p>
     </td></tr>
   </table>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;"><tr><td style="padding:10px 8px 0; text-align:center;">
