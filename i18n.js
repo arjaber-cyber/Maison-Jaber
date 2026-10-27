@@ -199,6 +199,7 @@ window.HIKAYA_TRANSLATIONS = {
     trust_secure: { en: 'Secure checkout — your details are encrypted', de: 'Sicherer Checkout — Ihre Daten sind verschlüsselt', ar: 'دفع آمن — بياناتك مشفّرة' },
     google: { en: 'Continue with Google', de: 'Mit Google fortfahren', ar: 'المتابعة باستخدام جوجل' },
     facebook: { en: 'Continue with Facebook', de: 'Mit Facebook fortfahren', ar: 'المتابعة باستخدام فيسبوك' },
+    email_signin: { en: 'Continue with email', de: 'Mit E-Mail fortfahren', ar: 'المتابعة بالبريد الإلكتروني' },
     guest: { en: 'Continue as Guest', de: 'Als Gast fortfahren', ar: 'المتابعة كضيف' },
     delivery_title: { en: 'Delivery details', de: 'Lieferdetails', ar: 'تفاصيل التوصيل' },
     required_note: { en: 'Required', de: 'Erforderlich', ar: 'مطلوب' },
@@ -327,6 +328,8 @@ window.HIKAYA_TRANSLATIONS = {
     admin_subtitle: { en: 'Owner access only — sign in with the account authorized for the admin dashboard.', de: 'Nur für den Inhaber — melden Sie sich mit dem für das Admin-Dashboard autorisierten Konto an.', ar: 'للمالك فقط — سجّل الدخول بالحساب المصرّح له بالوصول إلى لوحة التحكم' },
     or: { en: 'or', de: 'oder', ar: 'أو' },
     send_link: { en: 'Send me a sign-in link', de: 'Mir einen Anmeldelink senden', ar: 'أرسل لي رابط تسجيل الدخول' },
+    guest_link: { en: 'Continue as guest', de: 'Als Gast fortfahren', ar: 'المتابعة كضيف' },
+    guest_note: { en: 'No account needed — you can still track your order by email.', de: 'Kein Konto nötig — Sie können Ihre Bestellung trotzdem per E-Mail verfolgen.', ar: 'لا حاجة إلى حساب — يمكنك تتبع طلبك عبر بريدك الإلكتروني' },
     back_link: { en: '← Back to Maison Jaber', de: '← Zurück zu Maison Jaber', ar: '← العودة إلى ميزون جابر' },
   },
   cart: {

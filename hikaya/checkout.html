@@ -325,7 +325,7 @@
     </div>
     <div class="signin-buttons">
       <button class="btn-secondary" id="google-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
-      <button class="btn-secondary" id="facebook-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.facebook">Continue with Facebook</button>
+      <a class="btn-secondary" id="email-signin" href="login.html?redirect=checkout.html" style="padding: 9px 16px; font-size: 12.5px; text-decoration: none;" data-i18n="checkout.email_signin">Continue with email</a>
       <button class="btn-secondary" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
@@ -476,7 +476,6 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { mountGoogleSignIn } from './google-auth.js';
-  import { mountFacebookSignIn } from './facebook-auth.js';
   import { maybeSendWelcome } from './welcome.js';
 
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -490,7 +489,8 @@
   const signedInEmail = document.getElementById('signed-in-email');
   const checkoutLayout = document.getElementById('checkout-layout');
   const checkoutLockedNote = document.getElementById('checkout-locked-note');
-  let continuedAsGuest = false;
+  // ?guest=1 = arrived from the sign-in page's "Continue as guest"
+  let continuedAsGuest = new URLSearchParams(location.search).get('guest') === '1';
 
   /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
   const coEmpty = document.getElementById('co-empty');
@@ -625,11 +625,6 @@
     redirectTo: window.location.href,
     size: 'medium',
     onSignedIn: () => refreshAuthUI(),
-    onError: (msg) => alert(msg)
-  });
-  mountFacebookSignIn(supabase, document.getElementById('facebook-signin'), {
-    anonKey: SUPABASE_ANON,
-    redirectTo: window.location.href,
     onError: (msg) => alert(msg)
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
