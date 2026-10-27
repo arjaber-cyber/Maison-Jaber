@@ -20,6 +20,10 @@
 [functions."tabby-sweep"]
   schedule = "17 * * * *"
 
+# Tamara safety net: authorises approved orders whose customer closed the tab before returning.
+[functions."tamara-sweep"]
+  schedule = "41 * * * *"
+
 # Deletes uploaded child photos older than 15 days (our promise to parents).
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"

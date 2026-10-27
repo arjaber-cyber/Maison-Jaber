@@ -399,7 +399,9 @@
             <button type="button" class="op-btn" data-cm="delay" title="Emails the customer the new estimated delivery date">Send delay notice</button>
           </div></section>` : ''}
         <div class="op-foot">
-          ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : (o.payment_method === 'tabby' ? '<button class="op-btn" data-tabby-refund title="Refunds the full amount through Tabby, then marks the order refunded">Refund via Tabby</button>' : '<button class="op-btn" data-pay="refunded">Mark refunded</button>')}
+          ${o.payment_status === 'waived' ? '' : o.payment_status !== 'paid' ? '<button class="op-btn" data-pay="paid">Mark as paid</button>' : (o.payment_method === 'tabby' ? '<button class="op-btn" data-tabby-refund title="Refunds the full amount through Tabby, then marks the order refunded">Refund via Tabby</button>'
+            : o.payment_method === 'tamara' ? '<button class="op-btn" data-tamara="capture" title="Takes the money now. Happens automatically when the order is handed to the delivery company.">Capture via Tamara</button> <button class="op-btn" data-tamara="cancel" title="Only before capture: cancels the Tamara order so the customer is not charged, then marks it refunded">Cancel via Tamara</button> <button class="op-btn" data-tamara="refund" title="After capture: refunds the full amount through Tamara, then marks the order refunded">Refund via Tamara</button>'
+            : '<button class="op-btn" data-pay="refunded">Mark refunded</button>')}
           ${o.tracking_token ? `<a class="op-btn" target="_blank" rel="noopener" href="invoice.html?t=${encodeURIComponent(o.tracking_token)}">Invoice</a> <button type="button" class="op-btn" data-copy-track="${esc(o.tracking_token)}" title="Copy the private tracking link to send to the customer">Copy tracking link</button>` : ''}
           ${st === 'cancelled' ? '' : '<button class="op-btn danger" data-cancel>Cancel order</button>'}
           <span class="op-status" data-status role="status"></span>
@@ -452,6 +454,23 @@
         save(o, p, 'Refunded via Tabby');
       } catch (err) { tr.disabled = false; status(el, err.message, true); }
     };
+    // Tamara: capture / cancel (before capture, customer not charged) / refund (after capture). Always through Tamara, never store credit.
+    el.querySelectorAll('[data-tamara]').forEach(b => b.onclick = async () => {
+      const act = b.dataset.tamara, no = o.order_number || '';
+      const ask = act === 'capture' ? `Capture order ${no} in Tamara now? (Normally this happens automatically when you hand it to the delivery company.)`
+        : act === 'cancel' ? `Cancel order ${no} in Tamara? The customer will not be charged. Only works before the payment is captured.`
+        : `Refund order ${no} in full through Tamara? This sends the money back to the customer and cannot be undone.`;
+      if (!confirm(ask)) return;
+      b.disabled = true; status(el, 'Talking to Tamara…');
+      try {
+        const d = await api('tamara-admin', { method: 'POST', body: JSON.stringify({ orderId: o.id, action: act }) });
+        if (act === 'capture') { b.disabled = false; status(el, d.already ? 'Already captured in Tamara.' : `Captured AED ${Number(d.captured || 0).toFixed(2)} in Tamara.`); toast('Tamara capture done'); return; }
+        const p = { paymentStatus: 'refunded' };
+        const what = act === 'cancel' ? (d.already ? 'Tamara order was already cancelled' : 'Tamara order cancelled (customer not charged)') : (d.already ? 'Tamara refund was already done' : `Tamara refund of AED ${Number(d.refunded || 0).toFixed(2)} sent`);
+        if (o.email) p.notifyCustomer = confirm(`${what}. Email ${o.email} that the refund has been issued?`);
+        save(o, p, act === 'cancel' ? 'Cancelled via Tamara' : 'Refunded via Tamara');
+      } catch (err) { b.disabled = false; status(el, err.message, true); }
+    });
     el.querySelectorAll('[data-cm]').forEach(b => b.onclick = () => {
       const kind = b.dataset.cm, note = el.querySelector('[data-cm-note]').value.trim(), newDate = el.querySelector('[data-cm-date]').value;
       if (kind === 'delay' && !newDate) { status(el, 'Pick the new delivery date first.', true); el.querySelector('[data-cm-date]').focus(); return; }
@@ -493,7 +512,8 @@
       if (r.order) Object.assign(o, r.order, { _items: o._items });
       open.add(o.id);
       renderStats(); renderAll();
-      const msg = (patch.customerMessage && !r.emailed) ? 'Email not sent (email sending isn’t set up yet). Logged in notes.' : okMsg + (r.emailed ? ' · customer emailed' : (patch.notifyCustomer ? ' · email not sent (email sending isn’t set up yet)' : ''));
+      const msg = (patch.customerMessage && !r.emailed) ? 'Email not sent (email sending isn’t set up yet). Logged in notes.' : okMsg + (r.emailed ? ' · customer emailed' : (patch.notifyCustomer ? ' · email not sent (email sending isn’t set up yet)' : ''))
+        + (r.tamaraCapture ? (r.tamaraCapture.ok ? ' · Tamara payment captured' : ' · Tamara capture FAILED: ' + (r.tamaraCapture.error || '') + ' Use “Capture via Tamara”.') : '');
       toast(msg);
       status($('op-' + o.id), msg);
     } catch (e) {

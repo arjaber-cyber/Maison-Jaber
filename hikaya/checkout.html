@@ -494,7 +494,7 @@
 
   /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
   const coEmpty = document.getElementById('co-empty');
-  const isZiinaReturn = () => { const q = new URLSearchParams(location.search); return q.has('ziina') || q.has('tabby'); };
+  const isZiinaReturn = () => { const q = new URLSearchParams(location.search); return q.has('ziina') || q.has('tabby') || q.has('tamara'); };
   /* Tabby (Pay later): UAE only. Hidden until the live keys arrive, except for testing with ?tabbytest=1
      (remembered for this browser tab). Go live: see the Tabby block at the top of region.js. */
   const tabbyOn = () => (window.hikayaTabbyOn ? window.hikayaTabbyOn() : false);
@@ -532,7 +532,47 @@
     renderPaymentSection();
   }
   const tabbyRejected = () => tabbyScore.status === 'rejected';
-  const methodsFor = (key, region) => (key === 'UAE' && tabbyOn() && !region.methods.includes('tabby')) ? region.methods.concat('tabby') : region.methods;
+  /* Tamara (Pay later): UAE only. Hidden until the live keys arrive, except for testing with ?tamaratest=1.
+     Go live: see the Tamara block in region.js. Pre-checkout eligibility (Tamara's step 1): once the phone is in,
+     ask Tamara whether this customer can use it for this total; if not, the row is greyed out. Errors keep it available. */
+  const tamaraOn = () => (window.hikayaTamaraOn ? window.hikayaTamaraOn() : false);
+  const tamaraTesting = () => window.HIKAYA_TAMARA_LIVE !== true;
+  let tamaraScore = { key: '', status: 'unknown', message: '' };
+  let tamaraScoreTimer = null;
+  function scheduleTamaraPrecheck() { clearTimeout(tamaraScoreTimer); tamaraScoreTimer = setTimeout(runTamaraPrecheck, 400); }
+  function tamaraKey() {
+    if (!tamaraOn() || countrySelect.value !== 'UAE' || cartIsEmpty()) return '';
+    const phone = document.getElementById('phone').value.trim();
+    if (phone.replace(/\D/g, '').length < 9) return '';
+    const fp = computeFinalPricing(REGIONS.UAE);
+    if (!(fp.total > 0)) return '';
+    const lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    return [document.getElementById('email').value.trim().toLowerCase(), phone, fp.total.toFixed(2), lang].join('|');
+  }
+  async function runTamaraPrecheck() {
+    const key = tamaraKey();
+    if (!key || tamaraScore.key === key) return;
+    const [email, phone, amount, lang] = key.split('|');
+    tamaraScore = { key, status: 'checking', message: '' };
+    renderPaymentSection();
+    let next = { key, status: 'unknown', message: '' };
+    try {
+      const r = await fetch('/.netlify/functions/tamara-precheck', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: Number(amount), email: document.getElementById('email').value.trim(), phone, lang }) });
+      const d = await r.json().catch(() => ({}));
+      if (d.status === 'unavailable') next = { key, status: 'rejected', message: d.message };
+      else if (d.status === 'available') next.status = 'available';
+    } catch (e) { /* fail-safe: Tamara stays available */ }
+    if (tamaraScore.key !== key) return;
+    tamaraScore = next;
+    renderPaymentSection();
+  }
+  const tamaraRejected = () => tamaraScore.status === 'rejected';
+  const methodsFor = (key, region) => {
+    let m = region.methods;
+    if (key === 'UAE' && tabbyOn() && !m.includes('tabby')) m = m.concat('tabby');
+    if (key === 'UAE' && tamaraOn() && !m.includes('tamara')) m = m.concat('tamara');
+    return m;
+  };
   function cartIsEmpty() { return !(window.hikayaCart && window.hikayaCart.getCart().length); }
   function applyEmptyGuard() {
     const empty = cartIsEmpty() && !isZiinaReturn();
@@ -837,7 +877,7 @@
     applepay: { icon: '<svg viewBox="0 0 24 24"><path d="M16.5 8.5c-.3-2-2-3.3-3.8-3-.2-1.4-1.2-2.5-2.6-2.5-1.6 0-2.4 1.3-2.4 2.6 0 1.6 1.2 2.7 2.6 2.7"/><rect x="3" y="9" width="18" height="12" rx="2.5"/></svg>', label: () => t('checkout.method_applepay', 'Apple Pay') },
     googlepay: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>', label: () => t('checkout.method_googlepay', 'Google Pay') },
     tabby: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tabby', 'Pay later with Tabby') },
-    tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('checkout.method_tamara', 'Tamara') },
+    tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tamara', 'Tamara') },
   };
 
   // Payment marks on each row: the open-source activemerchant/payment_icons set (MIT, same marks Shopify shows), all 38x24.
@@ -862,7 +902,7 @@
       return;
     }
 
-    if (!selectedPaymentMethod || !methods.includes(selectedPaymentMethod) || (selectedPaymentMethod === 'tabby' && tabbyRejected())) selectedPaymentMethod = methods[0];
+    if (!selectedPaymentMethod || !methods.includes(selectedPaymentMethod) || (selectedPaymentMethod === 'tabby' && tabbyRejected()) || (selectedPaymentMethod === 'tamara' && tamaraRejected())) selectedPaymentMethod = methods[0];
 
     let bodyHtml = '';
     if (fpAll.total === 0 && methods.includes('ziina')) {
@@ -956,26 +996,27 @@
       placeOrderBtn.disabled = false;
       placeOrderBtn.textContent = t('pg.tabby_btn', 'Continue to Tabby');
     } else if (selectedPaymentMethod === 'tamara') {
-      const bnplName = METHOD_META[selectedPaymentMethod].label();
       bodyHtml = `
-        <div class="cod-box">
-          ${METHOD_META[selectedPaymentMethod].icon}
-          <div>
-            <h4>${t('checkout.bnpl_title', 'Split with')} ${bnplName}</h4>
-            <p>${t('checkout.bnpl_body', 'Pay in installments over a few weeks, interest-free (connects once the merchant account is live).')}</p>
-          </div>
+        <div class="tabby-panel tamara-panel">
+          <div id="tamara-checkout-widget" class="tamara-promo" hidden></div>
+          <p class="tabby-redirect-note">${t('pg.tamara_redirect_note', "You'll finish on Tamara's secure page.")}</p>
+          ${tamaraTesting() ? `<p class="ziina-conv">${t('pg.tamara_test', 'Test mode (Tamara sandbox): no real money. Use the test details from the Tamara testing guide.')}</p>` : ''}
         </div>`;
       placeOrderBtn.disabled = false;
-      placeOrderBtn.textContent = `${t('checkout.pay_with', 'Pay with')} ${bnplName}`;
+      placeOrderBtn.textContent = t('pg.tamara_btn', 'Continue to Tamara');
     }
 
     // Shopify-style list: one row per method (radio, name, brand marks); the chosen row opens its panel.
     const rows = methods.map(m => {
       const on = paymentChosen && m === selectedPaymentMethod;
       const chips = (PAY_CHIPS[m] || []).map(c => `<img class="pay-icon${c[2] ? ' ' + c[2] : ''}" src="images/pay/${c[0]}.svg" alt="${c[1]}" width="38" height="24">`).join('');
-      const off = m === 'tabby' && tabbyRejected();
-      const sub = m !== 'tabby' ? '' : off ? `<span class="pay-row-sub warn">${tabbyScore.message}</span>`
-        : tabbyScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>` : '';
+      const off = (m === 'tabby' && tabbyRejected()) || (m === 'tamara' && tamaraRejected());
+      const sub = m === 'tabby' ? (off ? `<span class="pay-row-sub warn">${tabbyScore.message}</span>`
+          : tabbyScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>` : '')
+        : m === 'tamara' ? (off ? `<span class="pay-row-sub warn">${tamaraScore.message}</span>`
+          : tamaraScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>`
+          : `<span class="pay-row-sub">${t('pg.tamara_desc', 'Monthly payments. No late fees.')}</span>`)
+        : '';
       return `
         <button type="button" class="pay-row ${on ? 'active' : ''}${off ? ' unavailable' : ''}" data-method="${m}" role="radio" aria-checked="${on}" ${off ? 'aria-disabled="true"' : ''}>
           <span class="pay-radio" aria-hidden="true"></span>
@@ -992,11 +1033,13 @@
       setTimeout(() => { const c = document.getElementById('tabby-card-container'), fb = paymentArea.querySelector('.tabby-fallback'); if (c && fb && !c.children.length) fb.hidden = false; }, 4000);
     }
     if (methods.includes('tabby')) scheduleTabbyPrescore();
+    if (selectedPaymentMethod === 'tamara' && paymentChosen && window.hikayaTamaraWidget) window.hikayaTamaraWidget('#tamara-checkout-widget', computeFinalPricing(region).total, { checkout: true });
+    if (methods.includes('tamara')) scheduleTamaraPrecheck();
 
     paymentArea.querySelectorAll('.pay-row').forEach(btn => {
       btn.addEventListener('click', () => {
         if (paymentChosen && selectedPaymentMethod === btn.dataset.method) return;
-        if (btn.getAttribute('aria-disabled') === 'true') return; // Tabby declined in pre-scoring
+        if (btn.getAttribute('aria-disabled') === 'true') return; // Tabby / Tamara declined in the pre-check
         selectedPaymentMethod = btn.dataset.method;
         paymentChosen = true;
         const err = document.getElementById('payment-error'); if (err && err.dataset.payErr) { err.style.display = 'none'; delete err.dataset.payErr; }
@@ -1022,7 +1065,7 @@
   // Fires once someone types a plausible email at checkout but doesn't
   // complete the order, so we can follow up later. Never blocks the page.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  ['email', 'phone'].forEach(id => document.getElementById(id).addEventListener('change', () => { if (methodsFor(countrySelect.value, REGIONS[countrySelect.value]).includes('tabby')) scheduleTabbyPrescore(); }));
+  ['email', 'phone'].forEach(id => document.getElementById(id).addEventListener('change', () => { const ms = methodsFor(countrySelect.value, REGIONS[countrySelect.value]); if (ms.includes('tabby')) scheduleTabbyPrescore(); if (ms.includes('tamara')) scheduleTamaraPrecheck(); }));
   document.getElementById('email').addEventListener('blur', (e) => {
     const email = e.target.value.trim();
     if (!EMAIL_RE.test(email)) return;
@@ -1333,14 +1376,15 @@
       if (window.hkShowOrderDone) window.hkShowOrderDone(order, orderNumber, trackingToken);
     }
 
-    // Ziina / Tabby: the server re-prices the cart, saves the order, and returns the provider's payment page.
-    if (selectedPaymentMethod === 'ziina' || selectedPaymentMethod === 'tabby') {
+    // Ziina / Tabby / Tamara: the server re-prices the cart, saves the order, and returns the provider's payment page.
+    if (selectedPaymentMethod === 'ziina' || selectedPaymentMethod === 'tabby' || selectedPaymentMethod === 'tamara') {
       const viaTabby = selectedPaymentMethod === 'tabby' && !(finalPricing && finalPricing.total === 0);
+      const viaTamara = selectedPaymentMethod === 'tamara' && !(finalPricing && finalPricing.total === 0);
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const headers = { 'Content-Type': 'application/json' };
         if (session) headers.Authorization = `Bearer ${session.access_token}`;
-        const res = await fetch(viaTabby ? '/.netlify/functions/create-tabby-payment' : '/.netlify/functions/create-ziina-payment', {
+        const res = await fetch(viaTabby ? '/.netlify/functions/create-tabby-payment' : viaTamara ? '/.netlify/functions/create-tamara-payment' : '/.netlify/functions/create-ziina-payment', {
           method: 'POST', headers, body: JSON.stringify({ ...order, returnPath: location.pathname }),
         });
         const data = await res.json().catch(() => ({}));
@@ -1354,10 +1398,15 @@
           tabbyScore = { key: tabbyKey() || 'session', status: 'rejected', reason: data.reason, message: data.error };
           renderPaymentSection();
         }
+        if (viaTamara && data.rejected) {
+          // Not an error: Tamara isn't available for this customer / amount. Grey it out and offer the other methods.
+          tamaraScore = { key: tamaraKey() || 'session', status: 'rejected', message: data.error };
+          renderPaymentSection();
+        }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
         try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email, total: data.total, currency: data.currency, chargedAed: data.chargedAed })); } catch {}
         if (window.hikayaTagOrder) window.hikayaTagOrder(data.orderNumber);
-        placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
+        placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : viaTamara ? t('pg.tamara_redirect', 'Taking you to Tamara…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
       } catch (err) {
         errorBox.textContent = (err && err.message) || t('checkout.err_generic', 'Something went wrong placing your order. Please try again.');
@@ -1472,6 +1521,49 @@ window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
   Array.prototype.forEach.call(document.body.children, function (el) { if (el !== main && !el.matches('.utility, .site-header, .site-footer, script, style, .skip, dialog')) el.hidden = true; });
   var done = document.getElementById('order-done'); done.hidden = false; window.scrollTo(0, 0); done.focus();
 };
+</script>
+<script>
+/* Back from Tamara: our server re-reads the order from Tamara (never trusts the URL), authorises it, then we show the result. */
+document.addEventListener('DOMContentLoaded', function () {
+  var q = new URLSearchParams(location.search); var order = q.get('order'); var how = q.get('tamara');
+  if (!order || !how || !/^HK-\d{6,12}$/.test(order)) return;
+  var t = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
+  var box = document.createElement('div'); box.className = 'ziina-return'; box.setAttribute('role', 'status');
+  var anchor = document.querySelector('.checkout-progress') || document.querySelector('main') || document.body.firstElementChild;
+  anchor.parentNode.insertBefore(box, anchor);
+  var pending = {}; try { pending = JSON.parse(sessionStorage.getItem('hk_pending_order') || '{}'); } catch (e) {}
+  function say(msg, kind) { box.className = 'ziina-return ' + (kind || ''); box.textContent = msg; try { box.scrollIntoView({ block: 'center' }); } catch (e) {} }
+  function clean() { history.replaceState(null, '', location.pathname); }
+  function done() {
+    try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
+    if (window.hikayaCart) window.hikayaCart.clearCart();
+    fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
+    if (window.hikayaTagOrder) window.hikayaTagOrder(order);
+    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'tamara', value: pending.total, currency: pending.currency, transaction_id: order, event_id: order });
+    box.remove();
+    if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
+    clean();
+  }
+  var url = '/.netlify/functions/tamara-order-status?order=' + encodeURIComponent(order);
+  if (how === 'cancel' || how === 'failure') {
+    // Show the message straight away; the order itself is updated in the background (and by the webhook / hourly sweep).
+    fetch(url, { cache: 'no-store' }).catch(function () {});
+    say(how === 'cancel' ? t('pg.tamara_cancelled', 'You cancelled the Tamara payment. Your cart is still here, please try again or choose another payment method.')
+      : t('pg.tamara_failed', 'Tamara could not approve this purchase. Please choose another payment method.'), 'warn');
+    return clean();
+  }
+  say(t('pg.ziina_confirming', 'Confirming your payment…'));
+  var tries = 0;
+  (function check() {
+    fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.paid) return done();
+      if (d.status === 'canceled') { say(t('pg.tamara_cancelled', 'You cancelled the Tamara payment. Your cart is still here, please try again or choose another payment method.'), 'warn'); return clean(); }
+      if (d.status === 'failed') { say(t('pg.tamara_failed', 'Tamara could not approve this purchase. Please choose another payment method.'), 'warn'); return clean(); }
+      if (++tries < 10) return setTimeout(check, 2000);
+      say(t('pg.ziina_slow', "We're still confirming your payment. We'll email you as soon as it's confirmed. Your reference is {order}.").replace('{order}', order));
+    }).catch(function () { if (++tries < 10) setTimeout(check, 2000); else say(t('pg.ziina_slow', "We're still confirming your payment. Your reference is {order}.").replace('{order}', order)); });
+  })();
+});
 </script>
 <script>
 /* Back from Ziina: confirm the payment with our server (which asks Ziina), then show the result. */

@@ -285,12 +285,15 @@
         <div class="summary-row total"><span>${t('checkout.est_total', 'Estimated total')}</span><span>${fmt(pricing.total, region)}</span></div>
         ${window.hikayaAedHtml ? window.hikayaAedHtml(pricing.total, region) : ''}
         <div id="tabby-promo-cart" class="tabby-promo" hidden></div>
+        <div id="tamara-promo-cart" class="tamara-promo" hidden></div>
         <a class="btn-primary" href="checkout.html">${t('cart.checkout_btn', 'Proceed to Checkout →')}</a>
         <a class="continue-shopping" href="stories.html">${t('cart.continue_shopping', '← Continue Shopping')}</a>
       </div>
     `;
     // Tabby promo snippet for the cart total; re-created on every render so the amount stays current.
     if (window.hikayaTabbyWidget) window.hikayaTabbyWidget('promo', '#tabby-promo-cart', pricing.total, 'cart');
+    // Tamara promo widget for the cart total (UAE only; hidden until Tamara is switched on, see region.js).
+    if (window.hikayaTamaraWidget) window.hikayaTamaraWidget('#tamara-promo-cart', pricing.total);
   }
 </script>
 

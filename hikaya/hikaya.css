@@ -1262,3 +1262,5 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 /* Tabby promo snippets (product + cart). Tabby renders its own content inside. */
 .tabby-promo { margin: 10px 0 14px; max-width: 100%; overflow: hidden; }
 .tabby-promo[hidden] { display: none; }
+.tamara-promo { margin: 6px 0 14px; max-width: 100%; overflow: hidden; }
+.tamara-promo[hidden] { display: none; }

@@ -74,6 +74,58 @@ window.hikayaTabbyOn = function () {
   };
 })();
 
+/* ---------------- Tamara (Pay later, UAE / AED only) ----------------
+   Public key only (safe in the browser; the API + notification tokens live in Netlify).
+   Hidden from customers until go-live: open any page with ?tamaratest=1 to see it (remembered in that browser; ?tamaratest=0 turns it off).
+   GO LIVE: put the production public key below, set HIKAYA_TAMARA_LIVE = true, and in Netlify set
+   TAMARA_API_TOKEN + TAMARA_NOTIFICATION_TOKEN to the live values and TAMARA_API_URL = https://api.tamara.co
+   (then run /tamara-setup.html once to register the live webhook). */
+window.HIKAYA_TAMARA_LIVE = false;
+window.HIKAYA_TAMARA = { publicKey: 'fada631c-d07f-453a-8616-94def2f6335b' }; // sandbox public key
+window.hikayaTamaraOn = function () {
+  try {
+    var q = new URLSearchParams(location.search).get('tamaratest');
+    if (q === '1') localStorage.setItem('hk_tamara_test', '1');
+    if (q === '0') localStorage.removeItem('hk_tamara_test');
+    return window.HIKAYA_TAMARA_LIVE === true || localStorage.getItem('hk_tamara_test') === '1';
+  } catch (e) { return window.HIKAYA_TAMARA_LIVE === true; }
+};
+/* Mounts Tamara's own promo widget (official logo, "Pay AED x/mo or in 4 payments. No late fees. More options")
+   under a price. Re-call with the new price whenever it changes. Does nothing outside the UAE. */
+(function () {
+  var loaded = null;
+  function load() {
+    if (!loaded) loaded = new Promise(function (ok, bad) {
+      var s = document.createElement('script'); s.defer = true; s.onload = ok; s.onerror = bad;
+      s.src = window.HIKAYA_TAMARA_LIVE === true ? 'https://cdn.tamara.co/widget-v2/tamara-widget.js' : 'https://cdn-sandbox.tamara.co/widget-v2/tamara-widget.js';
+      document.head.appendChild(s);
+    });
+    return loaded;
+  }
+  window.hikayaTamaraWidget = function (selector, price, opts) {
+    var el = document.querySelector(selector);
+    if (!el) return;
+    var region = window.hikayaRegion ? window.hikayaRegion() : null;
+    var aed = (opts && opts.checkout) || !region || region.currency === 'AED';
+    if (!window.hikayaTamaraOn() || !aed || !(Number(price) > 0)) { el.hidden = true; el.innerHTML = ''; return; }
+    var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+    /* Config must exist before the script runs; refreshed on every call so EN <-> AR switches carry over. */
+    window.tamaraWidgetConfig = { lang: lang, country: 'AE', publicKey: window.HIKAYA_TAMARA.publicKey,
+      css: ':host{--font-primary:inherit !important;--font-secondary:inherit !important;}' };
+    el.hidden = false;
+    el.innerHTML = '';
+    var w = document.createElement('tamara-widget');
+    w.setAttribute('type', 'tamara-summary');
+    w.setAttribute('amount', String(Math.round(Number(price) * 100) / 100));
+    w.setAttribute('inline-type', '2');
+    w.setAttribute('config', '{"badgePosition":"' + (lang === 'ar' ? 'left' : 'right') + '","showExtraContent":""}');
+    el.appendChild(w);
+    load().then(function () {
+      try { if (window.TamaraWidgetV2 && window.TamaraWidgetV2.refresh) window.TamaraWidgetV2.refresh(); } catch (e) {}
+    }).catch(function () { el.hidden = true; });
+  };
+})();
+
 // GCC-only launch: visitors outside the GCC default to UAE (AED) pricing.
 /* QA 19 Oct 2026 (currency): the payment gateway (Ziina) always charges in AED. For non-AED regions,
    every order summary shows the exact AED amount that will be charged, worked out with the same

@@ -12,6 +12,7 @@ const { isAdminRequest } = require('./_admin-check');
 const { STAGES, normalizeStage } = require('./_stages');
 const { sendEmail } = require('./_email');
 const { orderShipped, orderDelivered, orderPrinting, orderCancelled, photoRequest, delayNotice } = require('./_templates');
+const { captureTamara } = require('./_tamara');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -135,13 +136,22 @@ exports.handler = async (event) => {
     }
     const { items, ...order } = rows[0];
 
+    // Tamara: take the money when the book is handed to the delivery company (Tamara's recommended
+    // flow; until then the order can still be cancelled free). Best effort: a failure is shown in the
+    // dashboard and the order's notes, and the "Capture via Tamara" button can retry.
+    let tamaraCapture = null;
+    if (patch.order_status === 'with_courier' && order.payment_method === 'tamara' && order.payment_status === 'paid') {
+      try { tamaraCapture = await captureTamara(rows[0], { courier: order.courier, trackingNumber: order.tracking_number }); }
+      catch (e) { console.error('tamara capture on courier failed', e.message); tamaraCapture = { ok: false, error: 'Could not reach Tamara to capture.' }; }
+    }
+
     let emailed = false;
     const refundNow = patch.payment_status === 'refunded';
     if (notifyCustomer && order.email && (refundNow || (patch.order_status && ['printing', 'with_courier', 'delivered', 'cancelled'].includes(patch.order_status)))) {
       try { const m = customerEmail(rows[0], patch.order_status, refundNow); const r = await sendEmail({ to: order.email, ...m }); emailed = !!(r && r.sent !== false); }
       catch (e) { console.error('update-order email failed:', e); }
     }
-    return json(200, { order, emailed });
+    return json(200, { order, emailed, ...(tamaraCapture ? { tamaraCapture } : {}) });
   } catch (err) {
     console.error('update-order error:', err);
     return json(500, { error: 'Something went wrong saving the change.' });

@@ -220,6 +220,8 @@
       document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(); });
       // Tabby promo snippet under the price (UAE / AED only; hidden until Tabby is switched on, see region.js).
       if (window.hikayaTabbyWidget && window.hikayaRegion) window.hikayaTabbyWidget('promo', '#tabby-promo-product', window.hikayaRegion().bookNow, 'product');
+      // Tamara promo widget under the price too (UAE only; hidden until Tamara is switched on, see region.js).
+      if (window.hikayaTamaraWidget && window.hikayaRegion) window.hikayaTamaraWidget('#tamara-promo-product', window.hikayaRegion().bookNow);
     }
     document.getElementById('pdp-root').addEventListener('click', e => { if (e.target.closest('[data-look-inside]') && openLook) { e.preventDefault(); openLook(); } });
     document.getElementById('st-inside').addEventListener('click', e => {
