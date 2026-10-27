@@ -26,7 +26,7 @@ window.HIKAYA_REGIONS = {
    Public key + merchant code only (safe in the browser; the secret key lives in Netlify).
    Hidden from customers until go-live: open any page with ?tabbytest=1 to see it (remembered in that browser; ?tabbytest=0 turns it off).
    GO LIVE: put the live pk_ key below (and the live sk_ key in Netlify); live mode turns on automatically. */
-window.HIKAYA_TABBY = { publicKey: 'pk_test_01a15f1b-953b-9caa-ed99-07a93db262d2', merchantCode: 'MJAE' };
+window.HIKAYA_TABBY = { publicKey: 'pk_01a15f1b-953b-9caa-ed99-07a86a8f268e', merchantCode: 'MJAE' };
 /* Live switches on by itself once the public key above is a live pk_ key (not pk_test_). */
 window.HIKAYA_TABBY_LIVE = !/^pk_test_/.test(window.HIKAYA_TABBY.publicKey);
 /* ?tabbytest=1 switches test mode on for this browser (kept across tabs and sign-ins); ?tabbytest=0 switches it off. */
