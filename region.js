@@ -90,6 +90,8 @@ window.hikayaTamaraOn = function () {
     return window.HIKAYA_TAMARA_LIVE === true || localStorage.getItem('hk_tamara_test') === '1';
   } catch (e) { return window.HIKAYA_TAMARA_LIVE === true; }
 };
+/* Remember ?tamaratest=1 / ?tabbytest=1 as soon as any page loads (not only pages that draw a widget). */
+try { window.hikayaTamaraOn(); window.hikayaTabbyOn(); } catch (e) {}
 /* Mounts Tamara's own promo widget (official logo, "Pay AED x/mo or in 4 payments. No late fees. More options")
    under a price. Re-call with the new price whenever it changes. Does nothing outside the UAE. */
 (function () {
