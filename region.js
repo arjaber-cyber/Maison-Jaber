@@ -58,7 +58,7 @@ window.hikayaTabbyOn = function () {
     el.hidden = false;
     var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     load(card ? 'https://checkout.tabby.ai/tabby-card.js' : 'https://checkout.tabby.ai/tabby-promo.js').then(function () {
-      var opts = { selector: selector, currency: 'AED', price: Number(price).toFixed(2), lang: lang, shouldInheritBg: !card, // promo sits on the page background (Tabby's allowed styling); checkout card unchanged
+      var opts = { selector: selector, currency: 'AED', price: Number(price).toFixed(2), lang: lang, shouldInheritBg: true, // Tabby's allowed styling: promo and checkout card both sit on the Hikaya cream instead of white
         publicKey: window.HIKAYA_TABBY.publicKey, merchantCode: window.HIKAYA_TABBY.merchantCode };
       if (!card) opts.source = source === 'cart' ? 'cart' : 'product';
       // Swap in a fresh, empty box each time: Tabby's widget does not re-render into a box it has
