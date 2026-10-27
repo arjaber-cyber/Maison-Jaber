@@ -14,7 +14,7 @@
 // gets whichever is better, the bundle discount or the code.
 
 const { loadPromo, PROMO_MESSAGES } = require('./_pricing');
-const { verifiedMember, authHeaderOf } = require('./_member');
+const { verifiedMember, authHeaderOf, DISCOUNTS_MEMBERS_ONLY } = require('./_member');
 
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 
@@ -26,13 +26,14 @@ exports.handler = async (event) => {
 
   const code = String(payload.code || '').trim().toUpperCase();
   if (!code) return json(400, { error: 'Please enter a code.', reason: 'empty' });
-  // Members only: signed in with a verified WhatsApp number (see _member.js).
+  // Members only when the switch in _member.js is on: signed in with a verified WhatsApp number.
   const member = await verifiedMember(authHeaderOf(event));
-  if (!member.user || !member.phone) {
+  if (DISCOUNTS_MEMBERS_ONLY && (!member.user || !member.phone)) {
     const reason = member.reason || 'need_account';
     return json(reason === 'unavailable' ? 503 : 401, { error: PROMO_MESSAGES[reason], reason });
   }
-  const email = member.user.email;
+  // Signed-in account email first; otherwise the email typed at checkout (for email-locked codes).
+  const email = (member.user && member.user.email) || String(payload.email || '').trim().toLowerCase() || null;
 
   try {
     const promo = await loadPromo(code, { email: email || null });

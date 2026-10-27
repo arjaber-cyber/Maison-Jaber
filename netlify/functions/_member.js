@@ -10,6 +10,11 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 const H = (extra) => ({ apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', ...(extra || {}) });
 
+// Switch: true = discount codes need a signed-in account with a verified
+// WhatsApp number. false = anyone can use a code at checkout (no sign-in,
+// no WhatsApp check). Turned off 28 Oct 2026; set back to true to restore.
+const DISCOUNTS_MEMBERS_ONLY = false;
+
 const authHeaderOf = event => (event && event.headers && (event.headers.authorization || event.headers.Authorization)) || '';
 
 // -> { id, email } or null
@@ -40,4 +45,4 @@ async function verifiedMember(auth) {
   return { user, phone: row.phone };
 }
 
-module.exports = { SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_KEY, H, authHeaderOf, currentUser, phoneRow, verifiedMember };
+module.exports = { DISCOUNTS_MEMBERS_ONLY, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_KEY, H, authHeaderOf, currentUser, phoneRow, verifiedMember };

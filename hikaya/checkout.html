@@ -736,18 +736,20 @@
     promoMsg.appendChild(a);
   }
   async function checkCode(code, afterVerify) {
+    // No sign-in needed for codes for now (server switch in _member.js). If the
+    // server is switched back to members-only it answers need_account/need_phone below.
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { showSignInForCode(); return; }
     setPromoMsg('', t('checkout.promo_checking', 'Checking…'));
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (session) headers.Authorization = 'Bearer ' + session.access_token;
       const res = await fetch('/.netlify/functions/validate-discount-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
-        body: JSON.stringify({ code }),
+        method: 'POST', headers,
+        body: JSON.stringify({ code, email: document.getElementById('email').value.trim() }),
       });
       const data = await res.json().catch(() => ({}));
       if (data.reason === 'need_account') { appliedPromo = null; showSignInForCode(); renderPaymentSection(); return; }
-      if (data.reason === 'need_phone' && !afterVerify) {
+      if (data.reason === 'need_phone' && !afterVerify && session) {
         setPromoMsg('', '');
         const { openPhoneVerify } = await import('./phone-verify.js');
         const ok = await openPhoneVerify(session, { reason: 'discount' });

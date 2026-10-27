@@ -38,7 +38,7 @@ const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 
-const { verifiedMember } = require('./_member');
+const { verifiedMember, DISCOUNTS_MEMBERS_ONLY } = require('./_member');
 
 const BUILT_IN_STORIES = ['The Bravest Little One', 'The Cloud Ship', "The Star Who Couldn't Sleep"];
 
@@ -157,13 +157,14 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
   let bundleDiscountPct = tier.discountPct;
   let applied = null, promoNotBetter = false;
 
-  // Option B: the code instead (never both). Members only: signed in with a
-  // verified WhatsApp number, and checked against the account's own email.
+  // Option B: the code instead (never both). Members-only when the switch in
+  // _member.js is on; email-locked codes are checked against the account (or checkout) email.
   let member = null;
   if (promoCode) {
     member = await verifiedMember(auth);
-    if (!member.user || !member.phone) throw promoError(member.reason || 'need_account');
-    email = member.user.email || email;
+    if (DISCOUNTS_MEMBERS_ONLY && (!member.user || !member.phone)) throw promoError(member.reason || 'need_account');
+    if (member.user) email = member.user.email || email;
+    if (!member.phone) member = null; // no verified number to record on the redemption
   }
   const promo = await loadPromo(promoCode, { email });
   if (promo) {
