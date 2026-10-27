@@ -85,16 +85,17 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
 }
 
 /* ---------- Template building blocks ----------
-   Same design system as the website (hikaya/hikaya.css): ivory background, brand-brown
-   buttons, Cormorant Garamond headings, Manrope body, Caveat accents, dark-brown footer.
+   Same colours as the website (hikaya/hikaya.css), in a light compact layout: sand page,
+   one cream card with the logo, deep-brown buttons, Cormorant Garamond headings, Manrope body.
    Inline styles only, because email clients ignore stylesheets. Web fonts load in Apple
    Mail / iOS; Gmail and Outlook fall back to Georgia and Arial. */
 const ASSETS = (process.env.EMAIL_ASSET_URL || 'https://maison-jaber.com/email/').replace(/\/?$/, '/');
 const C = {
+  page: '#F3EADF', line: '#EEE4D6', accent: '#B5563B',
   ivory: '#F7F1E8', sand: '#EEE4D6', card: '#F3EADF', white: '#FFFCF7',
   ink: '#261C17', soft: '#5E4A3D', brand: '#8A5638', brandDark: '#573624',
   taupe: '#D8C5B3', gold: '#C7A56C', footText: '#E6D6C2', footSoft: '#D2BCA2', footHead: '#FFF8EE',
-  mute: '#7A6555',
+  mute: '#8E7A68',
 };
 const SERIF = { en: "'Cormorant Garamond',Georgia,'Times New Roman',serif", ar: "Amiri,'Traditional Arabic',Tahoma,serif" };
 const SANS = { en: "Manrope,'Helvetica Neue',Arial,sans-serif", ar: "Cairo,Tahoma,'Segoe UI',Arial,sans-serif" };
@@ -102,31 +103,32 @@ const HAND = { en: "Caveat,'Segoe Print','Bradley Hand',cursive", ar: "Amiri,Tah
 const L = lang => (lang === 'ar' ? 'ar' : 'en');
 
 const ui = {
-  eyebrow(text, lang) { return `<p style="margin:0 0 10px; font-family:${SANS[L(lang)]}; font-size:11.5px; font-weight:700; letter-spacing:${lang === 'ar' ? '0' : '.14em'}; text-transform:uppercase; color:${C.brand};">${text}</p>`; },
-  h(text, lang) { return `<h1 style="margin:0 0 14px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 26 : 32}px; line-height:${lang === 'ar' ? 1.45 : 1.12}; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink}; letter-spacing:${lang === 'ar' ? '0' : '-.01em'};">${text}</h1>`; },
-  h3(text, lang) { return `<h3 style="margin:0 0 4px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 18 : 21}px; line-height:1.25; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h3>`; },
-  p(text, lang, small) { return `<p style="margin:0 0 14px; font-family:${SANS[L(lang)]}; font-size:${small ? 13.5 : 15.5}px; line-height:1.65; color:${small ? C.mute : C.soft};">${text}</p>`; },
-  hand(text, lang) { return `<p style="margin:4px 0 6px; font-family:${HAND[L(lang)]}; font-size:${lang === 'ar' ? 20 : 27}px; line-height:1.1; color:${C.brand};">${text}</p>`; },
-  box(inner) { return `<div style="background:${C.card}; border-radius:14px; padding:16px 18px; margin:0 0 14px;">${inner}</div>`; },
+  eyebrow(text, lang) { return `<p style="margin:0 0 6px; font-family:${SANS[L(lang)]}; font-size:11px; font-weight:700; letter-spacing:${lang === 'ar' ? '0' : '.14em'}; text-transform:uppercase; color:${C.accent};">${text}</p>`; },
+  h(text, lang) { return `<h1 style="margin:0 0 6px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 21 : 24}px; line-height:${lang === 'ar' ? 1.45 : 1.15}; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h1>`; },
+  h3(text, lang) { return `<h3 style="margin:0 0 3px; font-family:${SERIF[L(lang)]}; font-size:${lang === 'ar' ? 16 : 18}px; line-height:1.25; font-weight:${lang === 'ar' ? 700 : 600}; color:${C.ink};">${text}</h3>`; },
+  p(text, lang, small) { return `<p style="margin:0 0 ${small ? 8 : 12}px; font-family:${SANS[L(lang)]}; font-size:${small ? 12.5 : 14}px; line-height:1.55; color:${small ? C.mute : C.soft};">${text}</p>`; },
+  hand(text, lang) { return `<p style="margin:2px 0 4px; font-family:${HAND[L(lang)]}; font-size:${lang === 'ar' ? 17 : 22}px; line-height:1.1; color:${C.brand};">${text}</p>`; },
+  box(inner) { return `<div style="background:${C.page}; border-radius:12px; padding:12px 14px; margin:0 0 12px;">${inner}</div>`; },
   /* A story line with its square cover, like the cart on the website. */
   storyCard(title, meta, cover, lang) {
-    const img = cover ? `<td width="76" style="width:76px; vertical-align:top; padding-${lang === 'ar' ? 'left' : 'right'}:14px;"><img src="${esc(cover)}" width="76" height="76" alt="" style="display:block; width:76px; height:76px; border-radius:10px; object-fit:cover; border:0;"></td>` : '';
-    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.card}; border-radius:14px; margin:0 0 12px;"><tr><td style="padding:14px 16px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${img}<td style="vertical-align:middle;">${ui.h3(title, lang)}<p style="margin:0; font-family:${SANS[L(lang)]}; font-size:13.5px; line-height:1.5; color:${C.soft};">${meta}</p></td></tr></table></td></tr></table>`;
+    const img = cover ? `<td width="60" style="width:60px; vertical-align:top; padding-${lang === 'ar' ? 'left' : 'right'}:12px;"><img src="${esc(cover)}" width="60" height="60" alt="" style="display:block; width:60px; height:60px; border-radius:8px; object-fit:cover; border:0;"></td>` : '';
+    return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page}; border-radius:12px; margin:0 0 10px;"><tr><td style="padding:10px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>${img}<td style="vertical-align:middle;">${ui.h3(title, lang)}<p style="margin:0; font-family:${SANS[L(lang)]}; font-size:12.5px; line-height:1.5; color:${C.soft};">${meta}</p></td></tr></table></td></tr></table>`;
   },
   button(href, label, lang) {
-    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:10px 0 22px;"><tr><td style="background:${C.brand}; border-radius:28px;"><a href="${esc(href)}" style="display:inline-block; padding:15px 30px; font-family:${SANS[L(lang)]}; font-size:15px; font-weight:700; line-height:20px; color:${C.white}; text-decoration:none; border-radius:28px;">${label}</a></td></tr></table>`;
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 14px;"><tr><td style="background:${C.brandDark}; border-radius:24px;"><a href="${esc(href)}" style="display:inline-block; padding:10px 22px; font-family:${SANS[L(lang)]}; font-size:14px; font-weight:700; line-height:20px; color:${C.white}; text-decoration:none; border-radius:24px;">${label}</a></td></tr></table>`;
   },
   row(label, value, lang) {
-    return `<tr><td style="padding:9px 0; border-bottom:1px solid ${C.sand}; font-family:${SANS[L(lang)]}; font-size:13.5px; color:${C.mute}; vertical-align:top; width:40%;">${label}</td><td style="padding:9px 0; border-bottom:1px solid ${C.sand}; font-family:${SANS[L(lang)]}; font-size:14.5px; line-height:1.5; color:${C.ink}; font-weight:700; vertical-align:top;">${value}</td></tr>`;
+    return `<tr><td style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:12.5px; color:${C.mute}; vertical-align:top; width:40%;">${label}</td><td style="padding:7px 0; border-bottom:1px solid ${C.line}; font-family:${SANS[L(lang)]}; font-size:13.5px; line-height:1.45; color:${C.ink}; font-weight:700; vertical-align:top;">${value}</td></tr>`;
   },
-  rows(list, lang) { return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 18px;">${list.map(([l, v]) => ui.row(l, v, lang)).join('')}</table>`; },
+  rows(list, lang) { return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:2px 0 14px;">${list.map(([l, v]) => ui.row(l, v, lang)).join('')}</table>`; },
   sign(lang) {
     return ui.hand(lang === 'ar' ? 'قصص صغيرة، ذكريات كبيرة' : 'Little stories. Big memories.', lang)
       + ui.p(lang === 'ar' ? 'مع الحب، فريق حكاية' : 'With love, the Hikaya team', lang, true);
   },
 };
 
-// Shared branded wrapper so every email looks like the website.
+// Shared branded wrapper so every Hikaya email has the same light, compact look:
+// sand background, one cream card with the logo on top, small footer underneath.
 // emailShell(bodyHtml)                      -- English, no preheader (older callers)
 // emailShell(bodyHtml, { lang, preheader }) -- lang 'ar' switches to right-to-left
 function emailShell(bodyHtml, opts) {
@@ -135,35 +137,32 @@ function emailShell(bodyHtml, opts) {
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
   const align = lang === 'ar' ? 'right' : 'left';
   const T = (en, ar) => (lang === 'ar' ? ar : en);
-  const pre = o.preheader ? `<div data-preheader style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:${C.ivory}; opacity:0;">${esc(o.preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>` : '';
+  const pre = o.preheader ? `<div data-preheader style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:${C.page}; opacity:0;">${esc(o.preheader)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>` : '';
   const help = T(
-    `Need help? Reply to this email, or message us on <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700;">WhatsApp</a> at <span style="white-space:nowrap;">${WHATSAPP_DISPLAY}</span>. A real person in the UAE will answer.`,
-    `تحتاج مساعدة؟ ردّ على هذا البريد، أو راسلنا على <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700;">واتساب</a> <span dir="ltr" style="white-space:nowrap; unicode-bidi:isolate;">&#8294;${WHATSAPP_DISPLAY}&#8297;</span>، وسيردّ عليك شخص من فريقنا في الإمارات`);
-  const link = (href, text) => `<a href="${href}" style="color:${C.footText}; text-decoration:none;">${text}</a>`;
-  const sep = `<span style="color:${C.footSoft};">&nbsp;&middot;&nbsp;</span>`;
+    `Questions? Reply to this email or <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700; text-decoration:none;">WhatsApp</a> <span style="white-space:nowrap;">${WHATSAPP_DISPLAY}</span>`,
+    `لديك سؤال؟ ردّ على هذا البريد أو راسلنا على <a href="https://wa.me/${WHATSAPP}" style="color:${C.brand}; font-weight:700; text-decoration:none;">واتساب</a> <span dir="ltr" style="white-space:nowrap; unicode-bidi:isolate;">&#8294;${WHATSAPP_DISPLAY}&#8297;</span>`);
+  const link = (href, text) => `<a href="${href}" style="color:${C.accent}; font-weight:700; text-decoration:none;">${text}</a>`;
+  const sep = `<span style="color:${C.mute};">&nbsp;&middot;&nbsp;</span>`;
   return `<!doctype html><html lang="${lang}" dir="${dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;600;700&family=Caveat:wght@500&family=Amiri:wght@700&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-<style>a{color:${C.brand};} @media (max-width:520px){ .hk-pad{padding-left:22px !important; padding-right:22px !important;} }</style></head>
-<body style="margin:0; padding:0; background:${C.ivory}; -webkit-text-size-adjust:100%;">${pre}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.ivory};"><tr><td align="center" style="padding:28px 12px 36px;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" style="max-width:560px; text-align:${align};">
-    <tr><td style="background:${C.brandDark}; border-radius:14px 14px 0 0; padding:9px 20px; text-align:center; font-family:${SANS[lang]}; font-size:12px; color:#F2E6D6;">${T('Personalised hardcover storybooks &middot; Gift-boxed &middot; UAE &amp; GCC', 'كتب قصص مخصّصة بغلاف مقوّى &middot; في علبة هدية &middot; الإمارات والخليج')}</td></tr>
-    <tr><td style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; border-bottom:1px solid ${C.sand}; padding:22px 20px 18px; text-align:center;">
-      <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo.png" width="132" height="103" alt="Hikaya by Maison Jaber" style="display:inline-block; width:132px; height:auto; border:0;"></a>
+<style>a{color:${C.brand};} @media (max-width:520px){ .hk-pad{padding-left:18px !important; padding-right:18px !important;} }</style></head>
+<body style="margin:0; padding:0; background:${C.page}; -webkit-text-size-adjust:100%;">${pre}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.page};"><tr><td align="center" style="padding:18px 10px 14px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="${dir}" style="max-width:480px; text-align:${align}; background:${C.white}; border:1px solid ${C.line}; border-radius:16px;">
+    <tr><td style="padding:18px 20px 2px; text-align:center;">
+      <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo.png" width="112" height="87" alt="Hikaya by Maison Jaber" style="display:inline-block; width:112px; height:auto; border:0;"></a>
     </td></tr>
-    <tr><td class="hk-pad" style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; padding:32px 36px 8px; color:${C.ink};">
+    <tr><td class="hk-pad" style="padding:10px 24px 2px; color:${C.ink};">
       ${bodyHtml}
     </td></tr>
-    <tr><td class="hk-pad" style="background:${C.white}; border-left:1px solid ${C.taupe}; border-right:1px solid ${C.taupe}; padding:4px 36px 28px;">
-      <p style="margin:0; padding-top:18px; border-top:1px solid ${C.sand}; font-family:${SANS[lang]}; font-size:13px; line-height:1.65; color:${C.mute};">${help}</p>
-    </td></tr>
-    <tr><td style="background:${C.brandDark}; border-radius:0 0 14px 14px; padding:28px 24px 24px; text-align:center;">
-      <a href="${SITE_URL}" style="text-decoration:none;"><img src="${ASSETS}logo-cream.png" width="104" height="81" alt="Hikaya by Maison Jaber" style="display:inline-block; width:104px; height:auto; border:0;"></a>
-      <p style="margin:14px auto 16px; max-width:360px; font-family:${SANS[lang]}; font-size:12.5px; line-height:1.6; color:${C.footSoft};">${T('Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.', 'كتب قصص مخصّصة بغلاف مقوّى، تُصنع لكل طفل على حدة وتصل في علبة هدية إلى الإمارات ودول الخليج')}</p>
-      <p style="margin:0 0 14px; font-family:${SANS[lang]}; font-size:13px; font-weight:700;">${link(SITE_URL + 'stories.html', T('Stories', 'القصص'))}${sep}${link(SITE_URL + 'track-order.html', T('Track your order', 'تتبّع طلبك'))}${sep}${link(SITE_URL + 'help.html', T('Help', 'المساعدة'))}</p>
-      <p style="margin:0; font-family:${SANS.en}; font-size:11px; line-height:1.6; color:${C.footSoft};">Maison Jaber FZ-LLC &middot; United Arab Emirates<br>${link('mailto:' + CUSTOMER_EMAIL, CUSTOMER_EMAIL)}</p>
+    <tr><td class="hk-pad" style="padding:0 24px 16px;">
+      <p style="margin:0; padding-top:12px; border-top:1px solid ${C.line}; font-family:${SANS[lang]}; font-size:11.5px; line-height:1.55; color:${C.mute};">${help}</p>
     </td></tr>
   </table>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;"><tr><td style="padding:10px 8px 0; text-align:center;">
+    <p style="margin:0 0 3px; font-family:${SANS[lang]}; font-size:11.5px;">${link(SITE_URL + 'stories.html', T('Stories', 'القصص'))}${sep}${link(SITE_URL + 'track-order.html', T('Track order', 'تتبّع طلبك'))}${sep}${link(SITE_URL + 'help.html', T('Help', 'المساعدة'))}</p>
+    <p style="margin:0; font-family:${SANS.en}; font-size:10.5px; line-height:1.6; color:${C.mute};">Maison Jaber FZ-LLC &middot; UAE &middot; <a href="mailto:${CUSTOMER_EMAIL}" style="color:${C.mute}; text-decoration:none;">${CUSTOMER_EMAIL}</a></p>
+  </td></tr></table>
 </td></tr></table></body></html>`;
 }
 

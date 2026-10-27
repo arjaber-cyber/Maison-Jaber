@@ -95,7 +95,7 @@ function orderConfirmed(order, arTitles, covers) {
       [tr(lang, 'Delivering to', 'عنوان التوصيل'), address],
       [tr(lang, 'Estimated delivery', 'موعد التوصيل المتوقع'), tr(lang, `About ${days} working days, gift-boxed`, `خلال ${days} أيام عمل تقريبًا، في علبة هدية`)],
     ], lang),
-    '<div style="height:16px"></div>',
+    '<div style="height:6px"></div>',
     ui.box(ui.p(tr(lang,
       '<strong>Spotted a mistake?</strong> We print exactly the name, age and photo you sent, and there is no preview step. If anything needs changing, reply to this email as soon as you can. We can update it as long as production hasn\'t started.',
       '<strong>هل لاحظت خطأ؟</strong> نطبع الاسم والعمر والصورة كما أرسلتها تمامًا، ولا توجد مرحلة معاينة، وإذا احتجت إلى أي تعديل فردّ على هذا البريد بأسرع وقت، ويمكننا التعديل ما دام الإنتاج لم يبدأ'), lang, true).replace('margin:0 0 14px', 'margin:0')),
@@ -210,7 +210,7 @@ function contactReceived({ name, message, orderNumber, lang }) {
 function welcome({ name, lang }) {
   lang = lang === 'ar' ? 'ar' : 'en';
   const first = esc(firstName(name, lang));
-  const step = (n, t, d) => `<tr><td width="34" style="width:34px; vertical-align:top; padding:2px 0 12px;"><div style="width:26px; height:26px; line-height:26px; border-radius:13px; background:#8A5638; color:#FFFCF7; text-align:center; font-family:Manrope,Arial,sans-serif; font-size:13px; font-weight:700;">${n}</div></td><td style="vertical-align:top; padding:2px 0 12px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14.5px; line-height:1.55; color:#5E4A3D;"><strong style="color:#261C17;">${t}</strong><br>${d}</td></tr>`;
+  const step = (n, t, d) => `<tr><td width="34" style="width:34px; vertical-align:top; padding:2px 0 12px;"><div style="width:26px; height:26px; line-height:26px; border-radius:13px; background:#8A5638; color:#FFFCF7; text-align:center; font-family:Manrope,Arial,sans-serif; font-size:13px; font-weight:700;">${n}</div></td><td style="vertical-align:top; padding:2px 0 12px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14px; line-height:1.55; color:#5E4A3D;"><strong style="color:#261C17;">${t}</strong><br>${d}</td></tr>`;
   const body = [
     ui.eyebrow(tr(lang, 'Welcome to Hikaya', 'أهلًا بك في حكاية'), lang),
     ui.h(tr(lang, first ? `Welcome, ${first}!` : 'Welcome!', first ? `أهلًا بك يا ${first}!` : 'أهلًا بك!'), lang),
@@ -323,7 +323,7 @@ function photoRequest(order, note) {
       `أوقفنا الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong> قبل الطباعة لأن صورة ${who ? `<strong>${who}</strong>` : 'طفلك'} ليست واضحة بما يكفي لنرسمه بشكل جميل، ونفضّل أن نسألك على أن نطبع كتابًا لا يرضيك`), lang),
     note ? ui.box(ui.p(`<strong>${tr(lang, 'From our team:', 'ملاحظة من فريقنا:')}</strong> ${esc(note)}`, lang).replace('margin:0 0 14px', 'margin:0')) : '',
     ui.p(tr(lang, '<strong>Just reply to this email with a new photo.</strong> The best photos:', '<strong>ردّ على هذا البريد بصورة جديدة فقط</strong>، وأفضل الصور هي التي:'), lang),
-    `<ul style="margin:0 0 16px; padding-${lang === 'ar' ? 'right' : 'left'}:20px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14.5px; line-height:1.55; color:#5E4A3D;">
+    `<ul style="margin:0 0 16px; padding-${lang === 'ar' ? 'right' : 'left'}:20px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14px; line-height:1.55; color:#5E4A3D;">
       ${tip('Show their face clearly, looking toward the camera', 'يظهر فيها الوجه بوضوح وينظر نحو الكاميرا')}
       ${tip('Are well-lit, without harsh shadows', 'تكون الإضاءة فيها جيدة بلا ظلال قوية')}
       ${tip('Aren\'t blurry or taken from far away', 'لا تكون ضبابية أو ملتقطة من بعيد')}
@@ -418,7 +418,7 @@ function newsletterWelcome(lang) {
 /* ---------------- One-time code for guest order tracking ---------------- */
 function trackCode(code, lang) {
   lang = lang === 'ar' ? 'ar' : 'en';
-  const big = `<p style="margin:6px 0 18px; font-family:Manrope,Arial,sans-serif; font-size:34px; font-weight:700; letter-spacing:.3em; color:#573624;" dir="ltr">${esc(code)}</p>`;
+  const big = `<p style="margin:2px 0 12px; font-family:Manrope,Arial,sans-serif; font-size:26px; font-weight:700; letter-spacing:.24em; color:#573624;" dir="ltr">${esc(code)}</p>`;
   const body = [
     ui.eyebrow(tr(lang, 'Track your order', 'تتبّع طلبك'), lang),
     ui.h(tr(lang, 'Your tracking code', 'رمز تتبّع طلبك'), lang),

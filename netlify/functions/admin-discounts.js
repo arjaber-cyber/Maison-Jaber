@@ -65,9 +65,9 @@ function codeEmail(c, name) {
       ui.eyebrow(c.type === 'free_order' ? 'A gift from us' : 'Your Hikaya code'),
       ui.h(`Hi ${first},`),
       ui.p(`${esc(intro)} Your code gives you <strong>${esc(offerText(c))}</strong>.`),
-      `<div style="background:${C.card}; border:1.5px dashed ${C.taupe}; border-radius:14px; padding:20px; margin:4px 0 16px; text-align:center;">
+      `<div style="background:${C.page}; border:1.5px dashed ${C.taupe}; border-radius:12px; padding:14px; margin:2px 0 12px; text-align:center;">
         <div style="font-family:Manrope,Arial,sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:${C.brand};">Your code</div>
-        <div style="font-family:Menlo,Consolas,monospace; font-size:26px; font-weight:700; letter-spacing:.1em; color:${C.ink}; margin-top:8px;">${esc(c.code)}</div>
+        <div style="font-family:Menlo,Consolas,monospace; font-size:22px; font-weight:700; letter-spacing:.1em; color:${C.ink}; margin-top:6px;">${esc(c.code)}</div>
         ${until ? `<div style="font-family:Manrope,Arial,sans-serif; font-size:13px; color:${C.mute}; margin-top:8px;">Valid until ${esc(until)}</div>` : ''}
       </div>`,
       ui.p(`Enter it at checkout.${c.email ? ' It works with this email address only.' : ''}${c.max_uses === 1 ? ' It can be used once.' : ''} One discount applies per order.`, 'en', true),
