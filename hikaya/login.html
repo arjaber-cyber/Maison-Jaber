@@ -153,8 +153,31 @@
     document.getElementById('login-subtitle').textContent = 'Owner access only — sign in with the account authorized for the admin dashboard.';
   }
 
+  // Email sign-in links now point to maison-jaber.com (not supabase.co) so they
+  // look trustworthy and land in the inbox, not spam. The link carries a one-time
+  // token_hash that we verify here, then send the visitor where they were going.
+  const tokenHash = params.get('token_hash');
+  if (tokenHash) {
+    let dest = 'account.html';
+    try { const saved = localStorage.getItem('hk_login_return'); if (saved && /^[a-zA-Z0-9_-]+\.html$/.test(saved)) dest = saved; localStorage.removeItem('hk_login_return'); } catch (e) {}
+    if (params.get('redirect')) dest = safeReturnTo;
+    statusEl.className = 'status';
+    statusEl.textContent = document.documentElement.lang === 'ar' ? 'جارٍ تسجيل الدخول…' : 'Signing you in…';
+    const { data: vData, error: vErr } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: params.get('type') || 'email' });
+    if (vErr) {
+      history.replaceState(null, '', window.location.pathname);
+      statusEl.className = 'status error';
+      statusEl.textContent = document.documentElement.lang === 'ar'
+        ? 'انتهت صلاحية هذا الرابط أو تم استخدامه، أدخل بريدك لإرسال رابط جديد'
+        : 'This link has expired or was already used. Enter your email to get a new one.';
+    } else {
+      if (vData && vData.session) maybeSendWelcome(vData.session);
+      setTimeout(() => { window.location.href = dest; }, 300);
+    }
+  }
+
   // If already signed in, go straight there
-  supabase.auth.getSession().then(({ data }) => {
+  if (!tokenHash) supabase.auth.getSession().then(({ data }) => {
     if (data.session) { maybeSendWelcome(data.session); setTimeout(() => { window.location.href = safeReturnTo; }, 300); }
   });
 
@@ -171,6 +194,7 @@
     btn.disabled = true;
     statusEl.className = 'status';
     statusEl.textContent = 'Sending your link…';
+    try { localStorage.setItem('hk_login_return', safeReturnTo); } catch (e) {}
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
