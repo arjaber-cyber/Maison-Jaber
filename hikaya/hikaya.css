@@ -1260,7 +1260,9 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 [dir="rtl"] .site-footer .foot-social .fs-t { font-style: normal; }
 
 /* Tabby promo snippets (product + cart). Tabby renders its own content inside. */
-.tabby-promo { margin: 10px 0 14px; max-width: 100%; overflow: hidden; }
+.tabby-promo { margin: 10px 0 14px; max-width: 100%; overflow: hidden;
+  /* Tabby's own colour hooks (only used with shouldInheritBg): Hikaya ink + brand link */
+  --snippetTextColor: var(--ink-soft); --snippetLinkTextColor: var(--brand); }
 .tabby-promo[hidden] { display: none; }
 .tamara-promo { margin: 6px 0 14px; max-width: 100%; overflow: hidden; }
 .tamara-promo[hidden] { display: none; }
