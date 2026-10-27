@@ -102,13 +102,18 @@
     </ul></div>
   </div>
   <form class="foot-news" id="foot-news" novalidate>
-    <div class="fn-copy"><h2 data-i18n="qa.news_t">New stories, first</h2><p data-i18n="qa.news_d">New stories and Eid, Ramadan and back-to-school editions. We write rarely and keep it short.</p></div>
-    <div class="fn-row">
-      <label class="sr-only" for="foot-news-email" data-i18n="qa.news_label">Your email</label>
-      <input type="email" id="foot-news-email" required autocomplete="email" inputmode="email" dir="ltr" placeholder="you@email.com" />
-      <button type="submit" class="btn btn-primary" data-i18n="qa.news_btn">Sign up</button>
+    <div class="fn-copy">
+      <span class="fn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>
+      <div><h2 data-i18n="qa.news_t">Join our mailing list</h2><p data-i18n="qa.news_d">Be the first to hear about new stories, plus Eid, Ramadan and back-to-school editions. Just a few emails a year. Unsubscribe anytime.</p></div>
     </div>
-    <p class="fn-msg" id="foot-news-msg" role="status" aria-live="polite"></p>
+    <div class="fn-field">
+      <label class="fn-label" for="foot-news-email" data-i18n="qa.news_label">Email address</label>
+      <div class="fn-row">
+        <input type="email" id="foot-news-email" name="email" required autocomplete="email" inputmode="email" dir="ltr" placeholder="Enter your email" data-i18n-ph="qa.news_ph" />
+        <button type="submit" class="btn btn-primary fn-btn" data-i18n="qa.news_btn">Subscribe</button>
+      </div>
+      <p class="fn-msg" id="foot-news-msg" role="status" aria-live="polite"></p>
+    </div>
   </form>
   <div class="foot-bottom">
     <span data-i18n="home6.foot_copy">© 2026 Maison Jaber. All rights reserved.</span>

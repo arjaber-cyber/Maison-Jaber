@@ -1071,17 +1071,22 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
   body:has(.sticky-cta.show) .hk-wa { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 }
 
-/* Footer newsletter sign-up */
-.foot-news { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; margin-top: 28px; padding: 20px 0; border-top: 1px solid rgba(230,214,194,.22); }
-.foot-news .fn-copy { max-width: 46ch; }
-.foot-news h2 { margin-bottom: 4px; }
-.foot-news p { color: #D2BCA2; font-size: 13px; margin: 0; }
-.foot-news .fn-row { display: flex; gap: 8px; flex: 1 1 320px; max-width: 440px; }
-.foot-news input { flex: 1; min-width: 0; min-height: 46px; border-radius: 23px; border: 1px solid rgba(230,214,194,.4); background: rgba(255,248,238,.08); color: #FFF8EE; padding: 0 18px; font: inherit; font-size: 14px; }
-.foot-news input::placeholder { color: #B8A08A; }
-.foot-news .btn { min-height: 46px; padding: 0 22px; font-size: 14px; background: #FFF8EE; color: var(--brand-dark); }
-.foot-news .btn:hover { background: #fff; }
-.foot-news .fn-msg { flex-basis: 100%; min-height: 1em; font-size: 13px; }
+/* Footer newsletter sign-up — scoped tightly so checkout/cart form styles can't override it */
+.foot-news { display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: center; justify-content: space-between; margin-top: 28px; padding: 26px 28px; border: 1px solid rgba(230,214,194,.22); border-radius: 18px; background: rgba(255,248,238,.05); }
+.foot-news .fn-copy { display: flex; gap: 14px; align-items: flex-start; flex: 1 1 340px; max-width: 54ch; }
+.foot-news .fn-ico { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,248,238,.12); color: #FFF8EE; }
+.foot-news h2 { margin: 0 0 4px; }
+.foot-news p { color: #D2BCA2; font-size: 13.5px; line-height: 1.5; margin: 0; }
+.foot-news .fn-field { flex: 1 1 360px; max-width: 480px; display: flex; flex-direction: column; gap: 6px; }
+.foot-news .fn-label { font-size: 12.5px; font-weight: 600; color: #E6D6C2; letter-spacing: .02em; }
+.foot-news .fn-row { display: flex; gap: 8px; width: 100%; }
+footer .foot-news .fn-row input[type="email"] { flex: 1 1 auto; width: auto; min-width: 0; height: 48px; min-height: 48px; margin: 0; border-radius: 24px; border: 1px solid rgba(230,214,194,.45); background: #FFF8EE; color: var(--ink, #3B2A20); padding: 0 18px; font: inherit; font-size: 15px; box-shadow: none; }
+footer .foot-news .fn-row input[type="email"]::placeholder { color: #9C8571; }
+footer .foot-news .fn-row input[type="email"]:focus { outline: none; border-color: #FFF8EE; box-shadow: 0 0 0 3px rgba(255,248,238,.25); }
+footer .foot-news .fn-row .fn-btn { flex: none; width: auto; height: 48px; min-height: 48px; margin: 0; padding: 0 24px; border-radius: 24px; font-size: 14.5px; background: var(--brand, #8A5638); color: #fff; box-shadow: none; }
+footer .foot-news .fn-row .fn-btn:hover { background: #A0673F; }
+footer .foot-news .fn-row .fn-btn:disabled { opacity: .7; cursor: default; }
+.foot-news .fn-msg { min-height: 1em; font-size: 13px; margin: 0; }
 .foot-news .fn-msg.ok { color: #E6D6C2; } .foot-news .fn-msg.bad { color: #F3B8A0; }
 
 /* Personal message for the first page (personalise, review step) */
@@ -1164,7 +1169,7 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 .hero-note { position: absolute; z-index: 2; inset-inline-end: 14px; bottom: 14px; padding: 4px 10px; border-radius: 999px; background: rgba(251, 246, 238, .88); color: var(--ink-soft); font-size: 11.5px; font-weight: 600; letter-spacing: .01em; }
 @media (max-width: 767px) { .hero-note { bottom: auto; top: 10px; font-size: 11px; } }
 /* Footer sign-up row: keep the Sign up button on screen on phones (it was pushed past the edge). */
-@media (max-width: 767px) { .foot-news .fn-row { flex: 1 1 100%; width: 100%; max-width: 100%; min-width: 0; } .foot-news .fn-row .btn { flex: none; padding-inline: 18px; } }
+@media (max-width: 767px) { .foot-news { padding: 20px 18px; } .foot-news .fn-field { flex: 1 1 100%; max-width: 100%; } footer .foot-news .fn-row .fn-btn { padding-inline: 18px; } }
 
 /* ===== QA 19 Oct 2026 — narrow-screen delivery bar =====
    The delivery message and the region/language controls share one row only while both fit.
