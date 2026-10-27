@@ -111,6 +111,14 @@
       <button type="submit" class="btn-primary" id="email-btn" data-i18n="login.send_link">Send me a sign-in link</button>
     </form>
 
+    <form id="code-form" style="display:none; margin-top:16px;">
+      <div class="field">
+        <label class="field-label" for="otp-code" id="code-label">Opened the email on another device? Enter the code from it here</label>
+        <input type="text" id="otp-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,10}" maxlength="10" placeholder="123456" required style="width:100%; padding:12px 13px; font-family:'Inter',sans-serif; font-size:20px; letter-spacing:.3em; text-align:center; border:1px solid rgba(184,149,75,0.3); border-radius:var(--radius); background:#fff;" />
+      </div>
+      <button type="submit" class="btn-primary" id="code-btn">Sign in with code</button>
+    </form>
+
     <div class="status" id="status"></div>
     <div class="guest-opt" id="guest-opt" style="margin-top:18px; text-align:center;">
       <a href="stories.html" id="guest-link" class="btn-secondary" style="display:block; padding:12px 16px; text-decoration:none;" data-i18n="login.guest_link">Continue as guest</a>
@@ -206,9 +214,47 @@
       statusEl.textContent = error.message;
       btn.disabled = false;
     } else {
+      const ar = document.documentElement.lang === 'ar';
       statusEl.className = 'status success';
-      statusEl.textContent = 'Check your email for a sign-in link.';
+      statusEl.textContent = ar
+        ? 'أرسلنا لك رابطاً ورمزاً من 6 أرقام، اضغط الرابط أو أدخل الرمز هنا'
+        : 'We emailed you a link and a 6-digit code. Tap the link, or enter the code here.';
+      sentTo = email;
+      document.getElementById('code-label').textContent = ar
+        ? 'فتحت البريد على جهاز آخر؟ أدخل الرمز من البريد هنا'
+        : 'Opened the email on another device? Enter the code from it here';
+      document.getElementById('code-btn').textContent = ar ? 'تسجيل الدخول بالرمز' : 'Sign in with code';
+      document.getElementById('code-form').style.display = 'block';
+      document.getElementById('otp-code').focus();
+      btn.disabled = false;
     }
+  });
+
+  // Signing in on this device with the code from the email (works when the
+  // email was opened on a phone but the visitor is shopping on a laptop).
+  let sentTo = '';
+  document.getElementById('code-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const ar = document.documentElement.lang === 'ar';
+    const token = document.getElementById('otp-code').value.replace(/\D/g, '');
+    const email = sentTo || document.getElementById('email').value.trim();
+    const cbtn = document.getElementById('code-btn');
+    if (!token || !email) return;
+    cbtn.disabled = true;
+    statusEl.className = 'status';
+    statusEl.textContent = ar ? 'جارٍ تسجيل الدخول…' : 'Signing you in…';
+    const { data: cData, error: cErr } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
+    if (cErr) {
+      statusEl.className = 'status error';
+      statusEl.textContent = ar
+        ? 'الرمز غير صحيح أو انتهت صلاحيته، تحقق منه أو اطلب رابطاً جديداً'
+        : 'That code is wrong or has expired. Check it, or send a new link.';
+      cbtn.disabled = false;
+      return;
+    }
+    try { localStorage.removeItem('hk_login_return'); } catch (e) {}
+    if (cData && cData.session) maybeSendWelcome(cData.session);
+    setTimeout(() => { window.location.href = safeReturnTo; }, 300);
   });
 </script>
 
