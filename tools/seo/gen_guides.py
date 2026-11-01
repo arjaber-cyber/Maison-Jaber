@@ -57,7 +57,7 @@ for G in GUIDES:
     k(key + '_title', *G['title']); k(key + '_intro', *G['intro']); k(key + '_desc', *G['desc'])
     for i, (he, ha, be, ba) in enumerate(G['sections']):
         k(f'{key}_s{i}_h', he, ha); k(f'{key}_s{i}_b', be, ba)
-    t_en = G['title'][0] + ' | Hikaya'
+    t_en = G.get('seo_title_en') or (G['title'][0] + ' | Hikaya')  # keep under ~60 characters
     t_ar = G['title'][1] + ' | حكاية'
     seo[file] = dict(en=(t_en, G['desc'][0]), ar=(t_ar, G['desc'][1]))
 

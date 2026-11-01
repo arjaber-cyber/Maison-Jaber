@@ -28,8 +28,8 @@ const BRAND_AR = "حكاية من ميزون جابر";
 export const PAGES = {
   "index.html": {
     en: {
-      title: "Hikaya by Maison Jaber | Personalised Children's Books & Gifts UAE",
-      desc: "Hikaya by Maison Jaber makes personalised storybooks with your child as the hero: their name, age and photo in a hardcover book, gift-boxed and delivered across the UAE and GCC.",
+      title: "Hikaya by Maison Jaber | Personalised Kids' Books & Gifts UAE",
+      desc: "Hikaya by Maison Jaber makes personalised storybooks starring your child: their name, age and photo in a hardcover book, gift-boxed across the UAE & GCC.",
     },
     ar: {
       title: "حكاية من ميزون جابر | قصص أطفال مخصصة باسم طفلك وصورته",
@@ -39,7 +39,7 @@ export const PAGES = {
   "stories.html": {
     en: {
       title: "Personalised Storybooks for Kids | All Stories | Hikaya",
-      desc: "Browse every Hikaya personalised storybook by age, theme and occasion. Your child becomes the hero, and every hardcover book arrives gift-boxed. Delivered across the UAE and GCC.",
+      desc: "Browse Hikaya personalised storybooks by age, theme and occasion. Your child is the hero, and every hardcover book arrives gift-boxed across the UAE and GCC.",
     },
     ar: {
       title: "قصص أطفال مخصصة | جميع القصص | حكاية",
@@ -59,7 +59,7 @@ export const PAGES = {
   "our-world.html": {
     en: {
       title: "Personalised Gift Books by Theme & Occasion | Hikaya",
-      desc: "Stories for courage, kindness, emotions, imagination, family and growing up, plus gift ideas for birthdays, Eid, Ramadan and Christmas. Personalised with your child as the hero.",
+      desc: "Stories about courage, kindness, emotions, imagination and family, plus gift ideas for birthdays, Eid and Christmas, personalised with your child as the hero.",
     },
     ar: {
       title: "هدايا قصص مخصصة حسب الموضوع والمناسبة | حكاية",
@@ -79,7 +79,7 @@ export const PAGES = {
   "help.html": {
     en: {
       title: "FAQs: Personalisation, Delivery & Gifting | Hikaya",
-      desc: "How Hikaya personalised books work: photos and privacy, Arabic or English editions, gift packaging, delivery times and prices across the UAE, Saudi Arabia and the GCC.",
+      desc: "How Hikaya personalised books work: photos and privacy, Arabic or English editions, gift packaging, and delivery times and prices across the UAE and GCC.",
     },
     ar: {
       title: "الأسئلة الشائعة: التخصيص والتوصيل والهدايا | حكاية",
@@ -102,11 +102,11 @@ export const PAGES = {
     ar: { title: "هدايا مخصصة للأطفال في الإمارات | قصص باسم طفلك | حكاية", desc: "هدايا مخصصة للأطفال في الإمارات ودول الخليج: كتاب قصة بغلاف مقوّى يكون طفلك بطله باسمه وعمره وصورته، في علبة هدية وبالعربية أو الإنجليزية" },
   },
   "gift-birthday.html": {
-    en: { title: "Personalised Birthday Gifts for Kids UAE | Hikaya", desc: "A birthday gift they'll keep: a personalised storybook with your child as the hero, their name and photo, and your message on the first page. Gift-boxed, delivered across the UAE and GCC." },
+    en: { title: "Personalised Birthday Gifts for Kids UAE | Hikaya", desc: "A birthday gift they'll keep: a personalised storybook with your child as the hero and your message on the first page. Gift-boxed across the UAE & GCC." },
     ar: { title: "هدايا عيد ميلاد مخصصة للأطفال | قصة باسم طفلك | حكاية", desc: "هدية عيد ميلاد يحتفظ بها: كتاب قصة مخصص يكون طفلك بطله باسمه وصورته ورسالتك في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-eid-ramadan.html": {
-    en: { title: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", desc: "An Eidiya they'll keep: a personalised storybook in Arabic or English with your child as the hero. Add an Eid message, gift-boxed and delivered across the UAE and GCC." },
+    en: { title: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", desc: "An Eidiya they'll keep: a personalised storybook in Arabic or English with your child as the hero and your Eid message inside. Gift-boxed across the UAE & GCC." },
     ar: { title: "هدايا العيد ورمضان للأطفال | عيدية مخصصة باسم طفلك | حكاية", desc: "عيدية تبقى معهم سنوات: كتاب قصة مخصص بالعربية أو الإنجليزية يكون طفلك بطله، مع تهنئة العيد في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-christmas.html": {
@@ -114,7 +114,7 @@ export const PAGES = {
     ar: { title: "هدايا الكريسماس المخصصة للأطفال | حكاية", desc: "قصة كريسماس يكون طفلك بطلها، مخصصة باسمه وصورته ومطبوعة بغلاف مقوّى في علبة هدية، مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-new-sibling.html": {
-    en: { title: "New Sibling Gift: Personalised Big Brother & Sister Book | Hikaya", desc: "A gift for the older child when a new baby arrives: a personalised storybook where they are the hero. Gift-boxed, in English or Arabic, delivered across the UAE and GCC." },
+    en: { title: "New Sibling Gift: Personalised Big Sibling Book | Hikaya", desc: "A gift for the older child when a new baby arrives: a personalised storybook where they're the hero. Gift-boxed, in English or Arabic, across the UAE & GCC." },
     ar: { title: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية", desc: "هدية للطفل الأكبر عند قدوم مولود جديد: كتاب قصة مخصص يكون هو بطله، في علبة هدية وبالعربية أو الإنجليزية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-first-day-of-school.html": {
@@ -123,7 +123,7 @@ export const PAGES = {
   },
   // Gift guides (phase 3, Nov 2026)
   "guide-eid-gift-ideas.html": {
-    en: { title: "Eid gift ideas for kids: 10 thoughtful presents they'll remember | Hikaya", desc: "Beyond cash and toys: 10 Eid gift ideas for children, from a personalised storybook to a handwritten Eidiya note, plus tips on ordering in time." },
+    en: { title: "Eid Gift Ideas for Kids: 10 Thoughtful Presents | Hikaya", desc: "Beyond cash and toys: 10 Eid gift ideas for children, from a personalised storybook to a handwritten Eidiya note, plus tips on ordering in time." },
     ar: { title: "أفكار هدايا العيد للأطفال: 10 هدايا مميزة لا تُنسى | حكاية", desc: "أكثر من المال والألعاب: 10 أفكار لهدايا العيد للأطفال، من قصة مخصصة باسم الطفل إلى رسالة عيدية بخط اليد، مع نصائح للطلب في الوقت المناسب" },
   },
   "guide-birthday-gift-ideas.html": {
@@ -131,11 +131,11 @@ export const PAGES = {
     ar: { title: "أفكار هدايا عيد ميلاد لطفل لديه كل شيء | حكاية", desc: "نفدت أفكار الألعاب؟ هدايا عيد ميلاد مميزة للأطفال من 2 إلى 8 سنوات، من التذكارات والتجارب إلى قصة مخصصة باسم الطفل، مع نصائح حسب العمر" },
   },
   "guide-new-sibling.html": {
-    en: { title: "Preparing your child for a new baby: a gentle guide for parents | Hikaya", desc: "Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that make them feel special." },
+    en: { title: "Preparing Your Child for a New Baby: A Parent's Guide | Hikaya", desc: "Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that make them feel special." },
     ar: { title: "تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل | حكاية", desc: "طرق بسيطة وعملية لمساعدة الطفل الأكبر على استقبال أخ أو أخت جديدة: ماذا تقول، وكيف تساعد القصص، وعادات صغيرة تشعره بأنه مميز" },
   },
   "guide-first-day-of-school.html": {
-    en: { title: "First day of school: 8 ways to help your child feel brave | Hikaya", desc: "Starting nursery or school? Eight gentle, practical ways to help your child feel ready and brave for their first day, from practice runs to stories about courage." },
+    en: { title: "First Day of School: 8 Ways to Help Kids Feel Brave | Hikaya", desc: "Starting nursery or school? Eight gentle, practical ways to help your child feel ready and brave for their first day, from practice runs to stories about courage." },
     ar: { title: "أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة | حكاية", desc: "هل يبدأ طفلك الحضانة أو المدرسة؟ ثماني طرق لطيفة وعملية لمساعدته على الاستعداد والشجاعة في يومه الأول، من التجربة المسبقة إلى قصص الشجاعة" },
   },
   "guides.html": {
@@ -143,24 +143,24 @@ export const PAGES = {
     ar: { title: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر", desc: "أفكار هدايا لأعياد الميلاد والعيد، ونصائح لطيفة للحظات الطفولة الكبيرة مثل قدوم مولود جديد أو أول يوم في المدرسة، من حكاية من ميزون جابر" },
   },
   "guide-christmas-gift-ideas.html": {
-    en: { title: "Christmas gift ideas for kids: 10 presents that feel magical | Hikaya", desc: "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order." },
+    en: { title: "Christmas Gift Ideas for Kids: 10 Magical Presents | Hikaya", desc: "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order." },
     ar: { title: "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة | حكاية", desc: "أفكار هدايا كريسماس مميزة للأطفال من 2 إلى 8 سنوات في الإمارات ودول الخليج، من قصة يكون الطفل بطلها إلى عادات عائلية جديدة، مع موعد الطلب المناسب" },
   },
   "guide-gifts-from-grandparents.html": {
-    en: { title: "Gifts from grandparents: meaningful ideas grandchildren will treasure | Hikaya", desc: "Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away." },
+    en: { title: "Gifts from Grandparents: Meaningful Ideas | Hikaya", desc: "Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away." },
     ar: { title: "هدايا من الأجداد: أفكار يعتز بها الأحفاد | حكاية", desc: "أفكار هدايا مميزة من الأجداد إلى الأحفاد، من الكتب التذكارية وقصص العائلة إلى التجارب المشتركة، مع نصائح للإهداء من بعيد" },
   },
   // Country delivery pages (Nov 2026)
   "personalised-books-uae.html": {
-    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free delivery across the UAE in about 5 working days. Gift-boxed, pay by card or Tabby." },
+    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card or Tabby." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي" },
   },
   "personalised-books-saudi-arabia.html": {
-    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia (Riyadh, Jeddah, Dammam) in about 5 working days. Gift-boxed." },
+    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia in about 5 working days, gift-boxed." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 5 أيام عمل في علبة هدية" },
   },
   "personalised-books-qatar.html": {
-    en: { title: "Personalised Children's Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },
+    en: { title: "Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-kuwait.html": {
@@ -172,7 +172,7 @@ export const PAGES = {
     ar: { title: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-oman.html": {
-    en: { title: "Personalised Children's Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
+    en: { title: "Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
   },
   // END PAGES (tools/seo/register_pages.py adds new pages above this line)

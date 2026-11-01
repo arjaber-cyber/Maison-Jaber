@@ -1,6 +1,6 @@
 # Guide articles content. Each section: (h2_en, h2_ar, body_en_html, body_ar_html). Arabic has no full stops.
 GUIDES = [
-dict(key='eid', file='guide-eid-gift-ideas.html', gift='gift-eid-ramadan.html', occ='eid', img='gft-eid', w=930, h=941, mins=5,
+dict(key='eid', seo_title_en='Eid Gift Ideas for Kids: 10 Thoughtful Presents | Hikaya', file='guide-eid-gift-ideas.html', gift='gift-eid-ramadan.html', occ='eid', img='gft-eid', w=930, h=941, mins=5,
  title=("Eid gift ideas for kids: 10 thoughtful presents they'll remember", 'أفكار هدايا العيد للأطفال: 10 هدايا مميزة لا تُنسى'),
  desc=("Beyond cash and toys: 10 Eid gift ideas for children, from a personalised storybook to a handwritten Eidiya note, plus tips on ordering in time.",
        'أكثر من المال والألعاب: 10 أفكار لهدايا العيد للأطفال، من قصة مخصصة باسم الطفل إلى رسالة عيدية بخط اليد، مع نصائح للطلب في الوقت المناسب'),
@@ -64,7 +64,7 @@ dict(key='birthday', file='guide-birthday-gift-ideas.html', gift='gift-birthday.
    '<p>Personalised gifts are made to order. Allow about 5 working days in the UAE and Saudi Arabia and about 7 elsewhere in the GCC. Every Hikaya book arrives gift-boxed, and you can send it straight to the birthday child.</p>',
    '<p>الهدايا المخصصة تُصنع حسب الطلب، فاحسب نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، ويصل كل كتاب من حكاية في علبة هدية ويمكنك إرساله مباشرة إلى صاحب عيد الميلاد</p>'),
  ]),
-dict(key='sibling', file='guide-new-sibling.html', gift='gift-new-sibling.html', occ='newbaby', img='gft-child-reading-closeup', w=1254, h=1254, mins=4,
+dict(key='sibling', seo_title_en="Preparing Your Child for a New Baby: A Parent's Guide | Hikaya", file='guide-new-sibling.html', gift='gift-new-sibling.html', occ='newbaby', img='gft-child-reading-closeup', w=1254, h=1254, mins=4,
  title=('Preparing your child for a new baby: a gentle guide for parents', 'تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل'),
  desc=('Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that make them feel special.',
        'طرق بسيطة وعملية لمساعدة الطفل الأكبر على استقبال أخ أو أخت جديدة: ماذا تقول، وكيف تساعد القصص، وعادات صغيرة تشعره بأنه مميز'),
@@ -96,7 +96,7 @@ dict(key='sibling', file='guide-new-sibling.html', gift='gift-new-sibling.html',
    '<p>Ask friends and family to greet the older child first, before the baby. It is a small thing that means a lot.</p>',
    '<p>اطلب من الأصدقاء والعائلة أن يسلّموا على الطفل الأكبر أولًا قبل المولود، فهو شيء صغير يعني له الكثير</p>'),
  ]),
-dict(key='school', file='guide-first-day-of-school.html', gift='gift-first-day-of-school.html', occ='school', img='age-hero-03', w=2000, h=1333, mins=4,
+dict(key='school', seo_title_en='First Day of School: 8 Ways to Help Kids Feel Brave | Hikaya', file='guide-first-day-of-school.html', gift='gift-first-day-of-school.html', occ='school', img='age-hero-03', w=2000, h=1333, mins=4,
  title=('First day of school: 8 ways to help your child feel brave', 'أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة'),
  desc=('Starting nursery or school? Eight gentle, practical ways to help your child feel ready and brave for their first day, from practice runs to stories about courage.',
        'هل يبدأ طفلك الحضانة أو المدرسة؟ ثماني طرق لطيفة وعملية لمساعدته على الاستعداد والشجاعة في يومه الأول، من التجربة المسبقة إلى قصص الشجاعة'),
@@ -131,7 +131,7 @@ dict(key='school', file='guide-first-day-of-school.html', gift='gift-first-day-o
 ]
 
 GUIDES += [
-dict(key='xmas', file='guide-christmas-gift-ideas.html', gift='gift-christmas.html', occ='christmas', img='gft-fantasy-night-scene', w=1536, h=1024, mins=4,
+dict(key='xmas', seo_title_en='Christmas Gift Ideas for Kids: 10 Magical Presents | Hikaya', file='guide-christmas-gift-ideas.html', gift='gift-christmas.html', occ='christmas', img='gft-fantasy-night-scene', w=1536, h=1024, mins=4,
  title=('Christmas gift ideas for kids: 10 presents that feel magical', 'أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة'),
  desc=('Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order.',
        'أفكار هدايا كريسماس مميزة للأطفال من 2 إلى 8 سنوات في الإمارات ودول الخليج، من قصة يكون الطفل بطلها إلى عادات عائلية جديدة، مع موعد الطلب المناسب'),
@@ -172,7 +172,7 @@ dict(key='xmas', file='guide-christmas-gift-ideas.html', gift='gift-christmas.ht
    '<p>Personalised books are made to order. In the UAE and Saudi Arabia delivery takes about 5 working days, and about 7 elsewhere in the GCC, so ordering in the first half of December keeps things calm. Delivery is free across the UAE.</p>',
    '<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من ديسمبر يريحك، والتوصيل مجاني داخل الإمارات</p>'),
  ]),
-dict(key='grand', file='guide-gifts-from-grandparents.html', gift='gifts.html', occ='', img='hom-sty-01', w=2000, h=1125, mins=4,
+dict(key='grand', seo_title_en='Gifts from Grandparents: Meaningful Ideas | Hikaya', file='guide-gifts-from-grandparents.html', gift='gifts.html', occ='', img='hom-sty-01', w=2000, h=1125, mins=4,
  title=('Gifts from grandparents: meaningful ideas grandchildren will treasure', 'هدايا من الأجداد: أفكار يعتز بها الأحفاد'),
  desc=('Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away.',
        'أفكار هدايا مميزة من الأجداد إلى الأحفاد، من الكتب التذكارية وقصص العائلة إلى التجارب المشتركة، مع نصائح للإهداء من بعيد'),
