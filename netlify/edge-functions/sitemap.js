@@ -73,7 +73,7 @@ export default async (request, context) => {
 ${rows.join("\n")}
 </urlset>
 `;
-  return new Response(body, { status: 200, headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
+  return new Response(body, { status: 200, headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600", "netlify-cdn-cache-control": "public, durable, s-maxage=3600, stale-while-revalidate=86400" } });
 };
 
-export const config = { path: "/sitemap.xml" };
+export const config = { path: "/sitemap.xml", cache: "manual" };

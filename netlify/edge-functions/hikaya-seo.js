@@ -422,10 +422,17 @@ export default async (request, context) => {
   headers.delete("content-length");
   headers.set("content-type", "text/html; charset=utf-8");
   headers.set("Vary", "Accept-Encoding");
+  // Speed: Netlify's CDN keeps this page for 5 minutes per address (story, language and age count, so each
+  // story and each ?lang=ar page is its own copy) and serves a stale copy while refreshing for up
+  // to a day. Every deploy clears it. Browsers always re-check.
+  headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+  headers.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=300, stale-while-revalidate=86400");
+  headers.set("Netlify-Vary", "query=s|story|lang|age"); // only what changes the page; ad tracking codes (fbclid, utm_*) share the cached copy
   return new Response(request.method === "HEAD" ? null : html, { status: 200, headers });
 };
 
 export const config = {
+  cache: "manual",
   path: [
     "/hikaya/",
     "/hikaya/index.html",

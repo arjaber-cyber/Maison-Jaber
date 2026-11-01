@@ -602,24 +602,24 @@
   "ar": "كم يستغرق التوصيل داخل الإمارات؟"
  },
  "a12": {
-  "en": "About 5 working days from your order, and delivery across the UAE is free.",
-  "ar": "نحو 5 أيام عمل من تاريخ الطلب، والتوصيل مجاني لجميع أنحاء الإمارات"
+  "en": "About 5 working days from your order, and delivery across the UAE is free. <a href=\"personalised-books-uae.html\">More about UAE delivery</a>.",
+  "ar": "نحو 5 أيام عمل من تاريخ الطلب، والتوصيل مجاني لجميع أنحاء الإمارات <a href=\"personalised-books-uae.html\">المزيد عن التوصيل في الإمارات</a>"
  },
  "q13": {
   "en": "How long does delivery to Saudi Arabia take?",
   "ar": "كم يستغرق التوصيل إلى السعودية؟"
  },
  "a13": {
-  "en": "About 5 working days. Delivery is SAR 30, or free when you order 2 or more books.",
-  "ar": "نحو 5 أيام عمل، ورسوم التوصيل 30 ريالًا، أو مجانًا عند طلب كتابين أو أكثر"
+  "en": "About 5 working days. Delivery is SAR 30, or free when you order 2 or more books. <a href=\"personalised-books-saudi-arabia.html\">More about Saudi delivery</a>.",
+  "ar": "نحو 5 أيام عمل، ورسوم التوصيل 30 ريالًا، أو مجانًا عند طلب كتابين أو أكثر <a href=\"personalised-books-saudi-arabia.html\">المزيد عن التوصيل في السعودية</a>"
  },
  "q14": {
   "en": "Do you deliver to other GCC countries?",
   "ar": "هل توصلون إلى بقية دول الخليج؟"
  },
  "a14": {
-  "en": "Yes, to Qatar, Kuwait, Bahrain and Oman, in about 7 working days. Delivery is the equivalent of AED 30 in your local currency, or free on 2 or more books.",
-  "ar": "نعم، إلى قطر والكويت والبحرين وعُمان خلال نحو 7 أيام عمل، ورسوم التوصيل تعادل 30 درهمًا بعملتك المحلية، أو مجانًا عند طلب كتابين أو أكثر"
+  "en": "Yes, to <a href=\"personalised-books-qatar.html\">Qatar</a>, <a href=\"personalised-books-kuwait.html\">Kuwait</a>, <a href=\"personalised-books-bahrain.html\">Bahrain</a> and <a href=\"personalised-books-oman.html\">Oman</a>, in about 7 working days. Delivery is the equivalent of AED 30 in your local currency, or free on 2 or more books.",
+  "ar": "نعم، إلى <a href=\"personalised-books-qatar.html\">قطر</a> و<a href=\"personalised-books-kuwait.html\">الكويت</a> و<a href=\"personalised-books-bahrain.html\">البحرين</a> و<a href=\"personalised-books-oman.html\">عُمان</a> خلال نحو 7 أيام عمل، ورسوم التوصيل تعادل 30 درهمًا بعملتك المحلية، أو مجانًا عند طلب كتابين أو أكثر"
  },
  "q15": {
   "en": "How do I track my order?",
