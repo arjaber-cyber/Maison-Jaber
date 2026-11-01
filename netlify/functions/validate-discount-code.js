@@ -5,7 +5,7 @@
 // real price is always recalculated in _pricing.js when the order is placed,
 // and the use is reserved atomically in Postgres (reserve_discount).
 //
-// POST { code }   needs Authorization: Bearer <customer session>
+// POST { code, email?, phone? }   (email/phone let first-order-only codes answer straight away)
 // 200 { valid: true, code, type, value }   value: % for percent, AED for fixed
 // 4xx { error, reason }                    reason: see PROMO_MESSAGES in _pricing.js
 //
@@ -36,7 +36,8 @@ exports.handler = async (event) => {
   const email = (member.user && member.user.email) || String(payload.email || '').trim().toLowerCase() || null;
 
   try {
-    const promo = await loadPromo(code, { email: email || null });
+    const phone = String(payload.phone || '').trim() || null;
+    const promo = await loadPromo(code, { email: email || null, phone });
     return json(200, { valid: true, code: promo.code, type: promo.type, value: promo.value, minOrderAed: promo.minOrderAed });
   } catch (e) {
     if (e.reason) return json(e.reason === 'unavailable' ? 503 : 400, { error: e.userMessage, reason: e.reason });

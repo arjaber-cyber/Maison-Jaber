@@ -113,7 +113,8 @@ exports.handler = async (event) => {
 
       const base = {
         type, value, tag, email, expires_at: expiresAt, starts_at: startsAt,
-        max_uses: int(p.maxUses), max_uses_per_email: int(p.maxUsesPerEmail),
+        max_uses: int(p.maxUses), max_uses_per_email: p.firstOrderOnly === true ? (int(p.maxUsesPerEmail) || 1) : int(p.maxUsesPerEmail),
+        first_order_only: p.firstOrderOnly === true,
         min_order_aed: num(p.minOrderAed) > 0 ? num(p.minOrderAed) : null,
         note: p.note ? String(p.note).slice(0, 500) : null,
         template_name: p.templateName ? String(p.templateName).slice(0, 120) : null,

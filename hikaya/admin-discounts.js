@@ -81,6 +81,7 @@
             <label><span>Customer name <small>(for the email)</small></span><input name="customerName" placeholder="e.g. Sara"></label>
             <label><span>How many uses</span><select name="uses"><option value="1">Single use</option><option value="n">Limited…</option><option value="">Unlimited</option></select><input name="maxUses" type="number" min="1" step="1" placeholder="e.g. 50" hidden></label>
             <label><span>Min. order <small>(AED, optional)</small></span><input name="minOrderAed" type="number" min="0" step="1" placeholder="—"></label>
+            <label><span>New customers</span><span class="dc-inline"><input name="firstOrderOnly" type="checkbox" style="width:auto"> <em>First order only</em></span><small>Once per customer; refused if their email or phone already has a paid order</small></label>
             <label><span>Linked order <small>(optional)</small></span><input name="issuedForOrder" placeholder="HK-12345678"></label>
             <details class="wide dc-more"><summary>Code name, batches, start date</summary>
               <div class="dc-form inner">
@@ -191,8 +192,9 @@
       minOrderAed: v('minOrderAed') || null, issuedForOrder: v('issuedForOrder') || null,
       code: v('code') || null, prefix: v('prefix') || 'HK', count: v('count') || 1,
       startsAt: v('startsAt') || null, note: v('note') || null, templateName: v('templateName') || null,
-      sendEmail: fm.sendEmail.checked,
+      sendEmail: fm.sendEmail.checked, firstOrderOnly: fm.firstOrderOnly.checked,
     };
+    if (body.firstOrderOnly) body.maxUsesPerEmail = 1;
     if (body.email && body.maxUses == null) body.maxUsesPerEmail = 1;
     return body;
   }
@@ -295,7 +297,7 @@
     const isOpen = open.has(c.code);
     return `<div class="dc-tr ${isOpen ? 'open' : ''}" role="row" id="dc-${esc(c.code)}">
       <span role="cell" class="dc-c-code"><button type="button" class="dc-code" data-toggle title="Show details">${esc(c.code)}</button><small>${esc(TAGS[c.tag] || c.tag)}${c.email ? ' · ' + esc(c.email) : ''}</small></span>
-      <span role="cell" data-l="Offer">${esc(offer(c))}${c.min_order_aed ? `<small>min. ${fmtAED(c.min_order_aed)}</small>` : ''}</span>
+      <span role="cell" data-l="Offer">${esc(offer(c))}${c.min_order_aed ? `<small>min. ${fmtAED(c.min_order_aed)}</small>` : ''}${c.first_order_only ? '<small>first order only · once per customer</small>' : ''}</span>
       <span role="cell" data-l="Status"><span class="op-badge ${sc}">${sl}</span>${held ? `<small>${held} at checkout now</small>` : ''}</span>
       <span role="cell" data-l="Used">${c.uses_count || 0}${c.max_uses != null ? ' / ' + c.max_uses : ' · no limit'}</span>
       <span role="cell" data-l="Valid until">${c.expires_at ? esc(fmtDay(c.expires_at)) : '<span class="op-muted">No end date</span>'}</span>

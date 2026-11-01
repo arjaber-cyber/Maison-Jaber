@@ -82,7 +82,8 @@ async function loadStories(titles) {
    Rules: ONE discount per order. The customer gets whichever is better --
    the bundle discount or the code. A free_order code always wins.
    Codes can be locked to one email, have a start/end date, a total use
-   limit, a per-email limit and a minimum order (AED, books before discounts).
+   limit, a per-email limit, a minimum order (AED, books before discounts) and
+   can be first-order-only (refused if the email or phone already has a paid order).
    The definitive use-count check is atomic in Postgres (reserve_discount). */
 const PROMO_MESSAGES = {
   not_found: "That code isn't valid.",
@@ -93,6 +94,7 @@ const PROMO_MESSAGES = {
   need_email: 'This code is personal. Enter your email address first, then apply it.',
   used_up: 'That code has already been used.',
   used_by_you: "You've already used this code.",
+  not_first_order: 'This code is for your first Hikaya order only.',
   min_order: 'Your order is below the minimum for this code.',
   unavailable: "We couldn't check that code right now. Please try again.",
   need_account: 'Discount codes are for Hikaya members. Sign in or create a free account to use this code.',
@@ -101,7 +103,7 @@ const PROMO_MESSAGES = {
 const promoError = (reason, extra) => Object.assign(new Error(reason), { reason, userMessage: (extra && extra.message) || PROMO_MESSAGES[reason] || PROMO_MESSAGES.not_found });
 
 // Returns the code row if it can be used by this email, otherwise throws a promoError.
-async function loadPromo(code, { email } = {}) {
+async function loadPromo(code, { email, phone } = {}) {
   if (!code) return null;
   const c = String(code).trim().toUpperCase();
   if (!/^[A-Z0-9_-]{2,40}$/.test(c)) throw promoError('not_found');
@@ -119,8 +121,19 @@ async function loadPromo(code, { email } = {}) {
     if (!email) throw promoError('need_email');
     if (String(r.email).toLowerCase() !== String(email).trim().toLowerCase()) throw promoError('wrong_email');
   }
+  // First-order-only codes: tell the shopper straight away when we can already see an earlier paid order.
+  // (The definitive check runs atomically in reserve_discount when the order is placed.)
+  if (r.first_order_only && (email || phone)) {
+    let prior = [];
+    try {
+      const tail = String(phone || '').replace(/\D/g, '').slice(-8);
+      const who = [email ? `email.ilike.${encodeURIComponent('"' + String(email).trim().toLowerCase().replace(/["\\%_]/g, m => '\\' + m) + '"')}` : null, tail.length === 8 ? `phone_digits.like.*${tail}` : null].filter(Boolean).join(',');
+      prior = await sb(`orders?or=(${who})&payment_status=in.(paid,waived)&order_type=neq.test&select=id&limit=1`);
+    } catch (e) { console.error('first-order check', e.message); }
+    if (prior.length) throw promoError('not_first_order');
+  }
   return {
-    code: c, type: r.type, value: Number(r.value) || 0, tag: r.tag || 'campaign',
+    code: c, type: r.type, value: Number(r.value) || 0, tag: r.tag || 'campaign', firstOrderOnly: !!r.first_order_only,
     minOrderAed: r.min_order_aed != null ? Number(r.min_order_aed) : null, lockedEmail: r.email || null,
   };
 }
