@@ -4,6 +4,20 @@
 // Supabase → Authentication → Providers → Facebook. Until then nothing shows,
 // so visitors never see a button that leads to an error.
 
+// Meta keeps a new Facebook app in "development" until it is published.
+// Until then only the app's admins can log in, so the button stays hidden
+// from customers. Admins can still test it by opening any sign-in page with
+// ?fb=1 once (it is remembered on that browser). Set this to true when the
+// Meta app is Live.
+const FACEBOOK_LIVE = false;
+
+function facebookPreview() {
+  try {
+    if (new URLSearchParams(location.search).get('fb') === '1') localStorage.setItem('hikaya_fb_preview', '1');
+    return localStorage.getItem('hikaya_fb_preview') === '1';
+  } catch { return false; }
+}
+
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_wzrtwsqnWabsD9wgHmmODw_xVYcmlam';
 
@@ -30,7 +44,8 @@ function facebookEnabled() {
  * @param opts.onError     called with a readable message on failure
  */
 export async function mountFacebookSignIn(supabase, anchorEl, opts = {}) {
-  if (!anchorEl || !(await facebookEnabled())) return;
+  if (!anchorEl || !(FACEBOOK_LIVE || facebookPreview())) return;
+  if (!(await facebookEnabled())) return;
 
   const btn = document.createElement('button');
   btn.type = 'button';
