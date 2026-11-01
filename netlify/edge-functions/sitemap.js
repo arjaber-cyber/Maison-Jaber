@@ -68,6 +68,8 @@ export default async (request, context) => {
   const day = v => (v ? String(v).slice(0, 10) : today);
   const rows = [`  <url><loc>${SITE}/</loc><lastmod>${today}</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>`];
   STATIC_PAGES.forEach(([p, pr, f]) => rows.push(entry(BASE + p, pr, f, today)));
+  // Policy pages (indexable from Nov 2026; English only, so no language alternates).
+  ["privacy.html", "terms.html", "refund-policy.html"].forEach(p => rows.push(`  <url><loc>${BASE}${p}</loc><lastmod>${today}</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>`));
   stories.forEach(s => rows.push(entry(`${BASE}story.html?s=${encodeURIComponent(s.slug)}`, "0.8", "weekly", day(s.updated_at || s.created_at), s.cover_image_url)));
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">

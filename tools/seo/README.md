@@ -5,6 +5,7 @@ Generators for the public SEO pages, kept here so they can be re-run.
 - `guides_content.py`: the gift guides (EN + AR). Add a new guide by appending to `GUIDES`.
 - `gen_guides.py`: writes `hikaya/guide-*.html`, `hikaya/guides.html`, `guides-i18n.js` and `guide_seo.json`.
 - `gen_countries.py`: writes the GCC country pages `hikaya/personalised-books-*.html`, `countries-i18n.js` and `country_seo.json`.
+- `gen_ar_seo.js`: writes `netlify/shared/ar-seo-data.js` (Arabic H1 + Arabic FAQ structured data served on `?lang=ar`). Re-run after changing page copy: `node tools/seo/gen_ar_seo.js` (check.py fails if it is stale).
 - `register_pages.py`: registers new pages in the SEO layer, both sitemaps and page titles.
 
 Add a guide: append it to `guides_content.py`, then from the repo root run

@@ -61,6 +61,15 @@ else:
         if tl > 62: warnings.append(f'{f}: Google title is {tl} characters (aim for 60)')
         if dl > 165: warnings.append(f'{f}: description is {dl} characters (aim for 155)')
 
+# Arabic headings / FAQ data served by the SEO layer must match the current page copy.
+_ar = 'netlify/shared/ar-seo-data.js'
+_before = open(_ar, encoding='utf-8').read() if os.path.exists(_ar) else ''
+r = subprocess.run(['node', 'tools/seo/gen_ar_seo.js'], capture_output=True, text=True)
+if r.returncode:
+    errors.append('Arabic SEO data: ' + (r.stdout + r.stderr)[-400:])
+elif open(_ar, encoding='utf-8').read() != _before:
+    errors.append('ar-seo-data.js was out of date and has been regenerated; review and commit it')
+
 for w in warnings: print('warning:', w)
 for e in errors: print('ERROR:', e)
 print('SEO check:', 'FAILED' if errors else 'passed', f'({len(errors)} errors, {len(warnings)} warnings)')
