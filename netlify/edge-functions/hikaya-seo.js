@@ -165,17 +165,58 @@ const clip = (s, n) => { s = String(s || "").replace(/\s+/g, " ").trim(); return
 const localized = (v, l) => (!v ? "" : typeof v === "string" ? v : v[l] || v.en || "");
 const plainTitle = (t, l) => String(t || "").replace(/\[NAME\]\s*/g, l === "ar" ? "" : "").replace(/\s{2,}/g, " ").trim();
 
-async function loadStory(slug) {
+// All active stories, cached in memory for 5 minutes per edge instance, and never allowed to
+// hold a page up: if the database is slow (>1.5 s) the page is served without story details.
+let STORIES = null, STORIES_AT = 0;
+async function loadStories() {
+  if (STORIES && Date.now() - STORIES_AT < 5 * 60 * 1000) return STORIES;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 1500);
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?active=eq.true&slug=eq.${encodeURIComponent(slug)}&select=*&limit=1`, {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/stories?active=eq.true&select=*&order=sort_order.asc,created_at.asc`, {
       headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+      signal: ctl.signal,
     });
-    if (!r.ok) return undefined; // unknown: leave the page as it is
+    if (!r.ok) return STORIES; // keep the last good copy, if any
     const rows = await r.json();
-    return Array.isArray(rows) && rows.length ? rows[0] : null; // null: no such live story
+    if (Array.isArray(rows)) { STORIES = rows; STORIES_AT = Date.now(); }
+    return STORIES;
   } catch (_) {
-    return undefined;
+    return STORIES;
+  } finally {
+    clearTimeout(timer);
   }
+}
+async function loadStory(slug) {
+  const all = await loadStories();
+  if (!all) return undefined; // unknown: leave the page as it is
+  return all.find(s => s.slug === slug) || null; // null: no such live story
+}
+
+// Occasion matching, same rules as the shop (chrome.js inOccasion).
+const OCC = { birthday: {}, eid: {}, christmas: {}, newbaby: { slugs: ["why-is-baby-looking-at-me"] }, school: { moments: ["new", "courage", "confidence", "friendship"] } };
+const GIFT_OCC = { "gift-birthday.html": "birthday", "gift-eid-ramadan.html": "eid", "gift-christmas.html": "christmas", "gift-new-sibling.html": "newbaby", "gift-first-day-of-school.html": "school" };
+function inOccasion(s, k) {
+  const o = OCC[k]; if (!o) return true;
+  if (Array.isArray(s.occasions) && s.occasions.length) return s.occasions.includes(k);
+  if (o.slugs) return o.slugs.includes(s.slug);
+  return !o.moments || (s.moments || []).some(m => o.moments.includes(m));
+}
+const storyTitle = (s, l) => plainTitle(l === "ar" ? s.title_ar || s.title : s.title, l);
+const storyPremise = (s, l) => (l === "ar" ? arNoStops(localized(s.premise, "ar") || s.description_ar || localized(s.card_note, "ar") || "") : localized(s.premise, "en") || s.description || localized(s.card_note, "en") || "");
+const firstLine = (s, l) => { const p = storyPremise(s, l); const m = p.match(/^.+?[.!?؟](?=\s|$)/); return (m ? m[0] : p).trim(); };
+// Server-rendered story cards: the same look as the shop's cards, so search engines that don't run
+// JavaScript still see every story, its cover and a link. The page script replaces them on load.
+function cardsHtml(list, l) {
+  return list.map(s => {
+    const t = storyTitle(s, l);
+    const cover = (l === "ar" && s.cover_image_url_ar) || s.cover_image_url || "";
+    const small = /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(cover) ? cover.replace(/\.jpg$/, "-600.jpg") : cover;
+    const href = `story.html?s=${encodeURIComponent(s.slug)}${l === "ar" ? "&amp;lang=ar" : ""}`;
+    const alt = l === "ar" ? `غلاف ${t}` : `Cover of ${t}`;
+    const line = firstLine(s, l);
+    return `<li class="story-card"><div class="cover">${small ? `<img src="${esc(small)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="560" height="560" />` : ""}</div><div class="body"><h3><a href="${href}">${esc(t)}</a></h3>${line ? `<p class="line">${esc(line)}</p>` : ""}</div></li>`;
+  }).join("");
 }
 
 function setTag(html, re, replacement, insertBeforeHeadEnd) {
@@ -217,6 +258,8 @@ export default async (request, context) => {
       meta = lang === "ar"
         ? { title: `${tAr} | قصة مخصصة باسم طفلك | حكاية`, desc: clip(`قصة ${tAr} المخصصة: ${premAr}، يكون طفلك بطلها باسمه وصورته، بغلاف مقوّى وفي علبة هدية`, 300) }
         : { title: `${tEn} – Personalised Children's Book | Hikaya`, desc: clip(`${tEn}: a personalised storybook with your child as the hero. ${premEn}${agesEn} Hardcover, gift-boxed, delivered across the UAE and GCC.`, 300) };
+      html = html.replace('<h1 id="st-title"></h1>', `<h1 id="st-title">${esc(lang === "ar" ? tAr : tEn)}</h1>`);
+      html = html.replace('<p class="premise" id="st-premise"></p>', `<p class="premise" id="st-premise">${esc(lang === "ar" ? premAr : premEn)}</p>`);
       image = (lang === "ar" && s.cover_image_url_ar) || s.cover_image_url || null;
       const pageUrl = lang === "ar" ? canonEn + "&lang=ar" : canonEn;
       ld.push({
@@ -266,6 +309,20 @@ export default async (request, context) => {
   } else {
     meta = PAGES[file][lang];
     canonEn = pathUrl;
+  }
+
+  if (file === "stories.html" || file === "gifts.html" || GIFT_OCC[file]) {
+    const all = await loadStories();
+    if (all && all.length) {
+      if (file === "stories.html") {
+        html = html.replace(/(<ul class="sgrid" id="grid" aria-busy="true">)[\s\S]*?(<\/ul>)/, (m, a, b) => a + cardsHtml(all, lang) + b);
+      } else {
+        const occ = GIFT_OCC[file];
+        let list = occ ? all.filter(s => inOccasion(s, occ)) : all.slice();
+        if (!list.length) list = all.slice();
+        html = html.replace('<ul class="sgrid" id="gift-shelf" aria-busy="true"></ul>', `<ul class="sgrid" id="gift-shelf" aria-busy="true">${cardsHtml(list.slice(0, occ ? 8 : 24), lang)}</ul>`);
+      }
+    }
   }
 
   const sep = canonEn.includes("?") ? "&" : "?";
