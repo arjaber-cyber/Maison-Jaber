@@ -509,6 +509,106 @@
  "grand_s5_b": {
   "en": "<p>If you live in another country, order online and send it straight to their home. Hikaya books arrive gift-boxed anywhere in the UAE and the GCC, and a video call while they open it makes it feel like you are there.</p>",
   "ar": "<p>إن كنتم تعيشون في بلد آخر، اطلبوا عبر الإنترنت وأرسلوا الهدية مباشرة إلى منزله، وكتب حكاية تصل في علبة هدية إلى أي مكان في الإمارات ودول الخليج، ومكالمة فيديو أثناء فتحها تجعلكم وكأنكم هناك</p>"
+ },
+ "natday_title": {
+  "en": "UAE National Day gift ideas for kids: 10 ways to celebrate Eid Al Etihad",
+  "ar": "أفكار هدايا عيد الاتحاد للأطفال: 10 طرق للاحتفال باليوم الوطني الإماراتي"
+ },
+ "natday_intro": {
+  "en": "Eid Al Etihad on 2 December is a lovely moment to celebrate home with children: the flag on the balcony, the long weekend, and a sense of belonging. Here are ten gift and activity ideas that make the day feel special for little ones.",
+  "ar": "عيد الاتحاد في 2 ديسمبر مناسبة جميلة للاحتفال بالوطن مع الأطفال: العلم على الشرفة والعطلة الطويلة والشعور بالانتماء، وهذه عشر أفكار لهدايا وأنشطة تجعل اليوم مميزًا للصغار"
+ },
+ "natday_desc": {
+  "en": "Gift and activity ideas for children for UAE National Day (Eid Al Etihad) on 2 December, from a personalised storybook to heritage visits, plus ordering tips.",
+  "ar": "أفكار هدايا وأنشطة للأطفال في عيد الاتحاد الإماراتي في 2 ديسمبر، من قصة مخصصة باسم الطفل إلى زيارة الأماكن التراثية، مع نصائح للطلب في الوقت المناسب"
+ },
+ "natday_s0_h": {
+  "en": "1. A storybook where they are the hero",
+  "ar": "1- قصة يكون الطفل بطلها"
+ },
+ "natday_s0_b": {
+  "en": "<p>A personalised book with their name and illustrated face, and your National Day message on the first page, in Arabic or English. It is a gift they keep long after the celebrations. <a href=\"personalised-books-uae.html\">See personalised books in the UAE</a>.</p>",
+  "ar": "<p>كتاب مخصص باسم الطفل وملامحه المرسومة، مع تهنئتك بعيد الاتحاد في الصفحة الأولى، بالعربية أو الإنجليزية، هدية يحتفظ بها بعد انتهاء الاحتفالات بوقت طويل <a href=\"personalised-books-uae.html\">اكتشف الكتب المخصصة في الإمارات</a></p>"
+ },
+ "natday_s1_h": {
+  "en": "2. An outfit in the flag colours",
+  "ar": "2- ملابس بألوان العلم"
+ },
+ "natday_s1_b": {
+  "en": "<p>Red, green, white and black, or a small traditional outfit for the family photo. Let them pick one accessory, like a scarf or a badge.</p>",
+  "ar": "<p>الأحمر والأخضر والأبيض والأسود، أو زي تقليدي صغير لصورة العائلة، ودعهم يختارون إكسسوارًا واحدًا مثل وشاح أو شارة</p>"
+ },
+ "natday_s2_h": {
+  "en": "3. A flag craft afternoon",
+  "ar": "3- جلسة فنية لصنع العلم"
+ },
+ "natday_s2_b": {
+  "en": "<p>Paper, paint and stickers to make flags, bunting and window decorations. Children love seeing their work on display for the long weekend.</p>",
+  "ar": "<p>ورق وألوان وملصقات لصنع الأعلام والزينة للنوافذ، فالأطفال يحبون رؤية أعمالهم معلّقة طوال العطلة</p>"
+ },
+ "natday_s3_h": {
+  "en": "4. A visit to a heritage place",
+  "ar": "4- زيارة مكان تراثي"
+ },
+ "natday_s3_b": {
+  "en": "<p>A heritage village or a museum such as Etihad Museum in Dubai or Qasr Al Watan in Abu Dhabi turns history into a day out. Check opening times for the holiday before you go.</p>",
+  "ar": "<p>قرية تراثية أو متحف مثل متحف الاتحاد في دبي أو قصر الوطن في أبوظبي يحوّل التاريخ إلى نزهة ممتعة، وتأكد من مواعيد الزيارة في العطلة قبل الذهاب</p>"
+ },
+ "natday_s4_h": {
+  "en": "5. A ghaf tree seedling",
+  "ar": "5- شتلة شجرة الغاف"
+ },
+ "natday_s4_b": {
+  "en": "<p>The ghaf is the UAE national tree. Planting one at home or school is a gift that grows with them, year after year.</p>",
+  "ar": "<p>الغاف هي الشجرة الوطنية للإمارات، وزراعة شتلة منها في البيت أو المدرسة هدية تكبر معهم عامًا بعد عام</p>"
+ },
+ "natday_s5_h": {
+  "en": "6. A desert or camping weekend",
+  "ar": "6- عطلة في البر أو التخييم"
+ },
+ "natday_s5_b": {
+  "en": "<p>The cooler December weather is perfect for a night under the stars, with stories by the fire and a simple picnic.</p>",
+  "ar": "<p>طقس ديسمبر اللطيف مثالي لليلة تحت النجوم، مع القصص حول النار ونزهة بسيطة</p>"
+ },
+ "natday_s6_h": {
+  "en": "7. A children's book about the UAE",
+  "ar": "7- كتاب أطفال عن الإمارات"
+ },
+ "natday_s6_b": {
+  "en": "<p>Picture books about the desert, the sea, pearl diving or falcons help young children connect with where they live.</p>",
+  "ar": "<p>الكتب المصورة عن الصحراء والبحر والغوص على اللؤلؤ والصقور تساعد الأطفال الصغار على التعلق بالمكان الذي يعيشون فيه</p>"
+ },
+ "natday_s7_h": {
+  "en": "8. A \"what I love about home\" letter",
+  "ar": "8- رسالة \"ما أحبه في وطني\""
+ },
+ "natday_s7_b": {
+  "en": "<p>Ask them to draw or tell you what they love most about home, then keep it in a folder. Repeat every year and watch it grow.</p>",
+  "ar": "<p>اطلب منهم أن يرسموا أو يخبروك بأكثر ما يحبونه في وطنهم، ثم احفظها في ملف، وكرّرها كل عام لترى كيف تكبر</p>"
+ },
+ "natday_s8_h": {
+  "en": "9. A family photo in traditional dress",
+  "ar": "9- صورة عائلية بالزي التقليدي"
+ },
+ "natday_s8_b": {
+  "en": "<p>Print it and frame it for their room. It becomes a yearly tradition they look forward to.</p>",
+  "ar": "<p>اطبعها وضعها في إطار لغرفتهم، فتصبح عادة سنوية ينتظرونها</p>"
+ },
+ "natday_s9_h": {
+  "en": "10. A visit to family and grandparents",
+  "ar": "10- زيارة العائلة والأجداد"
+ },
+ "natday_s9_b": {
+  "en": "<p>Ask grandparents to share how National Day was celebrated when they were young. Those stories are a gift in themselves.</p>",
+  "ar": "<p>اطلب من الأجداد أن يحكوا كيف كانوا يحتفلون باليوم الوطني في صغرهم، فهذه القصص هدية بحد ذاتها</p>"
+ },
+ "natday_s10_h": {
+  "en": "Tip: order personalised gifts by late November",
+  "ar": "نصيحة: اطلب الهدايا المخصصة قبل نهاية نوفمبر"
+ },
+ "natday_s10_b": {
+  "en": "<p>Personalised books are made to order, and Hikaya delivery takes about 5 working days in the UAE, so ordering by around 24 November keeps things relaxed before 2 December. Delivery is free across the UAE.</p>",
+  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق توصيل حكاية نحو 5 أيام عمل في الإمارات، لذلك فالطلب قبل 24 نوفمبر تقريبًا يريحك قبل 2 ديسمبر، والتوصيل مجاني داخل الإمارات</p>"
  }
 };
   /* reading-time label follows the page language */

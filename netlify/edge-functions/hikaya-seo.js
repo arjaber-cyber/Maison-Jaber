@@ -186,6 +186,10 @@ export const PAGES = {
     en: { title: "Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
   },
+  "guide-uae-national-day-gift-ideas.html": {
+    en: { title: "UAE National Day Gift Ideas for Kids | Hikaya", desc: "Gift and activity ideas for children for UAE National Day (Eid Al Etihad) on 2 December, from a personalised storybook to heritage visits, plus ordering tips." },
+    ar: { title: "أفكار هدايا عيد الاتحاد للأطفال | حكاية", desc: "أفكار هدايا وأنشطة للأطفال في عيد الاتحاد الإماراتي في 2 ديسمبر، من قصة مخصصة باسم الطفل إلى زيارة الأماكن التراثية، مع نصائح للطلب في الوقت المناسب" },
+  },
   // END PAGES (tools/seo/register_pages.py adds new pages above this line)
 };
 
@@ -492,6 +496,7 @@ export const config = {
   cache: "manual",
   path: [
     // PATHS (tools/seo/register_pages.py adds new pages below this line)
+    "/hikaya/guide-uae-national-day-gift-ideas.html",
     "/hikaya/",
     "/hikaya/index.html",
     "/hikaya/stories.html",

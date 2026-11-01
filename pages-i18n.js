@@ -348,6 +348,7 @@
     personalised_books_kuwait: { en: "Personalised Children's Books in Kuwait | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في الكويت | حكاية" },
     personalised_books_bahrain: { en: "Personalised Children's Books in Bahrain | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية" },
     personalised_books_oman: { en: "Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية" },
+    guide_uae_national_day_gift_ideas: { en: "UAE National Day Gift Ideas for Kids | Hikaya", ar: "أفكار هدايا عيد الاتحاد للأطفال | حكاية" },
     '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
   };
   T.trk = {
