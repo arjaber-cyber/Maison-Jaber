@@ -175,6 +175,7 @@ export const PAGES = {
     en: { title: "Personalised Children's Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
   },
+  // END PAGES (tools/seo/register_pages.py adds new pages above this line)
 };
 
 
@@ -434,6 +435,7 @@ export default async (request, context) => {
 export const config = {
   cache: "manual",
   path: [
+    // PATHS (tools/seo/register_pages.py adds new pages below this line)
     "/hikaya/",
     "/hikaya/index.html",
     "/hikaya/stories.html",

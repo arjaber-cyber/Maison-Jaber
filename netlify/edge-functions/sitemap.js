@@ -39,6 +39,7 @@ const STATIC_PAGES = [
   ["guides.html", "0.7", "monthly"],
   ["guide-christmas-gift-ideas.html", "0.7", "monthly"],
   ["guide-gifts-from-grandparents.html", "0.7", "monthly"],
+  // END STATIC_PAGES (tools/seo/register_pages.py adds new pages above this line)
 ];
 
 const x = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

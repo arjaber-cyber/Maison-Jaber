@@ -69,6 +69,13 @@
   status = 200
   force = true
 
+# Internal SEO generator scripts (tools/seo/) are not part of the website.
+[[redirects]]
+  from = "/tools/*"
+  to = "/hikaya/404.html"
+  status = 404
+  force = true
+
 # Short tracked links made in the dashboard (Customers tab > Link maker): maison-jaber.com/go/eid-reel
 [[redirects]]
   from = "/go/*"
