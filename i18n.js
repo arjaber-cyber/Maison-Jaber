@@ -694,6 +694,8 @@ window.HIKAYA_TRANSLATIONS = {
 
   function setLang(lang) {
     localStorage.setItem(LANG_KEY, lang);
+    /* Arabic pages have their own address (?lang=ar) for Google; keep the address in step with the visitor's choice. */
+    try { const u = new URL(location.href); if (u.searchParams.has('lang') || (lang === 'ar' && document.querySelector('meta[name="hk-seo-lang"]'))) { if (lang === 'ar') u.searchParams.set('lang', 'ar'); else u.searchParams.delete('lang'); history.replaceState(history.state, '', u.pathname + u.search + u.hash); } } catch (_) {}
     applyTranslations();
     document.dispatchEvent(new CustomEvent('hikaya:langchange', { detail: { lang } }));
   }

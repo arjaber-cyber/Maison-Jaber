@@ -181,7 +181,7 @@
         <li>Create a <em>service account</em> and download a JSON key for it.</li>
         <li>In <a href="https://search.google.com/search-console" target="_blank" rel="noopener">Search Console</a> (property maison-jaber.com) → Settings → Users and permissions → add the service account's email as <em>Restricted</em>.</li>
         <li>Send Claude the key file and it will finish the rest.</li></ol>
-        Google only gives search words as totals, never per person. The site opens to Google on 1 Nov, so searches start showing a few days after.</div>`;
+        Google only gives search words as totals, never per person. Google opened the site on 1 Nov 2026, so searches start showing a few days after.</div>`;
     } else if (s.error) {
       inner = `<div class="cu-note">Couldn't read Search Console: ${esc(s.error)}</div>`;
     } else {

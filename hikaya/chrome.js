@@ -138,16 +138,11 @@
   const countryName = k => t('home6_regions.' + k, k);
   const fmt = (amount, r) => window.hikayaFormatPrice ? window.hikayaFormatPrice(amount, r) : `${r ? r.symbol : 'AED'} ${Number(amount)}`;
   /* Delivery estimate per country (working days): UAE and KSA about 5, the rest of the GCC about 7.
-     This is the ONE source for every delivery estimate on the site (story, personalise, checkout, FAQs).
-     SOFT_LAUNCH_END: until this moment (UAE time) every estimate carries the soft-launch qualifier
-     ("allow up to one extra week") and the home banner shows; both disappear on their own afterwards. */
+     This is the ONE source for every delivery estimate on the site (story, personalise, checkout, FAQs). */
   const ETA_DAYS = { UAE: 5, Saudi: 5, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
-  const SOFT_LAUNCH_END = Date.parse('2026-11-01T00:00:00+04:00');
-  const softLaunch = () => Date.now() < SOFT_LAUNCH_END;
-  const softNote = () => softLaunch() ? t('lx.eta_soft', ' (soft launch: allow up to one extra week)') : '';
   function etaDays(k) { return ETA_DAYS[k || regionKey()] || 7; }
-  function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)) + softNote(); }
-  function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)) + softNote(); }
+  function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)); }
+  function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)); }
   function deliveryText(k) {
     const r = regionObj(k);
     if ((k || regionKey()) === 'UAE' || !r || !r.deliveryFee) return t('home6.del_uae', 'Free delivery across the UAE');
@@ -164,9 +159,6 @@
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
-    /* Soft-launch qualifier next to FAQ delivery answers; the home banner hides itself after launch. */
-    document.querySelectorAll('[data-hk-soft-note]').forEach(el => { el.hidden = !softLaunch(); el.textContent = t('lx.eta_soft_faq', 'During our soft launch (until 1 November 2026), please allow up to one extra week.'); });
-    document.querySelectorAll('.soft-launch').forEach(el => { el.hidden = !softLaunch(); });
     document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(); });
     document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
@@ -202,13 +194,15 @@
   /* ---------------- Language ---------------- */
   const PAGE = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
   const BASE_TITLE = document.title;
+  /* The SEO layer (netlify/edge-functions/hikaya-seo.js) already wrote this page's Google title and canonical in the language it served. */
+  const SEO_LANG = (document.querySelector('meta[name="hk-seo-lang"]') || {}).content || '';
   function menuLabel(open) { return open ? t('a11y.menu_close', 'Close menu') : t('a11y.menu_open', 'Open menu'); }
   function renderLang() {
     const l = lang();
     document.documentElement.lang = l; document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
     document.querySelectorAll('[data-i18n-aria]').forEach(el => { const v = t(el.getAttribute('data-i18n-aria')); if (v) el.setAttribute('aria-label', v); });
     const mb = document.getElementById('menu-btn'); if (mb) mb.setAttribute('aria-label', menuLabel(mb.getAttribute('aria-expanded') === 'true'));
-    const pt = t('ttl.' + PAGE.replace(/-/g, '_'), ''); document.title = (l === 'ar' && pt) ? pt : BASE_TITLE; // English titles stay exactly as authored (SEO)
+    const pt = t('ttl.' + PAGE.replace(/-/g, '_'), ''); if (SEO_LANG) { if (SEO_LANG !== l) document.title = tIn('ttl.' + PAGE.replace(/-/g, '_'), l) || BASE_TITLE; } else document.title = (l === 'ar' && pt) ? pt : BASE_TITLE; // server SEO titles stay exactly as served
     document.querySelectorAll('.util-btn[data-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
     document.querySelectorAll('[data-i18n-alt]').forEach(img => { const v = t(img.getAttribute('data-i18n-alt')); if (v) img.alt = v; });
     document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = t(el.getAttribute('data-i18n-ph')); if (v) el.placeholder = v; });
@@ -512,7 +506,7 @@
   }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { setCanonical, softLaunch, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
 
   /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
      The /hikaya/ shop is served from the /test5/ files. Relative links already stay inside
@@ -532,6 +526,7 @@
   }
   /* Canonical URL for the page being viewed, always on the public /hikaya/ path. */
   function setCanonical(url) {
+    if (SEO_LANG) return; // already set by the SEO layer, per language
     let l = document.querySelector('link[rel="canonical"]');
     if (!l) { l = document.createElement('link'); l.rel = 'canonical'; document.head.appendChild(l); }
     l.href = url;

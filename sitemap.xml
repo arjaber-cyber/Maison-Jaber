@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Public Hikaya shop pages. During the soft launch these are still served with
-     "X-Robots-Tag: noindex" (LAUNCH SWITCH in netlify.toml); they are listed now so
-     search engines pick them up as soon as that switch is removed on 1 Nov 2026.
-     Add a story URL here whenever a new story goes live. -->
+<!-- Fallback only. The live sitemap at /sitemap.xml is built by netlify/edge-functions/sitemap.js
+     from the active stories (English + Arabic, with hreflang). This file is served only if that fails. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://maison-jaber.com/</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/stories.html</loc></url>
-  <url><loc>https://maison-jaber.com/hikaya/age-groups.html</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/age-groups.html?age=2-4</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/age-groups.html?age=4-6</loc></url>
+  <url><loc>https://maison-jaber.com/hikaya/age-groups.html?age=6-8</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/our-world.html</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/about.html</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/help.html</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/contact.html</loc></url>
-  <url><loc>https://maison-jaber.com/hikaya/privacy.html</loc></url>
-  <url><loc>https://maison-jaber.com/hikaya/terms.html</loc></url>
-  <url><loc>https://maison-jaber.com/hikaya/refund-policy.html</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/story.html?s=christmas-star</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/story.html?s=door-of-a-thousand-stars</loc></url>
   <url><loc>https://maison-jaber.com/hikaya/story.html?s=storm-above-the-city</loc></url>

@@ -5,8 +5,6 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.home6 = {
     skip: { en: 'Skip to content', ar: 'انتقل إلى المحتوى' },
-    // Kept to one short line (22 Oct 2026). The "allow up to one extra week" delivery note stays on the story page, personalise and checkout.
-    soft_launch: { en: '<strong>Soft launch</strong> · Official launch on 1 November', ar: '<strong>إطلاق تجريبي</strong> · الإطلاق الرسمي في 1 نوفمبر' },
 
     // Utility bar ({country} and {fee} are filled in by home6.js)
     del_uae: { en: 'Free delivery across the UAE', ar: 'توصيل مجاني لجميع أنحاء الإمارات' },

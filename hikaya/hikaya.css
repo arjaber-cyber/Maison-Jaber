@@ -1189,7 +1189,6 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
   .region-menu { inset-inline-end: auto; inset-inline-start: 50%; transform: translateX(-50%); max-width: calc(100vw - 24px); }
   [dir="rtl"] .region-menu { transform: translateX(50%); }
 }
-.faq-soft { margin-top: 8px; color: var(--ink-soft); font-size: .95em; }
 .pay-aed { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; font-weight: 700; }
 .pay-aed-note { margin-top: 6px; color: var(--ink-soft); font-size: 12.5px; line-height: 1.45; }
 /* Story page: reserve the title line while the story loads (no blank/jumping h1) */

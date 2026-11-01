@@ -105,7 +105,7 @@
       const cta = document.getElementById('age-cta');
       cta.href = 'stories.html?age=' + band;
       cta.querySelector('span').textContent = tpl(t('pg.age_browse', 'Browse all ages {band}'), { band: lbl });
-      document.title = `${tpl(t('pg.age_title', 'Stories for ages {band}'), { band: lbl })} | Hikaya`;
+      if (H.seoLang() !== H.lang() || !((document.querySelector('link[rel="canonical"]') || {}).href || '').includes('age=' + band)) document.title = `${tpl(t('pg.age_title', 'Stories for ages {band}'), { band: lbl })} | Hikaya`;
       H.initCarousels();
     }
     document.querySelectorAll('[data-band]').forEach(p => p.addEventListener('click', e => {
@@ -130,7 +130,7 @@
     }
     function render() {
       const plain = H.titlePlain(s);
-      document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
+      if (H.seoLang() !== H.lang()) document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
       /* One canonical per story, on the public /hikaya/ path, whatever URL variant was opened. */
       if (H.setCanonical) H.setCanonical('https://maison-jaber.com/hikaya/story.html?s=' + encodeURIComponent(s.slug));
       const md = document.querySelector('meta[name="description"]'); if (md) md.content = H.premise(s) || md.content;
@@ -202,7 +202,7 @@
       }
       insideCol.parentElement.classList.toggle('one-col', insideCol.hidden);
       // structured data (Product) for this story
-      try {
+      if (!H.seoLang()) try {
         const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };
         let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
         ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
