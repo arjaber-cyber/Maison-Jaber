@@ -270,7 +270,33 @@ const UNAVAILABLE = {
 };
 const unavailableMessage = lang => UNAVAILABLE[lang === 'ar' ? 'ar' : 'en'];
 
+
+// Webhook registration without anyone typing a password: the hourly sweep calls
+// this. It registers our webhook URL with Tamara once per mode (sandbox / live)
+// and records that in app_flags so it never registers twice. Switching to the
+// live token re-runs it automatically (different flag key).
+const WEBHOOK_EVENTS = ['order_approved', 'order_authorised', 'order_captured', 'order_canceled', 'order_refunded', 'order_expired', 'order_declined'];
+async function ensureWebhook() {
+  if (!apiToken()) return { skipped: 'no token' };
+  const key = 'tamara_webhook_' + (isSandbox() ? 'sandbox' : 'live');
+  const f = await fetch(`${SUPABASE_URL}/rest/v1/app_flags?key=eq.${key}&select=value`, { headers: H });
+  if (!f.ok) return { skipped: 'flags unavailable ' + f.status };
+  if ((await f.json()).length) return { already: true };
+  const site = String(process.env.SITE_URL || 'https://maison-jaber.com').replace(/\/$/, '');
+  const url = `${site}/.netlify/functions/tamara-webhook`;
+  const r = await tamara('/webhooks', { method: 'POST', body: { type: 'order', events: WEBHOOK_EVENTS, url, headers: {} } });
+  const dup = !r.ok && /exist|duplicate|already/i.test(JSON.stringify(r.data || {}));
+  if (!r.ok && !dup) { console.error('tamara webhook register failed', r.status, JSON.stringify(r.data).slice(0, 300)); return { error: r.status }; }
+  await fetch(`${SUPABASE_URL}/rest/v1/app_flags`, {
+    method: 'POST', headers: { ...H, Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({ key, value: JSON.stringify({ url, webhook_id: (r.data && r.data.webhook_id) || null, duplicate: dup }), updated_at: new Date().toISOString() }),
+  });
+  console.log('tamara webhook registered', key, url, dup ? '(already existed)' : '');
+  return { registered: true, url };
+}
+
 module.exports = {
+  ensureWebhook,
   tamara, apiToken, notificationToken, apiBase, isSandbox, round2, aed, UUID, appendNote, addNote,
   getOrderByNumber, getTamaraOrder, tamaraIdOf, settleFromTamara, captureTamara, cancelTamara, refundTamara,
   verifyTamaraToken, uaePhone, unavailableMessage,

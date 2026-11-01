@@ -7,12 +7,14 @@
 // authorised would otherwise expire and the book would never be made.
 
 const { SUPABASE_URL, SUPABASE_KEY } = require('./_pricing');
-const { settleFromTamara, apiToken } = require('./_tamara');
+const { settleFromTamara, apiToken, ensureWebhook } = require('./_tamara');
 
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 
 exports.handler = async () => {
   if (!apiToken()) return { statusCode: 200, body: 'no key' };
+  // One-time (per sandbox/live) webhook setup, so nobody has to run tamara-setup.html.
+  try { const w = await ensureWebhook(); if (!w.already) console.log('tamara webhook', JSON.stringify(w)); } catch (e) { console.warn('tamara webhook setup', e.message); }
   const since = new Date(Date.now() - 3 * 24 * 3600 * 1000).toISOString();
   const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?payment_method=eq.tamara&payment_status=eq.awaiting_payment&created_at=gte.${encodeURIComponent(since)}&select=order_number&limit=50`, { headers: H });
   if (!r.ok) { console.error('tamara sweep lookup failed', r.status); return { statusCode: 500, body: 'lookup failed' }; }
