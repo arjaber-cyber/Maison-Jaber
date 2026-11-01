@@ -60,7 +60,7 @@
  },
  "eid_s0_h": {
   "en": "1. A storybook where they are the hero",
-  "ar": "1. قصة يكون الطفل بطلها"
+  "ar": "1- قصة يكون الطفل بطلها"
  },
  "eid_s0_b": {
   "en": "<p>A personalised book puts the child's name and likeness on every page, so it becomes <em>their</em> story. With Hikaya you can choose an Arabic or English edition and write an Eid message on the first page. <a href=\"gift-eid-ramadan.html\">See our Eid and Ramadan stories</a>.</p>",
@@ -68,7 +68,7 @@
  },
  "eid_s1_h": {
   "en": "2. An Eidiya envelope with a handwritten note",
-  "ar": "2. ظرف عيدية مع رسالة بخط اليد"
+  "ar": "2- ظرف عيدية مع رسالة بخط اليد"
  },
  "eid_s1_b": {
   "en": "<p>The money is exciting, but a few words from you are what gets kept. Tell them one thing you're proud of this year.</p>",
@@ -76,7 +76,7 @@
  },
  "eid_s2_h": {
   "en": "3. A new outfit for Eid morning",
-  "ar": "3. ملابس جديدة لصباح العيد"
+  "ar": "3- ملابس جديدة لصباح العيد"
  },
  "eid_s2_b": {
   "en": "<p>A classic for good reason. Let them choose one detail themselves, like the colour or a small accessory, so it feels like theirs.</p>",
@@ -84,7 +84,7 @@
  },
  "eid_s3_h": {
   "en": "4. A day out together",
-  "ar": "4. يوم خارج المنزل معًا"
+  "ar": "4- يوم خارج المنزل معًا"
  },
  "eid_s3_b": {
   "en": "<p>Make a simple voucher for a trip of their choice: the beach, a park, a museum or their favourite breakfast spot. Time together is the gift.</p>",
@@ -92,7 +92,7 @@
  },
  "eid_s4_h": {
   "en": "5. A Ramadan lantern for their room",
-  "ar": "5. فانوس رمضان لغرفتهم"
+  "ar": "5- فانوس رمضان لغرفتهم"
  },
  "eid_s4_b": {
   "en": "<p>A small lantern or string of lights becomes a yearly ritual they look forward to unpacking.</p>",
@@ -100,7 +100,7 @@
  },
  "eid_s5_h": {
   "en": "6. A craft kit to make Eid decorations",
-  "ar": "6. أدوات فنية لصنع زينة العيد"
+  "ar": "6- أدوات فنية لصنع زينة العيد"
  },
  "eid_s5_b": {
   "en": "<p>Paper, stickers and glue go a long way. They get to decorate the house and feel part of the preparations.</p>",
@@ -108,7 +108,7 @@
  },
  "eid_s6_h": {
   "en": "7. A savings jar for their Eidiya",
-  "ar": "7. حصالة لعيديتهم"
+  "ar": "7- حصالة لعيديتهم"
  },
  "eid_s6_b": {
   "en": "<p>A clear jar with three labels, spend, save and share, turns Eidiya into a first lesson in money.</p>",
@@ -116,7 +116,7 @@
  },
  "eid_s7_h": {
   "en": "8. A child-sized prayer mat",
-  "ar": "8. سجادة صلاة بمقاس الطفل"
+  "ar": "8- سجادة صلاة بمقاس الطفل"
  },
  "eid_s7_b": {
   "en": "<p>Something of their own to join the family, chosen in a colour or pattern they love.</p>",
@@ -124,7 +124,7 @@
  },
  "eid_s8_h": {
   "en": "9. A photo book of last Eid",
-  "ar": "9. ألبوم صور من العيد الماضي"
+  "ar": "9- ألبوم صور من العيد الماضي"
  },
  "eid_s8_b": {
   "en": "<p>Print the photos sitting on your phone. Children love seeing how much they have grown in a year.</p>",
@@ -132,7 +132,7 @@
  },
  "eid_s9_h": {
   "en": "10. A letter from grandparents",
-  "ar": "10. رسالة من الأجداد"
+  "ar": "10- رسالة من الأجداد"
  },
  "eid_s9_b": {
   "en": "<p>Ask grandparents to write down a memory from their own childhood Eid. It becomes a family keepsake.</p>",
@@ -288,7 +288,7 @@
  },
  "school_s0_h": {
   "en": "1. Visit before the first day",
-  "ar": "1. زوروا المدرسة قبل اليوم الأول"
+  "ar": "1- زوروا المدرسة قبل اليوم الأول"
  },
  "school_s0_b": {
   "en": "<p>Walk or drive past the school, look at the gate and the playground, and talk about what happens inside.</p>",
@@ -296,7 +296,7 @@
  },
  "school_s1_h": {
   "en": "2. Practise the morning routine",
-  "ar": "2. تدرّبوا على روتين الصباح"
+  "ar": "2- تدرّبوا على روتين الصباح"
  },
  "school_s1_b": {
   "en": "<p>A few practice mornings, waking up, getting dressed and having breakfast on time, make the real day feel familiar.</p>",
@@ -304,7 +304,7 @@
  },
  "school_s2_h": {
   "en": "3. Read stories about courage",
-  "ar": "3. اقرأوا قصصًا عن الشجاعة"
+  "ar": "3- اقرأوا قصصًا عن الشجاعة"
  },
  "school_s2_b": {
   "en": "<p>Stories about trying something new help children name their feelings. When the hero shares their name and face, the message lands even closer to home. <a href=\"gift-first-day-of-school.html\">See stories for new beginnings</a>.</p>",
@@ -312,7 +312,7 @@
  },
  "school_s3_h": {
   "en": "4. Create a goodbye ritual",
-  "ar": "4. اصنعوا عادة للوداع"
+  "ar": "4- اصنعوا عادة للوداع"
  },
  "school_s3_b": {
   "en": "<p>A special hug, a high five or a secret word. The same goodbye every day gives a predictable, comforting moment.</p>",
@@ -320,7 +320,7 @@
  },
  "school_s4_h": {
   "en": "5. Keep goodbyes short and warm",
-  "ar": "5. اجعلوا الوداع قصيرًا ودافئًا"
+  "ar": "5- اجعلوا الوداع قصيرًا ودافئًا"
  },
  "school_s4_b": {
   "en": "<p>Lingering can make it harder. Say goodbye with a smile, tell them when you will be back, and go.</p>",
@@ -328,7 +328,7 @@
  },
  "school_s5_h": {
   "en": "6. Pack a small comfort",
-  "ar": "6. ضعوا شيئًا مطمئنًا في الحقيبة"
+  "ar": "6- ضعوا شيئًا مطمئنًا في الحقيبة"
  },
  "school_s5_b": {
   "en": "<p>A family photo or a little note in their bag can be a quiet reminder that home is close.</p>",
@@ -336,7 +336,7 @@
  },
  "school_s6_h": {
   "en": "7. Ask specific questions after school",
-  "ar": "7. اسألوا أسئلة محددة بعد المدرسة"
+  "ar": "7- اسألوا أسئلة محددة بعد المدرسة"
  },
  "school_s6_b": {
   "en": "<p>Instead of \"How was school?\", try \"What made you laugh today?\" or \"Who did you sit next to at snack time?\"</p>",
@@ -344,7 +344,7 @@
  },
  "school_s7_h": {
   "en": "8. Celebrate the first week",
-  "ar": "8. احتفلوا بالأسبوع الأول"
+  "ar": "8- احتفلوا بالأسبوع الأول"
  },
  "school_s7_b": {
   "en": "<p>A small celebration at the end of the first week shows them how brave they have been.</p>",
@@ -364,7 +364,7 @@
  },
  "xmas_s0_h": {
   "en": "1. A Christmas story starring them",
-  "ar": "1. قصة كريسماس يكون الطفل بطلها"
+  "ar": "1- قصة كريسماس يكون الطفل بطلها"
  },
  "xmas_s0_b": {
   "en": "<p>A personalised book where they save Christmas, or find the missing star, becomes the story they ask for every night of the holidays. <a href=\"gift-christmas.html\">See our Christmas stories</a>.</p>",
@@ -372,7 +372,7 @@
  },
  "xmas_s1_h": {
   "en": "2. A Christmas Eve box",
-  "ar": "2. صندوق ليلة الكريسماس"
+  "ar": "2- صندوق ليلة الكريسماس"
  },
  "xmas_s1_b": {
   "en": "<p>Pyjamas, a hot chocolate sachet and a new book to open the night before. It quickly becomes a tradition.</p>",
@@ -380,7 +380,7 @@
  },
  "xmas_s2_h": {
   "en": "3. A personalised ornament",
-  "ar": "3. زينة شجرة باسمه"
+  "ar": "3- زينة شجرة باسمه"
  },
  "xmas_s2_b": {
   "en": "<p>One ornament with their name and the year, added every Christmas, tells the story of their childhood on the tree.</p>",
@@ -388,7 +388,7 @@
  },
  "xmas_s3_h": {
   "en": "4. A letter from Father Christmas",
-  "ar": "4. رسالة من بابا نويل"
+  "ar": "4- رسالة من بابا نويل"
  },
  "xmas_s3_b": {
   "en": "<p>Handwritten, mentioning something they did this year. Keep it with their Christmas things.</p>",
@@ -396,7 +396,7 @@
  },
  "xmas_s4_h": {
   "en": "5. A baking set for Christmas cookies",
-  "ar": "5. أدوات خَبز لبسكويت الكريسماس"
+  "ar": "5- أدوات خَبز لبسكويت الكريسماس"
  },
  "xmas_s4_b": {
   "en": "<p>Cutters, sprinkles and an apron. The baking is the present, and the cookies are a bonus.</p>",
@@ -404,7 +404,7 @@
  },
  "xmas_s5_h": {
   "en": "6. Tickets for a winter outing",
-  "ar": "6. تذاكر لنزهة شتوية"
+  "ar": "6- تذاكر لنزهة شتوية"
  },
  "xmas_s5_b": {
   "en": "<p>A festive market, an ice rink or a holiday show. Wrap the tickets in a small box to keep the surprise.</p>",
@@ -412,7 +412,7 @@
  },
  "xmas_s6_h": {
   "en": "7. A craft kit for decorations",
-  "ar": "7. أدوات فنية لصنع الزينة"
+  "ar": "7- أدوات فنية لصنع الزينة"
  },
  "xmas_s6_b": {
   "en": "<p>Let them make paper stars and snowflakes for the house. Children love seeing their work on display.</p>",
@@ -420,7 +420,7 @@
  },
  "xmas_s7_h": {
   "en": "8. A cosy reading corner",
-  "ar": "8. ركن قراءة دافئ"
+  "ar": "8- ركن قراءة دافئ"
  },
  "xmas_s7_b": {
   "en": "<p>A cushion, a small lamp and a basket of books. It turns the holidays into reading time.</p>",
@@ -428,7 +428,7 @@
  },
  "xmas_s8_h": {
   "en": "9. A family board game",
-  "ar": "9. لعبة طاولة عائلية"
+  "ar": "9- لعبة طاولة عائلية"
  },
  "xmas_s8_b": {
   "en": "<p>Something simple enough for the youngest to play, so the whole family joins in.</p>",
@@ -436,7 +436,7 @@
  },
  "xmas_s9_h": {
   "en": "10. A gift they give",
-  "ar": "10. هدية يقدّمها الطفل"
+  "ar": "10- هدية يقدّمها الطفل"
  },
  "xmas_s9_b": {
   "en": "<p>Help them choose or make a present for someone else. Giving is part of the magic too.</p>",

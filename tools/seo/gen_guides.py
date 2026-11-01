@@ -132,5 +132,5 @@ js = '/* Gift guides (SEO phase 3, Nov 2026): EN + AR copy. Generated with the p
 open(ROOT + '/guides-i18n.js', 'w', encoding='utf-8').write(js)
 json.dump(seo, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'guide_seo.json'), 'w'), ensure_ascii=False, indent=1)
 # Arabic sanity: no full stops in Arabic strings
-bad = [n for n, v in T.items() if '.' in __import__('re').sub(r'<[^>]+>|\d\.|href="[^"]*"', '', v['ar'])]
+bad = [n for n, v in T.items() if '.' in __import__('re').sub(r'<[^>]+>|\d\.\d|href="[^"]*"', '', v['ar'])]
 print('ok', len(GUIDES), 'arabic-with-dots:', bad)

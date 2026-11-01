@@ -45,6 +45,7 @@
     s2_t: { en: 'Make it theirs', ar: 'اجعلها لهم' },
     s2_d: { en: 'Add your child\'s name, age and a photo, so we can place them inside the story.', ar: 'أضف اسم طفلك وعمره وصورته، لنضعه داخل القصة' },
     f_name: { en: 'Child\'s first name', ar: 'اسم الطفل' },
+    f_name_sample: { en: 'Adam', ar: 'آدم' },
     f_age: { en: 'Age', ar: 'العمر' },
     f_photo: { en: 'Photo', ar: 'الصورة' },
     f_photo_ok: { en: 'Photo added', ar: 'تمت إضافة الصورة' },
@@ -160,7 +161,7 @@
   T.home6.pkg_sub = { en: "Every Hikaya book comes beautifully presented in our signature gift packaging.", ar: "كل كتاب من حكاية يصل بتغليف الهدايا المميز الخاص بنا" };
   T.home6.pkg_direct = { en: "Giving it to someone else? We can deliver it straight to them.", ar: "تهديه لشخص آخر؟ يمكننا توصيله إليه مباشرة" };
   T.home6.pkg_alt = { en: "The Hikaya gift box tied with a caramel satin ribbon and a Hikaya tag", ar: "علبة هدايا حكاية مربوطة بشريط ساتان وبطاقة حكاية" };
-  T.home6.rev_title = { en: "Real stories. Real reactions.", ar: "قصص حقيقية. ردود فعل حقيقية" };
+  T.home6.rev_title = { en: "Real stories. Real reactions.", ar: "قصص حقيقية، ردود فعل حقيقية" };
   T.home6.r1_who = { en: "Amira's mum", ar: "والدة أميرة" };
   T.home6.r1_city = { en: "Dubai", ar: "دبي" };
   T.home6.r2_who = { en: "Omar's dad", ar: "والد عمر" };
