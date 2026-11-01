@@ -134,6 +134,7 @@
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { maybeSendWelcome } from './welcome.js';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { mountFacebookSignIn } from './facebook-auth.js';
 
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
   const supabase = createClient(
@@ -194,6 +195,12 @@
   mountGoogleSignIn(supabase, document.getElementById('google-btn'), {
     redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo),
     onSignedIn: () => { window.location.href = safeReturnTo; },
+    onError: (msg) => { statusEl.className = 'status error'; statusEl.textContent = msg; }
+  });
+
+  mountFacebookSignIn(supabase, document.getElementById('google-btn'), {
+    redirectTo: window.location.origin + window.location.pathname.replace('login.html', safeReturnTo),
+    style: 'height:40px;padding:0 12px;border-radius:999px;max-width:400px;margin:0 auto 12px;',
     onError: (msg) => { statusEl.className = 'status error'; statusEl.textContent = msg; }
   });
 

@@ -481,6 +481,7 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   import { mountGoogleSignIn } from './google-auth.js';
+  import { mountFacebookSignIn } from './facebook-auth.js';
   import { maybeSendWelcome } from './welcome.js';
 
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -630,6 +631,12 @@
     redirectTo: window.location.href,
     size: 'medium',
     onSignedIn: () => refreshAuthUI(),
+    onError: (msg) => alert(msg)
+  });
+  mountFacebookSignIn(supabase, document.getElementById('google-signin'), {
+    redirectTo: window.location.href,
+    className: 'btn-secondary',
+    style: 'padding:9px 16px;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;gap:8px;',
     onError: (msg) => alert(msg)
   });
   document.getElementById('guest-continue').addEventListener('click', () => {
