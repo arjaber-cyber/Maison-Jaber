@@ -104,6 +104,7 @@ const PROMO_MESSAGES = {
   used_up: 'That code has already been used.',
   used_by_you: "You've already used this code.",
   not_first_order: 'This code is for your first Hikaya order only.',
+  wrong_area: 'This code is for deliveries in Dubai South only.',
   min_order: 'Your order is below the minimum for this code.',
   unavailable: "We couldn't check that code right now. Please try again.",
   need_account: 'Discount codes are for Hikaya members. Sign in or create a free account to use this code.',
