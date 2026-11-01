@@ -21,7 +21,9 @@
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+<!-- Fonts load without blocking the first paint. -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" /></noscript>
 <link rel="stylesheet" href="hikaya.css" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which ages are the books for?", "acceptedAnswer": {"@type": "Answer", "text": "Our stories are written for ages 2–4, 4–6 and 6–8. Pick one for the child's age band and it will feel made for them, because it is."}}, {"@type": "Question", "name": "How early should I order?", "acceptedAnswer": {"@type": "Answer", "text": "Each book is made to order. Delivery takes about 5 working days in the UAE and Saudi Arabia and about 7 in the rest of the GCC, so order at least a week before the day."}}, {"@type": "Question", "name": "Can you deliver to the child directly?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Enter the child's address at checkout and the book arrives gift-boxed. Delivery is free across the UAE."}}, {"@type": "Question", "name": "Can I order the book in Arabic?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left, and the child's name and message are written in the book's language."}}, {"@type": "Question", "name": "Can I order for more than one child?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, each child gets their own personalised book. Two books save 10% and three or more save 15%, with free delivery."}}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Hikaya", "item": "https://maison-jaber.com/hikaya/"}, {"@type": "ListItem", "position": 2, "name": "Gifts", "item": "https://maison-jaber.com/hikaya/gifts.html"}, {"@type": "ListItem", "position": 3, "name": "Personalised birthday gifts for kids", "item": "https://maison-jaber.com/hikaya/gift-birthday.html"}]}</script>
@@ -31,7 +33,7 @@
 <main id="main" tabindex="-1">
 
 <section class="page-hero" aria-labelledby="gift-title">
-  <div class="hero-media"><img src="images/gft-bookshelf-scene.webp" srcset="images/gft-bookshelf-scene-900.webp 900w, images/gft-bookshelf-scene.webp 1536w" sizes="100vw" width="1536" height="1024" fetchpriority="high" alt="" /></div>
+  <div class="hero-media"><img src="images/gft-bookshelf-scene.webp" srcset="images/gft-bookshelf-scene-900.webp 900w, images/gft-bookshelf-scene.webp 1060w" sizes="100vw" width="1060" height="1024" fetchpriority="high" alt="" /></div>
   <div class="wrap"><div class="hero-copy">
     <nav class="crumbs" aria-label="Breadcrumb" data-i18n-aria="a11y.breadcrumb"><ol><li><a href="index.html" data-i18n="gft.crumb_home">Home</a></li><li><a href="gifts.html" data-i18n="gft.crumb">Gifts</a></li><li aria-current="page" data-i18n="gft.o_birthday">Birthday</li></ol></nav>
     <h1 id="gift-title" data-i18n="gft.birthday_h1">Personalised birthday gifts for kids</h1>
@@ -56,7 +58,7 @@
 </section>
 <section class="sec wrap" aria-labelledby="more-h">
   <div class="sec-head"><h2 id="more-h" class="small" data-i18n="gft.more">More gift ideas</h2></div>
-  <nav class="gift-links" aria-labelledby="more-h"><a class="pill" href="gifts.html" data-i18n="gft.crumb">Gifts</a><a class="pill" href="gift-eid-ramadan.html" data-i18n="gft.o_eid">Eid &amp; Ramadan</a><a class="pill" href="gift-christmas.html" data-i18n="gft.o_christmas">Christmas</a><a class="pill" href="gift-new-sibling.html" data-i18n="gft.o_newbaby">New sibling</a><a class="pill" href="gift-first-day-of-school.html" data-i18n="gft.o_school">First day of school</a></nav>
+  <nav class="gift-links" aria-labelledby="more-h"><a class="pill" href="gifts.html" data-i18n="gft.crumb">Gifts</a><a class="pill" href="gift-eid-ramadan.html" data-i18n="gft.o_eid">Eid &amp; Ramadan</a><a class="pill" href="gift-christmas.html" data-i18n="gft.o_christmas">Christmas</a><a class="pill" href="gift-new-sibling.html" data-i18n="gft.o_newbaby">New sibling</a><a class="pill" href="gift-first-day-of-school.html" data-i18n="gft.o_school">First day of school</a><a class="pill" href="guide-birthday-gift-ideas.html" data-i18n="gdg.birthday_title">Birthday gift ideas for kids who have everything</a></nav>
 </section>
 <section class="final section-gap" aria-labelledby="final-title" style="padding-top:var(--sec)">
   <div class="wrap"><div class="band">
@@ -71,6 +73,7 @@
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
 <script src="/gifts-i18n.js" defer></script>
+<script src="/guides-i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>

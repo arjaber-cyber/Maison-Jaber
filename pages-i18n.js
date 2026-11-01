@@ -335,6 +335,11 @@
     gift_christmas: { en: "Personalised Christmas Gifts for Kids UAE | Hikaya", ar: "هدايا الكريسماس المخصصة للأطفال | حكاية" },
     gift_new_sibling: { en: "New Sibling Gift: Personalised Big Brother & Sister Book | Hikaya", ar: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية" },
     gift_first_day_of_school: { en: "First Day of School Gift: Personalised Storybook | Hikaya", ar: "هدية أول يوم مدرسة | قصة مخصصة باسم طفلك | حكاية" },
+    guide_eid_gift_ideas: { en: "Eid gift ideas for kids: 10 thoughtful presents they'll remember | Hikaya", ar: "أفكار هدايا العيد للأطفال: 10 هدايا مميزة لا تُنسى | حكاية" },
+    guide_birthday_gift_ideas: { en: "Birthday gift ideas for kids who have everything | Hikaya", ar: "أفكار هدايا عيد ميلاد لطفل لديه كل شيء | حكاية" },
+    guide_new_sibling: { en: "Preparing your child for a new baby: a gentle guide for parents | Hikaya", ar: "تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل | حكاية" },
+    guide_first_day_of_school: { en: "First day of school: 8 ways to help your child feel brave | Hikaya", ar: "أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة | حكاية" },
+    guides: { en: "Gift Guides & Tips for Parents | Hikaya by Maison Jaber", ar: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر" },
     '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
   };
   T.trk = {

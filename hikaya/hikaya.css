@@ -1285,3 +1285,30 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
 .gift-faq .faq-a p { padding: 0 18px 16px; margin: 0; line-height: 1.65; }
 .gift-links { display: flex; flex-wrap: wrap; gap: 10px; }
 @media (max-width: 767px) { .gift-points { grid-template-columns: 1fr; } }
+
+/* ---------- Gift guides (guides.html, guide-*.html), Nov 2026 ---------- */
+.guide-hero { max-width: 1100px; margin: 0 auto; }
+.guide-hero img { width: 100%; height: clamp(220px, 34vw, 420px); object-fit: cover; display: block; -webkit-mask-image: linear-gradient(to top, transparent 0, #000 30%); mask-image: linear-gradient(to top, transparent 0, #000 30%); }
+.guide-wrap { max-width: 760px; margin: -30px auto 0; padding-inline: var(--gutter, 16px); position: relative; }
+.guide-wrap h1 { font-size: clamp(2rem, 3.4vw, 2.9rem); margin: 8px 0 8px; }
+.guide-meta { font-size: 13px; color: var(--ink-soft); margin-bottom: 14px; }
+.guide-body section { margin-top: 28px; }
+.guide-body h2 { font-size: 1.45rem; margin-bottom: 8px; }
+.guide-body p, .guide-body li { font-size: 1.02rem; line-height: 1.75; color: var(--ink); }
+.guide-body ul { padding-inline-start: 20px; margin: 0; }
+.guide-body li { margin-bottom: 8px; }
+.guide-body a, .guide-more a { color: var(--brand); }
+.guide-cta { margin: 40px 0 10px; background: var(--white, #fff); border: 1px solid rgba(216,197,179,.6); border-radius: 16px; padding: 24px 22px; }
+.guide-cta h2 { font-size: 1.5rem; margin-bottom: 6px; }
+.guide-cta p { color: var(--ink-soft); line-height: 1.6; }
+.guide-cta-btns { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 16px; }
+.guide-more { margin: 30px 0 60px; }
+.guide-more h2 { font-size: 1.3rem; margin-bottom: 10px; }
+.guide-more ul { padding-inline-start: 20px; line-height: 1.9; }
+.guide-grid { list-style: none; margin: 0 0 70px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.guide-card a { display: block; text-decoration: none; color: inherit; background: var(--white, #fff); border: 1px solid rgba(216,197,179,.6); border-radius: 16px; overflow: hidden; height: 100%; }
+.guide-card .img img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+.guide-card .txt { padding: 18px 20px 22px; }
+.guide-card h2 { font-size: 1.35rem; margin-bottom: 8px; }
+.guide-card p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 12px; }
+@media (max-width: 767px) { .guide-grid { grid-template-columns: 1fr; } }

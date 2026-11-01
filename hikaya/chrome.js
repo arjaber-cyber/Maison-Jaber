@@ -93,6 +93,7 @@
       <li><a href="stories.html" data-i18n="home6.nav_stories">Stories</a></li>
       <li><a href="age-groups.html" data-i18n="home6.nav_ages">Age Groups</a></li>
       <li><a href="gifts.html" data-i18n="home6.nav_gifts">Gifts</a></li>
+      <li><a href="guides.html" data-i18n="home6.nav_guides">Gift guides</a></li>
       <li><a href="search.html" data-i18n="home6.foot_search">Search</a></li>
     </ul></div>
     <div><h2 data-i18n="home6.foot_help">Help</h2><ul>

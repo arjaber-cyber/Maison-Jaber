@@ -121,6 +121,27 @@ export const PAGES = {
     en: { title: "First Day of School Gift: Personalised Storybook | Hikaya", desc: "Help them feel brave for a big first day: a personalised storybook about courage and new beginnings, with your child as the hero. Delivered across the UAE and GCC." },
     ar: { title: "هدية أول يوم مدرسة | قصة مخصصة باسم طفلك | حكاية", desc: "ساعده على الشعور بالشجاعة في يومه الأول: كتاب قصة مخصص عن الشجاعة والبدايات الجديدة يكون طفلك بطله، مع التوصيل في الإمارات ودول الخليج" },
   },
+  // Gift guides (phase 3, Nov 2026)
+  "guide-eid-gift-ideas.html": {
+    en: { title: "Eid gift ideas for kids: 10 thoughtful presents they'll remember | Hikaya", desc: "Beyond cash and toys: 10 Eid gift ideas for children, from a personalised storybook to a handwritten Eidiya note, plus tips on ordering in time." },
+    ar: { title: "أفكار هدايا العيد للأطفال: 10 هدايا مميزة لا تُنسى | حكاية", desc: "أكثر من المال والألعاب: 10 أفكار لهدايا العيد للأطفال، من قصة مخصصة باسم الطفل إلى رسالة عيدية بخط اليد، مع نصائح للطلب في الوقت المناسب" },
+  },
+  "guide-birthday-gift-ideas.html": {
+    en: { title: "Birthday gift ideas for kids who have everything | Hikaya", desc: "Out of toy ideas? Thoughtful birthday gifts for children aged 2 to 8, from keepsakes and experiences to a personalised storybook, with tips by age." },
+    ar: { title: "أفكار هدايا عيد ميلاد لطفل لديه كل شيء | حكاية", desc: "نفدت أفكار الألعاب؟ هدايا عيد ميلاد مميزة للأطفال من 2 إلى 8 سنوات، من التذكارات والتجارب إلى قصة مخصصة باسم الطفل، مع نصائح حسب العمر" },
+  },
+  "guide-new-sibling.html": {
+    en: { title: "Preparing your child for a new baby: a gentle guide for parents | Hikaya", desc: "Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that make them feel special." },
+    ar: { title: "تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل | حكاية", desc: "طرق بسيطة وعملية لمساعدة الطفل الأكبر على استقبال أخ أو أخت جديدة: ماذا تقول، وكيف تساعد القصص، وعادات صغيرة تشعره بأنه مميز" },
+  },
+  "guide-first-day-of-school.html": {
+    en: { title: "First day of school: 8 ways to help your child feel brave | Hikaya", desc: "Starting nursery or school? Eight gentle, practical ways to help your child feel ready and brave for their first day, from practice runs to stories about courage." },
+    ar: { title: "أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة | حكاية", desc: "هل يبدأ طفلك الحضانة أو المدرسة؟ ثماني طرق لطيفة وعملية لمساعدته على الاستعداد والشجاعة في يومه الأول، من التجربة المسبقة إلى قصص الشجاعة" },
+  },
+  "guides.html": {
+    en: { title: "Gift Guides & Tips for Parents | Hikaya by Maison Jaber", desc: "Gift ideas for birthdays and Eid, plus gentle tips for big childhood moments like a new sibling or the first day of school, from Hikaya by Maison Jaber." },
+    ar: { title: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر", desc: "أفكار هدايا لأعياد الميلاد والعيد، ونصائح لطيفة للحظات الطفولة الكبيرة مثل قدوم مولود جديد أو أول يوم في المدرسة، من حكاية من ميزون جابر" },
+  },
 };
 
 const AGE_BANDS = ["2-4", "4-6", "6-8"];
@@ -311,5 +332,10 @@ export const config = {
     "/hikaya/gift-christmas.html",
     "/hikaya/gift-new-sibling.html",
     "/hikaya/gift-first-day-of-school.html",
+    "/hikaya/guide-eid-gift-ideas.html",
+    "/hikaya/guide-birthday-gift-ideas.html",
+    "/hikaya/guide-new-sibling.html",
+    "/hikaya/guide-first-day-of-school.html",
+    "/hikaya/guides.html",
   ],
 };
