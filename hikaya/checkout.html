@@ -777,7 +777,7 @@
     renderPaymentSection();
   }
   promoBtn.addEventListener('click', () => { const code = promoInput.value.trim(); if (code) checkCode(code); });
-  // Arriving from the cart's "Apply at checkout" (checkout.html?code=NEW20): fill in and check the code.
+  // Arriving from the cart's "Apply at checkout" (checkout.html?code=FIRSTSTORY): fill in and check the code.
   try {
     const urlCode = new URLSearchParams(location.search).get('code');
     if (urlCode && /^[A-Za-z0-9_-]{2,40}$/.test(urlCode) && !sessionStorage.getItem('hk_pending_code')) {

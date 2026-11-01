@@ -546,7 +546,7 @@
        data-hk-welcome="line" quiet line under the home hero
        data-hk-welcome="card" price card on story pages
        data-hk-welcome="cart" one-tap card in the cart summary */
-  const WELCOME = { on: true, code: 'FIRSTSTORY', aed: 20 }; // NEW20 (same rules) also still works
+  const WELCOME = { on: true, code: 'FIRSTSTORY', aed: 20 };
   const WTXT = {
     en: {
       bar: 'Welcome gift: {amt} off your first story with code {code}', barShort: '{amt} off your first story · {code}', copy: 'Copy', copied: 'Copied',
