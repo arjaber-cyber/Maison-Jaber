@@ -777,6 +777,14 @@
     renderPaymentSection();
   }
   promoBtn.addEventListener('click', () => { const code = promoInput.value.trim(); if (code) checkCode(code); });
+  // Arriving from the cart's "Apply at checkout" (checkout.html?code=NEW20): fill in and check the code.
+  try {
+    const urlCode = new URLSearchParams(location.search).get('code');
+    if (urlCode && /^[A-Za-z0-9_-]{2,40}$/.test(urlCode) && !sessionStorage.getItem('hk_pending_code')) {
+      promoInput.value = urlCode.toUpperCase();
+      checkCode(urlCode);
+    }
+  } catch {}
   // Back from signing in to use a code: put the code back and check it again.
   try {
     const pending = sessionStorage.getItem('hk_pending_code');
@@ -805,7 +813,7 @@
       else if (p.type === 'free_shipping') { d = 0; label = t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase(); }
       else if (p.type === 'percent') { b = fullBooks * (1 - Math.min(100, p.value) / 100); label = `-${p.value}%`; }
       else if (p.type === 'fixed') {
-        const local = window.hikayaConvertFromAed ? window.hikayaConvertFromAed(p.value, region) : p.value;
+        const local = window.hikayaCodeAmount ? window.hikayaCodeAmount(p.value, region) : p.value;
         b = Math.max(0, fullBooks - local);
         label = '-' + (window.hikayaFormatPrice ? window.hikayaFormatPrice(Math.round(local * 100) / 100, region) : local);
       }

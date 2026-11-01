@@ -34,6 +34,7 @@
     const li = nav.map(([h, k, fb]) => `<li><a href="${h}"${here === h ? ' aria-current="page"' : ''} data-i18n="home6.${k}">${fb}</a></li>`).join('');
     return `
 <a class="skip" href="#main" data-i18n="home6.skip">Skip to content</a>
+<div class="hk-welcome-bar" data-hk-welcome="bar" role="region" aria-label="Welcome offer" hidden></div>
 <div class="utility" role="region" aria-label="Delivery and region" data-i18n-aria="a11y.utility"><div class="wrap">
   <p class="msg">${ICON.truck}<span id="delivery-msg"><span class="dl-full">Free delivery across the UAE</span><span class="dl-short">Free UAE delivery</span></span></p>
   <div class="controls">
@@ -536,13 +537,85 @@
     const og = document.querySelector('meta[property="og:url"]'); if (og) og.content = url;
   }
 
+  /* ---------------- Welcome code (FIRSTSTORY) ----------------
+     One place for the first-order code shown around the site. Amounts follow the
+     shopper's country (AED 20, SAR 20, QAR 20, KWD 1.75, BHD 2, OMR 2 via
+     hikayaCodeAmount in region.js, the same rule the payment server uses).
+     Turn the whole promo off with WELCOME.on = false. Placements:
+       data-hk-welcome="bar"  slim strip above the utility bar (every page except checkout)
+       data-hk-welcome="line" quiet line under the home hero
+       data-hk-welcome="card" price card on story pages
+       data-hk-welcome="cart" one-tap card in the cart summary */
+  const WELCOME = { on: true, code: 'FIRSTSTORY', aed: 20 }; // NEW20 (same rules) also still works
+  const WTXT = {
+    en: {
+      bar: 'Welcome gift: {amt} off your first story with code {code}', barShort: '{amt} off your first story · {code}', copy: 'Copy', copied: 'Copied',
+      line: 'First order? Use {code} for {amt} off',
+      card1: 'First story? Pay {price}', card2: 'with code {code} at checkout',
+      cart1: 'First order gift', cart2: '{code} · {amt} off', cartBtn: 'Apply at checkout',
+      aria: 'Welcome offer',
+    },
+    ar: {
+      bar: 'هدية ترحيب: خصم {amt} على أول قصة مع الكود {code}', barShort: 'خصم {amt} على أول قصة · {code}', copy: 'نسخ', copied: 'تم النسخ',
+      line: 'أول طلب؟ استخدم {code} لخصم {amt}',
+      card1: 'أول قصة؟ ادفع {price}', card2: 'مع الكود {code} عند الدفع',
+      cart1: 'هدية أول طلب', cart2: '{code} · خصم {amt}', cartBtn: 'تطبيق عند الدفع',
+      aria: 'عرض الترحيب',
+    },
+  };
+  const SPARK = '<span class="hk-w-spark" aria-hidden="true">✦</span>';
+  function welcomeFill(s, r) {
+    const amt = window.hikayaCodeAmount ? window.hikayaCodeAmount(WELCOME.aed, r) : WELCOME.aed;
+    const price = Math.max(0, (r ? r.bookNow : 169) - amt);
+    return esc(s)
+      .replace('{code}', `<bdi class="hk-w-code" dir="ltr">${esc(WELCOME.code)}</bdi>`)
+      .replace('{amt}', `<bdi dir="ltr">${esc(fmt(amt, r))}</bdi>`)
+      .replace('{price}', `<bdi dir="ltr">${esc(fmt(price, r))}</bdi>`);
+  }
+  function copyBtn(w, cls) {
+    return `<button type="button" class="${cls}" data-hk-copy="${esc(WELCOME.code)}" data-copied="${esc(w.copied)}" data-label="${esc(w.copy)}">${esc(w.copy)}</button>`;
+  }
+  function renderWelcome() {
+    const els = document.querySelectorAll('[data-hk-welcome]');
+    if (!els.length) return;
+    const w = WTXT[lang() === 'ar' ? 'ar' : 'en'];
+    const r = regionObj(regionKey());
+    els.forEach(el => {
+      const kind = el.getAttribute('data-hk-welcome');
+      if (!WELCOME.on || (kind === 'bar' && PAGE === 'checkout')) { el.hidden = true; el.innerHTML = ''; return; }
+      el.hidden = false;
+      if (kind === 'bar') {
+        el.setAttribute('aria-label', w.aria);
+        el.innerHTML = `<div class="wrap">${SPARK}<span class="hk-w-full">${welcomeFill(w.bar, r)}</span><span class="hk-w-short">${welcomeFill(w.barShort, r)}</span>${copyBtn(w, 'hk-w-copy')}</div>`;
+      } else if (kind === 'line') {
+        el.innerHTML = `<span class="hk-w-rule" aria-hidden="true"></span><span>${welcomeFill(w.line, r)}</span><span class="hk-w-rule" aria-hidden="true"></span>`;
+      } else if (kind === 'card') {
+        el.innerHTML = `<div class="hk-w-text"><span class="hk-w-t1">${welcomeFill(w.card1, r)}</span><span class="hk-w-t2">${welcomeFill(w.card2, r)}</span></div>${copyBtn(w, 'hk-w-btn')}`;
+      } else if (kind === 'cart') {
+        el.innerHTML = `<div class="hk-w-text"><span class="hk-w-t1">${SPARK} ${esc(w.cart1)}</span><span class="hk-w-t2">${welcomeFill(w.cart2, r)}</span></div><a class="hk-w-btn hk-w-solid" href="checkout.html?code=${encodeURIComponent(WELCOME.code)}">${esc(w.cartBtn)}</a>`;
+      }
+    });
+  }
+  window.hikayaRenderWelcome = renderWelcome; // pages that draw their own HTML (cart) call this after rendering
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-hk-copy]'); if (!b) return;
+    const code = b.getAttribute('data-hk-copy');
+    const done = () => { b.textContent = b.dataset.copied; setTimeout(() => { b.textContent = b.dataset.label; }, 1800); };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(done, done);
+      else { const ta = document.createElement('textarea'); ta.value = code; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+    } catch (_) { done(); }
+  });
+  document.addEventListener('hikaya:regionchange', renderWelcome);
+  document.addEventListener('hikaya:langchange', renderWelcome);
+
   /* ---------------- Boot ---------------- */
   mount();
   function boot() {
     keepNamespace();
     if (PROD_BASE && window.MutationObserver) new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) { if (n.matches('a[href]')) keepNamespace(n.parentNode); else keepNamespace(n); } }))).observe(document.body, { childList: true, subtree: true });
     initRegion(); initLang(); initNav(); initSticky(); initCarousels();
-    renderLang(); renderRegion(); renderWhatsApp();
+    renderLang(); renderRegion(); renderWhatsApp(); renderWelcome();
     document.addEventListener('hikaya:langchange', renderWhatsApp);
     if (window.hikayaApplyRegion) window.hikayaApplyRegion();
     /* Arabic visitors: translations are now applied, so reveal the page (instead of waiting for the 2.5 s safety timeout). */

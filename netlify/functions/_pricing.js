@@ -44,6 +44,15 @@ const BUILT_IN_STORIES = ['The Bravest Little One', 'The Cloud Ship', "The Star 
 
 const round2 = n => Math.round(n * 100) / 100;
 
+// A fixed (AED) code in the order's currency: book-price ratio, rounded to a clean amount
+// (whole units for AED/SAR/QAR, 0.25 for KWD/BHD/OMR). AED 20 -> SAR 20, QAR 20, KWD 1.75, BHD 2, OMR 2.
+// KEEP IN SYNC with window.hikayaCodeAmount in region.js (what the shopper is shown).
+function codeAmountLocal(aed, region) {
+  const raw = Number(aed || 0) * (region.bookNow / REGIONS.UAE.bookNow);
+  const step = region.bookNow >= 50 ? 1 : 0.25;
+  return Math.round(raw / step) * step;
+}
+
 function tierFor(count) {
   let tier = BUNDLE_TIERS[0];
   for (const t of BUNDLE_TIERS) if (count >= t.minItems) tier = t;
@@ -188,7 +197,7 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
     if (promo.type === 'free_order') { b = 0; d = 0; x = 0; }
     else if (promo.type === 'free_shipping') d = 0;
     else if (promo.type === 'percent') b = fullBooks * (1 - Math.min(100, promo.value) / 100);
-    else if (promo.type === 'fixed') b = Math.max(0, fullBooks - promo.value / AED_PER_UNIT[region.currency]);
+    else if (promo.type === 'fixed') b = Math.max(0, fullBooks - codeAmountLocal(promo.value, region));
     const withBundle = booksTotal + deliveryFee + extra;
     const withCode = b + d + x;
     if (promo.type === 'free_order' || withCode < withBundle - 0.001) {

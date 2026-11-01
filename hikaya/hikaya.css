@@ -1332,3 +1332,36 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
 /* Server-rendered fallback links (replaced by the real footer once the page script runs). */
 .ssr-links ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; max-width: 1200px; margin: 30px auto; padding: 0 16px; font-size: 13px; }
 .ssr-links a { color: var(--ink-soft); }
+
+/* ---------------- Welcome code (first order) — chrome.js renderWelcome ---------------- */
+.hk-welcome-bar { background: var(--sand); color: var(--brand-dark); border-bottom: 1px solid var(--taupe); font-size: 13px; letter-spacing: .02em; position: relative; z-index: 61; }
+.hk-welcome-bar[hidden] { display: none; }
+.hk-welcome-bar .wrap { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 10px; min-height: 36px; padding-block: 5px; text-align: center; }
+.hk-w-spark { color: var(--gold); font-size: 12px; }
+.hk-w-short { display: none; }
+@media (max-width: 767px) { .hk-welcome-bar .hk-w-short { display: inline; } }
+.hk-w-code { font-weight: 700; letter-spacing: .14em; border-bottom: 1px solid var(--gold); padding-bottom: 1px; }
+.hk-w-copy { background: none; border: 0; color: var(--brand-dark); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px 6px; margin: -8px 0; }
+.hk-w-copy:hover { color: var(--ink); }
+.hk-welcome-line { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--ink-soft); margin: 10px 0 0; }
+.hk-welcome-line[hidden] { display: none; }
+.hk-welcome-line .hk-w-code { color: var(--ink); border-bottom: 0; }
+.hk-w-rule { flex: 0 0 24px; height: 1px; background: var(--taupe); }
+.hk-welcome-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--card); border: 1px solid var(--gold); border-radius: 12px; padding: 12px 14px 12px 16px; margin: 12px 0 4px; }
+.hk-welcome-card[hidden] { display: none; }
+.hk-w-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hk-w-t1 { font-size: 14.5px; color: var(--ink); font-weight: 600; }
+.hk-w-t2 { font-size: 12.5px; color: var(--ink-soft); }
+.hk-welcome-card .hk-w-code { border-bottom: 0; color: var(--ink); }
+.hk-w-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: var(--r-btn); border: 1px solid var(--brand-dark); background: transparent; color: var(--brand-dark); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; text-decoration: none; white-space: nowrap; }
+.hk-w-btn:hover { background: var(--brand-dark); color: var(--white); }
+.hk-w-btn.hk-w-solid { background: var(--brand-dark); color: var(--white); }
+.hk-w-btn.hk-w-solid:hover { background: var(--ink); }
+.hk-welcome-cart { margin: 14px 0; }
+@media (max-width: 767px) {
+  .hk-welcome-bar { font-size: 12px; }
+  .hk-welcome-bar .wrap { flex-wrap: nowrap; gap: 8px; min-height: 34px; }
+  .hk-welcome-bar .hk-w-full { display: none; }
+  .hk-welcome-bar .hk-w-spark { display: none; }
+  .hk-welcome-line { justify-content: center; font-size: 13px; }
+}
