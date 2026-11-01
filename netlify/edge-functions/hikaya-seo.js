@@ -214,7 +214,8 @@ const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g,
 const arNoStops = s => String(s || "").replace(/\.(\s|$)/g, "$1").replace(/\.$/, "").trim();
 const clip = (s, n) => { s = String(s || "").replace(/\s+/g, " ").trim(); return s.length <= n ? s : s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…"; };
 const localized = (v, l) => (!v ? "" : typeof v === "string" ? v : v[l] || v.en || "");
-const plainTitle = (t, l) => String(t || "").replace(/\[NAME\]\s*/g, l === "ar" ? "" : "").replace(/\s{2,}/g, " ").trim();
+// The child's name goes where [NAME] is in the real book; in Google it reads "Your Child to the Rescue!".
+const plainTitle = (t, l) => String(t || "").replace(/\[NAME\]/g, l === "ar" ? "طفلك" : "Your Child").replace(/\s{2,}/g, " ").trim();
 
 // All active stories, cached in memory for 5 minutes per edge instance, and never allowed to
 // hold a page up: if the database is slow (>1.5 s) the page is served without story details.
