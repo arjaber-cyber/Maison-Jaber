@@ -4,7 +4,8 @@
 // function, matched by its file name). It tells Bing, Yandex and the other
 // IndexNow search engines which Hikaya pages exist, so new stories and changes
 // are picked up within hours instead of weeks. Google does not use IndexNow; it
-// reads the live sitemap (https://maison-jaber.com/sitemap.xml) instead.
+// reads the live sitemap (https://maison-jaber.com/sitemap.xml), which is also submitted to Google
+// Search Console below when the Search Console connection allows it.
 //
 // The key file proving we own the domain is /87490158fb8074cc89ca8e6873011794.txt in the site root.
 
@@ -25,7 +26,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({ host: HOST, key: KEY, keyLocation: 'https://' + HOST + '/' + KEY + '.txt', urlList }),
     });
     console.log('IndexNow', r.status, urlList.length, 'urls');
-    return { statusCode: 200, body: 'indexnow ' + r.status };
+    // Google: submit the sitemap through Search Console (see _gsc.js for the one permission it needs).
+    const g = await require('./_gsc').submitSitemap('https://' + HOST + '/sitemap.xml').catch(e => ({ error: e.message }));
+    console.log('GSC sitemap', JSON.stringify(g));
+    return { statusCode: 200, body: 'indexnow ' + r.status + ' / gsc ' + (g.status || g.error || 'not configured') };
   } catch (err) {
     console.error('deploy-succeeded IndexNow error:', err);
     return { statusCode: 200, body: 'error' };

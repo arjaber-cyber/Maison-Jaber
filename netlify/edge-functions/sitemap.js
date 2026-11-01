@@ -31,6 +31,8 @@ const STATIC_PAGES = [
   ["guide-new-sibling.html", "0.7", "monthly"],
   ["guide-first-day-of-school.html", "0.7", "monthly"],
   ["guides.html", "0.7", "monthly"],
+  ["guide-christmas-gift-ideas.html", "0.7", "monthly"],
+  ["guide-gifts-from-grandparents.html", "0.7", "monthly"],
 ];
 
 const x = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

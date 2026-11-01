@@ -349,6 +349,166 @@
  "school_s7_b": {
   "en": "<p>A small celebration at the end of the first week shows them how brave they have been.</p>",
   "ar": "<p>احتفال صغير في نهاية الأسبوع الأول يُظهر لهم كم كانوا شجعانًا</p>"
+ },
+ "xmas_title": {
+  "en": "Christmas gift ideas for kids: 10 presents that feel magical",
+  "ar": "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة"
+ },
+ "xmas_intro": {
+  "en": "The best Christmas presents are the ones children still talk about in January. Here are ten ideas that bring a little magic without adding to the toy pile.",
+  "ar": "أجمل هدايا الكريسماس هي التي يظل الأطفال يتحدثون عنها في يناير، وهذه عشر أفكار تضيف شيئًا من السحر دون أن تزيد كومة الألعاب"
+ },
+ "xmas_desc": {
+  "en": "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order.",
+  "ar": "أفكار هدايا كريسماس مميزة للأطفال من 2 إلى 8 سنوات في الإمارات ودول الخليج، من قصة يكون الطفل بطلها إلى عادات عائلية جديدة، مع موعد الطلب المناسب"
+ },
+ "xmas_s0_h": {
+  "en": "1. A Christmas story starring them",
+  "ar": "1. قصة كريسماس يكون الطفل بطلها"
+ },
+ "xmas_s0_b": {
+  "en": "<p>A personalised book where they save Christmas, or find the missing star, becomes the story they ask for every night of the holidays. <a href=\"gift-christmas.html\">See our Christmas stories</a>.</p>",
+  "ar": "<p>كتاب مخصص ينقذ فيه الطفل الكريسماس أو يجد النجمة الضائعة يصبح القصة التي يطلبها كل ليلة في العطلة <a href=\"gift-christmas.html\">اكتشف قصص الكريسماس</a></p>"
+ },
+ "xmas_s1_h": {
+  "en": "2. A Christmas Eve box",
+  "ar": "2. صندوق ليلة الكريسماس"
+ },
+ "xmas_s1_b": {
+  "en": "<p>Pyjamas, a hot chocolate sachet and a new book to open the night before. It quickly becomes a tradition.</p>",
+  "ar": "<p>بيجاما جديدة وكيس شوكولاتة ساخنة وكتاب جديد يُفتح في الليلة السابقة، وسرعان ما يصبح عادة عائلية</p>"
+ },
+ "xmas_s2_h": {
+  "en": "3. A personalised ornament",
+  "ar": "3. زينة شجرة باسمه"
+ },
+ "xmas_s2_b": {
+  "en": "<p>One ornament with their name and the year, added every Christmas, tells the story of their childhood on the tree.</p>",
+  "ar": "<p>قطعة زينة باسمه والسنة تُضاف كل كريسماس، فتحكي الشجرة قصة طفولته</p>"
+ },
+ "xmas_s3_h": {
+  "en": "4. A letter from Father Christmas",
+  "ar": "4. رسالة من بابا نويل"
+ },
+ "xmas_s3_b": {
+  "en": "<p>Handwritten, mentioning something they did this year. Keep it with their Christmas things.</p>",
+  "ar": "<p>بخط اليد، يذكر فيها شيئًا فعله الطفل هذا العام، واحتفظ بها مع أغراض الكريسماس</p>"
+ },
+ "xmas_s4_h": {
+  "en": "5. A baking set for Christmas cookies",
+  "ar": "5. أدوات خَبز لبسكويت الكريسماس"
+ },
+ "xmas_s4_b": {
+  "en": "<p>Cutters, sprinkles and an apron. The baking is the present, and the cookies are a bonus.</p>",
+  "ar": "<p>قوالب وحبيبات ملونة ومريلة، فالخَبز نفسه هو الهدية والبسكويت مكافأة إضافية</p>"
+ },
+ "xmas_s5_h": {
+  "en": "6. Tickets for a winter outing",
+  "ar": "6. تذاكر لنزهة شتوية"
+ },
+ "xmas_s5_b": {
+  "en": "<p>A festive market, an ice rink or a holiday show. Wrap the tickets in a small box to keep the surprise.</p>",
+  "ar": "<p>سوق احتفالي أو حلبة تزلج أو عرض للعطلة، ضع التذاكر في علبة صغيرة لتبقى المفاجأة</p>"
+ },
+ "xmas_s6_h": {
+  "en": "7. A craft kit for decorations",
+  "ar": "7. أدوات فنية لصنع الزينة"
+ },
+ "xmas_s6_b": {
+  "en": "<p>Let them make paper stars and snowflakes for the house. Children love seeing their work on display.</p>",
+  "ar": "<p>دعهم يصنعون نجومًا وندفات ثلج ورقية للبيت، فالأطفال يحبون رؤية أعمالهم معروضة</p>"
+ },
+ "xmas_s7_h": {
+  "en": "8. A cosy reading corner",
+  "ar": "8. ركن قراءة دافئ"
+ },
+ "xmas_s7_b": {
+  "en": "<p>A cushion, a small lamp and a basket of books. It turns the holidays into reading time.</p>",
+  "ar": "<p>وسادة ومصباح صغير وسلة كتب، فتتحول العطلة إلى وقت للقراءة</p>"
+ },
+ "xmas_s8_h": {
+  "en": "9. A family board game",
+  "ar": "9. لعبة طاولة عائلية"
+ },
+ "xmas_s8_b": {
+  "en": "<p>Something simple enough for the youngest to play, so the whole family joins in.</p>",
+  "ar": "<p>لعبة بسيطة يستطيع الأصغر لعبها لتشارك العائلة كلها</p>"
+ },
+ "xmas_s9_h": {
+  "en": "10. A gift they give",
+  "ar": "10. هدية يقدّمها الطفل"
+ },
+ "xmas_s9_b": {
+  "en": "<p>Help them choose or make a present for someone else. Giving is part of the magic too.</p>",
+  "ar": "<p>ساعده على اختيار أو صنع هدية لشخص آخر، فالعطاء جزء من السحر أيضًا</p>"
+ },
+ "xmas_s10_h": {
+  "en": "When to order",
+  "ar": "متى تطلب"
+ },
+ "xmas_s10_b": {
+  "en": "<p>Personalised books are made to order. In the UAE and Saudi Arabia delivery takes about 5 working days, and about 7 elsewhere in the GCC, so ordering in the first half of December keeps things calm. Delivery is free across the UAE.</p>",
+  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من ديسمبر يريحك، والتوصيل مجاني داخل الإمارات</p>"
+ },
+ "grand_title": {
+  "en": "Gifts from grandparents: meaningful ideas grandchildren will treasure",
+  "ar": "هدايا من الأجداد: أفكار يعتز بها الأحفاد"
+ },
+ "grand_intro": {
+  "en": "Grandparents give the gifts children remember longest, because they come with stories, time and love. These ideas work whether you live around the corner or in another country.",
+  "ar": "يقدّم الأجداد الهدايا التي يتذكرها الأطفال أطول وقت، لأنها تأتي مع القصص والوقت والحب، وهذه الأفكار تناسبكم سواء كنتم تسكنون قريبًا أو في بلد آخر"
+ },
+ "grand_desc": {
+  "en": "Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away.",
+  "ar": "أفكار هدايا مميزة من الأجداد إلى الأحفاد، من الكتب التذكارية وقصص العائلة إلى التجارب المشتركة، مع نصائح للإهداء من بعيد"
+ },
+ "grand_s0_h": {
+  "en": "A book with a message from you",
+  "ar": "كتاب فيه رسالة منكم"
+ },
+ "grand_s0_b": {
+  "en": "<p>A personalised storybook where your grandchild is the hero, with your own words on the first page. Years later, that page is often the part they treasure most. In stories with a grandparent character, you can even add your own photo. <a href=\"gifts.html\">See gift ideas</a>.</p>",
+  "ar": "<p>كتاب قصة مخصص يكون حفيدكم بطله، مع كلماتكم في الصفحة الأولى، وبعد سنوات تصبح تلك الصفحة غالبًا أكثر ما يعتزون به، وفي القصص التي فيها شخصية الجد أو الجدة يمكنكم إضافة صورتكم أيضًا <a href=\"gifts.html\">اكتشف أفكار الهدايا</a></p>"
+ },
+ "grand_s1_h": {
+  "en": "Your family stories, written down",
+  "ar": "قصص العائلة مكتوبة"
+ },
+ "grand_s1_b": {
+  "en": "<p>A small notebook of stories from your childhood, or about their parent as a child. Children love hearing that their mum or dad was once small too.</p>",
+  "ar": "<p>دفتر صغير فيه قصص من طفولتكم أو عن والديه عندما كانا صغيرين، فالأطفال يحبون أن يعرفوا أن أمهم أو أباهم كانا صغارًا أيضًا</p>"
+ },
+ "grand_s2_h": {
+  "en": "A day just with you",
+  "ar": "يوم معكم وحدكم"
+ },
+ "grand_s2_b": {
+  "en": "<p>A trip to the park, the beach or your favourite café, just the two of you. Time alone with a grandparent feels special.</p>",
+  "ar": "<p>نزهة إلى الحديقة أو البحر أو مقهاكم المفضل، أنتم وهو فقط، فالوقت مع الجد أو الجدة وحدهما شعور مميز</p>"
+ },
+ "grand_s3_h": {
+  "en": "Something you made",
+  "ar": "شيء صنعتموه بأيديكم"
+ },
+ "grand_s3_b": {
+  "en": "<p>A knitted blanket, a recipe you cook together, or a wooden box. Handmade things carry your presence.</p>",
+  "ar": "<p>بطانية محاكة أو وصفة تطبخونها معًا أو صندوق خشبي، فالأشياء المصنوعة باليد تحمل حضوركم</p>"
+ },
+ "grand_s4_h": {
+  "en": "A savings start",
+  "ar": "بداية للادخار"
+ },
+ "grand_s4_b": {
+  "en": "<p>A jar or account to help them save for something they want, with a note about why saving matters to you.</p>",
+  "ar": "<p>حصالة أو حساب يساعده على الادخار لشيء يريده، مع رسالة عن سبب أهمية الادخار بالنسبة لكم</p>"
+ },
+ "grand_s5_h": {
+  "en": "Gifting from far away",
+  "ar": "الإهداء من بعيد"
+ },
+ "grand_s5_b": {
+  "en": "<p>If you live in another country, order online and send it straight to their home. Hikaya books arrive gift-boxed anywhere in the UAE and the GCC, and a video call while they open it makes it feel like you are there.</p>",
+  "ar": "<p>إن كنتم تعيشون في بلد آخر، اطلبوا عبر الإنترنت وأرسلوا الهدية مباشرة إلى منزله، وكتب حكاية تصل في علبة هدية إلى أي مكان في الإمارات ودول الخليج، ومكالمة فيديو أثناء فتحها تجعلكم وكأنكم هناك</p>"
  }
 };
   /* reading-time label follows the page language */

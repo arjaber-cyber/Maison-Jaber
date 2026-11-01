@@ -19,12 +19,12 @@ const crypto = require('crypto');
 const configured = () => Boolean(process.env.GSC_CLIENT_EMAIL && process.env.GSC_PRIVATE_KEY);
 const b64url = buf => Buffer.from(buf).toString('base64').replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
 
-async function accessToken() {
+async function accessToken(scope) {
   const now = Math.floor(Date.now() / 1000);
   const header = b64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
   const claim = b64url(JSON.stringify({
     iss: process.env.GSC_CLIENT_EMAIL,
-    scope: 'https://www.googleapis.com/auth/webmasters.readonly',
+    scope: scope || 'https://www.googleapis.com/auth/webmasters.readonly',
     aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600,
   }));
   const key = String(process.env.GSC_PRIVATE_KEY).replace(/\\n/g, '\n');
@@ -66,4 +66,23 @@ async function searchSummary(days = 28) {
   }
 }
 
-module.exports = { searchSummary, configured };
+// Launch SEO (Nov 2026): submit the sitemap to Google after each deploy, so Google re-reads the
+// site without anyone opening Search Console. Needs the service account to have "Full" (not
+// "Restricted") permission in Search Console > Settings > Users and permissions; until then
+// Google answers 403 and this simply reports it.
+async function submitSitemap(feedUrl) {
+  if (!configured()) return { configured: false };
+  const site = process.env.GSC_SITE_URL || 'sc-domain:maison-jaber.com';
+  try {
+    const token = await accessToken('https://www.googleapis.com/auth/webmasters');
+    const r = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(site)}/sitemaps/${encodeURIComponent(feedUrl)}`, {
+      method: 'PUT', headers: { Authorization: `Bearer ${token}` },
+    });
+    const d = r.ok ? {} : await r.json().catch(() => ({}));
+    return { configured: true, status: r.status, error: r.ok ? null : ((d.error && d.error.message) || null) };
+  } catch (e) {
+    return { configured: true, error: e.message };
+  }
+}
+
+module.exports = { searchSummary, configured, submitSitemap };

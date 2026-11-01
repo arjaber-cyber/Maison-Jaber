@@ -340,6 +340,8 @@
     guide_new_sibling: { en: "Preparing your child for a new baby: a gentle guide for parents | Hikaya", ar: "تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل | حكاية" },
     guide_first_day_of_school: { en: "First day of school: 8 ways to help your child feel brave | Hikaya", ar: "أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة | حكاية" },
     guides: { en: "Gift Guides & Tips for Parents | Hikaya by Maison Jaber", ar: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر" },
+    guide_christmas_gift_ideas: { en: "Christmas gift ideas for kids: 10 presents that feel magical | Hikaya", ar: "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة | حكاية" },
+    guide_gifts_from_grandparents: { en: "Gifts from grandparents: meaningful ideas grandchildren will treasure | Hikaya", ar: "هدايا من الأجداد: أفكار يعتز بها الأحفاد | حكاية" },
     '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
   };
   T.trk = {

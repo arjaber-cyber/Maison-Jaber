@@ -142,6 +142,14 @@ export const PAGES = {
     en: { title: "Gift Guides & Tips for Parents | Hikaya by Maison Jaber", desc: "Gift ideas for birthdays and Eid, plus gentle tips for big childhood moments like a new sibling or the first day of school, from Hikaya by Maison Jaber." },
     ar: { title: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر", desc: "أفكار هدايا لأعياد الميلاد والعيد، ونصائح لطيفة للحظات الطفولة الكبيرة مثل قدوم مولود جديد أو أول يوم في المدرسة، من حكاية من ميزون جابر" },
   },
+  "guide-christmas-gift-ideas.html": {
+    en: { title: "Christmas gift ideas for kids: 10 presents that feel magical | Hikaya", desc: "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order." },
+    ar: { title: "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة | حكاية", desc: "أفكار هدايا كريسماس مميزة للأطفال من 2 إلى 8 سنوات في الإمارات ودول الخليج، من قصة يكون الطفل بطلها إلى عادات عائلية جديدة، مع موعد الطلب المناسب" },
+  },
+  "guide-gifts-from-grandparents.html": {
+    en: { title: "Gifts from grandparents: meaningful ideas grandchildren will treasure | Hikaya", desc: "Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away." },
+    ar: { title: "هدايا من الأجداد: أفكار يعتز بها الأحفاد | حكاية", desc: "أفكار هدايا مميزة من الأجداد إلى الأحفاد، من الكتب التذكارية وقصص العائلة إلى التجارب المشتركة، مع نصائح للإهداء من بعيد" },
+  },
 };
 
 const AGE_BANDS = ["2-4", "4-6", "6-8"];
@@ -394,5 +402,7 @@ export const config = {
     "/hikaya/guide-new-sibling.html",
     "/hikaya/guide-first-day-of-school.html",
     "/hikaya/guides.html",
+    "/hikaya/guide-christmas-gift-ideas.html",
+    "/hikaya/guide-gifts-from-grandparents.html",
   ],
 };
