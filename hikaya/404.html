@@ -2,7 +2,8 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
-<meta name="robots" content="noindex, nofollow" /><!-- STAGING ONLY: remove when these pages move to the production routes -->
+<base href="/hikaya/" /><!-- The not-found page is shown at any /hikaya/... address; this keeps its styles and links working. -->
+<meta name="robots" content="noindex, follow" /><!-- Not-found page: kept out of search, links still followed. -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

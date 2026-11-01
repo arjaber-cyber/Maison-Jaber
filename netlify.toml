@@ -111,3 +111,11 @@
   to = "/hikaya/:splat"
   status = 301
   force = true
+
+# Unknown shop addresses get Hikaya's own "page not found" page with a real 404 status
+# (Netlify only uses this when no file matches, so every real page is unaffected).
+# Keep this rule LAST.
+[[redirects]]
+  from = "/hikaya/*"
+  to = "/hikaya/404.html"
+  status = 404
