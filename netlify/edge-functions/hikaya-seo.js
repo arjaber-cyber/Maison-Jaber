@@ -150,7 +150,49 @@ export const PAGES = {
     en: { title: "Gifts from grandparents: meaningful ideas grandchildren will treasure | Hikaya", desc: "Meaningful gift ideas from grandparents to grandchildren, from keepsake books and family stories to shared experiences, with tips for gifting from far away." },
     ar: { title: "هدايا من الأجداد: أفكار يعتز بها الأحفاد | حكاية", desc: "أفكار هدايا مميزة من الأجداد إلى الأحفاد، من الكتب التذكارية وقصص العائلة إلى التجارب المشتركة، مع نصائح للإهداء من بعيد" },
   },
+  // Country delivery pages (Nov 2026)
+  "personalised-books-uae.html": {
+    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free delivery across the UAE in about 5 working days. Gift-boxed, pay by card or Tabby." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي" },
+  },
+  "personalised-books-saudi-arabia.html": {
+    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia (Riyadh, Jeddah, Dammam) in about 5 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 5 أيام عمل في علبة هدية" },
+  },
+  "personalised-books-qatar.html": {
+    en: { title: "Personalised Children's Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية" },
+  },
+  "personalised-books-kuwait.html": {
+    en: { title: "Personalised Children's Books in Kuwait | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. KWD 14.25, delivered across Kuwait in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في الكويت | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 14.25 دينار كويتي مع التوصيل في جميع أنحاء الكويت خلال نحو 7 أيام عمل في علبة هدية" },
+  },
+  "personalised-books-bahrain.html": {
+    en: { title: "Personalised Children's Books in Bahrain | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. BHD 17.25, delivered across Bahrain in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية" },
+  },
+  "personalised-books-oman.html": {
+    en: { title: "Personalised Children's Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
+  },
 };
+
+
+// Crawlable site links in the raw HTML: the visible header and footer are drawn by script, which
+// some search engines (Bing, Yandex) don't run. These sit where the footer goes, at the bottom of
+// the page, and the real footer replaces them as soon as the page script runs.
+const SITE_LINKS = [
+  ["index.html", "Home", "الرئيسية"], ["stories.html", "All stories", "جميع القصص"], ["age-groups.html", "Stories by age", "القصص حسب العمر"],
+  ["gifts.html", "Personalised gifts", "هدايا مخصصة"], ["gift-birthday.html", "Birthday gifts", "هدايا عيد الميلاد"], ["gift-eid-ramadan.html", "Eid & Ramadan gifts", "هدايا العيد ورمضان"],
+  ["gift-christmas.html", "Christmas gifts", "هدايا الكريسماس"], ["gift-new-sibling.html", "New sibling gifts", "هدايا المولود الجديد"], ["gift-first-day-of-school.html", "First day of school", "أول يوم في المدرسة"],
+  ["guides.html", "Gift guides", "أدلة الهدايا"], ["personalised-books-uae.html", "UAE", "الإمارات"], ["personalised-books-saudi-arabia.html", "Saudi Arabia", "السعودية"],
+  ["personalised-books-qatar.html", "Qatar", "قطر"], ["personalised-books-kuwait.html", "Kuwait", "الكويت"], ["personalised-books-bahrain.html", "Bahrain", "البحرين"],
+  ["personalised-books-oman.html", "Oman", "عُمان"], ["our-world.html", "Our World", "عالمنا"], ["about.html", "Our Story", "قصتنا"], ["help.html", "FAQs", "الأسئلة الشائعة"], ["contact.html", "Contact", "تواصل معنا"],
+];
+function siteLinksHtml(l) {
+  const q = l === "ar" ? "?lang=ar" : "";
+  return `<nav class="ssr-links" aria-label="${l === "ar" ? "روابط الموقع" : "Site links"}"><ul>${SITE_LINKS.map(([f, en, ar]) => `<li><a href="${f}${q}">${esc(l === "ar" ? ar : en)}</a></li>`).join("")}</ul></nav>`;
+}
 
 const AGE_BANDS = ["2-4", "4-6", "6-8"];
 const AGE_PAGE = {
@@ -319,7 +361,8 @@ export default async (request, context) => {
     canonEn = pathUrl;
   }
 
-  if (file === "stories.html" || file === "gifts.html" || GIFT_OCC[file]) {
+  const isCountry = file.startsWith("personalised-books-");
+  if (file === "stories.html" || file === "gifts.html" || GIFT_OCC[file] || isCountry) {
     const all = await loadStories();
     if (all && all.length) {
       if (file === "stories.html") {
@@ -328,10 +371,12 @@ export default async (request, context) => {
         const occ = GIFT_OCC[file];
         let list = occ ? all.filter(s => inOccasion(s, occ)) : all.slice();
         if (!list.length) list = all.slice();
-        html = html.replace('<ul class="sgrid" id="gift-shelf" aria-busy="true"></ul>', `<ul class="sgrid" id="gift-shelf" aria-busy="true">${cardsHtml(list.slice(0, occ ? 8 : 24), lang)}</ul>`);
+        html = html.replace('<ul class="sgrid" id="gift-shelf" aria-busy="true"></ul>', `<ul class="sgrid" id="gift-shelf" aria-busy="true">${cardsHtml(list.slice(0, occ || isCountry ? 8 : 24), lang)}</ul>`);
       }
     }
   }
+
+  html = html.replace('<div id="hk-foot"></div>', `<div id="hk-foot">${siteLinksHtml(lang)}</div>`);
 
   const sep = canonEn.includes("?") ? "&" : "?";
   const canonAr = canonEn + sep + "lang=ar";
@@ -402,6 +447,12 @@ export const config = {
     "/hikaya/guide-new-sibling.html",
     "/hikaya/guide-first-day-of-school.html",
     "/hikaya/guides.html",
+    "/hikaya/personalised-books-uae.html",
+    "/hikaya/personalised-books-saudi-arabia.html",
+    "/hikaya/personalised-books-qatar.html",
+    "/hikaya/personalised-books-kuwait.html",
+    "/hikaya/personalised-books-bahrain.html",
+    "/hikaya/personalised-books-oman.html",
     "/hikaya/guide-christmas-gift-ideas.html",
     "/hikaya/guide-gifts-from-grandparents.html",
   ],

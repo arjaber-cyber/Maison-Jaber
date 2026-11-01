@@ -342,6 +342,12 @@
     guides: { en: "Gift Guides & Tips for Parents | Hikaya by Maison Jaber", ar: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر" },
     guide_christmas_gift_ideas: { en: "Christmas gift ideas for kids: 10 presents that feel magical | Hikaya", ar: "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة | حكاية" },
     guide_gifts_from_grandparents: { en: "Gifts from grandparents: meaningful ideas grandchildren will treasure | Hikaya", ar: "هدايا من الأجداد: أفكار يعتز بها الأحفاد | حكاية" },
+    personalised_books_uae: { en: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية" },
+    personalised_books_saudi_arabia: { en: "Personalised Children's Books in Saudi Arabia | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية" },
+    personalised_books_qatar: { en: "Personalised Children's Books in Qatar | Doha Delivery | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية" },
+    personalised_books_kuwait: { en: "Personalised Children's Books in Kuwait | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في الكويت | حكاية" },
+    personalised_books_bahrain: { en: "Personalised Children's Books in Bahrain | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية" },
+    personalised_books_oman: { en: "Personalised Children's Books in Oman | Muscat Delivery | Hikaya", ar: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية" },
     '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
   };
   T.trk = {

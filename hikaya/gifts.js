@@ -12,7 +12,7 @@
     if (!shelf || !all) return;
     let list = occ ? all.filter(s => H.inOccasion(s, occ)) : all.slice();
     if (!list.length) list = all.slice();
-    shelf.innerHTML = list.slice(0, occ ? 8 : 24).map(s => H.cardHtml(s)).join('');
+    shelf.innerHTML = list.slice(0, occ || document.body.dataset.country ? 8 : 24).map(s => H.cardHtml(s)).join('');
     shelf.removeAttribute('aria-busy');
   }
   H.loadCatalog().then(list => { all = Array.isArray(list) ? list : []; render(); }).catch(() => { if (shelf) shelf.removeAttribute('aria-busy'); });

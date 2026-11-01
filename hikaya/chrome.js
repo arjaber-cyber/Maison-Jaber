@@ -103,6 +103,7 @@
       <li><a href="refund-policy.html" data-i18n="home6.foot_refund">Returns and refunds</a></li>
     </ul></div>
   </div>
+  <nav class="foot-deliver" aria-labelledby="foot-deliver-t"><span id="foot-deliver-t" data-i18n="home6.foot_deliver">We deliver to</span><a href="personalised-books-uae.html" data-i18n="home6_regions.UAE">UAE</a><a href="personalised-books-saudi-arabia.html" data-i18n="home6_regions.Saudi">Saudi Arabia</a><a href="personalised-books-qatar.html" data-i18n="home6_regions.Qatar">Qatar</a><a href="personalised-books-kuwait.html" data-i18n="home6_regions.Kuwait">Kuwait</a><a href="personalised-books-bahrain.html" data-i18n="home6_regions.Bahrain">Bahrain</a><a href="personalised-books-oman.html" data-i18n="home6_regions.Oman">Oman</a></nav>
   <form class="foot-news" id="foot-news" novalidate>
     <div class="fn-copy">
       <span class="fn-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>

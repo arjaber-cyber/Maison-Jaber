@@ -1312,3 +1312,23 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
 .guide-card h2 { font-size: 1.35rem; margin-bottom: 8px; }
 .guide-card p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin-bottom: 12px; }
 @media (max-width: 767px) { .guide-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Country delivery pages (personalised-books-*.html), Nov 2026 ---------- */
+.ctry-cta { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.ctry-cta .text-link { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-weight: 600; font-size: 14px; }
+.ctry-facts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.ctry-facts > div { background: var(--white, #fff); border: 1px solid rgba(216,197,179,.6); border-radius: 14px; padding: 16px 16px 18px; }
+.ctry-facts dt { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 6px; }
+[dir="rtl"] .ctry-facts dt { text-transform: none; letter-spacing: 0; }
+.ctry-facts dd { margin: 0; font-weight: 600; line-height: 1.45; }
+.ctry-facts s { color: var(--ink-soft); font-weight: 400; margin-inline-end: 4px; }
+.ctry-note { margin-top: 12px; color: var(--ink-soft); font-size: 14px; }
+@media (max-width: 1023px) { .ctry-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Footer: delivery countries */
+.foot-deliver { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; padding: 18px 0 4px; font-size: 14px; }
+.foot-deliver span { font-weight: 700; }
+.foot-deliver a { color: inherit; opacity: .85; text-decoration: none; }
+.foot-deliver a:hover { opacity: 1; text-decoration: underline; }
+/* Server-rendered fallback links (replaced by the real footer once the page script runs). */
+.ssr-links ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; max-width: 1200px; margin: 30px auto; padding: 0 16px; font-size: 13px; }
+.ssr-links a { color: var(--ink-soft); }

@@ -16,6 +16,7 @@
     nav_world: { en: 'Our World', ar: 'عالمنا' },
     nav_gifts: { en: 'Gifts', ar: 'الهدايا' },
     nav_guides: { en: 'Gift guides', ar: 'أدلة الهدايا' },
+    foot_deliver: { en: 'We deliver to', ar: 'نوصل إلى' },
     nav_home: { en: 'Home', ar: 'الرئيسية' },
     nav_about: { en: 'Our Story', ar: 'قصتنا' },
     nav_faq: { en: 'FAQs', ar: 'الأسئلة الشائعة' },
