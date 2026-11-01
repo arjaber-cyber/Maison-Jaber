@@ -855,3 +855,16 @@
     pages: { en: 'Pages {a}–{b}', ar: 'الصفحتان {a}–{b}' },
   };
 })();
+
+/* SEO copy blocks (Nov 2026). Arabic carries no full stops (brand rule). */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.seo = {
+    col_h: { en: 'Personalised storybooks, made for one child', ar: 'قصص مخصصة تُصنع لطفل واحد' },
+    col_p1: { en: 'Every Hikaya book turns your child into the hero of a real story. Choose a story for their age (2–4, 4–6 or 6–8), add their first name and one photo, and we illustrate them on every page, print a square hardcover book and deliver it gift-boxed across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain and Oman. Each story comes in Arabic or English.',
+              ar: 'كل كتاب من حكاية يجعل طفلك بطل قصة حقيقية، اختر قصة تناسب عمره من 2 إلى 4 أو من 4 إلى 6 أو من 6 إلى 8 سنوات، وأضف اسمه الأول وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا مربعًا بغلاف مقوّى ونوصله في علبة هدية إلى الإمارات والسعودية وقطر والكويت والبحرين وعُمان، وكل قصة متوفرة بالعربية أو الإنجليزية' },
+    col_p2: { en: 'Looking for a gift? See <a href="gifts.html">personalised gift ideas</a> for birthdays, Eid and new siblings, or read our <a href="guides.html">gift guides</a>.',
+              ar: 'تبحث عن هدية؟ اكتشف <a href="gifts.html">أفكار الهدايا المخصصة</a> لأعياد الميلاد والعيد والمولود الجديد، أو اقرأ <a href="guides.html">أدلة الهدايا</a>' },
+  };
+})();
+
