@@ -1270,3 +1270,18 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 .tabby-promo[hidden] { display: none; }
 .tamara-promo { margin: 6px 0 14px; max-width: 100%; overflow: hidden; }
 .tamara-promo[hidden] { display: none; }
+
+/* ---------- Gift landing pages (gifts.html, gift-*.html), Nov 2026 ---------- */
+body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
+.gift-intro { padding-top: 26px; }
+.gift-intro p { max-width: 820px; font-size: 1.05rem; line-height: 1.7; color: var(--ink-soft); }
+.gift-points { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.gift-points li { background: var(--white, #fff); border: 1px solid rgba(216,197,179,.6); border-radius: 14px; padding: 22px 20px; }
+.gift-points svg { width: 28px; height: 28px; fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 10px; }
+.gift-points h3 { font-size: 1.15rem; margin-bottom: 6px; }
+.gift-points p { font-size: 14px; line-height: 1.6; color: var(--ink-soft); margin: 0; }
+.gift-faq > * { max-width: 880px; }
+.gift-faq h2 { margin-bottom: 14px; }
+.gift-faq .faq-a p { padding: 0 18px 16px; margin: 0; line-height: 1.65; }
+.gift-links { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 767px) { .gift-points { grid-template-columns: 1fr; } }

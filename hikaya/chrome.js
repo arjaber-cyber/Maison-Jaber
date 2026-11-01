@@ -29,7 +29,7 @@
   };
 
   function topHtml() {
-    const nav = [['index.html', 'nav_home', 'Home'], ['stories.html', 'nav_stories', 'Stories'], ['age-groups.html', 'nav_ages', 'Age Groups'], ['our-world.html', 'nav_world', 'Our World'], ['about.html', 'nav_about', 'Our Story']];
+    const nav = [['index.html', 'nav_home', 'Home'], ['stories.html', 'nav_stories', 'Stories'], ['age-groups.html', 'nav_ages', 'Age Groups'], ['our-world.html', 'nav_world', 'Our World'], ['gifts.html', 'nav_gifts', 'Gifts'], ['about.html', 'nav_about', 'Our Story']];
     const here = location.pathname.split('/').pop() || 'index.html';
     const li = nav.map(([h, k, fb]) => `<li><a href="${h}"${here === h ? ' aria-current="page"' : ''} data-i18n="home6.${k}">${fb}</a></li>`).join('');
     return `
@@ -92,6 +92,7 @@
     <div><h2 data-i18n="home6.foot_explore">Explore</h2><ul>
       <li><a href="stories.html" data-i18n="home6.nav_stories">Stories</a></li>
       <li><a href="age-groups.html" data-i18n="home6.nav_ages">Age Groups</a></li>
+      <li><a href="gifts.html" data-i18n="home6.nav_gifts">Gifts</a></li>
       <li><a href="search.html" data-i18n="home6.foot_search">Search</a></li>
     </ul></div>
     <div><h2 data-i18n="home6.foot_help">Help</h2><ul>

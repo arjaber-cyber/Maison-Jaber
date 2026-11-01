@@ -14,6 +14,7 @@
     nav_stories: { en: 'Stories', ar: 'القصص' },
     nav_ages: { en: 'Age Groups', ar: 'الفئات العمرية' },
     nav_world: { en: 'Our World', ar: 'عالمنا' },
+    nav_gifts: { en: 'Gifts', ar: 'الهدايا' },
     nav_home: { en: 'Home', ar: 'الرئيسية' },
     nav_about: { en: 'Our Story', ar: 'قصتنا' },
     nav_faq: { en: 'FAQs', ar: 'الأسئلة الشائعة' },

@@ -24,7 +24,7 @@
   /* Shop by occasion tiles → stories.html?occasion=… */
   function renderOccasions() {
     const grid = document.getElementById('occ-grid'); if (!grid) return;
-    grid.innerHTML = H.OCCASIONS.map(o => `<li><a class="occ-tile" href="stories.html?occasion=${o.key}">${H.occIcon(o)}<span class="occ-t">${H.esc(H.occasionLabel(o.key))}</span><small>${H.esc(H.t('occ.' + o.key + '_d', ''))}</small></a></li>`).join('');
+    grid.innerHTML = H.OCCASIONS.map(o => `<li><a class="occ-tile" href="${({ birthday: 'gift-birthday.html', eid: 'gift-eid-ramadan.html', christmas: 'gift-christmas.html', newbaby: 'gift-new-sibling.html', school: 'gift-first-day-of-school.html' })[o.key] || 'stories.html?occasion=' + o.key}">${H.occIcon(o)}<span class="occ-t">${H.esc(H.occasionLabel(o.key))}</span><small>${H.esc(H.t('occ.' + o.key + '_d', ''))}</small></a></li>`).join('');
   }
 
   /* Photo → illustration reveal: a native range input drives the split (keyboard + touch friendly). */

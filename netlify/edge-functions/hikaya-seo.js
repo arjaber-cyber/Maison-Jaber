@@ -96,6 +96,31 @@ export const PAGES = {
       desc: "لديك سؤال عن قصة مخصصة أو طلب أو صورة أو التوصيل؟ تواصل مع حكاية من ميزون جابر عبر واتساب أو البريد الإلكتروني",
     },
   },
+  // Gift landing pages (phase 2, Nov 2026)
+  "gifts.html": {
+    en: { title: "Personalised Gifts for Kids UAE | Storybooks | Hikaya", desc: "Personalised gifts for kids in the UAE and GCC: a hardcover storybook with your child as the hero, their name, age and photo. Gift-boxed, in English or Arabic." },
+    ar: { title: "هدايا مخصصة للأطفال في الإمارات | قصص باسم طفلك | حكاية", desc: "هدايا مخصصة للأطفال في الإمارات ودول الخليج: كتاب قصة بغلاف مقوّى يكون طفلك بطله باسمه وعمره وصورته، في علبة هدية وبالعربية أو الإنجليزية" },
+  },
+  "gift-birthday.html": {
+    en: { title: "Personalised Birthday Gifts for Kids UAE | Hikaya", desc: "A birthday gift they'll keep: a personalised storybook with your child as the hero, their name and photo, and your message on the first page. Gift-boxed, delivered across the UAE and GCC." },
+    ar: { title: "هدايا عيد ميلاد مخصصة للأطفال | قصة باسم طفلك | حكاية", desc: "هدية عيد ميلاد يحتفظ بها: كتاب قصة مخصص يكون طفلك بطله باسمه وصورته ورسالتك في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
+  },
+  "gift-eid-ramadan.html": {
+    en: { title: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", desc: "An Eidiya they'll keep: a personalised storybook in Arabic or English with your child as the hero. Add an Eid message, gift-boxed and delivered across the UAE and GCC." },
+    ar: { title: "هدايا العيد ورمضان للأطفال | عيدية مخصصة باسم طفلك | حكاية", desc: "عيدية تبقى معهم سنوات: كتاب قصة مخصص بالعربية أو الإنجليزية يكون طفلك بطله، مع تهنئة العيد في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
+  },
+  "gift-christmas.html": {
+    en: { title: "Personalised Christmas Gifts for Kids UAE | Hikaya", desc: "A Christmas story starring your child: personalised with their name and photo, printed in hardcover and gift-boxed. Delivered across the UAE and GCC." },
+    ar: { title: "هدايا الكريسماس المخصصة للأطفال | حكاية", desc: "قصة كريسماس يكون طفلك بطلها، مخصصة باسمه وصورته ومطبوعة بغلاف مقوّى في علبة هدية، مع التوصيل في الإمارات ودول الخليج" },
+  },
+  "gift-new-sibling.html": {
+    en: { title: "New Sibling Gift: Personalised Big Brother & Sister Book | Hikaya", desc: "A gift for the older child when a new baby arrives: a personalised storybook where they are the hero. Gift-boxed, in English or Arabic, delivered across the UAE and GCC." },
+    ar: { title: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية", desc: "هدية للطفل الأكبر عند قدوم مولود جديد: كتاب قصة مخصص يكون هو بطله، في علبة هدية وبالعربية أو الإنجليزية مع التوصيل في الإمارات ودول الخليج" },
+  },
+  "gift-first-day-of-school.html": {
+    en: { title: "First Day of School Gift: Personalised Storybook | Hikaya", desc: "Help them feel brave for a big first day: a personalised storybook about courage and new beginnings, with your child as the hero. Delivered across the UAE and GCC." },
+    ar: { title: "هدية أول يوم مدرسة | قصة مخصصة باسم طفلك | حكاية", desc: "ساعده على الشعور بالشجاعة في يومه الأول: كتاب قصة مخصص عن الشجاعة والبدايات الجديدة يكون طفلك بطله، مع التوصيل في الإمارات ودول الخليج" },
+  },
 };
 
 const AGE_BANDS = ["2-4", "4-6", "6-8"];
@@ -242,8 +267,8 @@ export default async (request, context) => {
   html = setTag(html, /<link rel="canonical"[^>]*>/i, `<link rel="canonical" href="${esc(canon)}" />`, true);
   html = setTag(html, /<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${esc(canon)}" />`, true);
 
-  // Arabic pages: the FAQ structured data in the file is English, so it is left out to avoid a mismatch.
-  if (lang === "ar" && file === "help.html") html = html.replace(/<script type="application\/ld\+json">\s*\{\s*"@context":\s*"https:\/\/schema.org",\s*"@type":\s*"FAQPage"[\s\S]*?<\/script>/i, "");
+  // Arabic pages: the FAQ structured data in the files is English, so it is left out to avoid a mismatch.
+  if (lang === "ar") html = html.replace(/<script type="application\/ld\+json">\s*\{\s*"@context":\s*"https:\/\/schema.org",\s*"@type":\s*"FAQPage"[\s\S]*?<\/script>/i, "");
 
   const extra = [
     `<meta name="hk-seo-lang" content="${lang}" />`,
@@ -280,5 +305,11 @@ export const config = {
     "/hikaya/about.html",
     "/hikaya/help.html",
     "/hikaya/contact.html",
+    "/hikaya/gifts.html",
+    "/hikaya/gift-birthday.html",
+    "/hikaya/gift-eid-ramadan.html",
+    "/hikaya/gift-christmas.html",
+    "/hikaya/gift-new-sibling.html",
+    "/hikaya/gift-first-day-of-school.html",
   ],
 };

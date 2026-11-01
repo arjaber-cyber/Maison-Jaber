@@ -329,6 +329,12 @@
     privacy: { en: 'Privacy Policy | Hikaya', ar: 'سياسة الخصوصية | حكاية' },
     terms: { en: 'Terms of Service | Hikaya', ar: 'شروط الخدمة | حكاية' },
     refund_policy: { en: 'Refund Policy | Hikaya', ar: 'سياسة الاسترداد | حكاية' },
+    gifts: { en: "Personalised Gifts for Kids UAE | Storybooks | Hikaya", ar: "هدايا مخصصة للأطفال في الإمارات | قصص باسم طفلك | حكاية" },
+    gift_birthday: { en: "Personalised Birthday Gifts for Kids UAE | Hikaya", ar: "هدايا عيد ميلاد مخصصة للأطفال | قصة باسم طفلك | حكاية" },
+    gift_eid_ramadan: { en: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", ar: "هدايا العيد ورمضان للأطفال | عيدية مخصصة باسم طفلك | حكاية" },
+    gift_christmas: { en: "Personalised Christmas Gifts for Kids UAE | Hikaya", ar: "هدايا الكريسماس المخصصة للأطفال | حكاية" },
+    gift_new_sibling: { en: "New Sibling Gift: Personalised Big Brother & Sister Book | Hikaya", ar: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية" },
+    gift_first_day_of_school: { en: "First Day of School Gift: Personalised Storybook | Hikaya", ar: "هدية أول يوم مدرسة | قصة مخصصة باسم طفلك | حكاية" },
     '404': { en: 'Page not found | Hikaya', ar: 'الصفحة غير موجودة | حكاية' },
   };
   T.trk = {
