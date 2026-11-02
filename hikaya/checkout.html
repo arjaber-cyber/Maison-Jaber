@@ -775,7 +775,7 @@
         promoBtn.disabled = true;
         const fp = computeFinalPricing(REGIONS[currentRegionKey]);
         if (fp.promoNotBetter) setPromoMsg('', t('checkout.promo_not_better', 'Your bundle discount already saves you more, so we kept the bundle. Only one discount applies per order.'));
-        else setPromoMsg('success', appliedPromo.type === 'free_order' ? t('checkout.promo_free_order', 'Code applied! This order is on us.') : t('checkout.promo_applied', 'Code applied!'));
+        else setPromoMsg('success', appliedPromo.type === 'free_order' ? t('checkout.promo_free_order', 'Code applied! One book is on us.') : t('checkout.promo_applied', 'Code applied!'));
       }
     } catch {
       appliedPromo = null;
@@ -816,7 +816,14 @@
     if (appliedPromo) {
       let b = fullBooks, d = region.deliveryFee || 0, x = extra, label = '';
       const p = appliedPromo;
-      if (p.type === 'free_order') { b = 0; d = 0; x = 0; label = t('checkout.promo_free_label', 'Free order'); }
+      if (p.type === 'free_order') {
+        // One book free (plus delivery and that book's extras); other books at full price. Mirrors _pricing.js.
+        const items = window.hikayaCart.getCart() || [];
+        const maxExtraAed = items.reduce((m, it) => Math.max(m, it.extraCharacterFeeAed || 0), 0);
+        const maxExtra = window.hikayaConvertFromAed ? window.hikayaConvertFromAed(maxExtraAed, region) : 0;
+        b = pricing.perBookFull * Math.max(0, pricing.itemCount - 1); d = 0; x = Math.max(0, extra - maxExtra);
+        label = t('checkout.promo_free_label', 'Free book');
+      }
       else if (p.type === 'free_shipping') { d = 0; label = t('checkout.free', 'Free') + ' ' + t('checkout.delivery', 'Delivery').toLowerCase(); }
       else if (p.type === 'percent') { b = fullBooks * (1 - Math.min(100, p.value) / 100); label = `-${p.value}%`; }
       else if (p.type === 'fixed') {

@@ -87,7 +87,8 @@ async function loadStories(titles) {
 }
 
 /* ---------- Discount codes (Oct 2026) ----------
-   Types: percent | fixed (AED) | free_shipping | free_order (book + delivery + extras free).
+   Types: percent | fixed (AED) | free_shipping | free_order (ONE book free, plus delivery and that book's extras;
+   any other books in the cart are charged at full price -- Nov 2026).
    Rules: ONE discount per order. The customer gets whichever is better --
    the bundle discount or the code. A free_order code always wins.
    Codes can be locked to one email, have a start/end date, a total use
@@ -172,6 +173,11 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
     return sum + (i.extraCharacterName && s && s.has_extra_character ? Number(s.extra_character_fee_aed) || 0 : 0);
   }, 0);
   const extraFee = round2(extraFeeAed * rate);
+  // Largest single-book extra fee (local currency): what a free_order code waives along with one book.
+  const maxItemExtra = round2(items.reduce((m, i) => {
+    const s = stories[i.story];
+    return Math.max(m, i.extraCharacterName && s && s.has_extra_character ? Number(s.extra_character_fee_aed) || 0 : 0);
+  }, 0) * rate);
 
   // Option A: the bundle discount.
   let booksTotal = fullBooks * (1 - tier.discountPct / 100);
@@ -195,7 +201,7 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
       throw promoError('min_order', { message: `This code needs an order of at least AED ${promo.minOrderAed} (before discounts).` });
     }
     let b = fullBooks, d = region.deliveryFee, x = extraFee;
-    if (promo.type === 'free_order') { b = 0; d = 0; x = 0; }
+    if (promo.type === 'free_order') { b = region.bookNow * (items.length - 1); d = 0; x = Math.max(0, extraFee - maxItemExtra); }
     else if (promo.type === 'free_shipping') d = 0;
     else if (promo.type === 'percent') b = fullBooks * (1 - Math.min(100, promo.value) / 100);
     else if (promo.type === 'fixed') b = Math.max(0, fullBooks - codeAmountLocal(promo.value, region));

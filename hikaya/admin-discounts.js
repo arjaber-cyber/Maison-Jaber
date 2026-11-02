@@ -12,7 +12,7 @@
     percent: { label: '% off', long: v => `${v}% off` },
     fixed: { label: 'AED off', long: v => `AED ${v} off` },
     free_shipping: { label: 'Free delivery', long: () => 'Free delivery' },
-    free_order: { label: 'Free order (100%)', long: () => 'Free order: book + delivery' },
+    free_order: { label: 'Free book (1 copy)', long: () => 'One free book + delivery' },
   };
   const TAGS = {
     review: 'Feedback reward', campaign: 'Campaign', influencer: 'Influencer', compensation: 'Compensation',
