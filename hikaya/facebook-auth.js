@@ -65,5 +65,10 @@ export async function mountFacebookSignIn(supabase, anchorEl, opts = {}) {
     if (error) { btn.disabled = false; opts.onError?.(error.message); }
   });
 
+  // If the visitor comes back with the browser's Back button (or from the
+  // Facebook app), the page can be restored as it was left, with the button
+  // still greyed out. Switch it back on so they can try again.
+  window.addEventListener('pageshow', () => { btn.disabled = false; });
+
   anchorEl.insertAdjacentElement('afterend', btn);
 }
