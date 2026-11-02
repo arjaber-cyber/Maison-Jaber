@@ -7,6 +7,7 @@
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
 const { sendMetaPurchase } = require('./_meta');
+const { alertNewOrder } = require('./_owner_alert');
 const { orderConfirmed, paymentNotCompleted } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
 
@@ -77,6 +78,8 @@ async function settleFromZiina(pi) {
 }
 
 async function sendConfirmation(order) {
+  // Instant WhatsApp ping to the owner first (never throws, never blocks the emails).
+  await alertNewOrder(order);
   // Tell Meta about the sale (server side). Only real paid sales with marketing consent; never blocks the emails.
   await sendMetaPurchase(order);
   let items = [];
