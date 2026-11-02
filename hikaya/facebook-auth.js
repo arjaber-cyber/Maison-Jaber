@@ -9,7 +9,7 @@
 // from customers. Admins can still test it by opening any sign-in page with
 // ?fb=1 once (it is remembered on that browser). Set this to true when the
 // Meta app is Live.
-const FACEBOOK_LIVE = true;
+const FACEBOOK_LIVE = false;
 
 function facebookPreview() {
   try {
