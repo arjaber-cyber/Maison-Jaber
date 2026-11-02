@@ -120,6 +120,7 @@ for c in C:
                "image": SITE + 'images/' + c['img'] + '.webp', "category": "Personalised children's books",
                "offers": {"@type": "Offer", "url": url, "price": c['now'], "priceCurrency": c['cur'], "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/NewCondition",
                           "eligibleRegion": {"@type": "Country", "name": c['cc']},
+                          "hasMerchantReturnPolicy": {"@type": "MerchantReturnPolicy", "applicableCountry": c['cc'], "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted", "merchantReturnLink": SITE + "refund-policy.html"},
                           "shippingDetails": {"@type": "OfferShippingDetails", "shippingRate": {"@type": "MonetaryAmount", "value": 0 if c['fee'] == 0 else float(c['fee']), "currency": c['cur']},
                                               "shippingDestination": {"@type": "DefinedRegion", "addressCountry": c['cc']},
                                               "deliveryTime": {"@type": "ShippingDeliveryTime", "handlingTime": {"@type": "QuantitativeValue", "minValue": 1, "maxValue": 3, "unitCode": "DAY"},

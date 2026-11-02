@@ -25,6 +25,13 @@ const SUPABASE_ANON_KEY =
 const BOOK_PRICE_AED = 169;
 
 const BRAND_EN = "Hikaya by Maison Jaber";
+// Personalised books can't be returned for change of mind (damaged/faulty ones are replaced or refunded, see refund-policy.html).
+const RETURN_POLICY = {
+  "@type": "MerchantReturnPolicy",
+  applicableCountry: ["AE", "SA", "QA", "KW", "BH", "OM"],
+  returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+  merchantReturnLink: "https://maison-jaber.com/hikaya/refund-policy.html",
+};
 const BRAND_AR = "حكاية من ميزون جابر";
 
 // Page type + breadcrumb name for pages that carry no structured data of their own.
@@ -360,6 +367,7 @@ async function seoPage(request, context, state) {
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",
           seller: { "@type": "Organization", name: BRAND_EN },
+          hasMerchantReturnPolicy: RETURN_POLICY,
           shippingDetails: {
             "@type": "OfferShippingDetails",
             shippingRate: { "@type": "MonetaryAmount", value: 0, currency: "AED" },
