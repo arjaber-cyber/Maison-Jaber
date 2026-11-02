@@ -106,6 +106,7 @@ const PROMO_MESSAGES = {
   used_by_you: "You've already used this code.",
   not_first_order: 'This code is for your first Hikaya order only.',
   wrong_area: 'This code is for deliveries in Dubai South only.',
+  wrong_area_uae: 'This code is for deliveries in the UAE only.',
   min_order: 'Your order is below the minimum for this code.',
   unavailable: "We couldn't check that code right now. Please try again.",
   need_account: 'Discount codes are for Hikaya members. Sign in or create a free account to use this code.',
@@ -114,6 +115,12 @@ const PROMO_MESSAGES = {
 const promoError = (reason, extra) => Object.assign(new Error(reason), { reason, userMessage: (extra && extra.message) || PROMO_MESSAGES[reason] || PROMO_MESSAGES.not_found });
 
 // Returns the code row if it can be used by this email, otherwise throws a promoError.
+// Codes limited to a delivery area. 'uae' can be checked from the delivery country up front;
+// 'dubai_south' needs the address, so it is checked in reserve_discount when the order is placed.
+function checkPromoRegion(promo, regionKey) {
+  if (promo && promo.area === 'uae' && regionKey && regionKey !== 'UAE') throw promoError('wrong_area_uae');
+}
+
 async function loadPromo(code, { email, phone } = {}) {
   if (!code) return null;
   const c = String(code).trim().toUpperCase();
@@ -146,6 +153,7 @@ async function loadPromo(code, { email, phone } = {}) {
   return {
     code: c, type: r.type, value: Number(r.value) || 0, tag: r.tag || 'campaign', firstOrderOnly: !!r.first_order_only,
     minOrderAed: r.min_order_aed != null ? Number(r.min_order_aed) : null, lockedEmail: r.email || null,
+    area: r.area || null,
   };
 }
 
@@ -196,6 +204,7 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
     if (!member.phone) member = null; // no verified number to record on the redemption
   }
   const promo = await loadPromo(promoCode, { email });
+  checkPromoRegion(promo, regionKey);
   if (promo) {
     if (promo.minOrderAed != null && toAed(fullBooks) < promo.minOrderAed) {
       throw promoError('min_order', { message: `This code needs an order of at least AED ${promo.minOrderAed} (before discounts).` });
@@ -268,4 +277,4 @@ async function reserveDiscount(code, order, total, memberPhone) {
 const settleDiscount = (orderId, success) => rpc('settle_discount', { p_order_id: orderId, p_success: !!success })
   .catch(e => { console.error('settle_discount failed', orderId, e.message); return null; });
 
-module.exports = { priceOrder, loadPromo, orderTypeForTag, reserveDiscount, settleDiscount, PROMO_MESSAGES, REGIONS, AED_PER_UNIT, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY };
+module.exports = { priceOrder, loadPromo, checkPromoRegion, orderTypeForTag, reserveDiscount, settleDiscount, PROMO_MESSAGES, REGIONS, AED_PER_UNIT, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY };

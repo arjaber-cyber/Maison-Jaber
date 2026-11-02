@@ -13,7 +13,7 @@
 // dashboard (Discounts tab). Rule: one discount per order -- the customer
 // gets whichever is better, the bundle discount or the code.
 
-const { loadPromo, PROMO_MESSAGES } = require('./_pricing');
+const { loadPromo, checkPromoRegion, PROMO_MESSAGES } = require('./_pricing');
 const { verifiedMember, authHeaderOf, DISCOUNTS_MEMBERS_ONLY } = require('./_member');
 
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
@@ -38,6 +38,7 @@ exports.handler = async (event) => {
   try {
     const phone = String(payload.phone || '').trim() || null;
     const promo = await loadPromo(code, { email: email || null, phone });
+    checkPromoRegion(promo, String(payload.region || '').trim() || null);
     return json(200, { valid: true, code: promo.code, type: promo.type, value: promo.value, minOrderAed: promo.minOrderAed });
   } catch (e) {
     if (e.reason) return json(e.reason === 'unavailable' ? 503 : 400, { error: e.userMessage, reason: e.reason });

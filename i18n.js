@@ -261,6 +261,8 @@ window.HIKAYA_TRANSLATIONS = {
     promo_used_up: { en: 'That code has already been used.', ar: 'تم استخدام هذا الرمز من قبل' },
     promo_used_by_you: { en: "You've already used this code.", ar: 'لقد استخدمت هذا الرمز من قبل' },
     promo_not_first_order: { en: 'This code is for your first Hikaya order only.', ar: 'هذا الرمز مخصص لطلبك الأول من حكاية فقط' },
+    promo_wrong_area: { en: 'This code is for deliveries in Dubai South only.', ar: 'هذا الرمز مخصص للتوصيل في دبي الجنوب فقط' },
+    promo_wrong_area_uae: { en: 'This code is for deliveries in the UAE only.', ar: 'هذا الرمز مخصص للتوصيل داخل الإمارات فقط' },
     promo_not_better: { en: 'Your bundle discount already saves you more, so we kept the bundle. Only one discount applies per order.', ar: 'خصم الباقة يوفّر لك أكثر، لذلك أبقينا عليه، يُطبَّق خصم واحد فقط لكل طلب' },
     promo_free_order: { en: 'Code applied! One book is on us.', ar: 'تم تطبيق الرمز! كتاب واحد هدية منّا' },
     promo_free_label: { en: 'Free book', ar: 'كتاب مجاني' },

@@ -754,7 +754,7 @@
       if (session) headers.Authorization = 'Bearer ' + session.access_token;
       const res = await fetch('/.netlify/functions/validate-discount-code', {
         method: 'POST', headers,
-        body: JSON.stringify({ code, email: document.getElementById('email').value.trim(), phone: ((document.getElementById('phone') || {}).value || '').trim() }),
+        body: JSON.stringify({ code, region: currentRegionKey, email: document.getElementById('email').value.trim(), phone: ((document.getElementById('phone') || {}).value || '').trim() }),
       });
       const data = await res.json().catch(() => ({}));
       if (data.reason === 'need_account') { appliedPromo = null; showSignInForCode(); renderPaymentSection(); return; }
