@@ -8,9 +8,12 @@
 //   WHATSAPP_TOKEN            permanent System User access token
 //   WHATSAPP_PHONE_NUMBER_ID  the Hikaya number's Phone number ID (WhatsApp Manager > API setup)
 //   WHATSAPP_OTP_TEMPLATE     optional, default "hikaya_verify" (approved in EN and AR)
+//   WHATSAPP_ALERT_PHONE_NUMBER_ID  sender for owner order alerts (can be the Meta test
+//                             number, so alerts work without the Hikaya number on the API;
+//                             falls back to WHATSAPP_PHONE_NUMBER_ID)
 //   OWNER_WHATSAPP            optional, where new-order alerts go (default +971528011773)
 //   WHATSAPP_ORDER_TEMPLATE   optional, default "hikaya_new_order" (utility template, EN):
-//       "New Hikaya order {{1}} 🛍️ {{2}} · {{3}} · {{4}}"  + URL button to the admin dashboard
+//       "New order {{1}} received. Amount: {{2}}. Customer: {{3}}. Books: {{4}}. Open the dashboard to process it."
 //   Order alerts are best effort: if WhatsApp is not set up or the send fails,
 //   the order and its emails carry on untouched.
 // Until these are set, verification reports itself as "not available yet" and
@@ -52,17 +55,20 @@ async function sendOtp(phoneE164, code, lang) {
 }
 
 // New-order alert to the owner's personal WhatsApp. Never throws.
+const METHOD = { ziina: 'card (Ziina)', tabby: 'Tabby', tamara: 'Tamara', paytabs: 'card (PayTabs)', cod: 'cash on delivery' };
 async function sendOrderAlert(order, items) {
-  if (!enabled()) return { skipped: 'not_configured' };
+  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
+  if (!process.env.WHATSAPP_TOKEN || !sender) return { skipped: 'not_configured' };
   try {
     const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
     const template = process.env.WHATSAPP_ORDER_TEMPLATE || 'hikaya_new_order';
     const clean = v => String(v == null ? '' : v).replace(/[\n\t]+/g, ' ').replace(/ {4,}/g, '   ').trim().slice(0, 200) || '-';
     const waived = order.payment_status === 'waived';
-    const books = (items || []).map(i => `${i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'AR' : 'EN') + ')' : ''}`).join(', ') || `${(items || []).length} book(s)`;
-    const amount = waived ? `FREE · code ${order.promo_code || ''}` : `AED ${Number(order.charged_aed || 0).toFixed(2)}${order.promo_code ? ' · code ' + order.promo_code : ''}`;
+    const books = (items || []).map(i => `${i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ')' : ''}`).join(', ') || `${(items || []).length} book(s)`;
+    const via = METHOD[order.payment_method] || order.payment_method || '';
+    const amount = waived ? `FREE (code ${order.promo_code || ''})` : `AED ${Number(order.charged_aed || 0).toFixed(2)}${via ? ' via ' + via : ''}${order.promo_code ? ', code ' + order.promo_code : ''}`;
     const who = `${order.full_name || ''}${order.city ? ', ' + order.city : ''}${order.country ? ', ' + order.country : ''}`;
-    const res = await fetch(`${GRAPH}/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+    const res = await fetch(`${GRAPH}/${sender}/messages`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -72,7 +78,7 @@ async function sendOrderAlert(order, items) {
         template: {
           name: template,
           language: { code: 'en' },
-          components: [{ type: 'body', parameters: [clean(order.order_number), clean(amount), clean(books), clean(who)].map(text => ({ type: 'text', text })) }],
+          components: [{ type: 'body', parameters: [clean(order.order_number), clean(amount), clean(who), clean(books)].map(text => ({ type: 'text', text })) }],
         },
       }),
     });
