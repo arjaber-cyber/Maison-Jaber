@@ -6,6 +6,7 @@
 // confirmation email is sent exactly once.
 
 const { sendEmail, emailShell, OWNER_INBOX } = require('./_email');
+const { sendOrderAlert } = require('./_whatsapp');
 const { sendMetaPurchase } = require('./_meta');
 const { orderConfirmed, paymentNotCompleted } = require('./_templates');
 const { SUPABASE_URL, SUPABASE_KEY, settleDiscount } = require('./_pricing');
@@ -97,6 +98,8 @@ async function sendConfirmation(order) {
   } catch {}
   const mail = orderConfirmed(order, arTitles, covers);
   await sendEmail({ to: order.email, subject: mail.subject, html: mail.html });
+  /* New-order alert on WhatsApp (best effort, never blocks). */
+  await sendOrderAlert(order, items);
   /* New-order alert for the team (info@). */
   const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.ageEdition ? ' · ages ' + esc(i.ageEdition) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}${i.dedication ? '<br><em>Dedication:</em> ' + esc(i.dedication) : ''}</li>`).join('');
   await sendEmail({

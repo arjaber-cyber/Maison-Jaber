@@ -8,6 +8,11 @@
 //   WHATSAPP_TOKEN            permanent System User access token
 //   WHATSAPP_PHONE_NUMBER_ID  the Hikaya number's Phone number ID (WhatsApp Manager > API setup)
 //   WHATSAPP_OTP_TEMPLATE     optional, default "hikaya_verify" (approved in EN and AR)
+//   OWNER_WHATSAPP            optional, where new-order alerts go (default +971528011773)
+//   WHATSAPP_ORDER_TEMPLATE   optional, default "hikaya_new_order" (utility template, EN):
+//       "New Hikaya order {{1}} 🛍️ {{2}} · {{3}} · {{4}}"  + URL button to the admin dashboard
+//   Order alerts are best effort: if WhatsApp is not set up or the send fails,
+//   the order and its emails carry on untouched.
 // Until these are set, verification reports itself as "not available yet" and
 // the site hides the prompt.
 
@@ -46,4 +51,41 @@ async function sendOtp(phoneE164, code, lang) {
   return data;
 }
 
-module.exports = { enabled, sendOtp };
+// New-order alert to the owner's personal WhatsApp. Never throws.
+async function sendOrderAlert(order, items) {
+  if (!enabled()) return { skipped: 'not_configured' };
+  try {
+    const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
+    const template = process.env.WHATSAPP_ORDER_TEMPLATE || 'hikaya_new_order';
+    const clean = v => String(v == null ? '' : v).replace(/[\n\t]+/g, ' ').replace(/ {4,}/g, '   ').trim().slice(0, 200) || '-';
+    const waived = order.payment_status === 'waived';
+    const books = (items || []).map(i => `${i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'AR' : 'EN') + ')' : ''}`).join(', ') || `${(items || []).length} book(s)`;
+    const amount = waived ? `FREE · code ${order.promo_code || ''}` : `AED ${Number(order.charged_aed || 0).toFixed(2)}${order.promo_code ? ' · code ' + order.promo_code : ''}`;
+    const who = `${order.full_name || ''}${order.city ? ', ' + order.city : ''}${order.country ? ', ' + order.country : ''}`;
+    const res = await fetch(`${GRAPH}/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to,
+        type: 'template',
+        template: {
+          name: template,
+          language: { code: 'en' },
+          components: [{ type: 'body', parameters: [clean(order.order_number), clean(amount), clean(books), clean(who)].map(text => ({ type: 'text', text })) }],
+        },
+      }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      console.error('whatsapp order alert failed', res.status, data && data.error && data.error.code, data && data.error && data.error.message);
+      return { sent: false };
+    }
+    return { sent: true };
+  } catch (e) {
+    console.error('whatsapp order alert error', e && e.message);
+    return { sent: false };
+  }
+}
+
+module.exports = { enabled, sendOtp, sendOrderAlert };
