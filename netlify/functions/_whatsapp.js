@@ -10,7 +10,9 @@
 //   WHATSAPP_OTP_TEMPLATE     optional, default "hikaya_verify" (approved in EN and AR)
 //   WHATSAPP_ALERT_PHONE_NUMBER_ID  sender for owner order alerts (can be the Meta test
 //                             number, so alerts work without the Hikaya number on the API;
-//                             falls back to WHATSAPP_PHONE_NUMBER_ID)
+//                             falls back to WHATSAPP_PHONE_NUMBER_ID; ALERT_WA_PHONE_ID also accepted)
+//   ALERT_WA_TOKEN            token for the alert sender (falls back to WHATSAPP_TOKEN). Keeping
+//                             alerts on their own token leaves customer verification switched off.
 //   OWNER_WHATSAPP            optional, where new-order alerts go (default +971528011773)
 //   WHATSAPP_ORDER_TEMPLATE   optional, default "hikaya_new_order" (utility template, EN):
 //       "New order {{1}} received. Amount: {{2}}. Customer: {{3}}. Books: {{4}}. Open the dashboard to process it."
@@ -57,8 +59,9 @@ async function sendOtp(phoneE164, code, lang) {
 // New-order alert to the owner's personal WhatsApp. Never throws.
 const METHOD = { ziina: 'card (Ziina)', tabby: 'Tabby', tamara: 'Tamara', paytabs: 'card (PayTabs)', cod: 'cash on delivery' };
 async function sendOrderAlert(order, items) {
-  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
-  if (!process.env.WHATSAPP_TOKEN || !sender) return { skipped: 'not_configured' };
+  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
+  if (!token || !sender) return { skipped: 'not_configured' };
   try {
     const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
     const template = process.env.WHATSAPP_ORDER_TEMPLATE || 'hikaya_new_order';
@@ -70,7 +73,7 @@ async function sendOrderAlert(order, items) {
     const who = `${order.full_name || ''}${order.city ? ', ' + order.city : ''}${order.country ? ', ' + order.country : ''}`;
     const res = await fetch(`${GRAPH}/${sender}/messages`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         messaging_product: 'whatsapp',
         to,
