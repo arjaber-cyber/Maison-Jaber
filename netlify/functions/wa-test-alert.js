@@ -2,7 +2,9 @@
 //
 // One-off check that the owner's WhatsApp order alert works end to end.
 // Locked: it only runs while Supabase app_flags has key "wa_test_alert" set to
-// "hello" (Meta's approved hello_world template) or "order" (the real
+// "register" (one-time Cloud API registration of the alert sender, fixes error
+// 133010; the PIN it sets is kept in app_flags "wa_alert_pin"), "hello" (Meta's
+// approved hello_world template) or "order" (the real
 // hikaya_new_order template with sample data), set less than 15 minutes ago.
 // Each run clears the flag, so it fires at most once per flag. It only ever
 // messages the owner's number (OWNER_WHATSAPP), never anyone else.
@@ -16,7 +18,7 @@ const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'ap
 exports.handler = async () => {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/app_flags?key=eq.wa_test_alert&select=value,updated_at`, { headers: H });
   const row = r.ok ? (await r.json())[0] : null;
-  if (!row || !['hello', 'order'].includes(row.value) || Date.now() - new Date(row.updated_at).getTime() > 15 * 60 * 1000) {
+  if (!row || !['register', 'hello', 'order'].includes(row.value) || Date.now() - new Date(row.updated_at).getTime() > 15 * 60 * 1000) {
     return json(403, { error: 'locked' });
   }
   await fetch(`${SUPABASE_URL}/rest/v1/app_flags?key=eq.wa_test_alert`, { method: 'DELETE', headers: H });
@@ -31,7 +33,26 @@ exports.handler = async () => {
 
   const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
   const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
-  if (!sender || !token) return json(200, { mode: 'hello', sent: false, error: 'not_configured' });
+  if (!sender || !token) return json(200, { mode: row.value, sent: false, error: 'not_configured' });
+
+  if (row.value === 'register') {
+    const pin = String(Math.floor(100000 + Math.random() * 900000));
+    const res = await fetch(`https://graph.facebook.com/v21.0/${sender}/register`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messaging_product: 'whatsapp', pin }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      await fetch(`${SUPABASE_URL}/rest/v1/app_flags`, {
+        method: 'POST',
+        headers: { ...H, Prefer: 'resolution=merge-duplicates' },
+        body: JSON.stringify({ key: 'wa_alert_pin', value: pin, updated_at: new Date().toISOString() }),
+      });
+    }
+    const err = (data && data.error) || {};
+    return json(200, { mode: 'register', ok: res.ok, status: res.status, code: err.code, error: err.message });
+  }
   const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
   const res = await fetch(`https://graph.facebook.com/v21.0/${sender}/messages`, {
     method: 'POST',
