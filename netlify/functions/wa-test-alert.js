@@ -40,7 +40,7 @@ exports.handler = async () => {
     const dbg = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
     const d = dbg.data || {};
     const phone = await g(`${sender}?fields=display_phone_number,verified_name,status,platform_type,code_verification_status,quality_rating,throughput`);
-    const waba = process.env.ALERT_WA_WABA_ID || '4740417332904358';
+    const waba = process.env.ALERT_WA_WABA_ID || '1492270739537979';
     const apps = await g(`${waba}/subscribed_apps`);
     return json(200, {
       mode: 'diag',
@@ -51,6 +51,10 @@ exports.handler = async () => {
   }
 
   if (row.value === 'register') {
+    // Make sure the Hikaya Messaging app is subscribed to the WhatsApp account first (needed to register).
+    const waba = process.env.ALERT_WA_WABA_ID || '1492270739537979';
+    const sub = await fetch(`https://graph.facebook.com/v21.0/${waba}/subscribed_apps`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    const subData = await sub.json().catch(() => ({}));
     const pin = String(Math.floor(100000 + Math.random() * 900000));
     const res = await fetch(`https://graph.facebook.com/v21.0/${sender}/register`, {
       method: 'POST',
@@ -66,7 +70,7 @@ exports.handler = async () => {
       });
     }
     const err = (data && data.error) || {};
-    return json(200, { mode: 'register', ok: res.ok, status: res.status, code: err.code, error: err.message });
+    return json(200, { mode: 'register', subscribed: sub.ok, subscribe_error: subData.error && subData.error.message, ok: res.ok, status: res.status, code: err.code, error: err.message });
   }
   const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
   const res = await fetch(`https://graph.facebook.com/v21.0/${sender}/messages`, {
