@@ -85,12 +85,13 @@ async function sendOrderAlert(order, items) {
         },
       }),
     });
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      console.error('whatsapp order alert failed', res.status, data && data.error && data.error.code, data && data.error && data.error.message);
-      return { sent: false };
+      const err = (data && data.error) || {};
+      console.error('whatsapp order alert failed', res.status, err.code, err.message);
+      return { sent: false, status: res.status, code: err.code, error: err.message };
     }
-    return { sent: true };
+    return { sent: true, id: data.messages && data.messages[0] && data.messages[0].id };
   } catch (e) {
     console.error('whatsapp order alert error', e && e.message);
     return { sent: false };
