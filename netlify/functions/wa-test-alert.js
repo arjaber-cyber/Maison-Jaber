@@ -18,7 +18,7 @@ const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'ap
 exports.handler = async () => {
   const r = await fetch(`${SUPABASE_URL}/rest/v1/app_flags?key=eq.wa_test_alert&select=value,updated_at`, { headers: H });
   const row = r.ok ? (await r.json())[0] : null;
-  if (!row || !['register', 'hello', 'order'].includes(row.value) || Date.now() - new Date(row.updated_at).getTime() > 15 * 60 * 1000) {
+  if (!row || !['diag', 'register', 'hello', 'order'].includes(row.value) || Date.now() - new Date(row.updated_at).getTime() > 15 * 60 * 1000) {
     return json(403, { error: 'locked' });
   }
   await fetch(`${SUPABASE_URL}/rest/v1/app_flags?key=eq.wa_test_alert`, { method: 'DELETE', headers: H });
@@ -34,6 +34,21 @@ exports.handler = async () => {
   const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
   const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
   if (!sender || !token) return json(200, { mode: row.value, sent: false, error: 'not_configured' });
+
+  if (row.value === 'diag') {
+    const g = async path => { const r = await fetch(`https://graph.facebook.com/v21.0/${path}`, { headers: { Authorization: `Bearer ${token}` } }); return r.json().catch(() => ({})); };
+    const dbg = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
+    const d = dbg.data || {};
+    const phone = await g(`${sender}?fields=display_phone_number,verified_name,status,platform_type,code_verification_status,quality_rating,throughput`);
+    const waba = process.env.ALERT_WA_WABA_ID || '4740417332904358';
+    const apps = await g(`${waba}/subscribed_apps`);
+    return json(200, {
+      mode: 'diag',
+      token: { app_id: d.app_id, application: d.application, type: d.type, valid: d.is_valid, expires_at: d.expires_at, scopes: d.scopes, granular: d.granular_scopes, error: dbg.error && dbg.error.message },
+      phone,
+      subscribed_apps: apps,
+    });
+  }
 
   if (row.value === 'register') {
     const pin = String(Math.floor(100000 + Math.random() * 900000));
