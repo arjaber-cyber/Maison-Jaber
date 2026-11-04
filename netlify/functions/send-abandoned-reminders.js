@@ -1,62 +1,108 @@
 // netlify/functions/send-abandoned-reminders.js
 //
-// Runs automatically on a schedule (configured in netlify.toml, currently
-// every 6 hours). Finds carts that were started 3+ hours ago, never
-// completed, and haven't already gotten a reminder -- then emails a
-// gentle nudge to come finish their child's book.
+// Scheduled hourly (netlify.toml). Sends ONE reminder to shoppers who:
+//   - ticked "Email me a link to finish my order" at checkout (consent_at is set),
+//   - left 3+ hours ago (but less than 48 hours ago),
+//   - have not ordered since (no order of ANY status for that email since they left: paid orders
+//     are complete; unpaid / cancelled ones already get their own "payment not completed" email),
+//   - have not unsubscribed, and have not had a reminder in the last 30 days.
+// Each reminder carries a private, expiring resume link (only its hash is stored) and a signed
+// one-click unsubscribe link. A row is "claimed" atomically before sending, so two runs can never
+// email the same person twice.
 //
-// Needs the `abandoned_carts` table in Supabase (see track-abandoned-cart.js)
-// and RESEND_API_KEY set (see _email.js) to actually send anything -- until
-// both exist, this just runs, finds nothing to do, and exits quietly.
+// SAFETY SWITCH: emails only go out when the Netlify env var CART_REMINDERS_LIVE = 1.
+// Without it the job runs in dry-run mode: it logs how many shoppers WOULD be emailed and changes nothing.
 
-const { sendEmail } = require('./_email');
+const { sendEmail, SITE_URL } = require('./_email');
 const { cartReminder } = require('./_templates');
+const R = require('./_recovery');
 
-const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
-// Server-side key (set SUPABASE_SERVICE_ROLE_KEY in Netlify env). The tables are locked with RLS,
-// so the public anon key alone can only read public storefront data.
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
+const HOUR = 36e5;
 
-const REMINDER_DELAY_HOURS = 3;
+async function run({ live, now = new Date() } = {}) {
+  if (!R.SERVICE_KEY) return { error: 'SUPABASE_SERVICE_ROLE_KEY missing' };
+  const from = new Date(now - R.REMINDER_MAX_AGE_HOURS * HOUR).toISOString();
+  const to = new Date(now - R.REMINDER_DELAY_HOURS * HOUR).toISOString();
 
-exports.handler = async () => {
-  const cutoff = new Date(Date.now() - REMINDER_DELAY_HOURS * 60 * 60 * 1000).toISOString();
+  const cr = await R.sb(`abandoned_carts?completed=eq.false&reminder_sent=eq.false&consent_at=not.is.null&item_count=gt.0`
+    + `&last_seen_at=lt.${encodeURIComponent(to)}&last_seen_at=gt.${encodeURIComponent(from)}&select=*&limit=50`);
+  if (!cr.ok) return { error: 'read abandoned_carts ' + cr.status };
+  const carts = await cr.json();
+  if (!carts.length) return { checked: 0, eligible: 0, sent: 0, suppressed: 0 };
 
-  let carts;
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/abandoned_carts?completed=eq.false&reminder_sent=eq.false&last_seen_at=lt.${cutoff}&select=*`,
-      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
-    );
-    if (!res.ok) {
-      console.warn('send-abandoned-reminders: could not read abandoned_carts (table may not exist yet):', await res.text());
-      return { statusCode: 200, body: 'No table yet, nothing to do.' };
-    }
-    carts = await res.json();
-  } catch (err) {
-    console.error('send-abandoned-reminders: fetch failed:', err);
-    return { statusCode: 200, body: 'Fetch failed, exiting quietly.' };
-  }
+  // Orders since the earliest candidate left (minus an hour of slack), compared by lower-cased email.
+  const since = new Date(Math.min(...carts.map(c => +new Date(c.last_seen_at))) - HOUR).toISOString();
+  const or = await R.sb(`orders?created_at=gte.${encodeURIComponent(since)}&select=email,created_at,payment_status,order_status`);
+  if (!or.ok) return { error: 'read orders ' + or.status }; // never email blind
+  const orders = await or.json();
 
-  let sent = 0;
+  let eligible = 0, sent = 0, suppressed = 0, failed = 0;
   for (const cart of carts) {
-    const mail = cartReminder(cart);
-    const result = await sendEmail({ to: cart.email, subject: mail.subject, html: mail.html });
+    const email = R.normEmail(cart.email);
+    const left = +new Date(cart.last_seen_at) - HOUR;
+    const ordered = orders.find(o => R.normEmail(o.email) === email && +new Date(o.created_at) >= left);
+    let reason = null;
+    if (ordered) reason = /^(paid|waived)$/.test(ordered.payment_status) ? 'ordered' : 'order_' + (ordered.order_status === 'cancelled' ? 'cancelled' : 'unpaid');
+    else if (!R.validEmail(email)) reason = 'invalid_email';
+    else if (await R.isUnsubscribed(email)) reason = 'unsubscribed';
 
-    if (result.sent) {
-      sent++;
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/abandoned_carts?email=eq.${encodeURIComponent(cart.email)}`, {
+    if (reason) {
+      suppressed++;
+      if (live) {
+        await R.sb(`abandoned_carts?email=eq.${encodeURIComponent(cart.email)}`, {
           method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
-          body: JSON.stringify({ reminder_sent: true }),
+          body: JSON.stringify(reason === 'ordered'
+            ? { completed: true, completed_at: now.toISOString(), suppressed_reason: reason }
+            : { suppressed_reason: reason, ...(reason === 'unsubscribed' || reason.startsWith('order_') ? { completed: true, completed_at: now.toISOString() } : {}) }),
         });
-      } catch (err) {
-        console.warn('Could not mark reminder_sent for', cart.email, err);
       }
+      continue;
+    }
+    eligible++;
+    if (!live) continue;
+
+    // Claim the row: only one run can flip reminder_sent false -> true.
+    const token = R.newToken();
+    const claim = await R.sb(`abandoned_carts?email=eq.${encodeURIComponent(cart.email)}&reminder_sent=eq.false&completed=eq.false`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({
+        reminder_sent: true, reminder_sent_at: now.toISOString(),
+        resume_token_hash: R.hashToken(token),
+        resume_expires_at: new Date(+now + R.RESUME_DAYS * 864e5).toISOString(),
+      }),
+    });
+    const claimed = claim.ok ? await claim.json() : [];
+    if (!claimed.length) continue;
+
+    const resumeUrl = `${SITE_URL}cart.html?resume=${encodeURIComponent(token)}&utm_source=hikaya_email&utm_medium=email&utm_campaign=cart_recovery`;
+    const unsub = R.unsubscribeUrl(email);
+    const mail = cartReminder(claimed[0], { resumeUrl, unsubscribeUrl: unsub });
+    const headers = unsub ? { 'List-Unsubscribe': `<${unsub}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' } : undefined;
+    const result = await sendEmail({ to: email, subject: mail.subject, html: mail.html, headers });
+    if (result.sent) sent++;
+    else {
+      failed++;
+      // Release the claim so the next hourly run can try again.
+      await R.sb(`abandoned_carts?email=eq.${encodeURIComponent(cart.email)}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ reminder_sent: false, reminder_sent_at: null, resume_token_hash: null, resume_expires_at: null }),
+      });
     }
   }
+  return { checked: carts.length, eligible, sent, suppressed, failed, live: !!live };
+}
 
-  return { statusCode: 200, body: `Checked ${carts.length} abandoned cart(s), sent ${sent} reminder(s).` };
+exports.run = run;
+exports.handler = async () => {
+  const live = process.env.CART_REMINDERS_LIVE === '1';
+  try {
+    const r = await run({ live });
+    // Counts only: no emails or names in the logs.
+    console.log('send-abandoned-reminders', JSON.stringify(r));
+    return { statusCode: 200, body: JSON.stringify(r) };
+  } catch (err) {
+    console.error('send-abandoned-reminders error:', err.message);
+    return { statusCode: 200, body: JSON.stringify({ error: 'failed' }) };
+  }
 };

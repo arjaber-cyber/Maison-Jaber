@@ -32,6 +32,18 @@ window.HIKAYA_ANALYTICS_CONFIG = {
 };
 
 (function () {
+  /* Privacy (Nov 2026): a saved-order link (cart.html?resume=<private token>) must never reach
+     Google Analytics, Clarity or Meta. Move the token out of the address bar into this tab's
+     sessionStorage before anything reads the URL; recovery.js picks it up from there. */
+  try {
+    const u = new URL(location.href);
+    const tok = u.searchParams.get('resume');
+    if (tok) {
+      try { sessionStorage.setItem('hk_resume_pending', tok); } catch (e) {}
+      u.searchParams.delete('resume');
+      history.replaceState(history.state, '', u.pathname + (u.search || '') + u.hash);
+    }
+  } catch (e) {}
   const cfg = window.HIKAYA_ANALYTICS_CONFIG;
   const gaConfigured = cfg.GA_MEASUREMENT_ID && cfg.GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX';
   const pixelConfigured = cfg.META_PIXEL_ID && cfg.META_PIXEL_ID !== '000000000000000';

@@ -60,7 +60,8 @@ export default async (request) => {
     const desc = ar
       ? `${premise}، كتاب قصة مخصص يكون طفلك بطله باسمه وملامحه المرسومة في كل صفحة، بغلاف مقوّى مربع 21×21 سم، النسخة العربية تُقرأ من اليمين إلى اليسار، مع رسالتك في الصفحة الأولى، ويصل في علبة هدية${ages ? `، مناسب للأعمار ${ages} سنوات` : ""}`
       : `${premise} A personalised hardcover storybook (21×21 cm) with your child as the hero: their first name and illustrated likeness on every page, your own message on the first page, in English or Arabic, delivered gift-boxed.${ages ? ` For ages ${ages}.` : ""}`;
-    const link = `${BASE}story.html?s=${encodeURIComponent(s.slug)}${ar ? "&lang=ar" : ""}`;
+    // ?country= opens the page in this feed's currency (region.js) so the landing-page price matches the feed.
+    const link = `${BASE}story.html?s=${encodeURIComponent(s.slug)}${ar ? "&lang=ar" : ""}${cc === "AE" ? "" : "&country=" + cc}`;
     const img = ar ? (s.cover_image_url_ar || s.cover_image_url) : s.cover_image_url;
     const extra = [ar ? s.back_cover_url_ar : s.back_cover_url].concat(ar ? (s.preview_images_ar || []) : (s.preview_images || [])).filter(Boolean).slice(0, 5);
     return `    <item>

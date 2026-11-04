@@ -180,6 +180,15 @@ window.hikayaAedHtml = function (total, region) {
 
 (function () {
   const REGION_KEY = 'hikaya_region';
+  /* Links from Google Shopping (Merchant Center feed) and ads carry ?country=SA etc. (ISO code), so the
+     page opens in that country's currency and the price matches the listing. Counts as a manual pick. */
+  try {
+    const cc = (new URLSearchParams(location.search).get('country') || '').toUpperCase();
+    if (/^[A-Z]{2}$/.test(cc)) {
+      const key = Object.keys(window.HIKAYA_REGIONS).find(k => window.HIKAYA_REGIONS[k].zone === 'GCC' && window.HIKAYA_REGIONS[k].countryCodes.includes(cc));
+      if (key) localStorage.setItem(REGION_KEY, key);
+    }
+  } catch (e) { /* storage blocked: the normal detection runs */ }
   function getStoredRegionKey() {
     return localStorage.getItem(REGION_KEY);
   }

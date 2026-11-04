@@ -316,6 +316,7 @@
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/cart.js" defer></script>
+<script src="/recovery.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
@@ -360,6 +361,7 @@
       <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price><strong><bdi>AED 169</bdi></strong></span></div>
       <p class="summary-incl" data-i18n="pg.incl_box">Includes our signature gift packaging</p>
       <p class="summary-incl" data-hk-eta>Delivery to UAE: about 5 working days</p>
+      <p class="sib-hint" id="sib-hint" hidden></p>
       </div>
     </div>
 
@@ -1825,8 +1827,7 @@
       const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length);
       famUploads.forEach((x, k) => { const c = item.supportingCharacters.find(sc => sc.role === x.role); if (c && famPaths[k]) c.photoPaths.push(famPaths[k]); });
       if (item.supportingCharacters.length && !item.supportingCharacters.some(c => c.photoPaths.length)) item.supportingChoice = 'avatar';
-      // A small thumbnail so the cart can show the photo on this device (well within storage limits).
-      try { const th = await resizePhoto(verifiedPhotos[0].file, 240, 0.8); item.photoThumb = 'data:image/jpeg;base64,' + await blobToBase64(th); } catch (_) {}
+      // Privacy (Nov 2026): no copy of the child's photo is kept in this browser; the cart holds only the private storage path.
     } catch (err) {
       showUpload(0, true);
       saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete();
@@ -1848,5 +1849,28 @@
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
 <script src="chrome.js" defer></script>
+<script>
+/* Sibling bundle hint (Nov 2026): a quiet line in the order summary. Totals come from the cart's own
+   pricing (hikayaCart.bundleTotalFor), so they always match what the cart and checkout charge. */
+(function () {
+  function paint() {
+    var el = document.getElementById('sib-hint'); if (!el || !window.hikayaCart || !window.hikayaRegion) return;
+    var region = window.hikayaRegion(), n = window.hikayaCart.getCart().length;
+    var fmt = function (v) { return '<bdi>' + (window.hikayaFormatPrice ? window.hikayaFormatPrice(v, region) : v) + '</bdi>'; };
+    var tr = function (k, f) { return (window.hikayaT && window.hikayaT(k)) || f; };
+    if (n === 0) {
+      el.innerHTML = tr('sib.pz_hint', 'Ordering for siblings too? 2 books {two} in total, 3 books {three}. Add the next child after this one.')
+        .replace('{two}', '<strong>' + fmt(window.hikayaCart.bundleTotalFor(2, region).total) + '</strong>')
+        .replace('{three}', '<strong>' + fmt(window.hikayaCart.bundleTotalFor(3, region).total) + '</strong>');
+    } else {
+      el.innerHTML = tr('sib.pz_next', 'Book {n} for your family: the bundle saving is applied in your cart.').replace('{n}', '<strong>' + (n + 1) + '</strong>');
+    }
+    el.hidden = false;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(paint, 0); }); else paint();
+  document.addEventListener('hikaya:regionchange', paint);
+  document.addEventListener('hikaya:langchange', paint);
+})();
+</script>
 </body>
 </html>

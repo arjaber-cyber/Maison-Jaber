@@ -53,7 +53,7 @@ function htmlToText(html) {
     .replace(/^[ \t]+/gm, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
-async function sendEmail({ to, subject, html, text, replyTo }) {
+async function sendEmail({ to, subject, html, text, replyTo, headers }) {
   const rawKey = process.env.RESEND_API_KEY || '';
   /* Keys pasted via notes/chat apps can pick up smart quotes or spaces; strip anything that can't be in a key. */
   const apiKey = rawKey.replace(/[^\x21-\x7E]/g, '').replace(/^['"`]+|['"`]+$/g, '');
@@ -75,7 +75,7 @@ async function sendEmail({ to, subject, html, text, replyTo }) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify({ from, to, subject, html, text: text || htmlToText(html), reply_to: replyTo || CUSTOMER_EMAIL }),
+      body: JSON.stringify(Object.assign({ from, to, subject, html, text: text || htmlToText(html), reply_to: replyTo || CUSTOMER_EMAIL }, headers ? { headers } : {})),
     });
     if (!res.ok) {
       const errText = await res.text();
