@@ -327,6 +327,20 @@
 
 
   /* ---------- Discounts tab + order types (Oct 2026) ---------- */
+  /* Feedback tab (Nov 2026) */
+  .fb-kpis { margin-bottom:16px; }
+  .fb-list { display:flex; flex-direction:column; gap:10px; }
+  .fb-item { border:1px solid var(--line-soft); border-radius:14px; padding:14px 16px; background:var(--bg); }
+  .fb-item.low { border-left:3px solid #e0b25c; }
+  .fb-top { font-size:14px; } .fb-top span { display:block; font-size:12px; color:var(--ink-soft); font-weight:600; }
+  .fb-scores { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 16px; margin:10px 0; font-size:12.5px; }
+  .fb-scores div { display:flex; justify-content:space-between; gap:8px; } .fb-scores div > span:first-child { color:var(--ink-soft); font-weight:600; }
+  .fb-stars { color:#E8A33D; letter-spacing:1px; white-space:nowrap; } .fb-stars span { color:#E2D5C3; }
+  .fb-comment { margin:0 0 10px; padding:10px 12px; background:#fff; border-radius:10px; font-size:14px; line-height:1.55; white-space:pre-wrap; }
+  .fb-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; font-size:13px; font-weight:600; }
+  .fb-actions label { display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+  .fb-meta { color:var(--ink-soft); font-size:12px; margin-left:auto; }
+  @media (max-width:640px) { .fb-scores { grid-template-columns:1fr; } .fb-meta { margin-left:0; } }
   /* Visitors tab */
   .vz-self { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-left:auto; }
   .vz-kpis { margin-bottom:16px; }
@@ -476,6 +490,7 @@
 <script src="admin-orders.js"></script>
 <script src="admin-discounts.js"></script>
 <script src="admin-visits.js"></script>
+<script src="admin-feedback.js"></script>
 <script src="admin-customers.js"></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -503,6 +518,7 @@
   <button role="tab" data-tab="orders" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>Orders</button>
   <button role="tab" data-tab="customers" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg>Customers</button>
   <button role="tab" data-tab="visitors" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Visitors</button>
+  <button role="tab" data-tab="feedback" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>Feedback</button>
   <button role="tab" data-tab="discounts" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>Discounts</button>
   <button role="tab" data-tab="stories" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/></svg>Stories</button>
   <button role="tab" data-tab="photos" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/></svg>Site photos</button>
@@ -547,6 +563,13 @@
   <p>Real visitor numbers, where they came from and how far they got through the shop.</p>
 </div>
 <div class="wrap" id="vz-root" style="margin-bottom:48px;"></div>
+</div>
+<div data-panel="feedback" hidden>
+<div class="wrap page-head">
+  <h1>Feedback</h1>
+  <p>Ratings and comments from customers, sent automatically 3 days after delivery. Each answer gets a 10% thank-you code (one per customer).</p>
+</div>
+<div class="wrap" id="fb-root" style="margin-bottom:48px;"></div>
 </div>
 <div data-panel="discounts" hidden>
 <div class="wrap page-head">
@@ -738,6 +761,7 @@
     window.hkOrders.load(adminPassword);
     if (window.hkDiscounts) window.hkDiscounts.load(adminPassword);
     if (window.hkVisits) window.hkVisits.load(adminPassword);
+    if (window.hkFeedback) window.hkFeedback.load(adminPassword);
     if (window.hkCustomers) window.hkCustomers.load(adminPassword);
     // Personalize requests now arrive as real orders (cart + checkout); the old Netlify Forms feed is retired.
     loadSitePhotos(adminPassword);
@@ -1538,7 +1562,7 @@
     try { history.replaceState(null, '', '#' + k); } catch (_) {}
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
-  const h = location.hash.slice(1); if (['orders', 'customers', 'visitors', 'discounts', 'stories', 'photos'].includes(h)) show(h);
+  const h = location.hash.slice(1); if (['orders', 'customers', 'visitors', 'feedback', 'discounts', 'stories', 'photos'].includes(h)) show(h);
 })();
 </script>
 <script>document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(function(){document.documentElement.classList.remove('i18n-wait')})});</script>

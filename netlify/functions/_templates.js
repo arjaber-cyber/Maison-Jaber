@@ -387,35 +387,86 @@ function delayNotice(order, newDate, note) {
   };
 }
 
-/* ---------------- Feedback / review request (about 5 days after delivery) ---------------- */
-function reviewRequest(order) {
+/* ---------------- Feedback request (3 days after delivery) ----------------
+   Links to feedback.html with the order's private token. 4 ratings + a comment,
+   10% off the next book (30 days) as a thank-you, whatever the score. */
+const feedbackUrl = o => `${SITE_URL}feedback.html?t=${encodeURIComponent((o && o.tracking_token) || '')}`;
+function reviewRequest(order, arTitles) {
   const lang = orderLang(order);
   const first = esc(firstName(order.full_name, lang));
   const items = parseItems(order);
   const names = [...new Set(items.map(i => i.childName).filter(Boolean))];
-  const who = names.length === 1 ? esc(names[0]) : '';
+  const titles = [...new Set(items.map(i => storyTitle(i, lang, arTitles)).filter(Boolean))];
+  const one = names.length === 1;
+  const who = one ? esc(names[0]) : names.length ? esc(names.join(' & ')) : '';
+  const title = titles.length === 1 ? esc(titles[0]) : '';
+  const story = title
+    ? tr(lang, `<em>${title}</em>`, `«${title}»`)
+    : tr(lang, 'their Hikaya story', 'قصة حكاية');
   const body = [
-    ui.eyebrow(tr(lang, 'How did we do?', 'ما رأيك؟'), lang),
-    ui.h(tr(lang, `Did ${who || 'they'} love it, ${first}?`, `هل أحبّ ${who || 'طفلك'} الكتاب${first ? ' يا ' + first : ''}؟`), lang),
+    ui.eyebrow(tr(lang, 'How did we do?', 'كيف كانت التجربة؟'), lang),
+    ui.h(tr(lang, `Hi ${first},`, first ? `مرحباً ${first}،` : 'مرحباً،'), lang),
     ui.p(tr(lang,
-      'We\'re a small UAE studio and every book is made by hand for one child, so hearing how it landed means a lot.',
-      'نحن استوديو صغير في الإمارات، وكل كتاب نصنعه بعناية لطفل واحد، لذلك يهمّنا كثيرًا أن نعرف كيف كان وقعه'), lang),
+      `We hope ${who || 'your little one'} loved stepping into ${story} and seeing themselves as the hero of every page 💛`,
+      `نتمنى أن تكون ${title ? 'قصة ' + story : story} قد أسعدت ${who || 'طفلكم'} وملأت وقت القراءة في بيتكم بالفرح 💛`), lang),
     ui.p(tr(lang,
-      '<strong>Just reply to this email</strong> with a few words: what they thought, their favourite page, or a photo of the moment they saw their name.',
-      '<strong>ردّ على هذا البريد</strong> ببضع كلمات: رأيهم، أو صفحتهم المفضّلة، أو صورة للحظة رؤيتهم لاسمهم'), lang),
-    ui.box(`<div style="text-align:center;">${ui.p(tr(lang,
-      `As a thank-you, we'll send you <strong>10% off your next book</strong>, valid for 60 days.`,
-      `وشكرًا لك، سنرسل لك <strong>خصم 10% على كتابك القادم</strong> صالحًا لمدة 60 يومًا`), lang).replace('margin:0 0 14px', 'margin:0')}</div>`),
+      'Each Hikaya book is made for one child only, so we\'d really love to know how story time went.',
+      'كل كتاب من حكاية يُصنع لطفل واحد فقط، لذلك يهمنا كثيراً أن نعرف كيف كانت التجربة'), lang),
+    ui.p(`<strong>${tr(lang, 'Rate us in 30 seconds and get 10% off your next story.', 'قيّمونا خلال 30 ثانية واحصلوا على خصم 10% على قصتكم القادمة')}</strong>`, lang),
+    ui.button(feedbackUrl(order), tr(lang, `Rate ${one ? who + '\'s' : 'your'} story &rarr;`, `قيّموا قصة ${one ? who : 'طفلكم'} &larr;`), lang),
+    ui.p(tr(lang, 'Your code arrives as soon as you submit and is valid for 30 days.', 'يصلكم الكود فور الإرسال وهو صالح لمدة 30 يوماً'), lang, true),
+    ui.sign(lang),
     ui.p(tr(lang,
-      'We only share feedback on our website or social media with your permission, and never your child\'s photo unless you say so.',
-      'لا ننشر رأيك على موقعنا أو وسائل التواصل إلا بإذنك، ولا ننشر صورة طفلك أبدًا إلا إذا طلبت ذلك'), lang, true),
-    ui.button(`${SITE_URL}stories.html`, tr(lang, 'See all stories &rarr;', 'تصفّح كل القصص &larr;'), lang),
+      'Your ratings and comments may be used anonymously in Hikaya promotions. We never share your name, your child\'s name, or anything that identifies you.',
+      'قد نستخدم تقييماتكم وتعليقاتكم في عروض حكاية دون ذكر اسمكم أو اسم طفلكم أو أي معلومة تدل عليكم'), lang, true),
+  ].join('');
+  return {
+    subject: tr(lang, `How did ${one ? names[0] : 'your little one'} like their story? 🎁`, `كيف كانت قصة ${one ? names[0] : 'طفلكم'}؟ 🎁`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Rate your story in 30 seconds and get 10% off your next one.', 'قيّموا قصتكم خلال 30 ثانية واحصلوا على خصم 10%') }),
+  };
+}
+
+/* ---------------- Feedback thank-you with the 10% code ---------------- */
+function feedbackThanks({ lang, firstName: first, childName, code, expiresAt }) {
+  lang = lang === 'ar' ? 'ar' : 'en';
+  const until = expiresAt ? new Date(expiresAt).toLocaleDateString(lang === 'ar' ? 'ar-AE' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Dubai' }) : '';
+  const big = `<div class="hk-bg" style="background:#F3EADF; border:1.5px dashed #D8C5B3; border-radius:12px; padding:14px; margin:2px 0 12px; text-align:center;">
+    <div dir="ltr" style="font-family:Menlo,Consolas,monospace; font-size:22px; font-weight:700; letter-spacing:.1em; color:#261C17;">${esc(code)}</div>
+    ${until ? `<div style="font-family:Manrope,Cairo,Arial,sans-serif; font-size:13px; color:#8E7A68; margin-top:8px;">${tr(lang, 'Valid until', 'صالح حتى')} ${esc(until)}</div>` : ''}</div>`;
+  const kid = childName ? esc(childName) : '';
+  const body = [
+    ui.eyebrow(tr(lang, 'Thank you', 'شكراً لكم'), lang),
+    ui.h(tr(lang, `Thank you${first ? ', ' + esc(first) : ''} 💛`, `شكراً ${first ? esc(first) : 'لكم'} 💛`), lang),
+    ui.p(tr(lang,
+      `Here's 10% off ${kid ? kid + '\'s' : 'your'} next adventure.`,
+      `إليكم خصم 10% على المغامرة القادمة${kid ? ' لـ ' + kid : ''}`), lang),
+    big,
+    ui.p(tr(lang, 'Enter it at checkout. It works once, with this email address only. One discount applies per order.', 'أدخلوا الكود عند الدفع، يُستخدم مرة واحدة ومع هذا البريد فقط، وخصم واحد لكل طلب'), lang, true),
+    ui.button(`${SITE_URL}stories.html`, tr(lang, 'Choose the next story &rarr;', 'اختاروا القصة القادمة &larr;'), lang),
     ui.sign(lang),
   ].join('');
   return {
-    subject: tr(lang, `How did ${names.length === 1 ? names[0] : 'they'} like the Hikaya book?`, `ما رأي ${names.length === 1 ? names[0] : 'طفلك'} في كتاب حكاية؟`),
-    html: emailShell(body, { lang, preheader: tr(lang, 'Reply with a few words and get 10% off your next book.', 'ردّ ببضع كلمات واحصل على خصم 10% على كتابك القادم') }),
+    subject: tr(lang, `Your 10% thank-you code: ${code}`, `كود الخصم 10% الخاص بكم: ${code}`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Thank you for your feedback. Here is 10% off your next story.', 'شكراً على تقييمكم، إليكم خصم 10% على قصتكم القادمة') }),
   };
+}
+
+/* ---------------- Team alert: a feedback with a low score (English) ---------------- */
+function feedbackAlert({ order, info, q, comment, adminUrl }) {
+  const lbl = { q_recommend: 'Would recommend', q_story: 'Story and likeness', q_print: 'Print and packaging', q_delivery: 'Ordering and delivery' };
+  const body = [
+    ui.eyebrow('Low feedback score'),
+    ui.h(`Order ${esc(order.order_number || '')} needs a personal follow-up`),
+    ui.rows([
+      ['Customer', esc(order.full_name || '') + (order.email ? `<br><span style="font-weight:400;">${esc(order.email)}</span>` : '')],
+      ['Child / story', esc([info.childName, info.story].filter(Boolean).join(' · ') || '-')],
+      ...Object.keys(lbl).map(k => [lbl[k], `${'★'.repeat(q[k])}${'☆'.repeat(5 - q[k])} &nbsp;${q[k]}/5${q[k] <= 3 ? ' ⚠️' : ''}`]),
+      ['Comment', esc(comment)],
+    ]),
+    ui.p('They still received their 10% code automatically. A quick personal message usually turns this around.', 'en', true),
+    ui.button(adminUrl, 'Open feedback in the dashboard &rarr;'),
+  ].join('');
+  return { subject: `⚠️ Low feedback score · ${order.order_number || ''}`, html: emailShell(body, { preheader: 'A customer rated part of their order 3 or below.' }) };
 }
 
 /* ---------------- Newsletter sign-up confirmation ---------------- */
@@ -468,7 +519,7 @@ function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
     section(`Orders running late (${late.length})`, late.map(o => `<li><strong>${esc(o.order_number)}</strong> · ${esc(o.full_name || '')} · ${esc(o.stageLabel)} for ${o.days} day${o.days === 1 ? '' : 's'} (target ${o.sla})</li>`), 'None. Every order is on schedule.'),
     section(`Unpaid orders, last 3 days (${unpaid.length})`, unpaid.map(o => `<li><strong>${esc(o.order_number)}</strong> · ${esc(o.full_name || '')} · ${esc(o.email || '')} · ${esc(o.payment_status)}</li>`), 'None.'),
     section(`New contact messages, last 24 hours (${messages.length})`, messages.map(m => `<li><strong>${esc(m.name || '')}</strong> (${esc(m.email || '')})${m.order_number ? ' · ' + esc(m.order_number) : ''}: ${esc(String(m.message || '').slice(0, 140))}${String(m.message || '').length > 140 ? '…' : ''}</li>`), 'None.'),
-    reviewsSent ? ui.p(`Feedback emails sent today: <strong>${reviewsSent}</strong>. When customers reply, use "Give this customer a code" in the dashboard to send their 10% thank-you.`, 'en', true) : '',
+    reviewsSent ? ui.p(`Feedback emails sent today: <strong>${reviewsSent}</strong>. Answers and their automatic 10% codes show in the dashboard's Feedback tab.`, 'en', true) : '',
     ui.button(adminUrl, 'Open the dashboard &rarr;'),
   ].join('');
   return {
@@ -477,4 +528,4 @@ function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
   };
 }
 
-module.exports = { trackCode, photoRequest, delayNotice, reviewRequest, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };
+module.exports = { trackCode, photoRequest, delayNotice, reviewRequest, feedbackThanks, feedbackAlert, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };

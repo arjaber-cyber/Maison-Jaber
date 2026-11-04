@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rate your story — Hikaya by Maison Jaber</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/png" href="images/favicon-star.png" />
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;500;600;700&family=Amiri:wght@700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --page:#F3EADF; --card:#FFFCF7; --line:#EEE4D6; --ink:#261C17; --soft:#5E4A3D; --mute:#8E7A68; --btn:#573624; --star:#E8A33D; --star-off:#E2D5C3; --err:#B5563B; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--page); color:var(--ink); font-family:Manrope, 'Helvetica Neue', Arial, sans-serif; font-size:15px; line-height:1.6; }
+  html[dir=rtl] body { font-family:Cairo, Tahoma, Arial, sans-serif; }
+  .wrap { max-width:480px; margin:0 auto; padding:22px 16px 40px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px 20px; }
+  .logo { display:block; margin:0 auto 6px; width:104px; height:auto; }
+  .for { text-align:center; font-size:12.5px; color:var(--mute); margin:0 0 16px; }
+  h1 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:600; font-size:24px; line-height:1.2; margin:0 0 6px; text-align:center; }
+  html[dir=rtl] h1 { font-family:Amiri, serif; font-weight:700; font-size:22px; }
+  .ban { background:var(--page); border-radius:10px; padding:10px 12px; font-size:13.5px; text-align:center; margin:0 0 20px; color:var(--soft); }
+  .ban b { color:var(--ink); }
+  .q { margin:0 0 6px; font-size:14px; font-weight:600; color:var(--soft); }
+  .stars { display:flex; gap:8px; margin:0 0 18px; }
+  .stars button { background:none; border:0; padding:0; font-size:32px; line-height:1; color:var(--star-off); cursor:pointer; font-family:inherit; }
+  .stars button.on { color:var(--star); }
+  .stars button:focus-visible { outline:2px solid var(--btn); outline-offset:2px; border-radius:4px; }
+  .missing .q { color:var(--err); }
+  textarea { width:100%; min-height:96px; background:#fff; border:1.5px solid var(--line); border-radius:10px; padding:10px 12px; font:inherit; font-size:14px; color:var(--ink); resize:vertical; }
+  textarea:focus { outline:none; border-color:#D8C5B3; }
+  .missing textarea { border-color:var(--err); }
+  .decl { font-size:12px; color:var(--mute); line-height:1.55; margin:14px 0 0; }
+  .err { color:var(--err); font-size:13.5px; font-weight:600; margin:10px 0 0; text-align:center; min-height:1px; }
+  .btn { display:block; width:100%; text-align:center; background:var(--btn); color:#FFFCF7; border:0; border-radius:999px; padding:14px; font:inherit; font-size:15px; font-weight:700; cursor:pointer; margin:14px 0 0; text-decoration:none; }
+  .btn[disabled] { opacity:.7; cursor:default; }
+  .code { border:1.5px dashed var(--star); border-radius:10px; padding:14px; font-family:Menlo, Consolas, monospace; font-size:21px; font-weight:700; letter-spacing:.12em; text-align:center; margin:14px 0 8px; direction:ltr; }
+  .copy { display:block; margin:0 auto; background:none; border:1.5px solid var(--btn); color:var(--btn); border-radius:999px; padding:7px 18px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  .small { font-size:12.5px; color:var(--mute); text-align:center; margin:8px 0 0; }
+  .center { text-align:center; }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <a href="index.html"><img class="logo" src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" /></a>
+
+    <div id="loading" class="center small" style="padding:30px 0" data-t="loading">Loading…</div>
+
+    <div id="bad" class="hide center">
+      <h1 data-t="badTitle">This link isn't working</h1>
+      <p class="small" data-t="badText">Please open the link from your Hikaya email again, or message us on WhatsApp and we'll help.</p>
+      <a class="btn" href="https://wa.me/971508011769" data-t="whatsapp">WhatsApp us</a>
+    </div>
+
+    <form id="form" class="hide" novalidate>
+      <p class="for" id="for"></p>
+      <div class="ban" data-t-html="banner">🎁 Rate your story and get <b>10% off</b> your next one</div>
+
+      <div class="qrow" data-key="recommend"><p class="q" data-t="q1">How likely are you to recommend Hikaya?</p><div class="stars"></div></div>
+      <div class="qrow" data-key="story"><p class="q" id="q2"></p><div class="stars"></div></div>
+      <div class="qrow" data-key="print"><p class="q" data-t="q3">Print quality and packaging</p><div class="stars"></div></div>
+      <div class="qrow" data-key="delivery"><p class="q" data-t="q4">Ordering and delivery</p><div class="stars"></div></div>
+      <div class="qrow" data-key="comment"><p class="q" data-t="q5">Anything you'd like to share?</p>
+        <textarea id="comment" maxlength="2000"></textarea></div>
+
+      <p class="decl" data-t="decl">By submitting, you agree Hikaya may use your ratings and comments in our promotions. We never show your name, your child's name, or anything that identifies you.</p>
+      <p class="err" id="err"></p>
+      <button class="btn" id="go" type="submit" data-t="submit">Submit and get my code</button>
+    </form>
+
+    <div id="done" class="hide center">
+      <h1 data-t="thanks">Thank you 💛</h1>
+      <div id="withCode">
+        <p id="offer" style="margin:0"></p>
+        <div class="code" id="code"></div>
+        <button class="copy" id="copy" type="button" data-t="copy">Copy code</button>
+        <p class="small" id="valid"></p>
+      </div>
+      <p id="noCode" class="hide" style="margin:6px 0 0" data-t="reused">Your feedback means a lot to us. You've already received your thank-you code from an earlier order.</p>
+      <a class="btn" href="stories.html" data-t="browse">Browse stories</a>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var T = {
+    en: {
+      loading: 'Loading…', badTitle: "This link isn't working", badText: "Please open the link from your Hikaya email again, or message us on WhatsApp and we'll help.", whatsapp: 'WhatsApp us',
+      banner: '🎁 Rate your story and get <b>10% off</b> your next one',
+      forStory: function (c, s) { return (c ? c + "'s story" : 'Your story') + (s ? ' · ' + s : ''); },
+      q1: 'How likely are you to recommend Hikaya?',
+      q2: function (c) { return 'The story and how much it looked like ' + (c || 'your child'); },
+      q3: 'Print quality and packaging', q4: 'Ordering and delivery', q5: "Anything you'd like to share?",
+      ph: function (c) { return (c || 'They') + ' asks for it every night…'; },
+      decl: "By submitting, you agree Hikaya may use your ratings and comments in our promotions. We never show your name, your child's name, or anything that identifies you.",
+      submit: 'Submit and get my code', sending: 'Sending…', missing: 'Answer all questions first', server: "Something went wrong. Please try again in a moment.",
+      thanks: 'Thank you 💛', offer: function (c) { return "Here's 10% off " + (c ? c + "'s" : 'your') + ' next adventure'; },
+      valid: function (d) { return 'One use · valid until ' + d + ' · also sent to your email'; },
+      copy: 'Copy code', copied: 'Copied ✓', reused: "Your feedback means a lot to us. You've already received your thank-you code from an earlier order.", browse: 'Browse stories', star: ' out of 5'
+    },
+    ar: {
+      loading: 'جارٍ التحميل…', badTitle: 'هذا الرابط لا يعمل', badText: 'افتحوا الرابط من رسالة حكاية مرة أخرى، أو راسلونا على واتساب وسنساعدكم', whatsapp: 'راسلونا على واتساب',
+      banner: '🎁 قيّموا قصتكم واحصلوا على <b>خصم 10%</b> على قصتكم القادمة',
+      forStory: function (c, s) { return (c ? 'قصة ' + c : 'قصتكم') + (s ? ' · ' + s : ''); },
+      q1: 'ما مدى احتمال أن توصوا بحكاية لأصدقائكم؟',
+      q2: function (c) { return 'القصة ومدى شبهها بـ' + (c || 'طفلكم'); },
+      q3: 'جودة الطباعة والتغليف', q4: 'الطلب والتوصيل', q5: 'شاركونا رأيكم',
+      ph: function () { return 'نقرأها معاً كل ليلة…'; },
+      decl: 'بإرسال التقييم، توافقون على أن تستخدم حكاية تقييماتكم وتعليقاتكم في عروضها، دون ذكر اسمكم أو اسم طفلكم أو أي معلومة تدل عليكم',
+      submit: 'أرسلوا التقييم واحصلوا على الكود', sending: 'جارٍ الإرسال…', missing: 'أجيبوا على كل الأسئلة أولاً', server: 'حدث خطأ، حاولوا مرة أخرى بعد قليل',
+      thanks: 'شكراً لكم 💛', offer: function (c) { return 'إليكم خصم 10% على المغامرة القادمة' + (c ? ' لـ ' + c : ''); },
+      valid: function (d) { return 'استخدام واحد · صالح حتى ' + d + ' · أرسلناه أيضاً إلى بريدكم'; },
+      copy: 'نسخ الكود', copied: 'تم النسخ ✓', reused: 'رأيكم يعني لنا الكثير، وقد حصلتم على كود الشكر من طلب سابق', browse: 'تصفّحوا القصص', star: ' من 5'
+    }
+  };
+  var qs = new URLSearchParams(location.search);
+  var token = qs.get('t') || '';
+  var lang = qs.get('lang') === 'ar' ? 'ar' : 'en';
+  var info = {};
+  var ratings = { recommend: 0, story: 0, print: 0, delivery: 0 };
+  var $ = function (id) { return document.getElementById(id); };
+  var t = function (k) { return T[lang][k]; };
+
+  function show(id) { ['loading', 'bad', 'form', 'done'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
+  function applyLang() {
+    var d = document.documentElement; d.lang = lang; d.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-t]').forEach(function (el) { var v = t(el.getAttribute('data-t')); if (typeof v === 'string') el.textContent = v; });
+    document.querySelectorAll('[data-t-html]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-t-html')); });
+    $('q2').textContent = t('q2')(info.childName);
+    $('for').textContent = t('forStory')(info.childName, info.story);
+    $('comment').placeholder = t('ph')(info.childName && info.childName.indexOf('&') < 0 ? info.childName : '');
+    document.title = lang === 'ar' ? 'قيّموا قصتكم — حكاية' : 'Rate your story — Hikaya by Maison Jaber';
+  }
+  function fmtDate(iso) {
+    try { return new Date(iso).toLocaleDateString(lang === 'ar' ? 'ar-AE' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Dubai' }); } catch (e) { return ''; }
+  }
+  function showDone(res) {
+    applyLang();
+    if (res.code) {
+      $('withCode').classList.remove('hide'); $('noCode').classList.add('hide');
+      $('offer').textContent = t('offer')(info.childName);
+      $('code').textContent = res.code;
+      $('valid').textContent = res.expiresAt ? t('valid')(fmtDate(res.expiresAt)) : '';
+    } else {
+      $('withCode').classList.add('hide'); $('noCode').classList.remove('hide');
+    }
+    show('done');
+  }
+
+  document.querySelectorAll('.qrow .stars').forEach(function (box) {
+    var key = box.parentNode.getAttribute('data-key');
+    for (var i = 1; i <= 5; i++) (function (n) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = '★';
+      b.setAttribute('aria-label', n + T.en.star);
+      b.addEventListener('click', function () {
+        ratings[key] = n;
+        Array.prototype.forEach.call(box.children, function (c, k) { c.classList.toggle('on', k < n); c.setAttribute('aria-pressed', k < n ? 'true' : 'false'); });
+        box.parentNode.classList.remove('missing'); $('err').textContent = '';
+      });
+      box.appendChild(b);
+    })(i);
+  });
+  $('comment').addEventListener('input', function () { $('comment').parentNode.classList.remove('missing'); $('err').textContent = ''; });
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    document.querySelectorAll('.qrow').forEach(function (row) {
+      var k = row.getAttribute('data-key');
+      var good = k === 'comment' ? $('comment').value.trim().length > 0 : ratings[k] > 0;
+      row.classList.toggle('missing', !good); if (!good) ok = false;
+    });
+    if (!ok) { $('err').textContent = t('missing'); return; }
+    var btn = $('go'); btn.disabled = true; btn.textContent = t('sending');
+    fetch('/.netlify/functions/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: token, ratings: ratings, comment: $('comment').value.trim() }) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok) { btn.disabled = false; btn.textContent = t('submit'); $('err').textContent = x.j && x.j.error === 'incomplete' ? t('missing') : t('server'); return; }
+        showDone(x.j);
+      })
+      .catch(function () { btn.disabled = false; btn.textContent = t('submit'); $('err').textContent = t('server'); });
+  });
+
+  $('copy').addEventListener('click', function () {
+    var c = $('code').textContent;
+    var done = function () { $('copy').textContent = t('copied'); setTimeout(function () { $('copy').textContent = t('copy'); }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(c).then(done, done); else done();
+  });
+
+  applyLang();
+  if (!token) { show('bad'); return; }
+  fetch('/.netlify/functions/feedback?t=' + encodeURIComponent(token))
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      if (!j) { show('bad'); return; }
+      info = j; if (!qs.get('lang')) lang = j.lang === 'ar' ? 'ar' : 'en';
+      applyLang();
+      if (j.submitted) showDone(j); else show('form');
+    })
+    .catch(function () { show('bad'); });
+})();
+</script>
+</body>
+</html>

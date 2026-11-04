@@ -1,9 +1,9 @@
 // netlify/functions/daily-emails.js
 //
 // Runs once a day (schedule in netlify.toml, 08:00 UAE time):
-//   1. Feedback request to customers whose book was delivered 5+ days ago
-//      (once per order, tracked in orders.review_requested_at). Customers who
-//      reply get their 10% thank-you code from the dashboard.
+//   1. Feedback request to customers whose book was delivered 3+ days ago
+//      (once per order, tracked in orders.review_requested_at). The email links
+//      to feedback.html; submitting it issues their 10% code automatically.
 //   2. A "needs attention" summary to the team inbox (info@): late orders,
 //      unpaid orders and new contact messages.
 //
@@ -14,7 +14,7 @@ const { reviewRequest, teamDigest } = require('./_templates');
 const { SUPABASE_URL } = require('./_pricing');
 const { normalizeStage } = require('./_stages');
 
-const REVIEW_AFTER_DAYS = 5;
+const REVIEW_AFTER_DAYS = 3;
 const REVIEW_MAX_AGE_DAYS = 30; // never ask about books delivered long ago
 const SLA = { received: 1, ai_production: 2, printing: 4, back_from_printing: 1, with_courier: 7 }; // same targets as the dashboard
 const LABEL = { received: 'Received', ai_production: 'AI production', printing: 'At the printer', back_from_printing: 'Back from printing', with_courier: 'With delivery company' };
@@ -38,9 +38,11 @@ exports.handler = async () => {
 
   // ---- 1) Feedback requests ----
   try {
+    let arTitles = {};
+    try { (await get('stories?select=slug,title_ar')).forEach(x => { if (x.title_ar) arTitles[x.slug] = x.title_ar; }); } catch {}
     const delivered = await get(`orders?order_status=eq.delivered&review_requested_at=is.null&select=*&order=status_updated_at.asc&limit=200`);
     for (const o of delivered) {
-      if (!o.email || !real(o) || o.payment_status === 'refunded') continue;
+      if (!o.email || !o.tracking_token || !real(o) || o.payment_status === 'refunded') continue;
       const age = (now - enteredAt(o)) / DAY;
       if (age < REVIEW_AFTER_DAYS) continue;
       const stamp = new Date().toISOString();
@@ -49,7 +51,7 @@ exports.handler = async () => {
       const rows = await m.json().catch(() => []);
       if (!m.ok || !rows.length) continue;
       if (age > REVIEW_MAX_AGE_DAYS) continue; // old order: marked, not emailed
-      const mail = reviewRequest(o);
+      const mail = reviewRequest(o, arTitles);
       const r = await sendEmail({ to: o.email, subject: mail.subject, html: mail.html });
       if (r.sent) reviewsSent++;
       else await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${o.id}`, { method: 'PATCH', headers: H, body: JSON.stringify({ review_requested_at: null }) }); // try again tomorrow
