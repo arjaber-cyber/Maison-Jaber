@@ -23,6 +23,17 @@ const SUPABASE_URL = "https://zxzlarlpoctpnnnvzced.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E";
 const BOOK_PRICE_AED = 169;
+// Offer per delivery country for story-page Product data (Nov 2026). Links from the Google Merchant
+// Center feed carry ?country=SA etc. so the page, its price and this structured data all match the feed.
+// KEEP IN SYNC with netlify/edge-functions/merchant-feed.js COUNTRIES, region.js and _pricing.js.
+const OFFERS = {
+  AE: { price: 169, cur: "AED", ship: 0, transit: [1, 3] },
+  SA: { price: 169, cur: "SAR", ship: 30, transit: [1, 3] },
+  QA: { price: 169, cur: "QAR", ship: 30, transit: [3, 5] },
+  KW: { price: 14.25, cur: "KWD", ship: 2.5, transit: [3, 5] },
+  BH: { price: 17.25, cur: "BHD", ship: 3, transit: [3, 5] },
+  OM: { price: 17.75, cur: "OMR", ship: 3, transit: [3, 5] },
+};
 
 const BRAND_EN = "Hikaya by Maison Jaber";
 // Personalised books can't be returned for change of mind (damaged/faulty ones are replaced or refunded, see refund-policy.html).
@@ -349,6 +360,10 @@ async function seoPage(request, context, state) {
       html = html.replace('<p class="premise" id="st-premise"></p>', `<p class="premise" id="st-premise">${esc(lang === "ar" ? premAr : premEn)}</p>`);
       image = (lang === "ar" && s.cover_image_url_ar) || s.cover_image_url || null;
       const pageUrl = lang === "ar" ? canonEn + "&lang=ar" : canonEn;
+      const qCc = String(url.searchParams.get("country") || "AE").toUpperCase();
+      const cc = OFFERS[qCc] ? qCc : "AE";
+      const off = OFFERS[cc];
+      const offerUrl = cc === "AE" ? pageUrl : pageUrl + "&country=" + cc;
       ld.push({
         "@context": "https://schema.org",
         "@type": "Product",
@@ -361,21 +376,21 @@ async function seoPage(request, context, state) {
         audience: { "@type": "PeopleAudience", suggestedMinAge: bands.length ? Number(bands[0].split("-")[0]) : 2, suggestedMaxAge: bands.length ? Number(bands[bands.length - 1].split("-")[1]) : 8 },
         offers: {
           "@type": "Offer",
-          url: pageUrl,
-          price: BOOK_PRICE_AED,
-          priceCurrency: "AED",
+          url: offerUrl,
+          price: off.price,
+          priceCurrency: off.cur,
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",
           seller: { "@type": "Organization", name: BRAND_EN },
           hasMerchantReturnPolicy: RETURN_POLICY,
           shippingDetails: {
             "@type": "OfferShippingDetails",
-            shippingRate: { "@type": "MonetaryAmount", value: 0, currency: "AED" },
-            shippingDestination: { "@type": "DefinedRegion", addressCountry: "AE" },
+            shippingRate: { "@type": "MonetaryAmount", value: off.ship, currency: off.cur },
+            shippingDestination: { "@type": "DefinedRegion", addressCountry: cc },
             deliveryTime: {
               "@type": "ShippingDeliveryTime",
               handlingTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
-              transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
+              transitTime: { "@type": "QuantitativeValue", minValue: off.transit[0], maxValue: off.transit[1], unitCode: "DAY" },
             },
           },
         },
@@ -496,7 +511,7 @@ async function seoPage(request, context, state) {
   // to a day. Every deploy clears it. Browsers always re-check.
   headers.set("Cache-Control", "public, max-age=0, must-revalidate");
   headers.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=300, stale-while-revalidate=86400");
-  headers.set("Netlify-Vary", "query=s|story|lang|age"); // only what changes the page; ad tracking codes (fbclid, utm_*) share the cached copy
+  headers.set("Netlify-Vary", "query=s|story|lang|age|country"); // only what changes the page; ad tracking codes (fbclid, utm_*) share the cached copy
   return new Response(request.method === "HEAD" ? null : html, { status: 200, headers });
 }
 

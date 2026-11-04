@@ -52,7 +52,27 @@
     io.observe(stage);
   }
 
-  function boot() { render(); renderOccasions(); initReveal(); }
+  /* Siblings section: bundle totals in the visitor's own currency, from the cart's own pricing
+     (window.hikayaCart.bundleTotalFor), plus two real story covers fanned like a pair of gifts. */
+  async function renderSiblings() {
+    const sec = document.getElementById('siblings'); if (!sec || !window.hikayaCart || !window.hikayaRegion) return;
+    const region = window.hikayaRegion();
+    const fmt = n => (window.hikayaFormatPrice ? window.hikayaFormatPrice(n, region) : region.symbol + ' ' + n);
+    const tr = (k, f) => (window.hikayaT && window.hikayaT(k)) || f;
+    [2, 3].forEach(n => {
+      const b = window.hikayaCart.bundleTotalFor(n, region);
+      const tot = sec.querySelector(`[data-sib-total="${n}"]`); if (tot) tot.innerHTML = `<bdi>${fmt(b.total)}</bdi>`;
+      const sv = sec.querySelector(`[data-sib-save="${n}"]`); if (sv) sv.innerHTML = b.saving > 0 ? tr('sib.save', 'You save {amount}').replace('{amount}', `<bdi>${fmt(b.saving)}</bdi>`) : '';
+    });
+    try {
+      const ar = (window.hikayaLang && window.hikayaLang()) === 'ar';
+      const covers = (await H.loadCatalog()).map(s => (ar && s.cover_image_url_ar) || s.cover_image_url).filter(Boolean);
+      sec.querySelectorAll('.sib-cover').forEach((el, i) => { const u = covers[i % Math.max(1, covers.length)]; if (u) el.style.backgroundImage = `url("${String(u).replace(/"/g, '%22')}")`; });
+    } catch (e) { /* gradient placeholders stay */ }
+  }
+
+  function boot() { render(); renderOccasions(); initReveal(); renderSiblings(); }
+  document.addEventListener('hikaya:regionchange', renderSiblings);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); });
+  document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); renderSiblings(); });
 })();

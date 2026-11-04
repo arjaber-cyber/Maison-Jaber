@@ -231,6 +231,8 @@
 
   .approval { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text-on-light-soft); margin: 20px 0; }
   .approval + .approval { margin-top: -8px; }
+  .recover-optin { flex-direction: row !important; margin: -2px 0 2px; font-size: 12.5px; line-height: 1.45; }
+  .recover-optin input { width: auto; flex: none; margin-top: 2px; }
   .trust-bar { text-align: center; margin-top: 18px; }
   .trust-line { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--text-on-light-soft); margin-bottom: 10px; }
   .trust-line svg { width: 15px; height: 15px; stroke: #3d5a26; flex-shrink: 0; }
@@ -299,6 +301,7 @@
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
+<script src="/recovery.js" defer></script>
 <script src="family.js" defer></script>
 <link rel="icon" type="image/png" href="images/favicon-star.png" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
@@ -362,6 +365,7 @@
       <div class="form-grid">
         <div class="field"><label class="field-label" for="full-name"><span data-i18n="checkout.full_name">Full name</span><span class="req-mark">*</span></label><input type="text" id="full-name" required aria-required="true" autocomplete="name" placeholder="e.g. Sara Al Habtoor" data-i18n-placeholder="checkout.full_name_ph" /></div>
         <div class="field"><label class="field-label" for="email"><span data-i18n="checkout.email">Email</span><span class="req-mark">*</span></label><input type="email" id="email" required aria-required="true" placeholder="you@email.com" autocomplete="email" inputmode="email" dir="ltr" /></div>
+        <div class="field full approval recover-optin"><input type="checkbox" id="recover-optin" /><label for="recover-optin"><span data-i18n="rec.optin">Email me a private link to finish this order if I'm interrupted. One email only, never includes photos.</span> <span class="opt-mark" data-i18n="qa.optional">(optional)</span></label></div>
         <div class="field full"><label class="field-label" for="address"><span data-i18n="checkout.address">Address</span><span class="req-mark">*</span></label><div class="addr-wrap"><input type="text" id="address" required aria-required="true" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="address-suggest" placeholder="Start typing your area, street or building" data-i18n-placeholder="checkout.address_ph" /><ul id="address-suggest" class="addr-suggest" role="listbox" hidden></ul></div></div>
         <div class="field"><label class="field-label" for="unit"><span data-i18n="checkout.unit">Flat / Villa number</span><span class="req-mark">*</span></label><input type="text" id="unit" required aria-required="true" autocomplete="address-line2" placeholder="e.g. Flat 1204 or Villa 17" data-i18n-placeholder="checkout.unit_ph" /></div>
         <div class="field"><label class="field-label" for="city"><span data-i18n="checkout.city">City</span><span class="req-mark">*</span></label><input type="text" id="city" required aria-required="true" autocomplete="address-level2" placeholder="City" data-i18n-placeholder="checkout.city_ph" /></div>
@@ -1117,26 +1121,31 @@
   // Page-copy translations load after this script, so render once more when everything is ready.
   if (document.readyState !== 'complete') document.addEventListener('DOMContentLoaded', () => renderPaymentSection());
 
-  // ---------- Abandoned cart tracking ----------
-  // Fires once someone types a plausible email at checkout but doesn't
-  // complete the order, so we can follow up later. Never blocks the page.
+  // ---------- Saved-order link (abandoned order recovery, Nov 2026) ----------
+  // Only when the shopper ticks "Email me a private link to finish this order" do we save the cart
+  // (no photos: just story, name, age, message and private photo paths) so ONE reminder can be sent
+  // ~3 hours later. Unticking withdraws it. Never blocks the page.
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   ['email', 'phone'].forEach(id => document.getElementById(id).addEventListener('change', () => { const ms = methodsFor(countrySelect.value, REGIONS[countrySelect.value]); if (ms.includes('tabby')) scheduleTabbyPrescore(); if (ms.includes('tamara')) scheduleTamaraPrecheck(); }));
-  document.getElementById('email').addEventListener('blur', (e) => {
-    const email = e.target.value.trim();
+  const recoverBox = document.getElementById('recover-optin');
+  let recoverSentFor = null; // email we last saved consent for
+  function syncRecovery(force) {
+    const email = document.getElementById('email').value.trim();
     if (!EMAIL_RE.test(email)) return;
-    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    const consent = recoverBox.checked;
+    if (!consent && recoverSentFor !== email && !force) return; // nothing saved for this email: nothing to withdraw
+    const items = (window.hikayaCart ? window.hikayaCart.getCart() : []).map(i => { const c = Object.assign({}, i); delete c.photoThumb; delete c.photos; return c; });
+    recoverSentFor = consent ? email : null;
     fetch('/.netlify/functions/track-abandoned-cart', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        childName: cart[0]?.childName || null,
-        story: cart[0]?.story || null,
-        ageEdition: cart[0]?.ageEdition || null,
-      }),
+      body: JSON.stringify({ email, consent, lang: (window.hikayaLang && window.hikayaLang()) === 'ar' ? 'ar' : 'en', country: countrySelect.value, items }),
+      keepalive: true,
     }).catch(() => { /* best-effort only */ });
-  });
+  }
+  recoverBox.addEventListener('change', () => { syncRecovery(true); if (recoverBox.checked && window.hikayaTrackEvent) window.hikayaTrackEvent('recovery_optin', {}); });
+  document.getElementById('email').addEventListener('blur', () => { if (recoverBox.checked) syncRecovery(false); });
+  countrySelect.addEventListener('change', () => { if (recoverBox.checked) syncRecovery(false); });
 
   // ---------- Address picker: search suggestions + draggable pin ----------
   /* Typing shows address suggestions inside the selected country; picking one drops the pin there.

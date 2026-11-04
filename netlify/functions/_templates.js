@@ -161,29 +161,51 @@ function orderDelivered(order) {
 }
 
 /* ---------------- Abandoned checkout reminder ---------------- */
-function cartReminder(cart) {
-  // No language is stored for abandoned carts, so an Arabic child name means an Arabic email.
+/* ---------------- Abandoned order: ONE reminder, opt-in only (Nov 2026) ----------------
+   cartReminder(cart, { resumeUrl, unsubscribeUrl })
+   cart = abandoned_carts row (lang, child_name, story, cart_snapshot[]). The resume link rebuilds the
+   cart on any device for 7 days; photos stay in private storage and are never in the email. */
+function cartReminder(cart, links) {
+  const o = links || {};
   const lang = cart.lang === 'ar' || (!cart.lang && /[\u0600-\u06FF]/.test(String(cart.child_name || ''))) ? 'ar' : 'en';
-  const child = cart.child_name ? esc(cart.child_name) : '';
-  const story = cart.story ? esc(cart.story) : '';
-  const link = `${SITE_URL}cart.html`;
+  const items = Array.isArray(cart.cart_snapshot) && cart.cart_snapshot.length
+    ? cart.cart_snapshot
+    : [{ childName: cart.child_name, story: cart.story }];
+  const names = items.map(i => i && i.childName).filter(Boolean);
+  const many = items.length > 1;
+  const child = !many && names[0] ? esc(names[0]) : '';
+  const link = o.resumeUrl || `${SITE_URL}cart.html`;
+  const cards = items.slice(0, 4).map(i => {
+    const title = esc(String((i && i.story) || '').replace(/\[NAME\]/g, (i && i.childName) || ''));
+    const meta = [i && i.childName ? esc(i.childName) : '', i && i.ageEdition ? tr(lang, `Ages ${esc(i.ageEdition)}`, `للأعمار ${esc(i.ageEdition)}`) : '', i && i.bookLanguage ? (i.bookLanguage === 'ar' ? tr(lang, 'Arabic edition', 'النسخة العربية') : tr(lang, 'English edition', 'النسخة الإنجليزية')) : '']
+      .filter(Boolean).join(' &middot; ');
+    return title ? ui.storyCard(title, meta, i && i.coverUrl, lang) : '';
+  }).join('');
+  const heading = many
+    ? tr(lang, 'Their stories are saved for you', 'قصصهم محفوظة لك')
+    : tr(lang, `${child ? child + "'s" : 'Their'} story is saved for you`, `قصة ${child || 'طفلك'} محفوظة لك`);
+  const unsub = o.unsubscribeUrl
+    ? tr(lang,
+      `You asked us to email you a link to finish this order, so this is the only reminder we'll send. <a href="${esc(o.unsubscribeUrl)}" style="color:#8E7A68;">Unsubscribe</a>`,
+      `طلبت منا إرسال رابط لإكمال طلبك، وهذا هو التذكير الوحيد الذي سنرسله <a href="${esc(o.unsubscribeUrl)}" style="color:#8E7A68;">إلغاء الاشتراك</a>`)
+    : tr(lang, "This is the only reminder we'll send.", 'هذا هو التذكير الوحيد الذي سنرسله');
   const body = [
     ui.eyebrow(tr(lang, 'Saved for you', 'محفوظة لك'), lang),
-    ui.h(tr(lang, `${child ? child + "'s" : 'Their'} story is still waiting`, `قصة ${child || 'طفلك'} ما زالت بانتظارك`), lang),
+    ui.h(heading, lang),
     ui.p(tr(lang,
-      `You started a personalised storybook${story ? ` (<strong>${story}</strong>)` : ''}${child ? ` for <strong>${child}</strong>` : ''}. If it's still in your cart on the same device, you can pick up right where you left off.`,
-      `بدأت بإنشاء كتاب قصص مخصّص${story ? ` (<strong>${story}</strong>)` : ''}${child ? ` لـ <strong>${child}</strong>` : ''}، وإذا كان ما زال في سلّتك على الجهاز نفسه فيمكنك المتابعة من حيث توقفت`), lang),
-    ui.button(link, tr(lang, 'Finish their story &rarr;', 'أكمل قصتهم &larr;'), lang),
+      "Everything you added is safe: the story, the name, the age and your message. Pick up exactly where you left off, on this device or any other.",
+      'كل ما أضفته محفوظ: القصة والاسم والعمر ورسالتك، تابع من حيث توقفت على هذا الجهاز أو أي جهاز آخر'), lang),
+    cards,
+    ui.button(link, tr(lang, 'Finish my order &rarr;', 'أكمل طلبي &larr;'), lang),
     ui.p(tr(lang,
-      'Gift packaging is always included. Questions about photos or delivery? Just reply.',
-      'علبة الهدية مشمولة دائمًا، ولأي سؤال عن الصور أو التوصيل ردّ على هذا البريد'), lang, true),
-    ui.p(tr(lang,
-      'Changed your mind? No problem, you can ignore this email and we won\'t send another.',
-      'غيّرت رأيك؟ لا مشكلة، تجاهل هذا البريد ولن نرسل غيره'), lang, true),
+      'Gift packaging is always included. This private link works for 7 days. Photos stay in our secure storage and are deleted 15 days after upload, as promised.',
+      'علبة الهدية مشمولة دائمًا، ويعمل هذا الرابط الخاص لمدة 7 أيام، وتبقى الصور في مساحتنا الآمنة وتُحذف بعد 15 يومًا من رفعها كما وعدناك'), lang, true),
+    ui.p(unsub, lang, true),
   ].join('');
+  const nm = !many && names[0] ? names[0] : '';
   return {
-    subject: tr(lang, `${cart.child_name ? cart.child_name + "'s" : 'Your'} Hikaya story is waiting`, `قصة حكاية ${cart.child_name ? 'لـ ' + cart.child_name : ''} بانتظارك`.replace('  ', ' ')),
-    html: emailShell(body, { lang, preheader: tr(lang, 'It only takes a minute to finish.', 'لن يستغرق إكمالها أكثر من دقيقة') }),
+    subject: tr(lang, nm ? `${nm}'s Hikaya story is saved for you` : 'Your Hikaya story is saved for you', nm ? `قصة ${nm} من حكاية محفوظة لك` : 'قصتك من حكاية محفوظة لك'),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Finish in a minute, on any device.', 'أكمل طلبك في دقيقة ومن أي جهاز') }),
   };
 }
 

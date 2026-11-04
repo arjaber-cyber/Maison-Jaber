@@ -1365,3 +1365,35 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
   .hk-welcome-bar .hk-w-spark { display: none; }
   .hk-welcome-line { justify-content: center; font-size: 13px; }
 }
+
+/* ---------- Homepage: siblings / bundle (Nov 2026) ---------- */
+.siblings { padding-block: var(--sec) 0; }
+.sib-card { display: grid; grid-template-columns: minmax(220px, 0.8fr) 1.2fr; gap: clamp(24px, 4vw, 56px); align-items: center;
+  background: var(--card); border-radius: 16px; padding: clamp(28px, 4vw, 48px); }
+.sib-books { position: relative; height: 240px; }
+.sib-cover { position: absolute; top: 50%; width: 52%; aspect-ratio: 1; border-radius: 10px; background: linear-gradient(135deg, var(--sand), var(--taupe));
+  background-size: cover; background-position: center; box-shadow: var(--shadow); }
+.sib-cover.c1 { inset-inline-start: 12%; transform: translateY(-56%) rotate(-6deg); }
+.sib-cover.c2 { inset-inline-start: 38%; transform: translateY(-44%) rotate(5deg); z-index: 1; }
+[dir="rtl"] .sib-cover.c1 { transform: translateY(-56%) rotate(6deg); }
+[dir="rtl"] .sib-cover.c2 { transform: translateY(-44%) rotate(-5deg); }
+.sib-eyebrow { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
+[dir="rtl"] .sib-eyebrow { letter-spacing: 0; }
+.sib-copy h2 { font-size: clamp(1.7rem, 2.4vw, 2.3rem); margin: 0 0 10px; }
+.sib-copy > p { color: var(--ink-soft); max-width: 46ch; margin: 0 0 16px; }
+.sib-tiers { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; padding: 0; margin: 0 0 14px; }
+.sib-tiers li { flex: 1 1 150px; max-width: 220px; background: var(--white); border: 1px solid var(--sand); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.sib-n { font-size: 13px; color: var(--ink-soft); }
+.sib-total { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; color: var(--ink); line-height: 1.2; }
+.sib-save { font-size: 12.5px; font-weight: 600; color: var(--brand); min-height: 1em; }
+.sib-note { font-size: 13.5px !important; margin-bottom: 20px !important; }
+@media (max-width: 767px) {
+  .sib-card { grid-template-columns: 1fr; padding: 24px 20px 28px; }
+  .sib-books { height: 170px; max-width: 300px; width: 100%; margin: 0 auto; }
+  .sib-tiers li { max-width: none; flex-basis: 120px; padding: 10px 12px; }
+  .sib-total { font-size: 1.25rem; }
+  .sib-copy .btn { width: 100%; justify-content: center; }
+}
+/* Personalise page: quiet sibling hint under the summary (Nov 2026) */
+.sib-hint { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--card); color: var(--ink-soft); font-size: 13px; line-height: 1.5; }
+.sib-hint strong { color: var(--ink); font-weight: 700; }

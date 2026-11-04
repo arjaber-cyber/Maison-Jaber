@@ -9,8 +9,10 @@
 [build.processing.html]
   pretty_urls = false
 
+# Saved-order reminder: hourly, so the one opt-in reminder lands ~3-4h after the shopper left.
+# Sends nothing unless the env var CART_REMINDERS_LIVE = 1 (dry-run otherwise).
 [functions."send-abandoned-reminders"]
-  schedule = "0 */6 * * *"
+  schedule = "15 * * * *"
 
 # Daily 08:00 UAE (04:00 UTC): customer feedback requests + team "needs attention" summary.
 [functions."daily-emails"]

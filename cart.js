@@ -30,12 +30,21 @@ window.HIKAYA_BUNDLE_TIERS = [
     }
   }
 
+  // Privacy (Nov 2026): carts saved before this change kept a small copy of the child's photo
+  // (photoThumb) on the device. Nothing reads it, so remove it once from existing carts.
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if (raw && raw.indexOf('photoThumb') !== -1) {
+      localStorage.setItem(CART_KEY, JSON.stringify((JSON.parse(raw) || []).map(i => { const c = Object.assign({}, i); delete c.photoThumb; return c; })));
+    }
+  } catch (e) { /* leave the cart as it is */ }
+
   function saveCart(items) {
     localStorage.setItem(CART_KEY, JSON.stringify(items));
     updateCartBadges();
   }
 
-  // item shape: { id, story, theme, childName, ageEdition, gender, dedication, photos: [{name,type,dataUrl}] }
+  // item shape: { id, story, slug, childName, ageEdition, bookLanguage, dedication, photoPaths: [private storage paths], ... }  (never the photos themselves)
   function addToCart(item) {
     const items = getCart();
     item.id = item.id || `item_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
@@ -63,6 +72,19 @@ window.HIKAYA_BUNDLE_TIERS = [
       if (count >= t.minItems) tier = t;
     }
     return tier;
+  }
+
+  // Bundle total for `count` books in a region (no extras, no codes), using the same tiers and
+  // formula as computeCartPricing below and the server (_pricing.js). Used for the homepage and
+  // personalise-page sibling messages so they always match what the cart will charge.
+  // saving = what the same books cost without the bundle (full price + one delivery fee) minus total.
+  function bundleTotalFor(count, region) {
+    const tier = bundleTierFor(count);
+    const books = region.bookNow * (1 - tier.discountPct / 100) * count;
+    const delivery = tier.freeDelivery ? 0 : (region.deliveryFee || 0);
+    const total = Math.round((books + delivery) * 100) / 100;
+    const full = region.bookNow * count + (region.deliveryFee || 0);
+    return { tier, total, saving: Math.round((full - total) * 100) / 100 };
   }
 
   // Computes per-item and total pricing for the current cart, given a
@@ -137,7 +159,7 @@ window.HIKAYA_BUNDLE_TIERS = [
 
   window.hikayaCart = {
     getCart, addToCart, removeFromCart, clearCart, updateItem,
-    bundleTierFor, computeCartPricing, updateCartBadges,
+    bundleTierFor, bundleTotalFor, computeCartPricing, updateCartBadges,
     loadStories, storyFor, coverFor, paintCover, paintCovers,
   };
 

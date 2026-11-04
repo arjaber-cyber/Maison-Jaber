@@ -869,3 +869,30 @@
   };
 })();
 
+
+/* Order recovery + sibling bundles (Nov 2026). Arabic carries no full stops (brand rule).
+   {two} / {three} / {save2} / {save3} are filled in with the visitor's local prices by the page. */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.rec = {
+    optin: { en: "Email me a private link to finish this order if I'm interrupted. One email only, never includes photos.", ar: 'أرسلوا لي رابطًا خاصًا لإكمال الطلب إذا انقطعت، رسالة واحدة فقط ولا تتضمن أي صور' },
+    restoring: { en: 'Bringing back your saved order…', ar: 'جارٍ استرجاع طلبك المحفوظ…' },
+    restored: { en: 'Welcome back! Your saved order is in your cart, ready to finish.', ar: 'أهلًا بعودتك! طلبك المحفوظ في سلتك وجاهز لإكماله' },
+    expired: { en: "This link has expired, so the saved order is no longer available. You can create the story again in a few minutes.", ar: 'انتهت صلاحية هذا الرابط ولم يعد الطلب المحفوظ متاحًا، ويمكنك إنشاء القصة من جديد خلال دقائق' },
+    completed: { en: 'Good news: this order has already been placed. You can follow it from Track order.', ar: 'خبر جميل: تم تقديم هذا الطلب بالفعل، ويمكنك متابعته من صفحة تتبّع الطلب' },
+    not_found: { en: "We couldn't find that saved order. It may have expired or already been completed.", ar: 'لم نجد هذا الطلب المحفوظ، ربما انتهت صلاحيته أو اكتمل بالفعل' },
+  };
+  T.sib = {
+    eyebrow: { en: 'For brothers & sisters', ar: 'للإخوة والأخوات' },
+    title: { en: 'Two little heroes. Two unforgettable stories.', ar: 'بطلان صغيران وحكايتان لا تُنسيان' },
+    sub: { en: 'Create a personalised adventure for each child and enjoy 10% off when ordering two books, or 15% off three or more.', ar: 'اصنع حكاية خاصة لكل طفل واستمتع بخصم 10٪ عند طلب كتابين أو 15٪ عند طلب ثلاثة كتب أو أكثر' },
+    two: { en: '2 books', ar: 'كتابان' },
+    three: { en: '3 books', ar: '3 كتب' },
+    save: { en: 'You save {amount}', ar: 'توفّر {amount}' },
+    each: { en: 'Each child gets their own story, name, photo and message.', ar: 'لكل طفل قصته واسمه وصورته ورسالته الخاصة' },
+    free_del: { en: 'Free delivery on 2 or more books.', ar: 'توصيل مجاني عند طلب كتابين أو أكثر' },
+    cta: { en: 'Create a Story for Each Child', ar: 'اصنع قصة لكل طفل' },
+    pz_hint: { en: 'Ordering for siblings too? 2 books {two} in total, 3 books {three}. Add the next child after this one.', ar: 'تطلب للإخوة أيضًا؟ كتابان بـ {two} إجمالًا و3 كتب بـ {three}، أضف الطفل التالي بعد هذا الكتاب' },
+    pz_next: { en: 'Book {n} for your family: the bundle saving is applied in your cart.', ar: 'الكتاب رقم {n} لعائلتك: يُطبّق خصم الباقة في سلتك' },
+  };
+})();
