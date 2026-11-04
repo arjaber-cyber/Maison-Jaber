@@ -3,7 +3,7 @@
 // Runs once a day (schedule in netlify.toml, 08:00 UAE time):
 //   1. Feedback request to customers whose book was delivered 3+ days ago
 //      (once per order, tracked in orders.review_requested_at). The email links
-//      to feedback.html; submitting it issues their 10% code automatically.
+//      to feedback.html; no discount is offered for feedback.
 //   2. A "needs attention" summary to the team inbox (info@): late orders,
 //      unpaid orders and new contact messages.
 //

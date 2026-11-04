@@ -57,7 +57,6 @@
 
     <form id="form" class="hide" novalidate>
       <p class="for" id="for"></p>
-      <div class="ban" data-t-html="banner">🎁 Rate your story and get <b>10% off</b> your next one</div>
 
       <div class="qrow" data-key="recommend"><p class="q" data-t="q1">How likely are you to recommend Hikaya?</p><div class="stars"></div></div>
       <div class="qrow" data-key="story"><p class="q" id="q2"></p><div class="stars"></div></div>
@@ -68,18 +67,12 @@
 
       <p class="decl" data-t="decl">By submitting, you agree Hikaya may use your ratings and comments in our promotions. We never show your name, your child's name, or anything that identifies you.</p>
       <p class="err" id="err"></p>
-      <button class="btn" id="go" type="submit" data-t="submit">Submit and get my code</button>
+      <button class="btn" id="go" type="submit" data-t="submit">Submit</button>
     </form>
 
     <div id="done" class="hide center">
       <h1 data-t="thanks">Thank you 💛</h1>
-      <div id="withCode">
-        <p id="offer" style="margin:0"></p>
-        <div class="code" id="code"></div>
-        <button class="copy" id="copy" type="button" data-t="copy">Copy code</button>
-        <p class="small" id="valid"></p>
-      </div>
-      <p id="noCode" class="hide" style="margin:6px 0 0" data-t="reused">Your feedback means a lot to us. You've already received your thank-you code from an earlier order.</p>
+      <p style="margin:6px 0 0" data-t="thanksText">Your feedback means a lot to us and helps us make every Hikaya book even more special.</p>
       <a class="btn" href="stories.html" data-t="browse">Browse stories</a>
     </div>
   </div>
@@ -89,31 +82,27 @@
   var T = {
     en: {
       loading: 'Loading…', badTitle: "This link isn't working", badText: "Please open the link from your Hikaya email again, or message us on WhatsApp and we'll help.", whatsapp: 'WhatsApp us',
-      banner: '🎁 Rate your story and get <b>10% off</b> your next one',
       forStory: function (c, s) { return (c ? c + "'s story" : 'Your story') + (s ? ' · ' + s : ''); },
       q1: 'How likely are you to recommend Hikaya?',
       q2: function (c) { return 'The story and how much it looked like ' + (c || 'your child'); },
       q3: 'Print quality and packaging', q4: 'Ordering and delivery', q5: "Anything you'd like to share?",
       ph: function (c) { return (c || 'They') + ' asks for it every night…'; },
       decl: "By submitting, you agree Hikaya may use your ratings and comments in our promotions. We never show your name, your child's name, or anything that identifies you.",
-      submit: 'Submit and get my code', sending: 'Sending…', missing: 'Answer all questions first', server: "Something went wrong. Please try again in a moment.",
-      thanks: 'Thank you 💛', offer: function (c) { return "Here's 10% off " + (c ? c + "'s" : 'your') + ' next adventure'; },
-      valid: function (d) { return 'One use · valid until ' + d + ' · also sent to your email'; },
-      copy: 'Copy code', copied: 'Copied ✓', reused: "Your feedback means a lot to us. You've already received your thank-you code from an earlier order.", browse: 'Browse stories', star: ' out of 5'
+      submit: 'Submit', sending: 'Sending…', missing: 'Answer all questions first', server: "Something went wrong. Please try again in a moment.",
+      thanks: 'Thank you 💛', thanksText: 'Your feedback means a lot to us and helps us make every Hikaya book even more special.',
+      browse: 'Browse stories', star: ' out of 5'
     },
     ar: {
       loading: 'جارٍ التحميل…', badTitle: 'هذا الرابط لا يعمل', badText: 'افتحوا الرابط من رسالة حكاية مرة أخرى، أو راسلونا على واتساب وسنساعدكم', whatsapp: 'راسلونا على واتساب',
-      banner: '🎁 قيّموا قصتكم واحصلوا على <b>خصم 10%</b> على قصتكم القادمة',
       forStory: function (c, s) { return (c ? 'قصة ' + c : 'قصتكم') + (s ? ' · ' + s : ''); },
       q1: 'ما مدى احتمال أن توصوا بحكاية لأصدقائكم؟',
       q2: function (c) { return 'القصة ومدى شبهها بـ' + (c || 'طفلكم'); },
       q3: 'جودة الطباعة والتغليف', q4: 'الطلب والتوصيل', q5: 'شاركونا رأيكم',
       ph: function () { return 'نقرأها معاً كل ليلة…'; },
       decl: 'بإرسال التقييم، توافقون على أن تستخدم حكاية تقييماتكم وتعليقاتكم في عروضها، دون ذكر اسمكم أو اسم طفلكم أو أي معلومة تدل عليكم',
-      submit: 'أرسلوا التقييم واحصلوا على الكود', sending: 'جارٍ الإرسال…', missing: 'أجيبوا على كل الأسئلة أولاً', server: 'حدث خطأ، حاولوا مرة أخرى بعد قليل',
-      thanks: 'شكراً لكم 💛', offer: function (c) { return 'إليكم خصم 10% على المغامرة القادمة' + (c ? ' لـ ' + c : ''); },
-      valid: function (d) { return 'استخدام واحد · صالح حتى ' + d + ' · أرسلناه أيضاً إلى بريدكم'; },
-      copy: 'نسخ الكود', copied: 'تم النسخ ✓', reused: 'رأيكم يعني لنا الكثير، وقد حصلتم على كود الشكر من طلب سابق', browse: 'تصفّحوا القصص', star: ' من 5'
+      submit: 'أرسلوا التقييم', sending: 'جارٍ الإرسال…', missing: 'أجيبوا على كل الأسئلة أولاً', server: 'حدث خطأ، حاولوا مرة أخرى بعد قليل',
+      thanks: 'شكراً لكم 💛', thanksText: 'رأيكم يعني لنا الكثير ويساعدنا على أن نجعل كل كتاب من حكاية أجمل',
+      browse: 'تصفّحوا القصص', star: ' من 5'
     }
   };
   var qs = new URLSearchParams(location.search);
@@ -139,14 +128,6 @@
   }
   function showDone(res) {
     applyLang();
-    if (res.code) {
-      $('withCode').classList.remove('hide'); $('noCode').classList.add('hide');
-      $('offer').textContent = t('offer')(info.childName);
-      $('code').textContent = res.code;
-      $('valid').textContent = res.expiresAt ? t('valid')(fmtDate(res.expiresAt)) : '';
-    } else {
-      $('withCode').classList.add('hide'); $('noCode').classList.remove('hide');
-    }
     show('done');
   }
 
@@ -184,11 +165,6 @@
       .catch(function () { btn.disabled = false; btn.textContent = t('submit'); $('err').textContent = t('server'); });
   });
 
-  $('copy').addEventListener('click', function () {
-    var c = $('code').textContent;
-    var done = function () { $('copy').textContent = t('copied'); setTimeout(function () { $('copy').textContent = t('copy'); }, 1800); };
-    if (navigator.clipboard) navigator.clipboard.writeText(c).then(done, done); else done();
-  });
 
   applyLang();
   if (!token) { show('bad'); return; }

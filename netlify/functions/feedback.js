@@ -3,15 +3,15 @@
 // Post-delivery feedback (feedback.html). The link in the feedback email carries
 // the order's private tracking_token, so no sign-in is needed.
 //
-// GET  ?t=<token>  -> { lang, firstName, childName, story, submitted, code?, expiresAt? }
+// GET  ?t=<token>  -> { lang, firstName, childName, story, submitted }
 // POST { t, ratings: { recommend, story, print, delivery }, comment }
-//      -> { ok, code, expiresAt, lang }
+//      -> { ok, lang }
 //
 // Rules:
 //  - All four ratings (1-5) and the comment are required.
-//  - One feedback per order. Submitting again just shows the code they already have.
-//  - One feedback reward code per customer (email): 10% off, single use, locked to
-//    their email, valid 30 days. Same reward whatever the score.
+//  - One feedback per order. Submitting again just shows the thank-you.
+//  - No discount code is issued for feedback (removed Nov 2026); the customer
+//    gets a short thank-you email instead.
 //  - By submitting, the customer agrees comments may be used anonymously in
 //    promotions (declaration on the page; time stored in promo_consent_at).
 //  - Any rating of 3 or below emails the team inbox so the owner can reach out.
@@ -96,13 +96,8 @@ exports.handler = async (event) => {
       const o = await loadOrder((event.queryStringParameters || {}).t);
       if (!o) return json(404, { error: 'not_found' });
       const info = orderInfo(o);
-      const fb = (await sb(`customer_feedback?order_id=eq.${o.id}&select=discount_code&limit=1`))[0];
-      if (fb) {
-        const c = await codeRow(fb.discount_code);
-        const mine = c && (await sb(`discount_codes?code=eq.${encodeURIComponent(c.code)}&select=issued_for_order&limit=1`))[0];
-        const own = mine && mine.issued_for_order === o.order_number;
-        return json(200, { ...info, submitted: true, code: own ? c.code : null, expiresAt: own ? c.expires_at : null, reused: Boolean(c) && !own });
-      }
+      const fb = (await sb(`customer_feedback?order_id=eq.${o.id}&select=id&limit=1`))[0];
+      if (fb) return json(200, { ...info, submitted: true });
       return json(200, { ...info, submitted: false });
     }
     if (event.httpMethod !== 'POST') return json(405, { error: 'method' });
@@ -127,24 +122,12 @@ exports.handler = async (event) => {
       }) }))[0];
     } catch (e) {
       if (e.code !== '23505') throw e;
-      const fb = (await sb(`customer_feedback?order_id=eq.${o.id}&select=discount_code&limit=1`))[0];
-      const c = await codeRow(fb && fb.discount_code);
-      return json(200, { ok: true, already: true, lang: info.lang, code: c && c.code, expiresAt: c && c.expires_at });
+      return json(200, { ok: true, already: true, lang: info.lang });
     }
 
-    // One reward per customer: reuse an earlier code if this email already has one.
-    const tester = ['test'].includes(o.order_type || 'sale');
-    let code = await existingReward(email);
-    let fresh = false;
-    if (!code && !tester) {
-      const c = await issueCode(o);
-      code = c.code; fresh = true;
-    }
-    if (code) await sb(`customer_feedback?id=eq.${row.id}`, { method: 'PATCH', body: JSON.stringify({ discount_code: code }) });
-    const c = await codeRow(code);
-
-    if (fresh && email && c) {
-      const mail = feedbackThanks({ lang: info.lang, firstName: info.firstName, childName: info.childName, code: c.code, expiresAt: c.expires_at });
+    // Plain thank-you email (no discount code).
+    if (email && row) {
+      const mail = feedbackThanks({ lang: info.lang, firstName: info.firstName, childName: info.childName });
       await sendEmail({ to: email, subject: mail.subject, html: mail.html }).catch(e => console.error('feedback thanks email', e && e.message));
     }
 
@@ -154,8 +137,7 @@ exports.handler = async (event) => {
       await sendEmail({ to: OWNER_INBOX, subject: mail.subject, html: mail.html }).catch(e => console.error('feedback alert email', e && e.message));
     }
 
-    if (!fresh) return json(200, { ok: true, lang: info.lang, reused: Boolean(code), code: null });
-    return json(200, { ok: true, lang: info.lang, code: c && c.code, expiresAt: c && c.expires_at });
+    return json(200, { ok: true, lang: info.lang });
   } catch (e) {
     console.error('feedback', e);
     return json(500, { error: 'server' });
