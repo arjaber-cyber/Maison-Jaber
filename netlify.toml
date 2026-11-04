@@ -71,6 +71,20 @@
   status = 200
   force = true
 
+# Printed QR codes on the Hikaya gift boxes (Nov 2026) point to maison-jaber.com/contact.
+# Send them permanently to the shop. Applies to www and non-www (both serve this site);
+# the real contact page at /hikaya/contact.html is unaffected. Do not remove.
+[[redirects]]
+  from = "/contact"
+  to = "/hikaya/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/contact.html"
+  to = "/hikaya/"
+  status = 301
+  force = true
+
 # Internal SEO generator scripts (tools/seo/) are not part of the website.
 [[redirects]]
   from = "/tools/*"
