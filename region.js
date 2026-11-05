@@ -113,7 +113,7 @@ try { window.hikayaTamaraOn(); window.hikayaTabbyOn(); } catch (e) {}
   /* Tamara's official UAE wording, used only if their widget doesn't render (plan amount = price / 4, whole dirhams). */
   function fallback(el, price, lang) {
     var per = Math.round(Number(price) / 4);
-    el.innerHTML = '<div class="tamara-fallback" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0;background:transparent;font-size:15px;line-height:1.45;color:#2E2018">'
+    el.innerHTML = '<div class="tamara-fallback" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border:1px solid #D6D3D0;border-radius:8px;background:transparent;font-size:15px;line-height:22px;color:var(--ink-soft,#5E4A3D)">'
       + '<span>' + (lang === 'ar'
         ? 'ادفع ' + per + ' درهم شهريًا أو على 4 دفعات، بدون رسوم تأخير'
         : 'Pay AED ' + per + '/mo or in 4 payments. No late fees.') + '</span>'
@@ -128,10 +128,20 @@ try { window.hikayaTamaraOn(); window.hikayaTabbyOn(); } catch (e) {}
     var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     /* Config must exist before the script runs; refreshed on every call so EN <-> AR switches carry over. */
     window.tamaraWidgetConfig = { lang: lang, country: 'AE', currency: 'AED', publicKey: window.HIKAYA_TAMARA.publicKey,
-      /* Blend into the Hikaya cream like Tabby (shouldInheritBg): no white card, no border, no shadow.
-         Only background-COLOR is cleared, so Tamara's gradient logo (a background image / svg) is untouched. */
+      /* Same look as the Tabby snippet next to it (Nov 2026): thin warm-grey border, 8px corners, 16px padding,
+         15/22 text in Hikaya ink-soft, bold amount, bold brand-brown "Learn more" on its own line, Tamara's own
+         badge untouched on the side. Only background-COLOR is cleared, so the gradient badge keeps its colours. */
       css: ':host{--font-primary:inherit !important;--font-secondary:inherit !important;background:transparent !important;}'
-        + ' :host *:not(svg):not(img):not([class*="badge"]):not([class*="logo"]){background-color:transparent !important;box-shadow:none !important;border-color:transparent !important;}' };
+        + ' :host *:not(svg):not(img):not([class*="badge"]):not([class*="logo"]){background-color:transparent !important;box-shadow:none !important;}'
+        + ' .tamara-summary-widget__container{border:1px solid #D6D3D0 !important;border-radius:8px !important;padding:16px !important;}'
+        + ' .tamara-summary-widget__container, .tamara-summary-widget__container *{font-family:inherit !important;}'
+        + ' .tamara-summary-widget__container span{font-size:15px !important;line-height:22px !important;color:var(--ink-soft,#5E4A3D) !important;}'
+        + ' .tamara-summary-widget__amount{font-weight:700 !important;}'
+        + ' .tamara-summary-widget__amount svg, .tamara-summary-widget__amount path{fill:currentColor !important;}'
+        + ' .tamara-summary-widget__container .tamara-inline-learn-more-link{flex-basis:100% !important;color:var(--brand,#8A5638) !important;font-weight:700 !important;text-decoration:none !important;cursor:pointer;}'
+        + ' .tamara-summary-widget__container span:empty{display:none !important;}'
+        + ' .content-wrapper{row-gap:0 !important;column-gap:4px !important;}'
+        + ' .summary-widget-content{gap:16px !important;align-items:center !important;}' };
     el.hidden = false;
     el.innerHTML = '';
     var w = document.createElement('tamara-widget');
