@@ -1297,16 +1297,27 @@
     const { Map } = await google.maps.importLibrary('maps');
     await google.maps.importLibrary('marker');
     if (map) return;
+    // Checkout starts hidden until sign-in / guest; Google can't lay out a map in a 0-size box,
+    // so wait until the map area is actually visible before building it.
+    const box = document.getElementById('address-map');
+    if (!box.offsetWidth || !box.offsetHeight) {
+      await new Promise(res => {
+        if (!window.ResizeObserver) return res();
+        const ro = new ResizeObserver(() => { if (box.offsetWidth && box.offsetHeight) { ro.disconnect(); res(); } });
+        ro.observe(box);
+      });
+    }
+    if (map) return;
     engine = 'google';
     const g = geoFor();
-    map = new Map(document.getElementById('address-map'), {
+    map = new Map(box, {
       center: { lat: g.center[0], lng: g.center[1] }, zoom: 11,
       mapTypeControl: true,
       mapTypeControlOptions: { mapTypeIds: ['roadmap', 'hybrid'], style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR, position: google.maps.ControlPosition.TOP_LEFT },
       streetViewControl: false, fullscreenControl: false, clickableIcons: false, gestureHandling: 'cooperative',
     });
     map.addListener('click', e => { const p = e.latLng; placePin(p.lat(), p.lng()); reverseFill(p.lat(), p.lng()); });
-    if (window.ResizeObserver) new ResizeObserver(() => { if (pin) map.panTo(pin); }).observe(document.getElementById('address-map'));
+    if (window.ResizeObserver) new ResizeObserver(() => { if (pin) map.panTo(pin); }).observe(box);
     if (pin) placePin(pin.lat, pin.lng);
   }
 
