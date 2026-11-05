@@ -81,7 +81,7 @@ window.hikayaTabbyOn = function () {
    GO LIVE: put the production public key below, set HIKAYA_TAMARA_LIVE = true, and in Netlify set
    TAMARA_API_TOKEN + TAMARA_NOTIFICATION_TOKEN to the live values and TAMARA_API_URL = https://api.tamara.co
    (then run /tamara-setup.html once to register the live webhook). */
-window.HIKAYA_TAMARA_LIVE = false;
+window.HIKAYA_TAMARA_LIVE = true; // live since 5 Nov 2026
 window.HIKAYA_TAMARA = { publicKey: 'ecb1b9aa-369b-425f-930b-fd963e2e9337' }; // live public key (5 Nov 2026; sandbox was fada631c-d07f-453a-8616-94def2f6335b)
 window.hikayaTamaraOn = function () {
   try {
