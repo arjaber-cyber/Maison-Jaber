@@ -2,6 +2,11 @@
   functions = "netlify/functions"
   publish = "."
 
+# The Google Maps key in hikaya/checkout.html is a public browser key (locked to
+# maison-jaber.com in Google Cloud), so Netlify's secret scanner may skip that one value.
+[build.environment]
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSyC6ymgwcYmY3tEIcH44IZSkuroZ2epqM3I"
+
 # QA 19 Oct 2026 (route fix): Netlify "Pretty URLs" post-processing rewrote every
 # relative link in the served HTML against the files' real folder, so
 # href="stories.html" was published as href='/test5/stories' on /hikaya/ pages.
