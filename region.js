@@ -82,7 +82,7 @@ window.hikayaTabbyOn = function () {
    TAMARA_API_TOKEN + TAMARA_NOTIFICATION_TOKEN to the live values and TAMARA_API_URL = https://api.tamara.co
    (then run /tamara-setup.html once to register the live webhook). */
 window.HIKAYA_TAMARA_LIVE = false;
-window.HIKAYA_TAMARA = { publicKey: 'fada631c-d07f-453a-8616-94def2f6335b' }; // sandbox public key
+window.HIKAYA_TAMARA = { publicKey: 'ecb1b9aa-369b-425f-930b-fd963e2e9337' }; // live public key (5 Nov 2026; sandbox was fada631c-d07f-453a-8616-94def2f6335b)
 window.hikayaTamaraOn = function () {
   try {
     var q = new URLSearchParams(location.search).get('tamaratest');

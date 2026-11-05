@@ -17,6 +17,9 @@ exports.handler = async (event) => {
     const body = JSON.parse((event && event.body) || '{}');
     const ctx = body && body.payload && body.payload.context;
     if (ctx && ctx !== 'production') return { statusCode: 200, body: 'skipped: ' + ctx };
+    // Tamara: register our webhook for the current mode (sandbox/live) right after deploy (idempotent).
+    const tw = await require('./_tamara').ensureWebhook().catch(e => ({ error: e.message }));
+    console.log('Tamara webhook', JSON.stringify(tw));
     const xml = await fetch('https://' + HOST + '/sitemap.xml').then(r => r.text());
     const urlList = Array.from(xml.matchAll(/<loc>([^<]+)<\/loc>/g)).map(m => m[1].replace(/&amp;/g, '&')).slice(0, 10000);
     if (!urlList.length) return { statusCode: 200, body: 'no urls' };
