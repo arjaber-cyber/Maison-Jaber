@@ -698,6 +698,62 @@ const BUILT_IN_STORIES = [
     "extra_character_name": null,
     "extra_character_fee_aed": 0,
     "detail_url": null
+  },
+  {
+    "slug": "christmas-tree-door",
+    "title": "The Christmas Tree Door",
+    "title_ar": "باب شجرة عيد الميلاد",
+    "theme": "adventure",
+    "collection": "Friendship, Kindness, Imagination, Christmas",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "friendship",
+      "kindness",
+      "imagination"
+    ],
+    "occasions": [
+      "christmas",
+      "birthday",
+      "justbecause"
+    ],
+    "description": "A tiny red door in the Christmas tree, a sneezy little dragon and a parade about to begin! A cosy, magical festive adventure about friendship, finding another way when something doesn't fit, and making sure there's room for everyone.",
+    "premise": {
+      "en": "A tiny red door in the Christmas tree, a sneezy little dragon and a parade about to begin! A cosy, magical festive adventure about friendship, finding another way when something doesn't fit, and making sure there's room for everyone.",
+      "ar": "باب أحمر صغير في شجرة الميلاد، وتنّين صغير يعطس ثلجًا، وموكب على وشك أن يبدأ! مغامرة ميلادية دافئة وساحرة عن الصداقة، وإيجاد طريق آخر حين لا يتّسع المكان، والحرص على أن يكون هناك مكان للجميع"
+    },
+    "card_note": {
+      "en": "A cosy Christmas adventure",
+      "ar": "مغامرة ميلادية دافئة"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/christmas-tree-door/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/christmas-tree-door/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/christmas-tree-door/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/christmas-tree-door/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l1.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l2.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l3.jpg",
+      "https://maison-jaber.com/story-assets/christmas-tree-door/l4.jpg"
+    ],
+    "sort_order": 14,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
   }
 ];
 

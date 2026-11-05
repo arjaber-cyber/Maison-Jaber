@@ -186,6 +186,20 @@ window.HIKAYA_PREVIEW_TEXT = {
    "ضحكت ليلى. عبروا جبل الوسائد. واختبؤوا من القدم المرعبة. وأكلوا وجبات خفيفة في كهف المصابيح اليدوية. وسرعان ما نسيت ليلى أمر الفيديوهات تمامًا.",
    "اختارت ليلى مكان كل ضوء. واحد فوق المدخل. وثلاثة على طول النفق. والكثير منها على امتداد السقف. وعندما أضاءها بابا، تلألأ الحصن كله. حدّقت ليلى مندهشة. «واو.»"
   ]
+ },
+ "christmas-tree-door": {
+  "en": [
+   "Across a ribbon bridge stood a village of glowing houses. Diana held the railing and peered at the snowy paths below. Bells chimed. Lanterns bobbed. “It’s a whole little Christmas!” she said. “And you’re just in time,” said Pip.",
+   "“Ah… ah… pff-CHOO!” Soft snow fluttered onto a little dragon’s head. “I’m Lumi,” he said, blinking. Diana giggled. “You’ve made yourself a snow hat!” Lumi tried to look up at it. That made Diana giggle even more.",
+   "“We can make it beautiful!” said Diana. “Golden ribbon!” said Pip. “I know just where to find some.” He fetched an empty spool. Then the three friends followed the path into a glowing bauble tunnel. Star-shaped patches of light danced over their feet.",
+   "Ting, ting! The parade began. Diana led the way, with Pip marching beside her. Lumi followed beneath the snowy arch. Behind him came bobbing lanterns and little dancing feet. “Step, step!” called Diana. “Swish, swish!” answered Lumi."
+  ],
+  "ar": [
+   "وراء جسر من الشرائط، كانت قرية ببيوت مضيئة. أمسكت ديانا بالسياج، وأطلّت على الممرّات الثلجية في الأسفل. رنّت الأجراس، وتمايلت الفوانيس. قالت: «كأنّه عيد ميلاد كامل، لكنّه صغير!» قال بيب: «ووصلتِ في الوقت المناسب!»",
+   "«آه... آه... أَتْشوو!» تناثر ثلج ناعم على رأس تنّين صغير. قال وهو يرمش: «أنا لومي.» ضحكت ديانا: «لقد صنعتَ لنفسك قبّعة من الثلج!» حاول لومي أن ينظر إلى قبّعته. فضحكت ديانا أكثر.",
+   "قالت ديانا: «يمكننا أن نجعله جميلًا!» قال بيب: «بشريط ذهبي! أعرف أين نجد واحدًا.» أحضر بكرة فارغة. ثم سار الأصدقاء الثلاثة في الممرّ، ودخلوا نفقًا من كرات الزينة المضيئة. ورقصت بقع ضوء على شكل نجوم فوق أقدامهم.",
+   "طنّ، طنّ! بدأ الموكب. تقدّمت ديانا، وسار بيب إلى جانبها. وتبعهما لومي من تحت القوس المكسوّ بالثلج. وخلفه فوانيس تتمايل وأقدام صغيرة ترقص. نادت ديانا: «خطوة، خطوة!» وأجاب لومي: «وشّ، وشّ!»"
+  ]
  }
 };
 /* Returns the transcript for one preview image URL, or '' when none matches. */
