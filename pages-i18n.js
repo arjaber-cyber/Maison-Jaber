@@ -215,7 +215,7 @@
     tabby_static: { en: "4 payments of {amount}/mo or up to 12 months.", ar: "4 دفعات بقيمة {amount} شهريًا أو حتى 12 شهرًا" },
     tabby_checking: { en: "Checking availability…", ar: "جارٍ التحقق من التوفر…" },
     tabby_cancelled: { en: "You aborted the payment. Please retry or choose another payment method.", ar: "لقد ألغيت الدفعة، فضلاً حاول مجددًا أو اختر طريقة دفع أخرى" },
-    pay_tamara: { en: "Tamara", ar: "تمارا" },
+    pay_tamara: { en: "Pay later with Tamara", ar: "ادفع لاحقًا مع تمارا" },
     tamara_desc: { en: "Monthly payments. No late fees.", ar: "دفعات شهرية، بدون رسوم تأخير" },
     tamara_btn: { en: "Continue to Tamara", ar: "المتابعة إلى تمارا" },
     tamara_redirect: { en: "Taking you to Tamara…", ar: "جارٍ تحويلك إلى تمارا…" },

@@ -115,8 +115,8 @@
   "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 درهم للكتاب، في علبة هدية مع التوصيل خلال نحو 5 أيام عمل"
  },
  "uae_intro": {
-  "en": "Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby.",
-  "ar": "حكاية من ميزون جابر مشروع عائلي إماراتي يصنع قصصًا مخصصة يكون طفلك بطلها، اختر قصة وأضف اسمه وعمره وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا بغلاف مقوّى ونوصله في علبة هدية إلى دبي وأبوظبي والشارقة وعجمان ورأس الخيمة والفجيرة وأم القيوين والعين، والتوصيل مجاني في جميع الإمارات ويمكنك الدفع بالبطاقة أو تقسيم المبلغ على أربع دفعات مع تابي"
+  "en": "Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby or Tamara.",
+  "ar": "حكاية من ميزون جابر مشروع عائلي إماراتي يصنع قصصًا مخصصة يكون طفلك بطلها، اختر قصة وأضف اسمه وعمره وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا بغلاف مقوّى ونوصله في علبة هدية إلى دبي وأبوظبي والشارقة وعجمان ورأس الخيمة والفجيرة وأم القيوين والعين، والتوصيل مجاني في جميع الإمارات ويمكنك الدفع بالبطاقة أو تقسيم المبلغ على أربع دفعات مع تابي أو تمارا"
  },
  "uae_name": {
   "en": "UAE",
@@ -143,8 +143,8 @@
   "ar": "كيف أدفع؟"
  },
  "uae_a2": {
-  "en": "Pay securely by card, or split the price into 4 interest-free payments with Tabby.",
-  "ar": "ادفع بأمان بالبطاقة، أو قسّم المبلغ على 4 دفعات بدون فوائد مع تابي"
+  "en": "Pay securely by card, or split the price into 4 interest-free payments with Tabby or Tamara.",
+  "ar": "ادفع بأمان بالبطاقة، أو قسّم المبلغ على 4 دفعات بدون فوائد مع تابي أو تمارا"
  },
  "uae_q3": {
   "en": "Can I order the book in Arabic?",

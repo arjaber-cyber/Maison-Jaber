@@ -7,10 +7,10 @@ C = [
  dict(key='UAE', file='personalised-books-uae.html', cc='AE', cur='AED', cur_ar='درهم', now='169', was='199', fee=0, eta=5,
       name=('the UAE', 'الإمارات'), short=('UAE', 'الإمارات'), cities=('Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain', 'دبي وأبوظبي والشارقة وعجمان ورأس الخيمة والفجيرة وأم القيوين والعين'),
       img='gft-child-reading-closeup', w=1254, h=1254,
-      intro=("Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to {cities}. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby.",
-             'حكاية من ميزون جابر مشروع عائلي إماراتي يصنع قصصًا مخصصة يكون طفلك بطلها، اختر قصة وأضف اسمه وعمره وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا بغلاف مقوّى ونوصله في علبة هدية إلى {cities}، والتوصيل مجاني في جميع الإمارات ويمكنك الدفع بالبطاقة أو تقسيم المبلغ على أربع دفعات مع تابي'),
-      seo=dict(en=("Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card or Tabby."),
-               ar=("قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي"))),
+      intro=("Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to {cities}. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby or Tamara.",
+             'حكاية من ميزون جابر مشروع عائلي إماراتي يصنع قصصًا مخصصة يكون طفلك بطلها، اختر قصة وأضف اسمه وعمره وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا بغلاف مقوّى ونوصله في علبة هدية إلى {cities}، والتوصيل مجاني في جميع الإمارات ويمكنك الدفع بالبطاقة أو تقسيم المبلغ على أربع دفعات مع تابي أو تمارا'),
+      seo=dict(en=("Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card, Tabby or Tamara."),
+               ar=("قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا"))),
  dict(key='Saudi', file='personalised-books-saudi-arabia.html', cc='SA', cur='SAR', cur_ar='ريال سعودي', now='169', was='199', fee='30', eta=5,
       name=('Saudi Arabia', 'السعودية'), short=('Saudi Arabia', 'السعودية'), cities=('Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah', 'الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة'),
       img='hom-sty-01', w=2000, h=1125,
@@ -75,9 +75,9 @@ def faqs(c):
        "Delivery is free anywhere in the UAE." if uae else f"{c['cur']} {c['fee']}, or free when you order 2 or more books.",
        "التوصيل مجاني في أي مكان داخل الإمارات" if uae else f"{c['fee']} {c['cur_ar']}، أو مجانًا عند طلب كتابين أو أكثر"),
       ("How do I pay?", "كيف أدفع؟",
-       "Pay securely by card, or split the price into 4 interest-free payments with Tabby." if uae else
+       "Pay securely by card, or split the price into 4 interest-free payments with Tabby or Tamara." if uae else
        f"Prices are shown in {c['cur']}. Card payments are processed in UAE dirhams (AED) at the equivalent amount, so your bank statement may show the charge in AED.",
-       "ادفع بأمان بالبطاقة، أو قسّم المبلغ على 4 دفعات بدون فوائد مع تابي" if uae else
+       "ادفع بأمان بالبطاقة، أو قسّم المبلغ على 4 دفعات بدون فوائد مع تابي أو تمارا" if uae else
        f"الأسعار معروضة بعملة {c['cur_ar']}، وتتم معالجة الدفع بالبطاقة بالدرهم الإماراتي بالمبلغ المعادل، لذلك قد يظهر المبلغ في كشف حسابك بالدرهم"),
       ("Can I order the book in Arabic?", "هل يمكن طلب الكتاب بالعربية؟",
        "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",

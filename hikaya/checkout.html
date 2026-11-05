@@ -205,6 +205,7 @@
   .tabby-panel p { margin: 0; font-size: 13.5px; color: var(--ink-soft, #555); }
   .pay-chips { display: flex; gap: 6px; flex-shrink: 0; direction: ltr; }
   .pay-icon { width: 38px; height: 24px; display: block; }
+  .pay-icon.badge { width: auto; max-width: 84px; border-radius: 6px; }
   .pay-panel { background: var(--bg-soft); border-top: 1px solid var(--line); padding: 4px 6px; }
   .pay-panel .card-fields { background: transparent; }
   .pay-panel .cod-box { background: transparent; border: 0; padding: 14px 12px; justify-content: center; text-align: center; }
@@ -216,9 +217,11 @@
     .pay-row { padding: 14px; gap: 10px; font-size: 14px; }
     .pay-chips { gap: 4px; }
     .pay-icon { width: 32px; height: 20px; }
+    .pay-icon.badge { width: auto; }
   }
   @media (max-width: 360px) {
     .pay-icon { width: 28px; height: 18px; }
+    .pay-icon.badge { width: auto; }
   }
 
   .other-region-box {
@@ -937,7 +940,7 @@
     applepay: { icon: '<svg viewBox="0 0 24 24"><path d="M16.5 8.5c-.3-2-2-3.3-3.8-3-.2-1.4-1.2-2.5-2.6-2.5-1.6 0-2.4 1.3-2.4 2.6 0 1.6 1.2 2.7 2.6 2.7"/><rect x="3" y="9" width="18" height="12" rx="2.5"/></svg>', label: () => t('checkout.method_applepay', 'Apple Pay') },
     googlepay: { icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>', label: () => t('checkout.method_googlepay', 'Google Pay') },
     tabby: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tabby', 'Pay later with Tabby') },
-    tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tamara', 'Tamara') },
+    tamara: { icon: '<svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>', label: () => t('pg.pay_tamara', 'Pay later with Tamara') },
   };
 
   // Payment marks on each row: the open-source activemerchant/payment_icons set (MIT, same marks Shopify shows), all 38x24.
@@ -945,6 +948,8 @@
     ziina: [['visa', 'Visa'], ['master', 'Mastercard'], ['apple_pay', 'Apple Pay', 'wallet'], ['google_pay', 'Google Pay', 'wallet']],
     card: [['visa', 'Visa'], ['master', 'Mastercard']],
     tabby: [['tabby', 'Tabby']],
+    // Tamara's own current badge (same address Tamara's official plugins use), EN/AR; falls back to the local mark if it can't load.
+    tamara: [['tamara', 'Tamara', 'badge']],
   };
 
   function renderPaymentSection() {
@@ -1069,13 +1074,14 @@
     // Shopify-style list: one row per method (radio, name, brand marks); the chosen row opens its panel.
     const rows = methods.map(m => {
       const on = paymentChosen && m === selectedPaymentMethod;
-      const chips = (PAY_CHIPS[m] || []).map(c => `<img class="pay-icon${c[2] ? ' ' + c[2] : ''}" src="images/pay/${c[0]}.svg" alt="${c[1]}" width="38" height="24">`).join('');
+      const chips = (PAY_CHIPS[m] || []).map(c => c[0] === 'tamara'
+        ? `<img class="pay-icon badge" src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-${(window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en'}.svg" alt="${c[1]}" height="24" onerror="this.onerror=null;this.src='images/pay/tamara.svg';this.classList.remove('badge')">`
+        : `<img class="pay-icon${c[2] ? ' ' + c[2] : ''}" src="images/pay/${c[0]}.svg" alt="${c[1]}" width="38" height="24">`).join('');
       const off = (m === 'tabby' && tabbyRejected()) || (m === 'tamara' && tamaraRejected());
       const sub = m === 'tabby' ? (off ? `<span class="pay-row-sub warn">${tabbyScore.message}</span>`
           : tabbyScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>` : '')
         : m === 'tamara' ? (off ? `<span class="pay-row-sub warn">${tamaraScore.message}</span>`
-          : tamaraScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>`
-          : `<span class="pay-row-sub">${t('pg.tamara_desc', 'Monthly payments. No late fees.')}</span>`)
+          : tamaraScore.status === 'checking' ? `<span class="pay-row-sub">${t('pg.tabby_checking', 'Checking availability…')}</span>` : '')
         : '';
       return `
         <button type="button" class="pay-row ${on ? 'active' : ''}${off ? ' unavailable' : ''}" data-method="${m}" role="radio" aria-checked="${on}" ${off ? 'aria-disabled="true"' : ''}>
