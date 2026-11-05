@@ -8,8 +8,8 @@
 // Until then only the app's admins can log in, so the button stays hidden
 // from customers. Admins can still test it by opening any sign-in page with
 // ?fb=1 once (it is remembered on that browser). Set this to true when the
-// Meta app is Live.
-const FACEBOOK_LIVE = false;
+// Meta app is Live. (Live since 5 Nov 2026: App Review approved email + public_profile.)
+const FACEBOOK_LIVE = true;
 
 function facebookPreview() {
   try {
