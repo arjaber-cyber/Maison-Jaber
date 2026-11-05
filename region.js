@@ -113,7 +113,7 @@ try { window.hikayaTamaraOn(); window.hikayaTabbyOn(); } catch (e) {}
   /* Tamara's official UAE wording, used only if their widget doesn't render (plan amount = price / 4, whole dirhams). */
   function fallback(el, price, lang) {
     var per = Math.round(Number(price) / 4);
-    el.innerHTML = '<div class="tamara-fallback" style="display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid #e5ddd0;border-radius:10px;padding:14px 16px;background:#fff;font-size:15px;line-height:1.45;color:#2E2018">'
+    el.innerHTML = '<div class="tamara-fallback" style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 0;background:transparent;font-size:15px;line-height:1.45;color:#2E2018">'
       + '<span>' + (lang === 'ar'
         ? 'ادفع ' + per + ' درهم شهريًا أو على 4 دفعات، بدون رسوم تأخير'
         : 'Pay AED ' + per + '/mo or in 4 payments. No late fees.') + '</span>'
@@ -128,7 +128,10 @@ try { window.hikayaTamaraOn(); window.hikayaTabbyOn(); } catch (e) {}
     var lang = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
     /* Config must exist before the script runs; refreshed on every call so EN <-> AR switches carry over. */
     window.tamaraWidgetConfig = { lang: lang, country: 'AE', currency: 'AED', publicKey: window.HIKAYA_TAMARA.publicKey,
-      css: ':host{--font-primary:inherit !important;--font-secondary:inherit !important;}' };
+      /* Blend into the Hikaya cream like Tabby (shouldInheritBg): no white card, no border, no shadow.
+         Only background-COLOR is cleared, so Tamara's gradient logo (a background image / svg) is untouched. */
+      css: ':host{--font-primary:inherit !important;--font-secondary:inherit !important;background:transparent !important;}'
+        + ' :host *:not(svg):not(img):not([class*="badge"]):not([class*="logo"]){background-color:transparent !important;box-shadow:none !important;border-color:transparent !important;}' };
     el.hidden = false;
     el.innerHTML = '';
     var w = document.createElement('tamara-widget');
