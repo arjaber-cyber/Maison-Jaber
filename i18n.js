@@ -212,6 +212,8 @@ window.HIKAYA_TRANSLATIONS = {
     unit_ph: { en: 'e.g. Flat 1204 or Villa 17', de: 'z. B. Wohnung 1204 oder Villa 17', ar: 'مثال: شقة 1204 أو فيلا 17' },
     map_searching: { en: 'Searching…', de: 'Suche…', ar: 'جارٍ البحث…' },
     map_no_results: { en: 'No matches — try a nearby landmark, or drop the pin on the map', de: 'Keine Treffer — versuchen Sie einen Orientierungspunkt oder setzen Sie den Pin auf der Karte', ar: 'لا توجد نتائج — جرّب معلمًا قريبًا أو ضع الدبوس على الخريطة' },
+    pin_rough: { en: 'Your location is approximate — please drag the pin onto your building', de: 'Ihr Standort ist ungenau — bitte ziehen Sie den Pin auf Ihr Gebäude', ar: 'موقعك تقريبي — يرجى سحب الدبوس إلى مبناك' },
+    gps_failed: { en: "We couldn't get your location — search your address or tap the map instead", de: 'Standort nicht verfügbar — suchen Sie Ihre Adresse oder tippen Sie auf die Karte', ar: 'تعذّر تحديد موقعك — ابحث عن عنوانك أو اضغط على الخريطة' },
     pin_set: { en: 'Pin set — you can drag it to the exact entrance', de: 'Pin gesetzt — Sie können ihn zum genauen Eingang ziehen', ar: 'تم تحديد الموقع — يمكنك سحب الدبوس إلى المدخل بالضبط' },
     city: { en: 'City', de: 'Stadt', ar: 'المدينة' },
     city_ph: { en: 'City', de: 'Stadt', ar: 'المدينة' },

@@ -1179,14 +1179,43 @@
     else { mapHint.textContent = t('checkout.map_hint', 'Pick your address from the list, or tap the map / drag the pin to your building — the address fills in automatically.'); mapHint.classList.remove('ok'); }
   }
 
+  /* Map engine: Google Maps when GMAPS_KEY is set (satellite view, Google address search and
+     reverse lookup), otherwise the free OpenStreetMap map. If Google fails to load or a Google
+     lookup errors, it falls back to OpenStreetMap / Photon so checkout never breaks. */
+  const GMAPS_KEY = ''; // Google Maps browser key — restricted to maison-jaber.com/* in Google Cloud
+  let engine = null;       // 'google' | 'leaflet'
+  let gSession = null;     // Places autocomplete session token (groups typing + pick into one session)
+
+  const mapApi = {
+    setPin(lat, lng) {
+      if (engine === 'google') {
+        if (!marker) {
+          marker = new google.maps.Marker({ map, position: { lat, lng }, draggable: true });
+          marker.addListener('dragend', () => { const p = marker.getPosition(); placePin(p.lat(), p.lng()); reverseFill(p.lat(), p.lng()); });
+        } else marker.setPosition({ lat, lng });
+      } else {
+        if (!marker) {
+          marker = L.marker([lat, lng], { draggable: true, autoPan: true }).addTo(map);
+          marker.on('dragend', () => { const p = marker.getLatLng(); placePin(p.lat, p.lng); reverseFill(p.lat, p.lng); });
+        } else marker.setLatLng([lat, lng]);
+      }
+    },
+    clearPin() { if (!marker) return; if (engine === 'google') marker.setMap(null); else marker.remove(); marker = null; },
+    view(lat, lng, zoom) {
+      if (engine === 'google') { map.setCenter({ lat, lng }); map.setZoom(zoom); } else map.setView([lat, lng], zoom);
+    },
+    zoom() { return map.getZoom(); },
+    center() { const c = map.getCenter(); return engine === 'google' ? { lat: c.lat(), lng: c.lng() } : { lat: c.lat, lng: c.lng }; },
+  };
+
+  let satShown = false;
   function placePin(lat, lng, zoom) {
     pin = { lat: +(+lat).toFixed(6), lng: +(+lng).toFixed(6) };
     if (!map) return;
-    if (!marker) {
-      marker = L.marker([lat, lng], { draggable: true, autoPan: true }).addTo(map);
-      marker.on('dragend', () => { const p = marker.getLatLng(); placePin(p.lat, p.lng); reverseFill(p.lat, p.lng); });
-    } else marker.setLatLng([lat, lng]);
-    map.setView([lat, lng], zoom || Math.max(map.getZoom(), 17));
+    mapApi.setPin(lat, lng);
+    mapApi.view(lat, lng, zoom || Math.max(mapApi.zoom(), 17));
+    // First pin: switch Google to satellite so the customer can see their actual building.
+    if (engine === 'google' && !satShown) { map.setMapTypeId('hybrid'); satShown = true; }
     setHint('checkout.pin_set', 'Pin set — you can drag it to the exact entrance');
   }
 
@@ -1197,21 +1226,48 @@
     return { line: line || p.city || p.state || '', city: p.city || p.county || p.state || '' };
   }
   const photonLang = () => ((window.hikayaLang && window.hikayaLang() === 'ar') ? 'default' : 'en');
+  const siteLang = () => ((window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en');
+
+  // Google address components -> { line, city }. Works for both Places (longText) and Geocoder (long_name).
+  function describeGoogle(comps, head) {
+    const get = (...types) => { const c = (comps || []).find(c => types.some(t => (c.types || []).includes(t))); return c ? (c.longText || c.long_name || '') : ''; };
+    const street = [get('street_number'), get('route')].filter(Boolean).join(' ');
+    const area = get('neighborhood') || get('sublocality_level_1', 'sublocality');
+    const city = get('locality') || get('administrative_area_level_1');
+    return { line: uniq([head || get('premise', 'point_of_interest', 'establishment'), street, area]).join(', ') || city, city };
+  }
+
+  function fillAddress(d) {
+    if (d.line) addressInput.value = d.line;
+    if (d.city) cityInput.value = d.city;
+    [addressInput, cityInput].forEach(el => el.dispatchEvent(new Event('input', { bubbles: true })));
+  }
+
+  async function photonReverse(lat, lng) {
+    const r = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}&lang=${photonLang()}`);
+    const f = (await r.json()).features?.[0];
+    return f ? describe(f.properties || {}) : null;
+  }
 
   async function reverseFill(lat, lng) {
     try {
-      const r = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}&lang=${photonLang()}`);
-      const f = (await r.json()).features?.[0];
-      if (!f) return;
-      const d = describe(f.properties || {});
-      if (d.line) addressInput.value = d.line;
-      if (d.city) cityInput.value = d.city;
-      [addressInput, cityInput].forEach(el => el.dispatchEvent(new Event('input', { bubbles: true })));
+      let d = null;
+      if (engine === 'google') {
+        try {
+          const { Geocoder } = await google.maps.importLibrary('geocoding');
+          const { results } = await new Geocoder().geocode({ location: { lat, lng }, language: siteLang() });
+          const best = (results || []).find(r => !(r.types || []).includes('plus_code')) || results?.[0];
+          if (best) d = describeGoogle(best.address_components);
+        } catch (e) { /* fall through to Photon */ }
+      }
+      if (!d || !d.line) d = await photonReverse(lat, lng);
+      if (d) fillAddress(d);
     } catch (e) { /* the pin still counts even if the lookup fails */ }
   }
 
-  function initMap() {
+  function initLeaflet() {
     if (map || !window.L) return;
+    engine = 'leaflet';
     const g = geoFor();
     map = L.map('address-map', { scrollWheelZoom: false }).setView(g.center, 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
@@ -1220,7 +1276,46 @@
     if (window.ResizeObserver) new ResizeObserver(() => { map.invalidateSize(); if (pin) map.panTo([pin.lat, pin.lng]); }).observe(document.getElementById('address-map'));
     if (pin) placePin(pin.lat, pin.lng);
   }
-  if (window.L) initMap(); else window.addEventListener('load', initMap);
+
+  function loadGoogle() {
+    return new Promise((resolve, reject) => {
+      if (window.google?.maps?.importLibrary) return resolve();
+      const cb = '__hikayaGmapsReady';
+      window[cb] = () => resolve();
+      const s = document.createElement('script');
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GMAPS_KEY)}&v=weekly&loading=async&libraries=places&language=${siteLang()}&region=${geoFor().cc.toUpperCase()}&callback=${cb}`;
+      s.async = true; s.onerror = reject;
+      document.head.appendChild(s);
+      setTimeout(() => reject(new Error('gmaps timeout')), 10000);
+    });
+  }
+  // Google reports a bad / unauthorised key through this global hook.
+  window.gm_authFailure = () => { console.warn('Google Maps key rejected — using OpenStreetMap'); if (engine === 'google') { map = null; marker = null; engine = null; document.getElementById('address-map').innerHTML = ''; initLeaflet(); } };
+
+  async function initGoogle() {
+    await loadGoogle();
+    const { Map } = await google.maps.importLibrary('maps');
+    await google.maps.importLibrary('marker');
+    if (map) return;
+    engine = 'google';
+    const g = geoFor();
+    map = new Map(document.getElementById('address-map'), {
+      center: { lat: g.center[0], lng: g.center[1] }, zoom: 11,
+      mapTypeControl: true,
+      mapTypeControlOptions: { mapTypeIds: ['roadmap', 'hybrid'], style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR, position: google.maps.ControlPosition.TOP_LEFT },
+      streetViewControl: false, fullscreenControl: false, clickableIcons: false, gestureHandling: 'cooperative',
+    });
+    map.addListener('click', e => { const p = e.latLng; placePin(p.lat(), p.lng()); reverseFill(p.lat(), p.lng()); });
+    if (window.ResizeObserver) new ResizeObserver(() => { if (pin) map.panTo(pin); }).observe(document.getElementById('address-map'));
+    if (pin) placePin(pin.lat, pin.lng);
+  }
+
+  function initMap() {
+    if (map) return;
+    if (GMAPS_KEY) initGoogle().catch(() => { engine = null; if (window.L) initLeaflet(); else window.addEventListener('load', initLeaflet); });
+    else initLeaflet();
+  }
+  if (GMAPS_KEY || window.L) initMap(); else window.addEventListener('load', initMap);
 
   // Suggestions list
   let results = [], active = -1, searchTimer, searchSeq = 0, picking = false;
@@ -1235,31 +1330,63 @@
   }
   function esc(x) { return String(x || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
-  function choose(i) {
+  async function choose(i) {
     const r = results[i]; if (!r) return;
+    closeSuggest();
+    let line = r.line, city = r.city, lat = r.lat, lng = r.lng;
+    if (r.prediction) {
+      // Google pick: one Place Details lookup (location + address parts) closes the autocomplete session.
+      try {
+        const place = r.prediction.toPlace();
+        await place.fetchFields({ fields: ['location', 'addressComponents'] });
+        gSession = null;
+        const d = describeGoogle(place.addressComponents, r.line);
+        line = d.line || r.line; city = d.city || '';
+        lat = place.location.lat(); lng = place.location.lng();
+      } catch (e) { gSession = null; return; }
+    }
     picking = true;
-    addressInput.value = r.line;
-    if (r.city) cityInput.value = r.city;
+    addressInput.value = line;
+    if (city) cityInput.value = city;
     [addressInput, cityInput].forEach(el => el.dispatchEvent(new Event('input', { bubbles: true })));
     picking = false;
-    closeSuggest();
-    placePin(r.lat, r.lng, 17);
+    placePin(lat, lng, 18);
     if (!unitInput.value.trim()) unitInput.focus();
+  }
+
+  async function googleSearch(q, g) {
+    const { AutocompleteSuggestion, AutocompleteSessionToken } = await google.maps.importLibrary('places');
+    gSession = gSession || new AutocompleteSessionToken();
+    const c = mapApi.center();
+    const { suggestions } = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+      input: q, sessionToken: gSession, includedRegionCodes: [g.cc], language: siteLang(),
+      locationBias: { center: c, radius: 50000 },
+    });
+    return (suggestions || []).filter(s => s.placePrediction).slice(0, 6).map(s => {
+      const p = s.placePrediction;
+      return { line: p.mainText?.text || p.text?.text || '', city: p.secondaryText?.text || '', region: '', prediction: p };
+    }).filter(r => r.line);
+  }
+
+  async function photonSearch(q, g) {
+    const center = map ? mapApi.center() : { lat: g.center[0], lng: g.center[1] };
+    const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=${photonLang()}&bbox=${g.bbox}&lat=${center.lat}&lon=${center.lng}`;
+    const data = await (await fetch(url)).json();
+    return (data.features || [])
+      .filter(f => (f.properties?.countrycode || '').toLowerCase() === g.cc)
+      .map(f => { const d = describe(f.properties); return { line: d.line, city: d.city, region: f.properties.state && f.properties.state !== d.city ? f.properties.state : '', lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] }; })
+      .filter((r, i, a) => r.line && a.findIndex(x => x.line === r.line && x.city === r.city) === i)
+      .slice(0, 6);
   }
 
   async function search(q) {
     const seq = ++searchSeq, g = geoFor();
     renderSuggest([], 'checkout.map_searching', 'Searching…');
     try {
-      const center = map ? map.getCenter() : { lat: g.center[0], lng: g.center[1] };
-      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=8&lang=${photonLang()}&bbox=${g.bbox}&lat=${center.lat}&lon=${center.lng}`;
-      const data = await (await fetch(url)).json();
+      let list = null;
+      if (engine === 'google') { try { list = await googleSearch(q, g); } catch (e) { list = null; } }
+      if (!list) list = await photonSearch(q, g);
       if (seq !== searchSeq) return;
-      const list = (data.features || [])
-        .filter(f => (f.properties?.countrycode || '').toLowerCase() === g.cc)
-        .map(f => { const d = describe(f.properties); return { line: d.line, city: d.city, region: f.properties.state && f.properties.state !== d.city ? f.properties.state : '', lat: f.geometry.coordinates[1], lng: f.geometry.coordinates[0] }; })
-        .filter((r, i, a) => r.line && a.findIndex(x => x.line === r.line && x.city === r.city) === i)
-        .slice(0, 6);
       renderSuggest(list, list.length ? null : 'checkout.map_no_results', 'No matches — try a nearby landmark, or drop the pin on the map');
     } catch (e) { if (seq === searchSeq) closeSuggest(); }
   }
@@ -1269,7 +1396,7 @@
     clearTimeout(searchTimer);
     const q = addressInput.value.trim();
     if (q.length < 3) { closeSuggest(); return; }
-    searchTimer = setTimeout(() => search(q), 350);
+    searchTimer = setTimeout(() => search(q), engine === 'google' ? 300 : 350);
   });
   addressInput.addEventListener('keydown', e => {
     if (suggestBox.hidden || !results.length) return;
@@ -1285,25 +1412,27 @@
   addressInput.addEventListener('blur', () => setTimeout(closeSuggest, 150));
 
   countrySelect.addEventListener('change', () => {
-    pin = null; if (marker) { marker.remove(); marker = null; }
-    if (map) map.setView(geoFor().center, 11);
+    pin = null; mapApi.clearPin(); gSession = null;
+    if (map) mapApi.view(geoFor().center[0], geoFor().center[1], 11);
     setHint();
   });
   document.addEventListener('hikaya:langchange', () => setHint(pin ? 'checkout.pin_set' : null, 'Pin set — you can drag it to the exact entrance'));
 
+  // "Use my current location": ask the phone for real GPS, not a Wi-Fi / cell-tower guess.
   document.getElementById('use-my-location').addEventListener('click', () => {
     const btn = document.getElementById('use-my-location');
     if (!navigator.geolocation) return;
     btn.disabled = true;
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const { latitude, longitude } = pos.coords;
-        placePin(latitude, longitude, 17);
+        const { latitude, longitude, accuracy } = pos.coords;
+        placePin(latitude, longitude, 18);
         reverseFill(latitude, longitude);
+        if (accuracy > 50) { setHint('checkout.pin_rough', 'Your location is approximate — please drag the pin onto your building'); mapHint.classList.remove('ok'); }
         btn.disabled = false;
       },
-      () => { btn.disabled = false; },
-      { timeout: 8000 }
+      () => { btn.disabled = false; setHint('checkout.gps_failed', "We couldn't get your location — search your address or tap the map instead"); mapHint.classList.remove('ok'); },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   });
 
