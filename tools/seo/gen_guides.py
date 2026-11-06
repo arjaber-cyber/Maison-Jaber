@@ -20,8 +20,9 @@ for n, (en, ar) in COMMON.items(): k(n, en, ar)
 
 head_tpl = open(ROOT + '/hikaya/our-world.html', encoding='utf-8').read().split('<link rel="canonical"')[0]
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap'
-assets = f'''<link rel="icon" type="image/png" href="images/favicon-star.png" />
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+assets = f'''<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!-- Fonts load without blocking the first paint. -->
