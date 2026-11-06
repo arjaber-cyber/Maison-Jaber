@@ -114,12 +114,6 @@
     var html = '<h3 class="sf-h" id="sf-h">' + esc(t.h) + '</h3><p class="sf-sub">' + esc(t.sub) + '</p>' +
       '<div class="sf-q"><span class="sf-ql" id="sf-age-l">' + esc(t.age) + '</span><div class="sf-chips" role="group" aria-labelledby="sf-age-l">' + chips('age', t.ages, state.age) + '</div></div>' +
       '<div class="sf-q"><span class="sf-ql" id="sf-occ-l">' + esc(t.occ) + '</span><div class="sf-chips" role="group" aria-labelledby="sf-occ-l">' + chips('occ', t.occs, state.occ) + '</div></div>';
-    if (state.age && state.occ && !catalog.length) {
-      // Catalogue still loading: lightweight placeholder cards, same size as the real ones.
-      html += '<div class="sf-results" aria-busy="true"><ul class="sf-list">' + [0, 1, 2].map(function () {
-        return '<li class="sf-card sf-sk" aria-hidden="true"><div class="sf-cover"></div><div class="sf-body"><span class="sk-l sk-t"></span><span class="sk-l sk-s"></span><span class="sk-l sk-s"></span></div></li>';
-      }).join('') + '</ul></div>';
-    }
     if (state.age && state.occ && catalog.length) {
       var r = recommend();
       html += '<div class="sf-results" aria-live="polite">';

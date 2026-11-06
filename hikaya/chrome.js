@@ -415,12 +415,34 @@
     return `<div class="cover${extraClass ? ' ' + extraClass : ''}">${img}${s.cover ? '' : `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>`}</div>`;
   }
   function tpl(str, o) { return Object.keys(o).reduce((a, k) => a.split('{' + k + '}').join(o[k]), str); }
+  /* "Includes someone special" (Nov 2026, messaging only): stories where family members can join the
+     child. Source of truth is family.js (HikayaFamily.STORIES); this copy is used on pages that don't load
+     family.js. Keep the two lists in step. */
+  const FAMILY_FALLBACK = { 'house-of-missing-things': ['mother', 'father'], 'grandpas-wild-safari': ['grandfather'], 'the-christmas-list': ['mother', 'grandmother'], 'the-last-box': ['mother'], 'just-one-more': ['mother', 'father'] };
+  const FAMILY_LABELS = { mother: { en: 'Mum', ar: 'الأم' }, father: { en: 'Dad', ar: 'الأب' }, grandfather: { en: 'Grandpa', ar: 'الجد' }, grandmother: { en: 'Grandma', ar: 'الجدة' } };
+  function familyRoles(slug) { const map = (window.HikayaFamily && window.HikayaFamily.STORIES) || FAMILY_FALLBACK; return (map[slug] || []).slice(); }
+  function familyCopy(slug) {
+    const roles = familyRoles(slug); if (!roles.length) return null;
+    const ar = lang() === 'ar';
+    const names = roles.map(r => (FAMILY_LABELS[r] || {})[ar ? 'ar' : 'en'] || r);
+    const who = names.length < 2 ? names[0] : (ar ? names.slice(0, -1).join('، ') + ' و' + names[names.length - 1] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]);
+    const two = roles.length > 1;
+    return ar ? {
+      badge: 'يشمل شخصًا مميزًا', heading: 'قصة يشاركها مع من يحب',
+      body: `يبقى طفلك بطل القصة، وفي هذه القصة يشاركه ${who} لحظات مختارة من المغامرة`,
+      limit: two ? 'يمكنك إضافة شخصين عزيزين كحد أقصى في هذه القصة' : 'يمكنك إضافة شخص عزيز واحد في هذه القصة',
+    } : {
+      badge: 'Includes someone special', heading: 'A story shared with someone they love.',
+      body: `Your child remains the hero. In this story, ${who} ${two ? 'join' : 'joins'} selected moments of the adventure.`,
+      limit: two ? 'You can add up to two loved ones in this story.' : 'You can add one loved one in this story.',
+    };
+  }
   function cardHtml(s, tag) {
     const age = ageText(s.age_bands); const th = themeLabel((s.moments || [])[0]); const line = oneLiner(s);
     tag = tag || 'li';
     return `<${tag} class="story-card">${coverHtml(s)}
       <div class="body"><h3><a href="${esc(storyHref(s))}">${titleHtml(s)}</a></h3>
-      <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}</div>
+      <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}${familyCopy(s.slug) ? `<span class="hk-special">${esc(familyCopy(s.slug).badge)}</span>` : ''}</div>
       ${line ? `<p class="line">${esc(line)}</p>` : ''}
       <p class="card-price" data-hk-price-now>${priceHtml()}</p>
       <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'See inside'))}</a></div>
@@ -548,7 +570,7 @@
   }
 
   function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
-  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
 
   /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
      The /hikaya/ shop is served from the /test5/ files. Relative links already stay inside

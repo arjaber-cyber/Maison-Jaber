@@ -140,6 +140,13 @@
       document.getElementById('st-ages').textContent = [H.ageText(s.age_bands), s.page_count ? tpl(t('pg.pages', '{n} pages'), { n: s.page_count }) : ''].filter(Boolean).join(' · ');
       document.getElementById('st-chips').innerHTML = [...new Set((s.moments || []).map(m => t('home6.th_' + m, '') || H.themeLabel(m)))].map(l => `<li>${esc(l)}</li>`).join('');
       document.getElementById('st-premise').textContent = H.oneLiner(s) || H.premise(s);
+      /* Stories with family members (family.js): a short note under the premise. Other stories: nothing. */
+      const fam = H.familyCopy ? H.familyCopy(s.slug) : null;
+      let famEl = document.getElementById('st-family');
+      if (fam) {
+        if (!famEl) { famEl = document.createElement('div'); famEl.id = 'st-family'; famEl.className = 'st-family'; document.getElementById('st-premise').after(famEl); }
+        famEl.innerHTML = `<p class="hk-special">${esc(fam.badge)}</p><h2>${esc(fam.heading)}</h2><p>${esc(fam.body)}</p>`;
+      } else if (famEl) famEl.remove();
       renderPrice();
       document.getElementById('st-cta').href = H.personaliseHref(s);
       document.querySelectorAll('[data-st-cta]').forEach(a => { a.href = H.personaliseHref(s); });

@@ -1439,3 +1439,11 @@ html.hk-consent-open .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 4px + en
   html.hk-consent-open body:has(.sticky-cta.show) .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 76px + env(safe-area-inset-bottom, 0px)); }
 }
 .hk-wa.is-near-ctl { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(16px); transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s .2s; }
+
+/* "Includes someone special" (Nov 2026): stories where family members can join the child */
+.hk-special { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600; color: var(--brand); background: transparent; border: 1px solid var(--taupe); border-radius: 999px; padding: 1px 8px; line-height: 1.5; }
+.hk-special::before { content: "\2661"; font-size: 12px; }
+.st-family { margin: -6px 0 22px; padding: 14px 16px; background: var(--card); border-radius: 12px; max-width: 48ch; }
+.st-family .hk-special { margin: 0 0 6px; }
+.st-family h2 { font-size: 1.25rem; line-height: 1.25; margin: 0 0 4px; }
+.st-family p:last-child { margin: 0; font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }

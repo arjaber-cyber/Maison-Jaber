@@ -118,18 +118,9 @@
     .story-finder .sf-chip { min-height: 38px; padding: 7px 12px; font-size: 12.5px; }
     .story-finder .sf-h { font-size: 20px; }
   }
-  /* Loading placeholders (Nov 2026): card-shaped, same size as a real story card, shown until the catalogue loads. */
-  #story-grid .story-pick-sk { aspect-ratio: auto; background: #fff; animation: none; border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 22px rgba(50,44,36,0.07); border: 3px solid transparent; }
-  .story-pick-sk .sk-cover, .sf-sk .sf-cover, .story-pick-sk .sk-l, .sf-sk .sk-l { background: linear-gradient(90deg, var(--sand, #EEE4D6) 0%, var(--card, #F3EADF) 50%, var(--sand, #EEE4D6) 100%); background-size: 200% 100%; animation: hk-sk 1.4s ease-in-out infinite; }
-  .story-pick-sk .sk-cover { aspect-ratio: 4/3.2; }
-  #story-grid .story-pick-sk.sk-phone-only { display: none; }
-  @media (max-width: 767px) { #story-grid .story-pick-sk.sk-phone-only { display: block; } }
-  .story-pick-sk .sk-body { padding: 12px 14px 14px; }
-  .story-pick-sk .sk-l, .sf-sk .sk-l { display: block; height: 10px; border-radius: 5px; margin-bottom: 8px; }
-  .story-pick-sk .sk-th { width: 35%; height: 8px; }
-  .story-pick-sk .sk-t, .sf-sk .sk-t { width: 75%; height: 13px; }
-  .sf-sk .sk-s { width: 90%; }
-  @media (prefers-reduced-motion: reduce) { .story-pick-sk .sk-cover, .sf-sk .sf-cover, .story-pick-sk .sk-l, .sf-sk .sk-l { animation: none; } }
+  .story-pick .hk-special { margin-top: 6px; }
+  .fam-limit { font-size: 13px; font-weight: 700; color: var(--coral-deep, #563622); margin: 4px 0 8px; }
+  .fam-limit:empty { display: none; }
   .photo-helper { font-size: 13px; font-weight: 700; color: var(--ink); margin: 0 0 8px; }
   details.photo-guidance summary { cursor: pointer; font-weight: 700; }
 
@@ -429,7 +420,7 @@
         <section class="story-finder" id="story-finder" aria-labelledby="sf-h"></section>
 
         <div class="story-grid" id="story-grid" role="radiogroup" aria-labelledby="wizard-title" aria-busy="true">
-          <div class="story-pick-sk" aria-hidden="true"><div class="sk-cover"></div><div class="sk-body"><span class="sk-l sk-th"></span><span class="sk-l sk-t"></span></div></div><div class="story-pick-sk" aria-hidden="true"><div class="sk-cover"></div><div class="sk-body"><span class="sk-l sk-th"></span><span class="sk-l sk-t"></span></div></div><div class="story-pick-sk" aria-hidden="true"><div class="sk-cover"></div><div class="sk-body"><span class="sk-l sk-th"></span><span class="sk-l sk-t"></span></div></div><div class="story-pick-sk sk-phone-only" aria-hidden="true"><div class="sk-cover"></div><div class="sk-body"><span class="sk-l sk-th"></span><span class="sk-l sk-t"></span></div></div>
+          <div class="story-pick-sk" aria-hidden="true"></div><div class="story-pick-sk" aria-hidden="true"></div><div class="story-pick-sk" aria-hidden="true"></div>
         </div>
         <div class="wizard-nav">
           <button type="button" class="btn-primary btn-next" data-step-btn="story" id="story-next-btn" disabled data-i18n="pg.next">Continue →</button>
@@ -528,6 +519,7 @@
         <div class="fam-card">
           <h4 id="fam-title"></h4>
           <p id="fam-body"></p>
+          <p class="fam-limit" id="fam-limit"></p>
           <p id="fam-offer"></p>
           <div class="fam-choice">
             <button type="button" class="extra-char-btn" id="fam-yes" data-fam="photos" aria-pressed="false"></button>
@@ -817,6 +809,11 @@
     const h = card.querySelector('h3'); if (h) { h.removeAttribute('data-i18n'); h.textContent = storyDisplayName(card.dataset.value); }
     const th = card.querySelector('.theme'); if (th) { th.removeAttribute('data-i18n'); th.textContent = storyThemeLabel(rec); }
     const cov = card.querySelector('.cover .t'); if (cov) { cov.removeAttribute('data-i18n-html'); cov.textContent = storyDisplayName(card.dataset.value); }
+    // "Includes someone special" on stories with family members (family.js); none on other stories.
+    const fam = window.Hikaya && window.Hikaya.familyCopy ? window.Hikaya.familyCopy(rec.slug) : null;
+    let badge = card.querySelector('.hk-special');
+    if (fam) { if (!badge) { badge = document.createElement('span'); badge.className = 'hk-special'; card.querySelector('.body').appendChild(badge); } badge.textContent = fam.badge; }
+    else if (badge) badge.remove();
   }
 
   async function fetchCatalog() {
@@ -1325,6 +1322,8 @@
     const tx = famText();
     document.getElementById('fam-title').textContent = tx.title;
     document.getElementById('fam-body').textContent = tx.body;
+    { const fc = window.Hikaya && window.Hikaya.familyCopy ? window.Hikaya.familyCopy((STORY_CATALOG[document.getElementById('story-input').value] || {}).slug) : null;
+      document.getElementById('fam-limit').textContent = fc ? fc.limit : ''; }
     document.getElementById('fam-offer').innerHTML = escHtml(tx.offer).replace(/&lt;span class=&quot;fam-free&quot;&gt;(.*?)&lt;\/span&gt;/, '<span class="fam-free">$1</span>');
     document.getElementById('fam-yes').textContent = tx.yes;
     document.getElementById('fam-no').textContent = tx.no;
