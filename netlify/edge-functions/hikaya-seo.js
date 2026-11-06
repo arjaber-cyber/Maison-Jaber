@@ -468,6 +468,18 @@ async function seoPage(request, context, state) {
       ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: "ar", mainEntity: items.map(i => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })) }).replace(/</g, "\\u003c")}</script>`
       : "";
     html = html.replace(faqRe, arFaq);
+    // Homepage (Nov 2026): serve the Arabic hero description and the UAE page link text in the HTML too.
+    // KEEP IN SYNC with home6-i18n.js (home6.hero_sub) and pages-i18n.js (lx.tr_uae).
+    if (file === "index.html") {
+      const AR_HOME = {
+        "home6.hero_sub": "قصص أطفال مخصّصة بطلها طفلك، بالعربية أو الإنجليزية، بغلاف مقوّى في علبة هدية، ونوصلها إلى جميع أنحاء الإمارات ودول الخليج",
+        "lx.tr_uae": "كتب أطفال مخصّصة في الإمارات",
+      };
+      for (const [key, ar] of Object.entries(AR_HOME)) {
+        const attr = key.replace(/\./g, "\\.");
+        html = html.replace(new RegExp(`(<(p|a)\\b[^>]*data-i18n="${attr}"[^>]*>)[^<]*(<\\/\\2>)`), (m, a, _t, b) => a + ar + b);
+      }
+    }
   }
 
   // Pages without their own structured data get a page type and breadcrumb trail.
