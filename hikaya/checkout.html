@@ -1561,7 +1561,7 @@
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
 
-    function finalizeOrderSuccess(message, orderNumber, trackingToken, serverFree) {
+    function finalizeOrderSuccess(message, orderNumber, trackingToken, serverFree, serverGa) {
       successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
@@ -1570,15 +1570,11 @@
       document.getElementById('progress-step-3').classList.add('active');
 
       if (window.hikayaTagOrder && orderNumber) window.hikayaTagOrder(orderNumber);
-      /* Tracking repair (Nov 2026): an AED 0 order (creator / gift code) is never a GA purchase; it sends
-         complimentary_order_complete instead. Cash on delivery isn't paid yet, so it sends nothing here. */
-      if (window.hikayaTrackPurchase && orderNumber && order.paymentMethod !== 'cod') {
-        window.hikayaTrackPurchase({
-          kind: (serverFree || !(Number(order.amount) > 0)) ? 'complimentary' : 'purchase',
-          transaction_id: orderNumber, value: serverFree ? 0 : order.amount, currency: order.currency,
-          coupon: order.promoCode, shipping: finalPricing.deliveryFee, payment_method: order.paymentMethod,
-          items: order.items.map(i => ({ item_id: i.slug || i.story, item_name: i.story })),
-        });
+      /* Purchase tracking (Nov 2026): only from our server's confirmed summary (gaSummary). A free order
+         (creator / gift code) comes back as 'complimentary' and is never a GA purchase; a test order sends
+         nothing. Paths without a server summary (legacy cash on delivery / PayTabs) send nothing here. */
+      if (window.hikayaTrackPurchase && orderNumber && serverGa && serverGa.transaction_id === orderNumber) {
+        window.hikayaTrackPurchase(Object.assign({}, serverGa, { payment_method: serverFree ? 'free' : order.paymentMethod }));
       }
 
       fetch('/.netlify/functions/complete-cart', {
@@ -1605,7 +1601,7 @@
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.free) {
           placeOrderBtn.disabled = true;
-          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber, data.trackingToken, true);
+          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber, data.trackingToken, true, data.ga || null);
           return;
         }
         if (viaTabby && data.rejected) {
@@ -1738,23 +1734,14 @@ window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
 };
 </script>
 <script>
-/* Tracking repair (Nov 2026): purchase after a payment page, built from our server's confirmed order
-   (d.ga: real paid amount, coupon, stories; test orders = 'none'), with this tab's checkout figures
-   as the fallback. hikayaTrackPurchase (analytics.js) sends it once per order number. */
+/* Purchase after a payment page (Nov 2026): built ONLY from our server's confirmed order (d.ga: paid
+   amount, currency, coupon, stories; test orders = 'none'). No figures from this tab's cart or the URL.
+   hikayaTrackPurchase (analytics.js) keeps it in an outbox until GA confirms it, once per order number. */
 window.hkGaPurchase = function (d, pending, order, method) {
   if (!window.hikayaTrackPurchase) return;
-  var g = (d && d.ga) || null; pending = pending || {};
-  var fallbackItems = (pending.items || []).map(function (i) { return { item_id: i.slug || i.story, item_name: i.story }; });
-  window.hikayaTrackPurchase({
-    kind: g ? g.kind : (Number(pending.total) > 0 ? 'purchase' : 'complimentary'),
-    transaction_id: order,
-    value: g ? g.value : pending.total,
-    currency: (g && g.currency) || pending.currency,
-    coupon: (g && g.coupon) || pending.coupon || null,
-    shipping: pending.shipping != null ? pending.shipping : (g ? g.shipping : 0),
-    items: (g && g.items && g.items.length) ? g.items : fallbackItems,
-    payment_method: method,
-  });
+  var g = (d && d.ga) || null;
+  if (!g || g.transaction_id !== order) return; // no server summary: send nothing rather than guess
+  window.hikayaTrackPurchase(Object.assign({}, g, { payment_method: method }));
 };
 </script>
 <script>

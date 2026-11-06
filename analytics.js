@@ -204,43 +204,107 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     window.hikayaTrackEvent('begin_checkout', p);
   }, true);
 
-  /* ---------- purchase: exactly once per confirmed, paid order ----------
-     s = { kind: 'purchase' | 'complimentary' | 'none', transaction_id, value, currency, coupon, shipping,
-           items: [{ item_id, item_name }], payment_method }  (built from our server's reply)
-     The order number is remembered on this device, so a refresh, the browser's back button or a
-     second return from the payment page never sends the same order again (GA also de-duplicates
-     purchases with the same transaction_id). */
-  const SENT_KEY = 'hk_ga_sent_orders';
-  function alreadySent(id) {
-    try { return (JSON.parse(localStorage.getItem(SENT_KEY) || '[]') || []).indexOf(id) !== -1; } catch (e) { return false; }
-  }
+  /* ---------- purchase: exactly once per confirmed, paid order (reworked Nov 2026) ----------
+     s = the server's order summary (_gaSummary.js, from the order-status / free-order reply):
+         { confirmed: true, kind: 'purchase' | 'complimentary' | 'none', transaction_id, value, currency,
+           coupon, shipping, items: [{ item_id, item_name, price, quantity }] } (+ payment_method)
+     Only a server-built summary can produce a purchase; nothing is taken from the URL or the cart.
+
+     Delivery is a small outbox on this device (localStorage), keyed by order number:
+       1. the order goes into the outbox once (the first server summary wins);
+       2. it is sent to GA only when analytics cookies are accepted AND Google's tag has really loaded,
+          and only marked "sent" once GA's own callback confirms it went out;
+       3. if the page is refreshed, closed or left before that, it is retried on the next page view
+          (a payment-return revisit, a refresh, or the visitor accepting cookies later), for up to 72 h;
+       4. a refusal of cookies is respected: nothing is sent unless the visitor says yes.
+     GA itself also ignores a second purchase with the same transaction_id. The Meta Pixel (marketing
+     consent) is tracked separately, with the order number as its de-duplication event id. */
+  const SENT_KEY = 'hk_ga_sent_orders';        // order numbers GA has confirmed (kept from the old version)
+  const OUTBOX_KEY = 'hk_purchase_outbox_v1';   // confirmed orders still waiting to reach GA / Meta
+  const OUTBOX_TTL = 72 * 3600 * 1000;
+  const ORDER_RE = /^HK-\d{6,12}$/;
+  function readList(k) { try { const l = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+  function alreadySent(id) { return readList(SENT_KEY).indexOf(id) !== -1; }
   function markSent(id) {
-    try { const l = JSON.parse(localStorage.getItem(SENT_KEY) || '[]') || []; l.push(id); localStorage.setItem(SENT_KEY, JSON.stringify(l.slice(-50))); } catch (e) {}
+    try { const l = readList(SENT_KEY); if (l.indexOf(id) === -1) l.push(id); localStorage.setItem(SENT_KEY, JSON.stringify(l.slice(-50))); } catch (e) {}
   }
-  window.hikayaTrackPurchase = function (s) {
-    if (!s || !s.transaction_id || !/^HK-\d{6,12}$/.test(String(s.transaction_id))) return false;
+  function readOutbox() { try { const o = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '{}'); return o && typeof o === 'object' && !Array.isArray(o) ? o : {}; } catch (e) { return {}; } }
+  function writeOutbox(o) { try { if (Object.keys(o).length) localStorage.setItem(OUTBOX_KEY, JSON.stringify(o)); else localStorage.removeItem(OUTBOX_KEY); } catch (e) {} }
+  function updateEntry(id, fn) { const o = readOutbox(); if (!o[id]) return; fn(o[id]); if (o[id].ga && (o[id].px || !pixelConfigured)) delete o[id]; writeOutbox(o); }
+  // Google's tag library has actually loaded and set up our property (not just our queue stub).
+  function gaLibReady() { try { return !!(window.google_tag_manager && window.google_tag_manager[cfg.GA_MEASUREMENT_ID]); } catch (e) { return false; } }
+  const inFlight = {}; // this page view: GA sends waiting for their callback
+
+  function buildPurchase(s) {
     const id = String(s.transaction_id);
-    if (s.kind === 'none' || alreadySent(id)) return false; // sandbox test order, or already counted
-    markSent(id);
-    const r = region();
-    const items = (s.items || []).map(function (i) {
-      return { item_id: String(i.item_id || 'story').slice(0, 100), item_name: String(i.item_name || i.item_id || 'Story').slice(0, 100), item_category: 'Personalised storybook', price: r.bookNow, quantity: 1 };
-    });
+    const currency = String(s.currency || '').toUpperCase();
     const value = Math.round((Number(s.value) || 0) * 100) / 100;
+    const items = (s.items || []).map(function (i) {
+      const it = { item_id: String(i.item_id || 'story').slice(0, 100), item_name: String(i.item_name || i.item_id || 'Story').slice(0, 100), item_category: 'Personalised storybook', quantity: Number(i.quantity) > 0 ? Number(i.quantity) : 1 };
+      if (Number.isFinite(Number(i.price)) && i.price !== null && i.price !== '') it.price = Math.round(Number(i.price) * 100) / 100;
+      const v = [i.book_language, i.age_edition].filter(Boolean).join(' / '); if (v) it.item_variant = v;
+      return it;
+    });
     if (s.kind === 'complimentary' || !(value > 0)) {
       // Creator / gift / AED 0 order: never a purchase, never a Google Ads conversion.
-      window.hikayaTrackEvent('complimentary_order_complete', {
-        order_id: id, creator_code: s.coupon || '', value: 0, currency: s.currency || r.currency,
-        story_name: items.map(function (i) { return i.item_name; }).join(', ').slice(0, 100),
-      });
-      return true;
+      return { ev: 'complimentary_order_complete', p: { order_id: id, creator_code: s.coupon ? String(s.coupon) : '', value: 0, currency: currency || 'AED', story_name: items.map(function (i) { return i.item_name; }).join(', ').slice(0, 100) } };
     }
-    const p = { transaction_id: id, value: value, currency: s.currency || r.currency, shipping: Math.max(0, Number(s.shipping) || 0), items: items, event_id: id };
-    if (s.coupon) p.coupon = String(s.coupon);
-    if (s.payment_method) p.payment_method = s.payment_method;
-    window.hikayaTrackEvent('purchase', p);
+    if (!/^[A-Z]{3}$/.test(currency)) return null; // never guess the currency of real money
+    const p = { transaction_id: id, value: value, currency: currency, shipping: Math.min(value, Math.max(0, Number(s.shipping) || 0)), items: items };
+    if (s.coupon) p.coupon = String(s.coupon).slice(0, 100);
+    if (s.payment_method) p.payment_method = String(s.payment_method).slice(0, 40);
+    return { ev: 'purchase', p: p };
+  }
+
+  function flushPurchases() {
+    if (untracked) return;
+    const o = readOutbox(); let changed = false; const now = Date.now();
+    Object.keys(o).forEach(function (id) {
+      const e = o[id];
+      if (!e || !e.ev || !e.p || now - (e.ts || 0) > OUTBOX_TTL) { delete o[id]; changed = true; return; }
+      if (!e.ga && alreadySent(id)) { e.ga = 1; changed = true; }
+      // GA4: needs analytics consent and the real Google tag; marked sent only from GA's callback.
+      if (!e.ga && !inFlight[id] && gaLoaded && window.gtag && hasConsent('analytics')) {
+        inFlight[id] = true;
+        const params = Object.assign({}, e.p, {
+          transport_type: 'beacon', event_timeout: 4000,
+          event_callback: function () {
+            delete inFlight[id];
+            if (gaLibReady()) { markSent(id); updateEntry(id, function (x) { x.ga = 1; }); }
+          },
+        });
+        window.gtag('event', e.ev, params);
+      }
+      // Meta Pixel: marketing consent only; the order number is the event id shared with the Conversions API.
+      if (!e.px && pixelLoaded && window.fbq && hasConsent('marketing')) {
+        if (e.ev === 'purchase') window.fbq('track', 'Purchase', { value: e.p.value, currency: e.p.currency, content_type: 'product', content_ids: e.p.items.map(function (i) { return i.item_id; }), num_items: e.p.items.length }, { eventID: id });
+        else window.fbq('trackCustom', e.ev, e.p, { eventID: id });
+        e.px = 1; changed = true;
+      }
+      if (e.ga && (e.px || !pixelConfigured)) { delete o[id]; changed = true; }
+    });
+    if (changed) writeOutbox(o);
+  }
+
+  window.hikayaTrackPurchase = function (s) {
+    if (untracked || !s || !s.transaction_id || !ORDER_RE.test(String(s.transaction_id))) return false;
+    const id = String(s.transaction_id);
+    if (s.kind === 'none') return false;                         // sandbox / owner test order: nothing at all
+    if (s.kind === 'purchase' && s.confirmed !== true) return false; // a paid purchase must come from our server
+    const o = readOutbox();
+    if (!o[id] && !alreadySent(id)) {
+      const built = buildPurchase(s);
+      if (!built) return false;
+      o[id] = { ev: built.ev, p: built.p, ts: Date.now(), ga: 0, px: 0 };
+      writeOutbox(o);
+      // Cookie-free counter and Clarity: once per order, when it is first confirmed on this device.
+      countEvent(built.ev === 'purchase' ? 'purchase' : 'complimentary_order_complete', { value: built.p.value });
+      if (clarityLoaded && window.clarity) window.clarity('event', built.ev);
+    }
+    flushPurchases();
     return true;
   };
+  window.hikayaFlushPurchases = flushPurchases;
 
   function watchWizardSteps() {
     let last = '';
@@ -409,6 +473,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     loadClarity();
     loadGA();
     loadPixel();
+    flushPurchases(); // confirmed orders not yet delivered (refresh, revisit, cookies accepted later)
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -425,6 +490,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // no-ops otherwise.
   // Usage: window.hikayaTrackEvent('begin_checkout', { value: 149, currency: 'AED' })
   window.hikayaTrackEvent = function (eventName, params) {
+    if (eventName === 'purchase' || eventName === 'complimentary_order_complete') return; // only via hikayaTrackPurchase
     params = Object.assign({}, params || {});
     // Optional id shared with the server (Meta Conversions API), so a purchase is never counted twice.
     const eventId = params.event_id || null;

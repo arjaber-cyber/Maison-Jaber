@@ -23,6 +23,7 @@ const { sendConfirmation } = require('./_ziina');
 
 const { checkOrderRules } = require('./_orderRules');
 const { saveAttribution } = require('./_attribution');
+const { gaSummary } = require('./_gaSummary');
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
 const testMode = () => ['true', '1', 'yes', 'on'].includes(String(process.env.ZIINA_TEST_MODE || '').trim().toLowerCase());
 
@@ -143,7 +144,7 @@ exports.handler = async (event) => {
     const done = await patchOrder({ payment_status: 'waived', order_status: 'received', status_updated_at: now, stage_history: [{ stage: 'received', at: now }] });
     await settleDiscount(saved.id, true);
     if (done) await sendConfirmation(done).catch(e => console.error('confirmation email failed', e));
-    return json(200, { free: true, orderNumber, trackingToken: saved.tracking_token, total: 0, currency: price.currency, chargedAed: 0 });
+    return json(200, { free: true, orderNumber, trackingToken: saved.tracking_token, total: 0, currency: price.currency, chargedAed: 0, ga: gaSummary(done || saved) });
   }
 
   // 2) Create the Ziina payment for the server-calculated AED amount.

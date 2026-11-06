@@ -28,15 +28,19 @@ function gaSummary(order) {
     : 'purchase';
   // Delivery isn't stored on the order: same rule as _pricing.js (free in the UAE and for 2+ books).
   // The browser's own figure from checkout (which also knows delivery-waiving codes) is preferred.
-  const shipping = !region || items.length >= 2 ? 0 : (region.deliveryFee || 0);
+  const shipping = kind !== 'purchase' || !region || items.length >= 2 ? 0 : Math.min(region.deliveryFee || 0, value);
+  // Each book's share of the paid amount (after discounts, before delivery), so item revenue adds up to the order.
+  const n = items.length || 1;
+  const each = kind === 'purchase' ? Math.round(((value - shipping) / n) * 100) / 100 : 0;
   return {
+    confirmed: true, // built by our server from the stored order: the only source allowed to send a GA purchase
     kind,
     transaction_id: order.order_number,
     value: kind === 'purchase' ? value : 0,
     currency: order.currency || (region && region.currency) || 'AED',
     coupon: order.promo_code || null,
     shipping,
-    items: items.map(i => ({ item_id: i.slug || i.story || 'story', item_name: i.story || i.slug || 'Story', book_language: i.bookLanguage || null, age_edition: i.ageEdition || null })),
+    items: items.map(i => ({ item_id: i.slug || i.story || 'story', item_name: i.story || i.slug || 'Story', price: each, quantity: 1, book_language: i.bookLanguage || null, age_edition: i.ageEdition || null })),
   };
 }
 
