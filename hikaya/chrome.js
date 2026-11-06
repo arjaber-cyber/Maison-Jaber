@@ -569,7 +569,11 @@
     });
   }
 
-  function setQS(q) { if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {} }
+  function setQS(q) {
+    /* Arabic pages keep their Arabic address (?lang=ar) when a filter or age band changes the query (SEO, Nov 2026). */
+    if (lang() === 'ar' && SEO_LANG) { const p = new URLSearchParams(q); p.set('lang', 'ar'); q = '?' + p.toString(); }
+    if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {}
+  }
   window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
 
   /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
@@ -586,6 +590,27 @@
       let p = PROD_BASE + u.pathname.replace(/^\/test5\//i, '');
       if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) p += '.html';
       a.setAttribute('href', p + u.search + u.hash);
+    });
+  }
+  /* Arabic internal links (SEO, Nov 2026): while the shop is shown in Arabic, links to the public pages carry
+     ?lang=ar (story, age and filter parameters are kept), so search engines that run scripts and shared links
+     stay on the Arabic pages; switching to English removes it again. The server (netlify/edge-functions/hikaya-seo.js)
+     does the same in the HTML. Private pages (cart, checkout, account…) are left alone. KEEP IN SYNC with PRIVATE_PAGES there. */
+  const PRIVATE_PAGES = /^(admin|account|login|checkout|personalize|cart|book-added|invoice|track-order|search|feedback|ziina-result)\.html$/i;
+  function keepLang(root) {
+    if (!PROD_BASE) return;
+    const ar = lang() === 'ar';
+    (root || document).querySelectorAll('a[href]').forEach(a => {
+      const raw = a.getAttribute('href');
+      if (!raw || /^(#|mailto:|tel:|javascript:|data:|sms:|whatsapp:)/i.test(raw)) return;
+      let u; try { u = new URL(raw, location.href); } catch (_) { return; }
+      if (u.origin !== location.origin || !/^\/hikaya\//.test(u.pathname)) return;
+      const page = u.pathname.slice('/hikaya/'.length);
+      if (page && (!/^[a-z0-9-]+\.html$/i.test(page) || PRIVATE_PAGES.test(page))) return;
+      if (ar === (u.searchParams.get('lang') === 'ar')) return;
+      if (ar) u.searchParams.set('lang', 'ar'); else u.searchParams.delete('lang');
+      const cut = raw.search(/[?#]/); const q = u.searchParams.toString();
+      a.setAttribute('href', (cut < 0 ? raw : raw.slice(0, cut)) + (q ? '?' + q : '') + u.hash);
     });
   }
   /* Canonical URL for the page being viewed, always on the public /hikaya/ path. */
@@ -672,8 +697,9 @@
   /* ---------------- Boot ---------------- */
   mount();
   function boot() {
-    keepNamespace();
-    if (PROD_BASE && window.MutationObserver) new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) { if (n.matches('a[href]')) keepNamespace(n.parentNode); else keepNamespace(n); } }))).observe(document.body, { childList: true, subtree: true });
+    keepNamespace(); keepLang();
+    if (PROD_BASE && window.MutationObserver) new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) { const r = n.matches('a[href]') ? n.parentNode : n; keepNamespace(r); keepLang(r); } }))).observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('hikaya:langchange', () => keepLang());
     initRegion(); initLang(); initNav(); initSticky(); initCarousels();
     renderLang(); renderRegion(); renderWhatsApp(); renderWelcome();
     document.addEventListener('hikaya:langchange', renderWhatsApp);

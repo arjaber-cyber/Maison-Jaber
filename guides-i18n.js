@@ -187,8 +187,8 @@
   "ar": "الاختيار حسب العمر"
  },
  "birthday_s3_b": {
-  "en": "<p><strong>Ages 2–4:</strong> short, repetitive stories and sturdy things to touch and point at. <strong>Ages 4–6:</strong> adventure, imagination and gifts they can show friends. <strong>Ages 6–8:</strong> bigger stories, small responsibilities and things that make them feel grown up. Hikaya stories are written for each of these <a href=\"age-groups.html\">age groups</a>.</p>",
-  "ar": "<p><strong>من 2 إلى 4 سنوات:</strong> قصص قصيرة متكررة وأشياء متينة يلمسونها ويشيرون إليها <strong>من 4 إلى 6 سنوات:</strong> المغامرة والخيال وهدايا يعرضونها على أصدقائهم <strong>من 6 إلى 8 سنوات:</strong> قصص أكبر ومسؤوليات صغيرة وأشياء تشعرهم بأنهم كبروا، وقصص حكاية مكتوبة لكل <a href=\"age-groups.html\">فئة عمرية</a> من هذه الفئات</p>"
+  "en": "<p><strong>Ages 2–4:</strong> short, repetitive stories and sturdy things to touch and point at. <strong>Ages 4–6:</strong> adventure, imagination and gifts they can show friends. <strong>Ages 6–8:</strong> bigger stories, small responsibilities and things that make them feel grown up. Hikaya stories are written for each of these <a href=\"age-groups.html\">age groups</a>. For example, <a href=\"story.html?s=to-the-rescue\">To the Rescue!</a> (ages 2–6) is a cheerful neighbourhood adventure for little helpers, <a href=\"story.html?s=storm-above-the-city\">The Storm Above the City</a> (ages 4–8) suits superhero fans, and <a href=\"story.html?s=silver-wing-mission\">The Silver-Wing Mission</a> (ages 6–8) is a school adventure about kindness and friendship.</p>",
+  "ar": "<p><strong>من 2 إلى 4 سنوات:</strong> قصص قصيرة متكررة وأشياء متينة يلمسونها ويشيرون إليها <strong>من 4 إلى 6 سنوات:</strong> المغامرة والخيال وهدايا يعرضونها على أصدقائهم <strong>من 6 إلى 8 سنوات:</strong> قصص أكبر ومسؤوليات صغيرة وأشياء تشعرهم بأنهم كبروا، وقصص حكاية مكتوبة لكل <a href=\"age-groups.html\">فئة عمرية</a> من هذه الفئات، فمثلًا <a href=\"story.html?s=to-the-rescue\">إلى الإنقاذ!</a> (من 2 إلى 6 سنوات) مغامرة مبهجة في الحيّ للمساعدين الصغار، و<a href=\"story.html?s=storm-above-the-city\">العاصفة فوق المدينة</a> (من 4 إلى 8 سنوات) تناسب محبي الأبطال الخارقين، و<a href=\"story.html?s=silver-wing-mission\">مهمة الجناح الفضي</a> (من 6 إلى 8 سنوات) مغامرة مدرسية عن اللطف والصداقة</p>"
  },
  "birthday_s4_h": {
   "en": "Order a week ahead",
@@ -223,8 +223,8 @@
   "ar": "اقرأ قصصًا عن المواليد الجدد"
  },
  "sibling_s1_b": {
-  "en": "<p>Stories give children a safe way to rehearse big feelings. A story where <em>they</em> are the big brother or sister, like Hikaya's new-sibling story, lets them see themselves in the role before it begins. <a href=\"gift-new-sibling.html\">See stories for a growing family</a>.</p>",
-  "ar": "<p>القصص تمنح الأطفال طريقة آمنة للتعامل مع المشاعر الكبيرة، وقصة يكون فيها هو الأخ أو الأخت الكبرى، مثل قصة حكاية عن المولود الجديد، تجعله يرى نفسه في هذا الدور قبل أن يبدأ <a href=\"gift-new-sibling.html\">اكتشف قصص العائلة التي تكبر</a></p>"
+  "en": "<p>Stories give children a safe way to rehearse big feelings. A story where <em>they</em> are the big brother or sister, like <a href=\"story.html?s=why-is-baby-looking-at-me\">Why Is Baby Looking at Me?</a> (ages 2–6), lets them see themselves in the role before it begins, with all its funny, warm little moments. <a href=\"gift-new-sibling.html\">See stories for a growing family</a>.</p>",
+  "ar": "<p>القصص تمنح الأطفال طريقة آمنة للتعامل مع المشاعر الكبيرة، وقصة يكون فيها هو الأخ أو الأخت الكبرى، مثل <a href=\"story.html?s=why-is-baby-looking-at-me\">لماذا ينظر إليّ المولود الصغير؟</a> (من 2 إلى 6 سنوات)، تجعله يرى نفسه في هذا الدور قبل أن يبدأ، بكل لحظاته المضحكة والدافئة <a href=\"gift-new-sibling.html\">اكتشف قصص العائلة التي تكبر</a></p>"
  },
  "sibling_s2_h": {
   "en": "Give them a real job",
@@ -239,8 +239,8 @@
   "ar": "حافظ على روتينه ثابتًا"
  },
  "sibling_s3_b": {
-  "en": "<p>Bedtime, the morning walk, the favourite breakfast. When everything else changes, familiar routines are reassuring.</p>",
-  "ar": "<p>وقت النوم، نزهة الصباح، الفطور المفضل، فعندما يتغير كل شيء تمنحه العادات المألوفة الطمأنينة</p>"
+  "en": "<p>Bedtime, the morning walk, the favourite breakfast. When everything else changes, familiar routines are reassuring. If bedtime gets harder once the baby arrives, <a href=\"story.html?s=teddys-night-adventure\">Teddy's Night Adventure</a> (ages 2–6) is a cosy bedtime story about feeling brave in the dark.</p>",
+  "ar": "<p>وقت النوم، نزهة الصباح، الفطور المفضل، فعندما يتغير كل شيء تمنحه العادات المألوفة الطمأنينة، وإن صار وقت النوم أصعب بعد قدوم المولود فإن <a href=\"story.html?s=teddys-night-adventure\">مغامرة تيدي الليلية</a> (من 2 إلى 6 سنوات) قصة دافئة لوقت النوم عن الشجاعة في الظلام</p>"
  },
  "sibling_s4_h": {
   "en": "A gift \"from the baby\"",
@@ -307,8 +307,8 @@
   "ar": "3- اقرأوا قصصًا عن الشجاعة"
  },
  "school_s2_b": {
-  "en": "<p>Stories about trying something new help children name their feelings. When the hero shares their name and face, the message lands even closer to home. <a href=\"gift-first-day-of-school.html\">See stories for new beginnings</a>.</p>",
-  "ar": "<p>القصص عن تجربة شيء جديد تساعد الأطفال على تسمية مشاعرهم، وعندما يحمل البطل اسمهم وملامحهم تصل الرسالة أقرب إلى قلوبهم <a href=\"gift-first-day-of-school.html\">اكتشف قصص البدايات الجديدة</a></p>"
+  "en": "<p>Stories about trying something new help children name their feelings. When the hero shares their name and face, the message lands even closer to home. <a href=\"story.html?s=door-of-a-thousand-stars\">Door of a Thousand Stars</a> (ages 4–8) is about finding the courage to take one more step when something new feels scary, <a href=\"story.html?s=silver-wing-mission\">The Silver-Wing Mission</a> (ages 6–8) is about kindness and making friends at school, and <a href=\"story.html?s=house-of-missing-things\">The House of Missing Things</a> (ages 2–6) turns keeping track of their own things into a little detective game. <a href=\"gift-first-day-of-school.html\">See stories for new beginnings</a>.</p>",
+  "ar": "<p>القصص عن تجربة شيء جديد تساعد الأطفال على تسمية مشاعرهم، وعندما يحمل البطل اسمهم وملامحهم تصل الرسالة أقرب إلى قلوبهم، فقصة <a href=\"story.html?s=door-of-a-thousand-stars\">باب الألف نجمة</a> (من 4 إلى 8 سنوات) عن الشجاعة لخطوة أخرى حين يبدو الجديد مخيفًا، و<a href=\"story.html?s=silver-wing-mission\">مهمة الجناح الفضي</a> (من 6 إلى 8 سنوات) عن اللطف وتكوين الصداقات في المدرسة، و<a href=\"story.html?s=house-of-missing-things\">منزل الأشياء الضائعة</a> (من 2 إلى 6 سنوات) تحوّل الاهتمام بأغراضهم إلى لعبة تحقيق صغيرة <a href=\"gift-first-day-of-school.html\">اكتشف قصص البدايات الجديدة</a></p>"
  },
  "school_s3_h": {
   "en": "4. Create a goodbye ritual",
@@ -367,8 +367,8 @@
   "ar": "1- قصة كريسماس يكون الطفل بطلها"
  },
  "xmas_s0_b": {
-  "en": "<p>A personalised book where they save Christmas, or find the missing star, becomes the story they ask for every night of the holidays. <a href=\"gift-christmas.html\">See our Christmas stories</a>.</p>",
-  "ar": "<p>كتاب مخصص ينقذ فيه الطفل الكريسماس أو يجد النجمة الضائعة يصبح القصة التي يطلبها كل ليلة في العطلة <a href=\"gift-christmas.html\">اكتشف قصص الكريسماس</a></p>"
+  "en": "<p>A personalised book where they save Christmas, or find the missing star, becomes the story they ask for every night of the holidays. <a href=\"story.html?s=christmas-star\">The Christmas Star That Went Missing</a> (ages 4–8) is a magical winter adventure about helping a friend find their way home, <a href=\"story.html?s=christmas-tree-door\">The Christmas Tree Door</a> (ages 2–6) is a cosy, magical tale for younger children, and <a href=\"story.html?s=the-christmas-list\">The Christmas List That Grew and Grew</a> (ages 4–8) is about the joy of giving, with the option to add Mum and Grandma alongside your child, who stays the hero. <a href=\"gift-christmas.html\">See our Christmas stories</a>.</p>",
+  "ar": "<p>كتاب مخصص ينقذ فيه الطفل الكريسماس أو يجد النجمة الضائعة يصبح القصة التي يطلبها كل ليلة في العطلة، فقصة <a href=\"story.html?s=christmas-star\">نجمة الميلاد التي ضاعت</a> (من 4 إلى 8 سنوات) مغامرة شتوية ساحرة عن مساعدة صديق في العودة إلى مكانه، و<a href=\"story.html?s=christmas-tree-door\">باب شجرة عيد الميلاد</a> (من 2 إلى 6 سنوات) حكاية دافئة وساحرة للأصغر سنًا، و<a href=\"story.html?s=the-christmas-list\">قائمة الميلاد التي كبرت وكبرت</a> (من 4 إلى 8 سنوات) عن فرحة العطاء، ويمكن فيها إضافة الأم والجدة إلى جانب طفلك الذي يبقى بطل القصة <a href=\"gift-christmas.html\">اكتشف قصص الكريسماس</a></p>"
  },
  "xmas_s1_h": {
   "en": "2. A Christmas Eve box",
@@ -467,8 +467,8 @@
   "ar": "كتاب فيه رسالة منكم"
  },
  "grand_s0_b": {
-  "en": "<p>A personalised storybook where your grandchild is the hero, with your own words on the first page. Years later, that page is often the part they treasure most. In stories with a grandparent character, you can even add your own photo. <a href=\"gifts.html\">See gift ideas</a>.</p>",
-  "ar": "<p>كتاب قصة مخصص يكون حفيدكم بطله، مع كلماتكم في الصفحة الأولى، وبعد سنوات تصبح تلك الصفحة غالبًا أكثر ما يعتزون به، وفي القصص التي فيها شخصية الجد أو الجدة يمكنكم إضافة صورتكم أيضًا <a href=\"gifts.html\">اكتشف أفكار الهدايا</a></p>"
+  "en": "<p>A personalised storybook where your grandchild is the hero, with your own words on the first page. Years later, that page is often the part they treasure most. In stories with a grandparent character, you can even add your own photo: <a href=\"story.html?s=grandpas-wild-safari\">Grandpa's Wild Safari</a> (ages 2–6) is a warm day out with Grandpa, and <a href=\"story.html?s=the-christmas-list\">The Christmas List That Grew and Grew</a> (ages 4–8) includes Grandma. Your grandchild always stays the hero. <a href=\"gifts.html\">See gift ideas</a>.</p>",
+  "ar": "<p>كتاب قصة مخصص يكون حفيدكم بطله، مع كلماتكم في الصفحة الأولى، وبعد سنوات تصبح تلك الصفحة غالبًا أكثر ما يعتزون به، وفي القصص التي فيها شخصية الجد أو الجدة يمكنكم إضافة صورتكم أيضًا، فقصة <a href=\"story.html?s=grandpas-wild-safari\">رحلة السفاري البرية مع الجد</a> (من 2 إلى 6 سنوات) يوم دافئ مع الجد، و<a href=\"story.html?s=the-christmas-list\">قائمة الميلاد التي كبرت وكبرت</a> (من 4 إلى 8 سنوات) تضم الجدة، ويبقى حفيدكم دائمًا بطل القصة <a href=\"gifts.html\">اكتشف أفكار الهدايا</a></p>"
  },
  "grand_s1_h": {
   "en": "Your family stories, written down",

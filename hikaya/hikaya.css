@@ -1332,6 +1332,9 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
 /* Server-rendered fallback links (replaced by the real footer once the page script runs). */
 .ssr-links ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; max-width: 1200px; margin: 30px auto; padding: 0 16px; font-size: 13px; }
 .ssr-links a { color: var(--ink-soft); }
+/* Arabic pages: server-rendered header links inside #hk-top (its height is already reserved, so nothing shifts when the real header replaces them). */
+.ssr-top { max-height: 113px; overflow: hidden; }
+.ssr-top ul { margin: 0 auto; padding: 46px 16px 0; justify-content: center; font-size: 14px; }
 
 /* ---------------- Welcome code (first order) — chrome.js renderWelcome ---------------- */
 .hk-welcome-bar { background: var(--sand); color: var(--brand-dark); border-bottom: 1px solid var(--taupe); font-size: 13px; letter-spacing: .02em; position: relative; z-index: 61; }

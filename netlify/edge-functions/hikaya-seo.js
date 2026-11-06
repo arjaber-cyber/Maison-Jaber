@@ -14,7 +14,7 @@
 // Arabic copy carries no full stops (brand rule).
 // To change a page's Google title or description, edit PAGES below.
 
-import { AR_H1, AR_FAQ } from "../shared/ar-seo-data.js";
+import { AR_H1, AR_FAQ, AR_TEXT } from "../shared/ar-seo-data.js";
 
 const SITE = "https://maison-jaber.com";
 const BASE = SITE + "/hikaya/";
@@ -304,6 +304,239 @@ function cardsHtml(list, l) {
   }).join("");
 }
 
+// ---------------------------------------------------------------------------------------------
+// Full Arabic HTML (SEO, Nov 2026). Google, Bing and link previews read the HTML before any script
+// runs, so ?lang=ar pages are served with ALL their copy in Arabic, not just the title and H1:
+// every data-i18n / data-i18n-html element, aria-labels, image alt text and placeholders, the
+// header and footer links, price/delivery lines, story details, and internal links that keep
+// ?lang=ar. The text comes from the site's own approved translations (AR_TEXT, generated from the
+// same i18n files the browser uses by tools/seo/gen_ar_seo.js), so the page looks exactly as it
+// does once the browser has translated it. English pages are not touched.
+// ---------------------------------------------------------------------------------------------
+const tAr = key => (Object.prototype.hasOwnProperty.call(AR_TEXT, key) ? AR_TEXT[key] : null);
+const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
+
+// Inline <script>/<style> blocks are set aside while the body is rewritten, then put back unchanged.
+function shieldScripts(s) {
+  const kept = [];
+  const out = s.replace(/<(script|style|template)\b[\s\S]*?<\/\1>/gi, m => `\u0000${kept.push(m) - 1}\u0000`);
+  return { out, restore: x => x.replace(/\u0000(\d+)\u0000/g, (m, i) => kept[+i]) };
+}
+// Index just past the closing tag that matches an element opened before `from` (nesting-aware).
+function closeOf(s, tag, from) {
+  const re = new RegExp(`<(/?)${tag}\\b[^>]*>`, "gi");
+  re.lastIndex = from;
+  let depth = 1, m;
+  while ((m = re.exec(s))) {
+    if (!m[1] && /\/>$/.test(m[0])) continue;
+    depth += m[1] ? -1 : 1;
+    if (!depth) return [m.index, re.lastIndex];
+  }
+  return null;
+}
+function setAttr(tag, name, value) {
+  const re = new RegExp(`(\\s${name}=")[^"]*(")`);
+  if (re.test(tag)) return tag.replace(re, (m, a, b) => a + esc(value) + b);
+  return tag.replace(/\s*\/?>$/, end => ` ${name}="${esc(value)}"${end}`);
+}
+// Replace the inner HTML of every element whose opening tag matches `openRe` (must be global).
+// fn(openTag) returns the new inner HTML, or null to leave the element as it is.
+function fillElements(s, openRe, fn) {
+  let res = "", pos = 0, m;
+  openRe.lastIndex = 0;
+  while ((m = openRe.exec(s))) {
+    const name = m[1].toLowerCase();
+    const inner = VOID_TAGS.has(name) ? null : fn(m[0]);
+    const end = inner == null ? null : closeOf(s, name, openRe.lastIndex);
+    if (!end) continue;
+    res += s.slice(pos, m.index) + m[0] + inner + s.slice(end[0], end[1]);
+    pos = end[1];
+    openRe.lastIndex = end[1];
+  }
+  return res + s.slice(pos);
+}
+
+// Same as i18n.js applyTranslations() + chrome.js renderLang(), on the server.
+function translateBodyAr(body) {
+  // Attributes first: aria-label, alt, placeholder.
+  body = body.replace(/<[a-zA-Z][a-zA-Z0-9-]*\b[^>]*\sdata-i18n-(?:aria|alt|ph|placeholder)="[^"]+"[^>]*>/g, tag => {
+    for (const [, kind, key] of tag.matchAll(/\sdata-i18n-(aria|alt|ph|placeholder)="([^"]+)"/g)) {
+      const v = tAr(key);
+      if (v == null) continue;
+      tag = setAttr(tag, kind === "aria" ? "aria-label" : kind === "alt" ? "alt" : "placeholder", v);
+    }
+    return tag;
+  });
+  // Then text: data-i18n-html is inserted as markup (like innerHTML), data-i18n as plain text (like textContent).
+  return fillElements(body, /<([a-zA-Z][a-zA-Z0-9-]*)\b[^>]*\sdata-i18n(?:-html)?="[^"]+"[^>]*>/g, tag => {
+    const h = tag.match(/\sdata-i18n-html="([^"]+)"/), p = tag.match(/\sdata-i18n="([^"]+)"/);
+    if (h && tAr(h[1]) != null) return tAr(h[1]);
+    if (p && tAr(p[1]) != null) return esc(tAr(p[1]));
+    return null;
+  });
+}
+
+// Internal links on Arabic pages keep ?lang=ar (story, age and other parameters are kept as they are).
+// Private and transactional pages (cart, checkout, account…) are left alone: they are not indexed
+// and already open in the visitor's chosen language.
+const PRIVATE_PAGES = /^(admin|account|login|checkout|personalize|cart|book-added|invoice|track-order|search|feedback|ziina-result)\.html$/;
+function arHref(href, pageUrl) {
+  const raw = href.replace(/&amp;/g, "&");
+  if (!raw || /^(#|mailto:|tel:|javascript:|data:|sms:|whatsapp:)/i.test(raw)) return null;
+  let u;
+  try { u = new URL(raw, pageUrl); } catch (_) { return null; }
+  if (u.origin !== SITE || !/^\/hikaya\//.test(u.pathname)) return null;
+  const page = u.pathname.slice("/hikaya/".length);
+  if (page && (!/^[a-z0-9-]+\.html$/i.test(page) || PRIVATE_PAGES.test(page))) return null;
+  if (u.searchParams.get("lang") === "ar") return null;
+  u.searchParams.set("lang", "ar");
+  // Keep the link in the same form it was written (relative stays relative).
+  const cut = raw.search(/[?#]/);
+  const base = cut < 0 ? raw : raw.slice(0, cut);
+  return (base + "?" + u.searchParams.toString() + u.hash).replace(/&/g, "&amp;");
+}
+function arLinks(body, pageUrl) {
+  return body.replace(/(<a\b[^>]*?\shref=")([^"]*)(")/gi, (m, a, href, b) => {
+    const n = arHref(href, pageUrl);
+    return n ? a + n + b : m;
+  });
+}
+
+// Price and delivery lines that region.js/chrome.js fill in the browser (default country: UAE, as in the English HTML).
+const UAE = { was: "AED 199", now: "AED 169", eta: 5 };
+function priceHtmlAr() {
+  return `<s class="hk-was"><span class="sr-only">${esc(tAr("lx.was"))} </span><bdi>${UAE.was}</bdi></s> <span class="hk-now"><span class="sr-only">${esc(tAr("lx.now"))} </span><bdi>${UAE.now}</bdi></span>`;
+}
+function regionFillsAr(body) {
+  const uae = tAr("home6_regions.UAE");
+  const eta = String(tAr("lx.eta")).replace("{country}", uae).replace("{n}", UAE.eta);
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-price-line\b[^>]*>/gi, () => String(tAr("lx.price_line")).split("{price}").map(esc).join(priceHtmlAr()));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-price-now\b[^>]*>/gi, () => priceHtmlAr());
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-eta-short\b[^>]*>/gi, () => esc(String(tAr("lx.eta_short")).replace("{n}", UAE.eta)));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-eta(?=[\s>])[^>]*>/gi, () => esc(eta));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-delivery\b[^>]*>/gi, () => esc(tAr("home6.del_uae")));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-offer="([^"]*)"[^>]*>/gi, tag => {
+    const want = ((tag.match(/data-hk-offer="([^"]*)"/) || [])[1] || "price box delivery eta privacy").split(/\s+/);
+    const parts = {
+      price: `<li class="o-price">${priceHtmlAr()}</li>`,
+      box: `<li>${esc(tAr("lx.tr_box"))}</li>`,
+      delivery: `<li>${esc(tAr("home6.del_uae_short"))}</li>`,
+      eta: `<li>${esc(String(tAr("lx.offer_eta")).replace("{n}", UAE.eta))}</li>`,
+      privacy: `<li><a href="privacy.html" data-photo-privacy>${esc(tAr("lx.tr_private"))}</a></li>`,
+    };
+    return want.map(w => parts[w] || "").join("");
+  });
+  // Country pages (countries-i18n.js) and guides (guides-i18n.js) fill these from data attributes.
+  const CTRY_AR = { uae: "الإمارات", saudi: "السعودية", qatar: "قطر", kuwait: "الكويت", bahrain: "البحرين", oman: "عُمان" };
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-ctry-days="(\d+)"[^>]*>/gi, tag => esc(String(tAr("ctry.f_days")).replace("{n}", tag.match(/data-ctry-days="(\d+)"/)[1])));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-ctry-faq="([a-z]+)"[^>]*>/gi, tag => { const c = CTRY_AR[tag.match(/data-ctry-faq="([a-z]+)"/)[1]]; return c ? esc(String(tAr("ctry.faq")).replace("{country}", c)) : null; });
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-gdg-mins="(\d+)"[^>]*>/gi, tag => esc(String(tAr("gdg.mins")).replace("{n}", tag.match(/data-gdg-mins="(\d+)"/)[1])));
+  return body;
+}
+
+// Age page (browse.js ages()): subtitle, theme tiles, popular stories, quote and button for the chosen band.
+const bandWordsAr = b => { const [a, z] = String(b).split("-"); return String(tAr("a11y.band_words")).replace("{a}", a).replace("{b}", z); };
+function agePageAr(html, band, all) {
+  const key = band.replace("-", "_"), lbl = bandWordsAr(band);
+  const [lo, hi] = band.split("-").map(Number);
+  const inBand = s => ((s.age_bands && s.age_bands.length) ? s.age_bands : ["2-8"]).some(b => { const [a, z] = String(b).split("-").map(Number); return a < hi && z > lo; });
+  html = html.replace(/<h1 id="age-title">[^<]*<\/h1>/, `<h1 id="age-title">${esc(String(tAr("pg.age_title")).replace("{band}", lbl))}</h1>`);
+  html = html.replace(/<p class="lede" id="age-sub">[^<]*<\/p>/, `<p class="lede" id="age-sub">${esc(tAr("pg.age_sub_" + key) || "")}</p>`);
+  html = html.replace('<ul class="tiles" id="tiles"></ul>', `<ul class="tiles" id="tiles">${Object.keys(THEME_GROUPS).map(g => `<li><a class="tile" href="stories.html?age=${band}&amp;theme=${g}"><span>${esc(tAr("pg.w_" + g))}</span><small>${esc(tAr("pg.w_" + g + "_d") || "")}</small></a></li>`).join("")}</ul>`);
+  if (all && all.length) html = html.replace('<ul class="sgrid" id="popular"></ul>', `<ul class="sgrid" id="popular">${cardsHtml(all.filter(inBand).sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0)).slice(0, 8), "ar")}</ul>`);
+  html = html.replace('<blockquote id="age-quote"></blockquote>', `<blockquote id="age-quote">${esc(tAr("pg.age_quote_" + key) || "")}</blockquote>`);
+  html = html.replace(/(<a class="btn btn-primary" id="age-cta" href=")stories\.html\?age=[0-9-]+("><span>)[^<]*(<\/span>)/, (m, a, b, c) => `${a}stories.html?age=${band}${b}${esc(String(tAr("pg.age_browse")).replace("{band}", lbl))}${c}`);
+  return html;
+}
+
+// Header navigation in the raw HTML (the real header is drawn by chrome.js and replaces this).
+// It sits inside #hk-top, whose height is already reserved, so nothing moves when the header loads.
+const TOP_LINKS = [["index.html", "home6.nav_home"], ["stories.html", "home6.nav_stories"], ["age-groups.html", "home6.nav_ages"], ["our-world.html", "home6.nav_world"], ["gifts.html", "home6.nav_gifts"], ["about.html", "home6.nav_about"], ["help.html", "home6.nav_faq"]];
+function topLinksHtmlAr() {
+  return `<nav class="ssr-links ssr-top" aria-label="${esc(tAr("a11y.main_nav") || "القائمة الرئيسية")}"><ul>${TOP_LINKS.map(([f, k]) => `<li><a href="${f}?lang=ar">${esc(tAr(k))}</a></li>`).join("")}<li><a href="personalize.html">${esc(tAr("home6.cta_create"))}</a></li></ul></nav>`;
+}
+
+// Story details the story page fills in the browser (browse.js), served in Arabic.
+const THEME_GROUPS = { courage: ["confidence", "courage", "new"], kindness: ["kindness", "friendship"], emotions: ["emotions", "honesty"], imagination: ["adventure", "bedtime", "imagination"], family: ["family"], growing: ["growing", "change", "screen", "responsibility"] };
+const groupOf = m => Object.keys(THEME_GROUPS).find(g => THEME_GROUPS[g].includes(m)) || null;
+function ageTextAr(bands) {
+  const list = (bands || []).map(b => String(b).split("-").map(Number)).filter(p => p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])).sort((x, y) => x[0] - y[0]);
+  if (!list.length) return "";
+  if (list.length === 1) return String(tAr("a11y.age_range")).replace("{a}", list[0][0]).replace("{b}", list[0][1]);
+  return "من " + list.map(p => `${p[0]} إلى ${p[1]}`).join(" ومن ") + " سنوات";
+}
+const arPunct = v => String(v || "").replace(/([؀-ۿ)»])\.\s+(?=[؀-ۿ«])/g, "$1، ").replace(/\.\s*$/, "");
+function storyPageAr(html, s, all) {
+  const title = storyTitle(s, "ar");
+  const bands = Array.isArray(s.age_bands) ? s.age_bands : String(s.age_ranges || "").split(",").filter(Boolean);
+  const cover = s.cover_image_url_ar || s.cover_image_url || "";
+  const ages = [ageTextAr(bands), s.page_count ? String(tAr("pg.pages")).replace("{n}", s.page_count) : ""].filter(Boolean).join(" · ");
+  const chips = [...new Set((s.moments || []).map(m => tAr("home6.th_" + m) || tAr("pg.w_" + (groupOf(m) || "courage"))).filter(Boolean))];
+  const learns = [...new Set((s.moments || []).map(m => groupOf(m) || "courage"))].slice(0, 4).map(g => tAr("pg.w_" + g)).filter(Boolean);
+  const happens = arPunct(localized(s.synopsis, "ar") || s.description_ar || storyPremise(s, "ar"));
+  const band = bands[0];
+  const inBand = x => { if (!band) return true; const [lo, hi] = band.split("-").map(Number); const bs = (x.age_bands && x.age_bands.length) ? x.age_bands : ["2-8"]; return bs.some(b => { const [a, z] = String(b).split("-").map(Number); return a < hi && z > lo; }); };
+  const more = (all || []).filter(x => x.slug !== s.slug && inBand(x)).sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0)).slice(0, 10);
+  html = html.replace('<li aria-current="page" id="crumb-title"></li>', `<li aria-current="page" id="crumb-title">${esc(title)}</li>`);
+  html = html.replace('<p class="ages" id="st-ages"></p>', `<p class="ages" id="st-ages">${esc(ages)}</p>`);
+  if (chips.length) html = html.replace('<ul class="chips" id="st-chips"></ul>', `<ul class="chips" id="st-chips">${chips.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`);
+  if (cover) html = html.replace('<div class="main" id="st-main"></div>', `<div class="main" id="st-main"><div class="cover"><img src="${esc(cover)}" alt="${esc(String(tAr("lx.cover_alt")).replace("{title}", title))}" fetchpriority="high" decoding="async" width="560" height="560" /></div></div>`);
+  html = html.replace('<div class="pdp-price" id="st-price"></div>', `<div class="pdp-price" id="st-price"><span class="now">${UAE.now}</span><span class="was"><span class="sr-only">${esc(tAr("lx.was"))} </span>${UAE.was}</span></div>`);
+  html = html.replace('<a class="btn btn-primary" id="st-cta" href="personalize.html"', `<a class="btn btn-primary" id="st-cta" href="personalize.html?story=${encodeURIComponent(s.slug)}"`);
+  if (happens) html = html.replace('<p class="prose" id="st-happens"></p>', `<p class="prose" id="st-happens">${esc(happens)}</p>`);
+  if (learns.length) html = html.replace('<ul class="learn" id="st-learns"></ul>', `<ul class="learn" id="st-learns">${learns.map(l => `<li><span>${esc(l)}</span></li>`).join("")}</ul>`);
+  if (more.length) html = html.replace('<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title"></ul>', `<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title">${cardsHtml(more, "ar")}</ul>`);
+  return html;
+}
+
+// Homepage: "Their Next Adventure" shelf (newest first, like home6.js) and the shop-by-occasion tiles.
+const OCC_TILES = [["birthday", "gift-birthday.html"], ["eid", "gift-eid-ramadan.html"], ["christmas", "gift-christmas.html"], ["newbaby", "gift-new-sibling.html"], ["school", "gift-first-day-of-school.html"], ["justbecause", "stories.html?occasion=justbecause"]];
+function homeAr(html, all) {
+  if (all && all.length) {
+    const newest = [...all].sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")) || (b.sort_order || 0) - (a.sort_order || 0)).slice(0, 6);
+    html = html.replace('<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title"></ul>', `<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title">${cardsHtml(newest, "ar")}</ul>`);
+  }
+  html = html.replace('<ul class="occ-grid" id="occ-grid"></ul>', `<ul class="occ-grid" id="occ-grid">${OCC_TILES.map(([k, href]) => `<li><a class="occ-tile" href="${href}"><span class="occ-t">${esc(tAr("occ." + k) || k)}</span><small>${esc(tAr("occ." + k + "_d") || "")}</small></a></li>`).join("")}</ul>`);
+  return html;
+}
+
+// Structured data written in English inside the page files (guides, country pages, breadcrumbs):
+// on ?lang=ar the names, headline and description switch to the page's approved Arabic copy and the
+// URLs to the Arabic addresses. Organization/WebSite data (already bilingual) is left as it is.
+const LINK_AR = Object.fromEntries(SITE_LINKS.map(([f, , ar]) => [f, ar]));
+const stripHtml = s => String(s || "").replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+function localizeLdAr(html, file, meta, canonAr) {
+  const pageName = stripHtml((AR_H1[file] || {}).ar) || String(meta && meta.title || "").split(" | ")[0];
+  const arUrl = u => {
+    if (typeof u !== "string" || !u.startsWith(BASE)) return u;
+    return u.includes("lang=ar") ? u : u + (u.includes("?") ? "&" : "?") + "lang=ar";
+  };
+  return html.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/gi, (m, json) => {
+    let d;
+    try { d = JSON.parse(json); } catch (_) { return m; }
+    const t = d && d["@type"];
+    if (t === "Article") {
+      if (pageName) d.headline = pageName;
+      if (meta && meta.desc) d.description = meta.desc;
+      d.inLanguage = "ar";
+      d.mainEntityOfPage = canonAr;
+    } else if (t === "BreadcrumbList" && Array.isArray(d.itemListElement)) {
+      d.itemListElement.forEach(it => {
+        const f = typeof it.item === "string" && it.item.startsWith(BASE) ? (it.item.slice(BASE.length).split("?")[0] || "index.html") : null;
+        if (f === "index.html") it.name = "حكاية";
+        else if (f === file) it.name = pageName || it.name;
+        else if (f && LINK_AR[f]) it.name = LINK_AR[f];
+        it.item = arUrl(it.item);
+      });
+    } else if (t === "Product" && file.startsWith("personalised-books-")) {
+      if (pageName) d.name = pageName;
+      if (meta && meta.desc) d.description = meta.desc;
+      if (d.offers && d.offers.url) d.offers.url = canonAr;
+    } else return m;
+    return `<script type="application/ld+json">${JSON.stringify(d).replace(/</g, "\\u003c")}</script>`;
+  });
+}
+
 function setTag(html, re, replacement, insertBeforeHeadEnd) {
   if (re.test(html)) return html.replace(re, replacement);
   return insertBeforeHeadEnd ? html.replace("</head>", replacement + "\n</head>") : html;
@@ -339,7 +572,7 @@ async function seoPage(request, context, state) {
   const lang = qLang === "ar" ? "ar" : "en";
   const pathUrl = file === "index.html" ? BASE : BASE + file;
 
-  let meta, canonEn, image = null, ld = [], noindex = false;
+  let meta, canonEn, image = null, ld = [], noindex = false, storyRow = null;
 
   if (isStory) {
     const slug = url.searchParams.get("s") || url.searchParams.get("story") || "";
@@ -347,6 +580,7 @@ async function seoPage(request, context, state) {
     if (s === null) noindex = true;
     canonEn = slug ? `${BASE}story.html?s=${encodeURIComponent(slug)}` : BASE + "stories.html";
     if (s) {
+      storyRow = s;
       const tEn = plainTitle(s.title, "en");
       const tAr = plainTitle(s.title_ar || tEn, "ar");
       const premEn = localized(s.premise, "en") || s.description || localized(s.card_note, "en") || "";
@@ -468,17 +702,20 @@ async function seoPage(request, context, state) {
       ? `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: "ar", mainEntity: items.map(i => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })) }).replace(/</g, "\\u003c")}</script>`
       : "";
     html = html.replace(faqRe, arFaq);
-    // Homepage (Nov 2026): serve the Arabic hero description and the UAE page link text in the HTML too.
-    // KEEP IN SYNC with home6-i18n.js (home6.hero_sub) and pages-i18n.js (lx.tr_uae).
-    if (file === "index.html") {
-      const AR_HOME = {
-        "home6.hero_sub": "قصص أطفال مخصّصة بطلها طفلك، بالعربية أو الإنجليزية، بغلاف مقوّى في علبة هدية، ونوصلها إلى جميع أنحاء الإمارات ودول الخليج",
-        "lx.tr_uae": "كتب أطفال مخصّصة في الإمارات",
-      };
-      for (const [key, ar] of Object.entries(AR_HOME)) {
-        const attr = key.replace(/\./g, "\\.");
-        html = html.replace(new RegExp(`(<(p|a)\\b[^>]*data-i18n="${attr}"[^>]*>)[^<]*(<\\/\\2>)`), (m, a, _t, b) => a + ar + b);
-      }
+    // Everything else on the page, in Arabic, before any script runs (Nov 2026). See translateBodyAr().
+    html = localizeLdAr(html, file, meta, canonAr);
+    const all = await loadStories();
+    if (isStory && storyRow) html = storyPageAr(html, storyRow, all);
+    if (file === "index.html") html = homeAr(html, all);
+    if (file === "age-groups.html") html = agePageAr(html, AGE_BANDS.includes(url.searchParams.get("age")) ? url.searchParams.get("age") : "4-6", all);
+    html = html.replace('<div id="hk-top"></div>', `<div id="hk-top">${topLinksHtmlAr()}</div>`);
+    const bi = html.search(/<body\b/i);
+    if (bi >= 0) {
+      const sh = shieldScripts(html.slice(bi));
+      let body = translateBodyAr(sh.out);
+      body = regionFillsAr(body);
+      body = arLinks(body, BASE + file);
+      html = html.slice(0, bi) + sh.restore(body);
     }
   }
 
