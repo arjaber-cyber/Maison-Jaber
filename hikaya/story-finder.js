@@ -18,6 +18,7 @@
       occs: { birthday: 'Birthday', christmas: 'Christmas', newsibling: 'New sibling', feelings: 'Big feelings / growing up', justbecause: 'Just because' },
       choose: 'Choose this story', browse: 'Browse all stories',
       closest: 'We don’t have a story for this moment written for ages {band} yet, so here are the closest ones.',
+      partial: 'Some of these are written for younger or older ages, so check the age on each story.',
       none: 'No story matches yet. Browse all stories below.',
       picks: 'Our suggestions',
     },
@@ -29,6 +30,7 @@
       occs: { birthday: 'عيد ميلاد', christmas: 'عيد الميلاد المجيد', newsibling: 'مولود جديد في العائلة', feelings: 'مشاعر كبيرة ونمو', justbecause: 'بلا مناسبة' },
       choose: 'اختر هذه القصة', browse: 'تصفّح كل القصص',
       closest: 'لا توجد بعد قصة لهذه المناسبة لعمر {band} سنوات، وهذه أقرب القصص إليها',
+      partial: 'بعض هذه القصص مكتوبة لأعمار أخرى، تحقّق من العمر المذكور على كل قصة',
       none: 'لا توجد قصة مطابقة بعد، تصفّح كل القصص بالأسفل',
       picks: 'اقتراحاتنا',
     },
@@ -37,34 +39,68 @@
 
   var state = { age: null, occ: null };
   var catalog = [];
-  var FEELINGS = ['emotions', 'honesty', 'growing', 'change', 'screen', 'responsibility']; // site themes "Feelings" + "Growing up"
 
-  // Does this story fit the occasion? Uses the story's own occasions / moments only.
-  function fits(s, occ) {
-    var o = s.occasions || [], m = s.moments || [];
-    if (occ === 'birthday') return o.indexOf('birthday') !== -1;
-    if (occ === 'christmas') return o.indexOf('christmas') !== -1;
-    if (occ === 'newsibling') return o.indexOf('newbaby') !== -1;
-    if (occ === 'justbecause') return o.indexOf('justbecause') !== -1;
-    if (occ === 'feelings') return m.some(function (x) { return FEELINGS.indexOf(x) !== -1; });
-    return false;
-  }
-  // Ranking: for "feelings", a story whose MAIN theme is a feelings theme comes first; for birthday /
-  // just because, the Christmas-only stories go last. Then the shop's own order.
-  function score(s, occ) {
-    var m = s.moments || [], o = s.occasions || [], sc = 0;
-    if (occ === 'feelings') { var i = m.findIndex(function (x) { return FEELINGS.indexOf(x) !== -1; }); sc += i < 0 ? 9 : i; }
-    if ((occ === 'birthday' || occ === 'justbecause') && o.indexOf('christmas') !== -1) sc += 20;
-    return sc * 100 + (Number(s.sort_order) || 50);
-  }
+  /* Recommendations per occasion (Nov 2026, commercial review): an ordered shortlist of EXISTING stories,
+     each with a reason written for THAT occasion (based on the story's own premise). The finder takes the
+     first 3 that suit the chosen age. Only if fewer fit that age does it add the closest ages, and say so.
+     Stories not listed here are never auto-recommended: add a new story to the occasions it truly suits. */
+  function R(slug, en, ar) { return { slug: slug, en: en, ar: ar }; }
+  var PICKS = {
+    birthday: [ // a magical "this is your day" gift: the child as the hero of a big adventure
+      R('storm-above-the-city', 'They become the superhero who saves the day, perfect for their big day', 'يصبح بطلًا خارقًا ينقذ المدينة، هدية مثالية ليومه الكبير'),
+      R('door-of-a-thousand-stars', 'A magical, star-filled adventure starring the birthday child', 'مغامرة سحرية بين النجوم بطلها صاحب عيد الميلاد'),
+      R('to-the-rescue', 'Their name, their hero moment, a joyful birthday surprise', 'اسمه ولحظة بطولته، مفاجأة مبهجة لعيد ميلاده'),
+      R('grandpas-wild-safari', 'A wild safari adventure with Grandpa, a birthday gift to read again and again', 'مغامرة سفاري مع الجد، هدية عيد ميلاد يقرؤها مرة بعد مرة'),
+      R('silver-wing-mission', 'A spaceship adventure with them as the hero', 'مغامرة في سفينة فضاء وهو البطل'),
+      R('teddys-night-adventure', 'A cosy, magical adventure to treasure long after the party', 'مغامرة دافئة وساحرة يحتفظ بها بعد انتهاء الحفلة'),
+    ],
+    christmas: [ // Christmas stories first, then cosy gifts to unwrap
+      R('christmas-star', 'A magical Christmas Eve adventure', 'مغامرة ساحرة في ليلة الميلاد'),
+      R('the-christmas-list', 'A funny festive story about the joy of giving', 'قصة ميلادية مضحكة عن فرحة العطاء'),
+      R('christmas-tree-door', 'A cosy Christmas adventure for little ones', 'مغامرة ميلادية دافئة للصغار'),
+      R('door-of-a-thousand-stars', 'A starry, magical adventure to unwrap at Christmas', 'مغامرة سحرية بين النجوم تفتحها هدية في الميلاد'),
+      R('teddys-night-adventure', 'A cosy bedtime adventure for Christmas Eve', 'مغامرة دافئة قبل النوم لليلة الميلاد'),
+      R('to-the-rescue', 'A cheerful hero story to unwrap at Christmas', 'قصة بطل مبهجة تفتحها هدية في الميلاد'),
+    ],
+    newsibling: [ // family / big brother / big sister first
+      R('why-is-baby-looking-at-me', 'Made for new big brothers and big sisters', 'مصممة للإخوة الكبار الجدد'),
+      R('the-last-box', 'Gentle reassurance when life at home is changing', 'طمأنينة لطيفة حين تتغير الحياة في البيت'),
+      R('to-the-rescue', 'For a proud new little helper at home', 'لمساعد صغير فخور في البيت'),
+      R('silver-wing-mission', 'About welcoming others and making room for someone new', 'عن الترحيب بالآخرين وإفساح مكان لشخص جديد'),
+    ],
+    feelings: [ // emotions, confidence, screen time, friendship, transitions
+      R('door-of-a-thousand-stars', 'Courage for big new beginnings', 'شجاعة لمواجهة البدايات الجديدة'),
+      R('the-last-box', 'For big changes, like moving to a new home', 'للتغييرات الكبيرة مثل الانتقال إلى بيت جديد'),
+      R('just-one-more', 'Gentle help with screen time', 'مساعدة لطيفة في وقت الشاشة'),
+      R('silver-wing-mission', 'Friendship, kindness and one brave choice', 'عن الصداقة واللطف وقرار شجاع'),
+      R('storm-above-the-city', 'Staying calm and asking for help when things feel stormy', 'عن الهدوء وطلب المساعدة حين تشتد الأمور'),
+      R('the-cracked-blue-vase', 'Owning up to little mistakes, gently', 'عن الاعتراف بالأخطاء الصغيرة بلطف'),
+      R('teddys-night-adventure', 'For little ones afraid of the dark', 'للصغار الذين يخافون الظلام'),
+      R('house-of-missing-things', 'Growing responsibility, with a smile', 'تعلّم المسؤولية بابتسامة'),
+    ],
+    justbecause: [ // broadly joyful, imaginative, evergreen
+      R('storm-above-the-city', 'A big, funny superhero adventure', 'مغامرة بطولية كبيرة ومضحكة'),
+      R('to-the-rescue', 'A cheerful everyday-hero story', 'قصة مبهجة عن بطل في الحياة اليومية'),
+      R('grandpas-wild-safari', 'A warm safari adventure with Grandpa', 'مغامرة سفاري دافئة مع الجد'),
+      R('door-of-a-thousand-stars', 'A magical adventure beyond the clouds', 'مغامرة سحرية فوق الغيوم'),
+      R('silver-wing-mission', 'An exciting spaceship adventure', 'مغامرة مشوّقة في سفينة فضاء'),
+      R('teddys-night-adventure', 'A cosy, funny bedtime adventure', 'مغامرة مرحة ودافئة قبل النوم'),
+    ],
+  };
+
   function recommend() {
-    var occ = state.occ, band = state.age;
-    var byOcc = catalog.filter(function (s) { return fits(s, occ); }).sort(function (a, b) { return score(a, occ) - score(b, occ); });
-    var exact = byOcc.filter(function (s) { return (s.age_bands || []).indexOf(band) !== -1; });
-    if (exact.length) return { list: exact.slice(0, 3), closest: false };
-    // Nothing written for that age for this moment: show the nearest ages, and say so.
-    var mid = function (s) { var n = (s.age_bands || []).map(function (b) { var p = b.split('-').map(Number); return (p[0] + p[1]) / 2; }); return n.length ? Math.min.apply(null, n.map(function (x) { var t = band.split('-').map(Number); return Math.abs(x - (t[0] + t[1]) / 2); })) : 99; };
-    return { list: byOcc.slice().sort(function (a, b) { return mid(a) - mid(b) || score(a, occ) - score(b, occ); }).slice(0, 3), closest: byOcc.length > 0 };
+    var band = state.age, bySlug = {};
+    catalog.forEach(function (s) { bySlug[s.slug] = s; });
+    var picks = (PICKS[state.occ] || []).filter(function (p) { return bySlug[p.slug]; }) // only stories still in the shop
+      .map(function (p) { return { story: bySlug[p.slug], reason: p }; });
+    var fits = function (x) { return (x.story.age_bands || []).indexOf(band) !== -1; };
+    var list = picks.filter(fits).slice(0, 3);
+    var closest = false;
+    if (list.length < 2) { // nothing (or one) written for this age for this moment: add the nearest ages, and say so
+      var extra = picks.filter(function (x) { return !fits(x); }).slice(0, 3 - list.length);
+      closest = extra.length ? (list.length ? 'partial' : 'closest') : false; list = list.concat(extra);
+    }
+    return { list: list, closest: closest };
   }
 
   function esc(v) { return H.esc ? H.esc(v) : String(v); }
@@ -78,15 +114,20 @@
     var html = '<h3 class="sf-h" id="sf-h">' + esc(t.h) + '</h3><p class="sf-sub">' + esc(t.sub) + '</p>' +
       '<div class="sf-q"><span class="sf-ql" id="sf-age-l">' + esc(t.age) + '</span><div class="sf-chips" role="group" aria-labelledby="sf-age-l">' + chips('age', t.ages, state.age) + '</div></div>' +
       '<div class="sf-q"><span class="sf-ql" id="sf-occ-l">' + esc(t.occ) + '</span><div class="sf-chips" role="group" aria-labelledby="sf-occ-l">' + chips('occ', t.occs, state.occ) + '</div></div>';
+    if (state.age && state.occ && !catalog.length) {
+      // Catalogue still loading: lightweight placeholder cards, same size as the real ones.
+      html += '<div class="sf-results" aria-busy="true"><ul class="sf-list">' + [0, 1, 2].map(function () {
+        return '<li class="sf-card sf-sk" aria-hidden="true"><div class="sf-cover"></div><div class="sf-body"><span class="sk-l sk-t"></span><span class="sk-l sk-s"></span><span class="sk-l sk-s"></span></div></li>';
+      }).join('') + '</ul></div>';
+    }
     if (state.age && state.occ && catalog.length) {
       var r = recommend();
       html += '<div class="sf-results" aria-live="polite">';
       if (!r.list.length) html += '<p class="sf-note">' + esc(t.none) + '</p>';
       else {
-        if (r.closest) html += '<p class="sf-note">' + esc(t.closest.replace('{band}', t.ages[state.age])) + '</p>';
-        html += '<ul class="sf-list">' + r.list.map(function (s) {
-          var reason = H.localized ? H.localized(s.card_note) : '';
-          if (H.arPunct) reason = H.arPunct(reason);
+        if (r.closest) html += '<p class="sf-note">' + esc(r.closest === 'partial' ? t.partial : t.closest.replace('{band}', t.ages[state.age])) + '</p>';
+        html += '<ul class="sf-list">' + r.list.map(function (x) {
+          var s = x.story, reason = x.reason[H.lang && H.lang() === 'ar' ? 'ar' : 'en'];
           var cover = s.cover ? s.cover.replace(/\/cover(-ar)?\.jpg$/, '/cover$1-600.jpg') : '';
           return '<li class="sf-card">' +
             (cover ? '<img class="sf-cover" src="' + esc(cover) + '" onerror="this.onerror=null;this.src=\'' + esc(s.cover) + '\'" alt="" width="300" height="300" loading="lazy" decoding="async">' : '<div class="sf-cover"></div>') +
