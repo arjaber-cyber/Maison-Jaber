@@ -89,7 +89,22 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
     // The landing page's own address, with its campaign tags (they are removed from the address bar).
-    window.gtag('config', cfg.GA_MEASUREMENT_ID, { page_location: landingHref });
+    const gaCfg = { page_location: landingHref };
+    /* Tracking repair (Nov 2026): if cookies were accepted on a later page than the ad landing page,
+       the gclid / utm tags are already gone from the address bar. Give GA the tags saved on landing
+       (this tab only), so the visit stays credited to the ad or post that brought it. */
+    try {
+      const stash = sessionStorage.getItem('hk_ga_campaign');
+      if (stash && !/[?&](gclid|utm_source|fbclid|ttclid)=/.test(landingHref)) {
+        const u = new URL(landingHref); new URLSearchParams(stash).forEach(function (v, k) { if (!u.searchParams.has(k)) u.searchParams.set(k, v); });
+        gaCfg.page_location = u.href;
+      }
+      sessionStorage.removeItem('hk_ga_campaign');
+    } catch (e) {}
+    /* Coming back from Tabby / Tamara / Ziina (or a sign-in page) is the same visit, not a new
+       referral: report our own checkout as the referrer so the original source is kept. */
+    if (isPaymentReturn()) gaCfg.page_referrer = location.origin + '/hikaya/checkout.html';
+    window.gtag('config', cfg.GA_MEASUREMENT_ID, gaCfg);
     // Shop steps that happened before the visitor accepted cookies.
     earlyEvents.forEach(function (ev) { window.gtag('event', ev[0], ev[1]); });
     earlyEvents.length = 0;
@@ -117,20 +132,115 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     } catch (e) {}
   }
 
-  /* Funnel steps, so GA4 can show where shoppers drop off:
-     view_item (story page) -> personalize_step (story/details/photo/extra/review)
-     -> add_to_cart -> view_cart -> begin_checkout -> purchase.
-     add_to_cart and purchase are fired by personalize.html / checkout.html. */
+  /* Funnel steps, so GA4 can show where shoppers drop off (rules fixed Nov 2026):
+     view_item      story page, only once the story is known to exist
+     personalize_step (story/details/photo/extra/review)
+     add_to_cart    personalize.html, only after the book is really in the cart
+     view_cart      cart page, only with at least one book in it
+     begin_checkout only when the shopper clicks through to checkout with books in the cart
+                    (never on a checkout page load, never on a return from Tabby / Tamara / Ziina)
+     purchase       only for a payment our server has confirmed (hikayaTrackPurchase below);
+                    AED 0 creator / gift orders send complimentary_order_complete instead,
+                    sandbox test orders send nothing. */
   let pageEventsFired = false;
   function firePageEvents() {
     if (pageEventsFired) return;
     pageEventsFired = true;
     const q = new URLSearchParams(location.search);
-    if (page === 'story.html') window.hikayaTrackEvent('view_item', { story: q.get('s') || '' });
-    if (page === 'cart.html') window.hikayaTrackEvent('view_cart', {});
-    if (page === 'checkout.html' && !q.get('ziina')) window.hikayaTrackEvent('begin_checkout', {});
+    if (page === 'story.html' && q.get('s')) {
+      const slug = q.get('s');
+      const cat = window.Hikaya && window.Hikaya.loadCatalog ? window.Hikaya.loadCatalog() : (window.hikayaCart ? window.hikayaCart.loadStories() : Promise.resolve([]));
+      Promise.resolve(cat).then(function (all) {
+        const s = (all || []).find(function (x) { return x.slug === slug; });
+        if (!s) return; // unknown / deleted story: not a product view
+        const r = region();
+        window.hikayaTrackEvent('view_item', { story: slug, currency: r.currency, value: r.bookNow, items: [ecomItem({ slug: slug, story: s.title }, r)] });
+      }).catch(function () {});
+    }
+    if (page === 'cart.html') {
+      // The cart can be restored from a saved-order link a moment after load: check after that.
+      setTimeout(function () {
+        const p = cartPayload();
+        if (p) window.hikayaTrackEvent('view_cart', p);
+      }, 1200);
+    }
     if (page === 'personalize.html') watchWizardSteps();
   }
+
+  /* ---------- Ecommerce data (GA4 standard shape) ---------- */
+  function region() {
+    try { const r = window.hikayaRegion && window.hikayaRegion(); if (r && r.currency) return r; } catch (e) {}
+    return { currency: 'AED', bookNow: 169, deliveryFee: 0 };
+  }
+  function ecomItem(item, r) {
+    return {
+      item_id: String(item.slug || item.story || 'story').slice(0, 100),
+      item_name: String(item.story || item.slug || 'Story').slice(0, 100),
+      item_category: 'Personalised storybook',
+      item_variant: [item.bookLanguage, item.ageEdition].filter(Boolean).join(' / ') || undefined,
+      price: r.bookNow, quantity: 1,
+    };
+  }
+  function cartPayload() {
+    const cart = window.hikayaCart ? window.hikayaCart.getCart() : [];
+    if (!cart.length) return null;
+    const r = region();
+    let total = r.bookNow * cart.length;
+    try { total = Math.round(window.hikayaCart.computeCartPricing(r).total * 100) / 100; } catch (e) {}
+    return { currency: r.currency, value: total, items: cart.map(function (i) { return ecomItem(i, r); }) };
+  }
+  window.hikayaEcom = { item: function (i) { return ecomItem(i, region()); }, cart: cartPayload };
+
+  /* begin_checkout: the shopper clicks any "Checkout" link (cart, book-added, welcome banner) with
+     books in the cart. Once per cart contents per tab, so going back and forth isn't counted twice. */
+  document.addEventListener('click', function (e) {
+    const a = e.target && e.target.closest && e.target.closest('a[href]');
+    if (!a || untracked) return;
+    let path = ''; try { path = new URL(a.href, location.href).pathname; } catch (err) { return; }
+    if (!/\/checkout\.html$/.test(path) || page === 'checkout.html') return;
+    const p = cartPayload(); if (!p) return;
+    const sig = (window.hikayaCart.getCart() || []).map(function (i) { return i.id; }).sort().join(',');
+    try { if (sessionStorage.getItem('hk_bc_sig') === sig) return; sessionStorage.setItem('hk_bc_sig', sig); } catch (err) {}
+    window.hikayaTrackEvent('begin_checkout', p);
+  }, true);
+
+  /* ---------- purchase: exactly once per confirmed, paid order ----------
+     s = { kind: 'purchase' | 'complimentary' | 'none', transaction_id, value, currency, coupon, shipping,
+           items: [{ item_id, item_name }], payment_method }  (built from our server's reply)
+     The order number is remembered on this device, so a refresh, the browser's back button or a
+     second return from the payment page never sends the same order again (GA also de-duplicates
+     purchases with the same transaction_id). */
+  const SENT_KEY = 'hk_ga_sent_orders';
+  function alreadySent(id) {
+    try { return (JSON.parse(localStorage.getItem(SENT_KEY) || '[]') || []).indexOf(id) !== -1; } catch (e) { return false; }
+  }
+  function markSent(id) {
+    try { const l = JSON.parse(localStorage.getItem(SENT_KEY) || '[]') || []; l.push(id); localStorage.setItem(SENT_KEY, JSON.stringify(l.slice(-50))); } catch (e) {}
+  }
+  window.hikayaTrackPurchase = function (s) {
+    if (!s || !s.transaction_id || !/^HK-\d{6,12}$/.test(String(s.transaction_id))) return false;
+    const id = String(s.transaction_id);
+    if (s.kind === 'none' || alreadySent(id)) return false; // sandbox test order, or already counted
+    markSent(id);
+    const r = region();
+    const items = (s.items || []).map(function (i) {
+      return { item_id: String(i.item_id || 'story').slice(0, 100), item_name: String(i.item_name || i.item_id || 'Story').slice(0, 100), item_category: 'Personalised storybook', price: r.bookNow, quantity: 1 };
+    });
+    const value = Math.round((Number(s.value) || 0) * 100) / 100;
+    if (s.kind === 'complimentary' || !(value > 0)) {
+      // Creator / gift / AED 0 order: never a purchase, never a Google Ads conversion.
+      window.hikayaTrackEvent('complimentary_order_complete', {
+        order_id: id, creator_code: s.coupon || '', value: 0, currency: s.currency || r.currency,
+        story_name: items.map(function (i) { return i.item_name; }).join(', ').slice(0, 100),
+      });
+      return true;
+    }
+    const p = { transaction_id: id, value: value, currency: s.currency || r.currency, shipping: Math.max(0, Number(s.shipping) || 0), items: items, event_id: id };
+    if (s.coupon) p.coupon = String(s.coupon);
+    if (s.payment_method) p.payment_method = s.payment_method;
+    window.hikayaTrackEvent('purchase', p);
+    return true;
+  };
 
   function watchWizardSteps() {
     let last = '';
@@ -209,6 +319,22 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   const ATTR_DAYS = 90;
   const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'ttclid', 'igshid'];
   const landingHref = location.href;
+  /* Payment providers and sign-in pages send shoppers back to us; they are never a traffic source.
+     (Also add these as "unwanted referrals" in GA4: Admin > Data streams > Configure tag settings.) */
+  const PAY_HOSTS = /(^|\.)(tabby\.ai|tabby\.sa|tamara\.co|ziina\.com|paytabs\.com|supabase\.co|accounts\.google\.com|checkout\.stripe\.com)$/i;
+  function isPaymentReturn() {
+    try {
+      const q = new URLSearchParams(location.search);
+      if (q.get('order') && (q.has('ziina') || q.has('tabby') || q.has('tamara'))) return true;
+      return !!document.referrer && PAY_HOSTS.test(new URL(document.referrer).hostname);
+    } catch (e) { return false; }
+  }
+  // Ad / campaign tags seen on landing, kept for this tab in case cookies are accepted on a later page.
+  try {
+    const lq = new URLSearchParams(location.search), keep = new URLSearchParams();
+    ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'].forEach(function (k) { if (lq.get(k)) keep.set(k, lq.get(k).slice(0, 200)); });
+    if (keep.toString()) sessionStorage.setItem('hk_ga_campaign', keep.toString());
+  } catch (e) {}
   const clip = (v, n) => (v == null || v === '' ? null : String(v).slice(0, n || 120));
   function readAttr() {
     try {
@@ -222,7 +348,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
     let refHost = null;
     try { if (document.referrer) refHost = new URL(document.referrer).hostname.toLowerCase(); } catch (e) {}
-    const external = refHost && !/(^|\.)maison-jaber\.com$|netlify\.app$/.test(refHost);
+    const external = refHost && !/(^|\.)maison-jaber\.com$|netlify\.app$/.test(refHost) && !PAY_HOSTS.test(refHost);
     const tagged = TRACK_PARAMS.some(function (k) { return q.get(k); });
     const prev = readAttr();
     if (!tagged && !external && prev) return; // moving around the site, or a plain return visit

@@ -1561,7 +1561,7 @@
     const originalText = placeOrderBtn.textContent;
     placeOrderBtn.textContent = t('checkout.processing', 'Processing…');
 
-    function finalizeOrderSuccess(message, orderNumber, trackingToken) {
+    function finalizeOrderSuccess(message, orderNumber, trackingToken, serverFree) {
       successBox.textContent = message || t('checkout.order_success', 'Order placed successfully!');
       successBox.style.display = 'block';
       placeOrderBtn.textContent = t('checkout.order_placed', 'Order Placed ✓');
@@ -1570,10 +1570,14 @@
       document.getElementById('progress-step-3').classList.add('active');
 
       if (window.hikayaTagOrder && orderNumber) window.hikayaTagOrder(orderNumber);
-      if (window.hikayaTrackEvent) {
-        window.hikayaTrackEvent('purchase', {
-          value: order.amount, currency: order.currency, payment_method: order.paymentMethod,
-          transaction_id: orderNumber || undefined, event_id: orderNumber || undefined,
+      /* Tracking repair (Nov 2026): an AED 0 order (creator / gift code) is never a GA purchase; it sends
+         complimentary_order_complete instead. Cash on delivery isn't paid yet, so it sends nothing here. */
+      if (window.hikayaTrackPurchase && orderNumber && order.paymentMethod !== 'cod') {
+        window.hikayaTrackPurchase({
+          kind: (serverFree || !(Number(order.amount) > 0)) ? 'complimentary' : 'purchase',
+          transaction_id: orderNumber, value: serverFree ? 0 : order.amount, currency: order.currency,
+          coupon: order.promoCode, shipping: finalPricing.deliveryFee, payment_method: order.paymentMethod,
+          items: order.items.map(i => ({ item_id: i.slug || i.story, item_name: i.story })),
         });
       }
 
@@ -1601,7 +1605,7 @@
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.free) {
           placeOrderBtn.disabled = true;
-          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber, data.trackingToken);
+          finalizeOrderSuccess(t('checkout.free_success', 'Order placed! Nothing to pay. We have emailed your confirmation.'), data.orderNumber, data.trackingToken, true);
           return;
         }
         if (viaTabby && data.rejected) {
@@ -1615,7 +1619,7 @@
           renderPaymentSection();
         }
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
-        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email, total: data.total, currency: data.currency, chargedAed: data.chargedAed })); } catch {}
+        try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email, total: data.total, currency: data.currency, chargedAed: data.chargedAed, coupon: order.promoCode || null, shipping: finalPricing.deliveryFee })); } catch {}
         if (window.hikayaTagOrder) window.hikayaTagOrder(data.orderNumber);
         placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : viaTamara ? t('pg.tamara_redirect', 'Taking you to Tamara…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
@@ -1734,6 +1738,26 @@ window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
 };
 </script>
 <script>
+/* Tracking repair (Nov 2026): purchase after a payment page, built from our server's confirmed order
+   (d.ga: real paid amount, coupon, stories; test orders = 'none'), with this tab's checkout figures
+   as the fallback. hikayaTrackPurchase (analytics.js) sends it once per order number. */
+window.hkGaPurchase = function (d, pending, order, method) {
+  if (!window.hikayaTrackPurchase) return;
+  var g = (d && d.ga) || null; pending = pending || {};
+  var fallbackItems = (pending.items || []).map(function (i) { return { item_id: i.slug || i.story, item_name: i.story }; });
+  window.hikayaTrackPurchase({
+    kind: g ? g.kind : (Number(pending.total) > 0 ? 'purchase' : 'complimentary'),
+    transaction_id: order,
+    value: g ? g.value : pending.total,
+    currency: (g && g.currency) || pending.currency,
+    coupon: (g && g.coupon) || pending.coupon || null,
+    shipping: pending.shipping != null ? pending.shipping : (g ? g.shipping : 0),
+    items: (g && g.items && g.items.length) ? g.items : fallbackItems,
+    payment_method: method,
+  });
+};
+</script>
+<script>
 /* Back from Tamara: our server re-reads the order from Tamara (never trusts the URL), authorises it, then we show the result. */
 document.addEventListener('DOMContentLoaded', function () {
   var q = new URLSearchParams(location.search); var order = q.get('order'); var how = q.get('tamara');
@@ -1745,12 +1769,12 @@ document.addEventListener('DOMContentLoaded', function () {
   var pending = {}; try { pending = JSON.parse(sessionStorage.getItem('hk_pending_order') || '{}'); } catch (e) {}
   function say(msg, kind) { box.className = 'ziina-return ' + (kind || ''); box.textContent = msg; try { box.scrollIntoView({ block: 'center' }); } catch (e) {} }
   function clean() { history.replaceState(null, '', location.pathname); }
-  function done() {
+  function done(d) {
     try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
     if (window.hikayaCart) window.hikayaCart.clearCart();
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
     if (window.hikayaTagOrder) window.hikayaTagOrder(order);
-    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: 'tamara', value: pending.total, currency: pending.currency, transaction_id: order, event_id: order });
+    if (window.hkGaPurchase) window.hkGaPurchase(d, pending, order, 'tamara');
     box.remove();
     if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     clean();
@@ -1767,7 +1791,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var tries = 0;
   (function check() {
     fetch(url, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
-      if (d.paid) return done();
+      if (d.paid) return done(d);
       if (d.status === 'canceled') { say(t('pg.tamara_cancelled', 'You cancelled the Tamara payment. Your cart is still here, please try again or choose another payment method.'), 'warn'); return clean(); }
       if (d.status === 'failed') { say(t('pg.tamara_failed', 'Tamara could not approve this purchase. Please choose another payment method.'), 'warn'); return clean(); }
       if (++tries < 10) return setTimeout(check, 2000);
@@ -1793,12 +1817,12 @@ document.addEventListener('DOMContentLoaded', function () {
   anchor.parentNode.insertBefore(box, anchor);
   var pending = {}; try { pending = JSON.parse(sessionStorage.getItem('hk_pending_order') || '{}'); } catch (e) {}
   function say(msg, kind) { box.className = 'ziina-return ' + (kind || ''); box.textContent = msg; }
-  function done() {
+  function done(d) {
     try { sessionStorage.removeItem('hk_pending_order'); } catch (e) {}
     if (window.hikayaCart) window.hikayaCart.clearCart();
     fetch('/.netlify/functions/complete-cart', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: pending.email || '' }) }).catch(function () {});
     if (window.hikayaTagOrder) window.hikayaTagOrder(order);
-    if (window.hikayaTrackEvent) window.hikayaTrackEvent('purchase', { payment_method: viaTabby ? 'tabby' : 'ziina', value: pending.total, currency: pending.currency, transaction_id: order, event_id: order });
+    if (window.hkGaPurchase) window.hkGaPurchase(d, pending, order, viaTabby ? 'tabby' : 'ziina');
     box.remove();
     if (window.hkShowOrderDone) window.hkShowOrderDone({ items: pending.items || [] }, order, pending.trackingToken);
     history.replaceState(null, '', location.pathname);
@@ -1819,7 +1843,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch(viaTabby ? '/.netlify/functions/tabby-order-status?order=' + encodeURIComponent(order) + '&payment_id=' + encodeURIComponent(pi) : '/.netlify/functions/ziina-order-status?order=' + encodeURIComponent(order) + '&pi=' + encodeURIComponent(pi), { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (d) {
-        if (d.paid) return done();
+        if (d.paid) return done(d);
         if (viaTabby && d.status === 'canceled') { say(t('pg.tabby_cancelled', 'You aborted the payment. Please retry or choose another payment method.'), 'warn'); return history.replaceState(null, '', location.pathname); }
         if (viaTabby && d.status === 'failed') { say(t('pg.tabby_failed', 'Sorry, Tabby is unable to approve this purchase. Please use an alternative payment method for your order.'), 'warn'); return history.replaceState(null, '', location.pathname); }
         if (d.status === 'failed' || d.status === 'canceled') { say(t('pg.ziina_failed', "Your payment didn't go through, so you haven't been charged. Please try again."), 'warn'); return history.replaceState(null, '', location.pathname); }

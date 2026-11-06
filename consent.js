@@ -106,6 +106,13 @@
           <button type="button" id="hikaya-consent-save" class="hc-primary">${L.save}</button>
         </div>`;
     document.body.appendChild(banner);
+    /* Mobile UX (Nov 2026): while the banner is open, the WhatsApp button and the phone sticky
+       "Create Their Story" bar move up above it, so the banner never hides a key button. */
+    const root = document.documentElement;
+    const syncH = () => { if (document.body.contains(banner)) root.style.setProperty('--hk-consent-h', Math.ceil(banner.getBoundingClientRect().height + 16) + 'px'); };
+    root.classList.add('hk-consent-open'); syncH();
+    if ('ResizeObserver' in window) new ResizeObserver(syncH).observe(banner);
+    new MutationObserver((_, mo) => { if (!document.body.contains(banner)) { root.classList.remove('hk-consent-open'); root.style.removeProperty('--hk-consent-h'); mo.disconnect(); } }).observe(document.body, { childList: true });
 
     document.getElementById('hikaya-consent-accept').addEventListener('click', () => {
       saveConsent({ essential: true, analytics: true, marketing: true, ts: Date.now() });

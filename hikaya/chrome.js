@@ -164,6 +164,20 @@
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
     document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(); });
+    /* Ad landing-page offer facts (Nov 2026): <ul class="hk-offer" data-hk-offer="price box delivery eta privacy">.
+       Region-aware (price, delivery, timing follow the chosen GCC country) and in the page language. */
+    document.querySelectorAll('[data-hk-offer]').forEach(el => {
+      const want = (el.getAttribute('data-hk-offer') || 'price box delivery eta privacy').split(/\s+/);
+      const del = (k || regionKey()) === 'UAE' ? t('home6.del_uae_short', 'Free UAE delivery') : deliveryText(k);
+      const parts = {
+        price: `<li class="o-price">${priceHtml()}</li>`,
+        box: `<li>${esc(t('lx.tr_box', 'Gift packaging included'))}</li>`,
+        delivery: `<li>${esc(del)}</li>`,
+        eta: `<li>${esc(t('lx.offer_eta', 'Delivered in about {n} working days').replace('{n}', etaDays(k)))}</li>`,
+        privacy: `<li><a href="privacy.html" data-photo-privacy>${esc(t('lx.tr_private', "Your child's photo stays private"))}</a></li>`,
+      };
+      el.innerHTML = want.map(w => parts[w] || '').join('');
+    });
     document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
     const regionWrap = document.querySelector('.utility .region');
@@ -498,6 +512,29 @@
          so it never covers those links; WhatsApp stays reachable from the footer contact line. */
       const legal = document.querySelector('.site-footer .foot-bottom');
       if (legal && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => a.classList.toggle('is-docked', e.isIntersecting), { rootMargin: '0px 0px 40px 0px' }).observe(legal);
+      /* Mobile UX (Nov 2026): the button also steps aside while a photo-upload area, a step's Continue
+         button or the checkout payment controls pass through the bottom of the screen, so it never
+         covers them. Help stays one scroll away (and in the footer). */
+      const CTL = '#photo-upload, #extra-photo-upload, .fam-slot .photo-upload, .wizard-nav, #payment-area, #place-order, #paytabs-frame-wrap, .summary-box .btn-primary, main .btn-primary, main .sf-chip';
+      if ('IntersectionObserver' in window && document.querySelector('main')) {
+        let io = null; const hits = new Set();
+        /* Watch the strip of screen the button actually sits in (it moves up while the cookie banner is open). */
+        const setup = () => {
+          if (io) io.disconnect(); hits.clear(); a.classList.remove('is-near-ctl');
+          const r = a.getBoundingClientRect(); if (!r.height) return;
+          const top = Math.max(0, Math.round(r.top - 14)), bottom = Math.max(0, Math.round(window.innerHeight - r.bottom - 14));
+          io = new IntersectionObserver(entries => {
+            entries.forEach(en => { if (en.isIntersecting) hits.add(en.target); else hits.delete(en.target); });
+            a.classList.toggle('is-near-ctl', hits.size > 0);
+          }, { rootMargin: `-${top}px 0px -${bottom}px 0px` });
+          document.querySelectorAll(CTL).forEach(el => io.observe(el));
+        };
+        let tm = null; const later = () => { clearTimeout(tm); tm = setTimeout(setup, 350); };
+        setTimeout(setup, 400);
+        window.addEventListener('resize', later);
+        new MutationObserver(later).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); // cookie banner opened / closed
+        new MutationObserver(later).observe(document.querySelector('main'), { childList: true, subtree: true }); // cart / checkout render their buttons later
+      }
     }
     const footWa = document.getElementById('hk-wa-foot');
     if (footWa) { footWa.hidden = false; footWa.querySelector('a').href = waHref(); footWa.querySelector('a').textContent = WHATSAPP_DISPLAY; footWa.querySelector('.wl').textContent = t('wa.label', 'WhatsApp'); }

@@ -1397,3 +1397,45 @@ body[data-page="gift"] .page-hero .crumbs { padding-block: 0 10px; }
 /* Personalise page: quiet sibling hint under the summary (Nov 2026) */
 .sib-hint { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--card); color: var(--ink-soft); font-size: 13px; line-height: 1.5; }
 .sib-hint strong { color: var(--ink); font-weight: 700; }
+
+/* Real Hikaya Moments (Nov 2026) — hidden until approved content exists (hikaya/moments.js) */
+.real-moments { padding: 56px 0; background: var(--card); }
+.real-moments[hidden] { display: none; }
+.real-moments .rm-grid { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 40px; align-items: center; max-width: 900px; margin: 0 auto; }
+.real-moments .rm-video video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 16px; background: var(--sand); display: block; box-shadow: 0 14px 34px rgba(50, 44, 36, .14); }
+.real-moments h2 { margin: 6px 0 16px; }
+.real-moments .rm-quote { margin: 0 0 22px; font-family: var(--serif); font-size: 1.35rem; line-height: 1.4; color: var(--ink); }
+.real-moments .rm-quote p { margin: 0 0 8px; }
+.real-moments .rm-quote footer, .real-moments .rm-who { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--brand); }
+@media (max-width: 767px) {
+  .real-moments { padding: 40px 0; }
+  .real-moments .rm-grid { grid-template-columns: 1fr; gap: 22px; }
+  .real-moments .rm-video { max-width: 280px; margin: 0 auto; width: 100%; }
+  .real-moments .rm-copy { text-align: center; }
+}
+
+/* Ad landing-page offer facts (Nov 2026) */
+.hk-offer { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.hk-offer li { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, .78); border: 1px solid var(--taupe, #d8c8b2); border-radius: 999px; padding: 5px 11px; line-height: 1.3; }
+.hk-offer li.o-price { background: var(--brand, #7a4b2c); border-color: var(--brand, #7a4b2c); color: #fff; }
+.hk-offer li.o-price .hk-was { opacity: .75; color: inherit; }
+.hk-offer li.o-price .hk-now { font-weight: 800; color: #fff; }
+.hk-offer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.hk-offer.hk-offer-quiet { margin-top: 10px; font-size: 13px; }
+@media (max-width: 767px) { .hk-offer { font-size: 12.5px; gap: 5px 6px; margin-top: 12px; } .hk-offer li { padding: 4px 9px; } }
+.hk-offer.hk-offer-quiet { gap: 2px 0; color: var(--ink-soft); }
+.hk-offer.hk-offer-quiet li { background: none; border: 0; padding: 0; border-radius: 0; }
+.hk-offer.hk-offer-quiet li + li::before { content: "·"; margin-inline: 7px; color: var(--taupe, #b8a58c); }
+@media (max-width: 767px) {
+  /* Homepage phone hero: keep price + buttons in the first screen; delivery facts sit just under the buttons. */
+  .hero .hk-offer { order: 3; justify-content: center; margin: 10px 0 0; }
+  .hero .hero-trust { order: 4; margin-top: 6px; }
+}
+
+/* Cookie banner open (Nov 2026): floating buttons sit above it instead of underneath. */
+html.hk-consent-open .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 4px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 767px) {
+  html.hk-consent-open .sticky-cta { bottom: calc(var(--hk-consent-h, 120px) - 8px); border-radius: 12px; border: 1px solid var(--taupe); }
+  html.hk-consent-open body:has(.sticky-cta.show) .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 76px + env(safe-area-inset-bottom, 0px)); }
+}
+.hk-wa.is-near-ctl { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(16px); transition: opacity .2s var(--ease), transform .2s var(--ease), visibility 0s .2s; }

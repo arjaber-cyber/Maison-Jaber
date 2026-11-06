@@ -420,6 +420,7 @@
     price_line: { en: 'Personalised hardcover · {price} · Gift packaging included', ar: 'كتاب مخصّص بغلاف مقوّى · {price} · يشمل تغليف الهدية' },
     eta: { en: 'Delivery to {country}: about {n} working days', ar: 'التوصيل إلى {country}: نحو {n} أيام عمل' },
     eta_short: { en: 'About {n} working days', ar: 'نحو {n} أيام عمل' },
+    offer_eta: { en: 'Delivered in about {n} working days', ar: 'يصلك خلال نحو {n} أيام عمل' },
     pay_aed: { en: 'Charged in AED', ar: 'المبلغ المخصوم بالدرهم' },
     pay_aed_note: { en: 'Prices are shown in {cur}. Our payment partner charges the equivalent in UAE dirhams (AED); your bank may show a small conversion fee.', ar: 'الأسعار معروضة بعملة {cur} ويخصم شريك الدفع المبلغ المعادل بالدرهم الإماراتي وقد يضيف بنكك رسوم تحويل بسيطة' },
     catalog_wait: { en: 'New stories are on their way. Please check back soon.', ar: 'قصص جديدة في الطريق، عُد إلينا قريبًا' },
