@@ -28,7 +28,7 @@ const BOOK_PRICE_AED = 169;
 // KEEP IN SYNC with netlify/edge-functions/merchant-feed.js COUNTRIES, region.js and _pricing.js.
 const OFFERS = {
   AE: { price: 169, cur: "AED", ship: 0, transit: [1, 3] },
-  SA: { price: 169, cur: "SAR", ship: 30, transit: [1, 3] },
+  SA: { price: 169, cur: "SAR", ship: 30, transit: [3, 5] },
   QA: { price: 169, cur: "QAR", ship: 30, transit: [3, 5] },
   KW: { price: 14.25, cur: "KWD", ship: 2.5, transit: [3, 5] },
   BH: { price: 17.25, cur: "BHD", ship: 3, transit: [3, 5] },
@@ -185,8 +185,8 @@ export const PAGES = {
     ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا" },
   },
   "personalised-books-saudi-arabia.html": {
-    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia in about 5 working days, gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 5 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia in about 7 working days, gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-qatar.html": {
     en: { title: "Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },

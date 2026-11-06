@@ -167,12 +167,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في السعودية"
  },
  "saudi_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. SAR 169 per book, gift-boxed and delivered in about 5 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 ريال سعودي للكتاب، في علبة هدية مع التوصيل خلال نحو 5 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. SAR 169 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 ريال سعودي للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "saudi_intro": {
-  "en": "Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic or English, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah, usually in about 5 working days.",
-  "ar": "قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة خلال نحو 5 أيام عمل عادةً"
+  "en": "Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic or English, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah, usually in about 7 working days.",
+  "ar": "قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة خلال نحو 7 أيام عمل عادةً"
  },
  "saudi_name": {
   "en": "Saudi Arabia",
@@ -183,8 +183,8 @@
   "ar": "كم يستغرق التوصيل إلى السعودية؟"
  },
  "saudi_a0": {
-  "en": "About 5 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 5 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
  },
  "saudi_q1": {
   "en": "How much is delivery?",

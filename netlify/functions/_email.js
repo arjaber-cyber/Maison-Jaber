@@ -30,7 +30,7 @@ const WHATSAPP = '971508011769';
 const WHATSAPP_DISPLAY = '+971 50 801 1769';
 
 /* Delivery estimate (working days) by checkout country -- matches the website and FAQ. */
-const ETA_DAYS = { UAE: 5, Saudi: 5, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
+const ETA_DAYS = { UAE: 5, Saudi: 7, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
 const etaDays = country => ETA_DAYS[country] || 7;
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

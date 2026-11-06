@@ -17,7 +17,7 @@ const BASE = "https://maison-jaber.com/hikaya/";
 // days = delivery estimate in working days (handling 1-3 is the make-to-order time).
 const COUNTRIES = {
   AE: { cur: "AED", price: "169.00", ship: "0.00", days: [3, 5] },
-  SA: { cur: "SAR", price: "169.00", ship: "30.00", days: [3, 5] },
+  SA: { cur: "SAR", price: "169.00", ship: "30.00", days: [5, 7] },
   QA: { cur: "QAR", price: "169.00", ship: "30.00", days: [5, 7] },
   KW: { cur: "KWD", price: "14.25", ship: "2.50", days: [5, 7] },
   BH: { cur: "BHD", price: "17.25", ship: "3.00", days: [5, 7] },

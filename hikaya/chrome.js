@@ -141,9 +141,9 @@
   const regionObj = k => (window.HIKAYA_REGIONS || {})[k || regionKey()];
   const countryName = k => t('home6_regions.' + k, k);
   const fmt = (amount, r) => window.hikayaFormatPrice ? window.hikayaFormatPrice(amount, r) : `${r ? r.symbol : 'AED'} ${Number(amount)}`;
-  /* Delivery estimate per country (working days): UAE and KSA about 5, the rest of the GCC about 7.
+  /* Delivery estimate per country (working days): UAE about 5, the rest of the GCC (incl. KSA) about 7.
      This is the ONE source for every delivery estimate on the site (story, personalise, checkout, FAQs). */
-  const ETA_DAYS = { UAE: 5, Saudi: 5, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
+  const ETA_DAYS = { UAE: 5, Saudi: 7, Qatar: 7, Kuwait: 7, Bahrain: 7, Oman: 7 };
   function etaDays(k) { return ETA_DAYS[k || regionKey()] || 7; }
   function etaText(k) { return t('lx.eta', 'Estimated delivery to {country}: about {n} working days').replace('{country}', countryName(k || regionKey())).replace('{n}', etaDays(k)); }
   function etaShort(k) { return t('lx.eta_short', 'About {n} working days').replace('{n}', etaDays(k)); }

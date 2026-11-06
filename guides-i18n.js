@@ -143,8 +143,8 @@
   "ar": "نصيحة: اطلب الهدايا المخصصة مبكرًا في رمضان"
  },
  "eid_s10_b": {
-  "en": "<p>Personalised books are made to order. Hikaya delivery takes about 5 working days in the UAE and Saudi Arabia and about 7 in the rest of the GCC, so ordering in the first half of Ramadan keeps things relaxed. Delivery is free across the UAE.</p>",
-  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق توصيل حكاية نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من رمضان يريحك، والتوصيل مجاني داخل الإمارات</p>"
+  "en": "<p>Personalised books are made to order. Hikaya delivery takes about 5 working days in the UAE and about 7 in the rest of the GCC, so ordering in the first half of Ramadan keeps things relaxed. Delivery is free across the UAE.</p>",
+  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق توصيل حكاية نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من رمضان يريحك، والتوصيل مجاني داخل الإمارات</p>"
  },
  "birthday_title": {
   "en": "Birthday gift ideas for kids who have everything",
@@ -195,8 +195,8 @@
   "ar": "اطلب قبل أسبوع"
  },
  "birthday_s4_b": {
-  "en": "<p>Personalised gifts are made to order. Allow about 5 working days in the UAE and Saudi Arabia and about 7 elsewhere in the GCC. Every Hikaya book arrives gift-boxed, and you can send it straight to the birthday child.</p>",
-  "ar": "<p>الهدايا المخصصة تُصنع حسب الطلب، فاحسب نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، ويصل كل كتاب من حكاية في علبة هدية ويمكنك إرساله مباشرة إلى صاحب عيد الميلاد</p>"
+  "en": "<p>Personalised gifts are made to order. Allow about 5 working days in the UAE and about 7 elsewhere in the GCC. Every Hikaya book arrives gift-boxed, and you can send it straight to the birthday child.</p>",
+  "ar": "<p>الهدايا المخصصة تُصنع حسب الطلب، فاحسب نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، ويصل كل كتاب من حكاية في علبة هدية ويمكنك إرساله مباشرة إلى صاحب عيد الميلاد</p>"
  },
  "sibling_title": {
   "en": "Preparing your child for a new baby: a gentle guide for parents",
@@ -447,8 +447,8 @@
   "ar": "متى تطلب"
  },
  "xmas_s10_b": {
-  "en": "<p>Personalised books are made to order. In the UAE and Saudi Arabia delivery takes about 5 working days, and about 7 elsewhere in the GCC, so ordering in the first half of December keeps things calm. Delivery is free across the UAE.</p>",
-  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من ديسمبر يريحك، والتوصيل مجاني داخل الإمارات</p>"
+  "en": "<p>Personalised books are made to order. In the UAE delivery takes about 5 working days, and about 7 elsewhere in the GCC, so ordering in the first half of December keeps things calm. Delivery is free across the UAE.</p>",
+  "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، لذلك فالطلب في النصف الأول من ديسمبر يريحك، والتوصيل مجاني داخل الإمارات</p>"
  },
  "grand_title": {
   "en": "Gifts from grandparents: meaningful ideas grandchildren will treasure",

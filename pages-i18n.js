@@ -85,7 +85,7 @@
     od_number: { en: "Order number", ar: "رقم الطلب" },
     od_number_email: { en: "Sent to your email", ar: "أُرسل إلى بريدك" },
     od_eta: { en: "Estimated delivery", ar: "موعد التوصيل المتوقع" },
-    od_eta_v: { en: "About a week", ar: "خلال أسبوع تقريبًا" },
+    od_eta_v: { en: "About 5 working days in the UAE, about 7 in the rest of the GCC", ar: "نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج" },
     od_track: { en: "Track Your Order", ar: "تتبّع طلبك" },
     od_more: { en: "Explore More Stories", ar: "اكتشف المزيد من القصص" },
     // About, Our World, FAQ, Contact
@@ -144,7 +144,7 @@
     fq8: { en: "Where do you deliver, and how much does it cost?", ar: "إلى أين توصلون، وكم تكلفة التوصيل؟" },
     fa8: { en: "We deliver across the UAE and the GCC. Delivery is free across the UAE. For Saudi Arabia, Qatar, Kuwait, Bahrain and Oman it's AED 30, shown in your local currency. Orders of two or more books ship free.", ar: "نوصل إلى الإمارات ودول الخليج، التوصيل مجاني داخل الإمارات، وللسعودية وقطر والكويت والبحرين وعُمان 30 درهمًا تُعرض بعملتك المحلية، الطلبات التي تضم كتابين أو أكثر توصيلها مجاني" },
     fq9: { en: "How long does delivery take?", ar: "كم يستغرق التوصيل؟" },
-    fa9: { en: "Your book usually arrives in about a week.", ar: "يصل كتابك عادة خلال أسبوع تقريبًا" },
+    fa9: { en: "About 5 working days in the UAE and about 7 in the rest of the GCC.", ar: "نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج" },
     fq10: { en: "Can I send it as a gift?", ar: "هل يمكنني إرساله كهدية؟" },
     fa10: { en: "Yes. Every book arrives in our signature gift box, and we can deliver it straight to the person you're gifting. You can also add a dedication.", ar: "نعم، كل كتاب يصل في علبة الهدايا المميزة، ويمكننا توصيله مباشرة لمن تهديه، ويمكنك أيضًا إضافة إهداء" },
     fq11: { en: "Can I return or cancel a personalised book?", ar: "هل يمكنني إرجاع أو إلغاء كتاب مخصّص؟" },
@@ -613,8 +613,8 @@
   "ar": "كم يستغرق التوصيل إلى السعودية؟"
  },
  "a13": {
-  "en": "About 5 working days. Delivery is SAR 30, or free when you order 2 or more books. <a href=\"personalised-books-saudi-arabia.html\">More about Saudi delivery</a>.",
-  "ar": "نحو 5 أيام عمل، ورسوم التوصيل 30 ريالًا، أو مجانًا عند طلب كتابين أو أكثر <a href=\"personalised-books-saudi-arabia.html\">المزيد عن التوصيل في السعودية</a>"
+  "en": "About 7 working days. Delivery is SAR 30, or free when you order 2 or more books. <a href=\"personalised-books-saudi-arabia.html\">More about Saudi delivery</a>.",
+  "ar": "نحو 7 أيام عمل، ورسوم التوصيل 30 ريالًا، أو مجانًا عند طلب كتابين أو أكثر <a href=\"personalised-books-saudi-arabia.html\">المزيد عن التوصيل في السعودية</a>"
  },
  "q14": {
   "en": "Do you deliver to other GCC countries?",

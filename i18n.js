@@ -143,7 +143,7 @@ window.HIKAYA_TRANSLATIONS = {
     q2_2: { en: 'How long does production take?', de: 'Wie lange dauert die Produktion?', ar: 'كم يستغرق الإنتاج؟' },
     a2_2: { en: 'Production and delivery timing depends on your region, and will be confirmed with your order.', de: 'Produktions- und Lieferzeit hängen von Ihrer Region ab und werden mit Ihrer Bestellung bestätigt.', ar: 'يعتمد وقت الإنتاج والتوصيل على منطقتك، وسيتم تأكيده مع طلبك' },
     q2_3: { en: 'Which countries do you deliver to?', de: 'In welche Länder liefern Sie?', ar: 'إلى أي دول توصلون؟' },
-    a2_3: { en: 'We deliver across the UAE and the GCC: about 5 working days to the UAE and Saudi Arabia, and about 7 working days to Qatar, Kuwait, Bahrain and Oman.', ar: 'نوصل إلى الإمارات ودول الخليج: نحو 5 أيام عمل إلى الإمارات والسعودية، ونحو 7 أيام عمل إلى قطر والكويت والبحرين وعُمان' },
+    a2_3: { en: 'We deliver across the UAE and the GCC: about 5 working days to the UAE, and about 7 working days to Saudi Arabia, Qatar, Kuwait, Bahrain and Oman.', ar: 'نوصل إلى الإمارات ودول الخليج: نحو 5 أيام عمل إلى الإمارات، ونحو 7 أيام عمل إلى السعودية وقطر والكويت والبحرين وعُمان' },
     q2_4: { en: 'Is a digital version available?', de: 'Gibt es eine digitale Version?', ar: 'هل تتوفر نسخة رقمية؟' },
     a2_4: { en: "Digital availability depends on your region, and will be shown clearly when it's ready.", de: 'Die digitale Verfügbarkeit hängt von Ihrer Region ab und wird klar angezeigt, sobald sie bereit ist.', ar: 'تتوقف إتاحة النسخة الرقمية على منطقتك، وستظهر بوضوح عند جاهزيتها' },
     g_gifts: { en: 'Gifts & Orders', de: 'Geschenke & Bestellungen', ar: 'الهدايا والطلبات' },

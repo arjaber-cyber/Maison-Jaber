@@ -67,8 +67,8 @@
   "ar": "متى يجب أن أطلب؟"
  },
  "a_time": {
-  "en": "Each book is made to order. Delivery takes about 5 working days in the UAE and Saudi Arabia and about 7 in the rest of the GCC, so order at least a week before the day.",
-  "ar": "كل كتاب يُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات والسعودية ونحو 7 أيام في باقي دول الخليج، لذلك اطلب قبل المناسبة بأسبوع على الأقل"
+  "en": "Each book is made to order. Delivery takes about 5 working days in the UAE and about 7 in the rest of the GCC, so order at least a week before the day.",
+  "ar": "كل كتاب يُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، لذلك اطلب قبل المناسبة بأسبوع على الأقل"
  },
  "q_photo": {
   "en": "What do you need from me?",
