@@ -147,7 +147,7 @@
   };
 
   // --- v2 (matches approved mockup) ---
-  T.home6.hero_sub = { en: "Beautifully crafted personalised storybooks that place your child at the heart of the adventure.", ar: "كتب قصص مخصّصة مصنوعة بعناية، تضع طفلك في قلب المغامرة" };
+  T.home6.hero_sub = { en: "Personalised children’s storybooks starring your child, in Arabic or English. Hardcover, gift-boxed and delivered across the UAE & GCC.", ar: "قصص أطفال مخصّصة بطلها طفلك، بالعربية أو الإنجليزية، بغلاف مقوّى في علبة هدية، ونوصلها إلى جميع أنحاء الإمارات ودول الخليج" };
   T.home6.hero_hand = { en: "Little stories. Big memories.", ar: "قصص صغيرة، ذكريات كبيرة" };
   T.home6.how_title = { en: "From a story to their story.", ar: "من قصة… إلى قصتهم" };
   T.home6.s1_alt = { en: "Hikaya storybooks on a shelf, ready to choose from", ar: "كتب حكاية على الرف جاهزة للاختيار" };

@@ -435,6 +435,7 @@
     tr_box: { en: 'Gift packaging included', ar: 'تغليف الهدية مشمول' },
     tr_gcc: { en: 'Delivered across the UAE & GCC', ar: 'توصيل إلى الإمارات ودول الخليج' },
     tr_team: { en: 'Support from a real UAE-based team', ar: 'دعم من فريق حقيقي في الإمارات' },
+    tr_uae: { en: 'Personalised children’s books in the UAE', ar: 'كتب أطفال مخصّصة في الإمارات' },
     /* Photo privacy */
     pv_title: { en: "How we protect your child's photo", ar: 'كيف نحمي صورة طفلك' },
     pv_lede: { en: 'You are trusting us with something precious. Here is exactly what happens to the photo you upload.', ar: 'أنت تأتمننا على شيء ثمين، وهذا بالضبط ما يحدث للصورة التي ترفعها' },
