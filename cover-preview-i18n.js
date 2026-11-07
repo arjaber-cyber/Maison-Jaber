@@ -1,0 +1,73 @@
+/* Hikaya — free AI cover preview ("See your child on the cover"), Nov 2026. EN + AR.
+   Arabic carries no full stops (brand rule). */
+(function () {
+  const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
+  T.cp = {
+    eyebrow: { en: 'Free preview', ar: 'معاينة مجانية' },
+    title: { en: 'See your child on the cover', ar: 'شاهد طفلك على غلاف القصة' },
+    sub: { en: 'Upload one photo and see your little one as the hero of a Hikaya story, free, in about a minute.', ar: 'ارفع صورة واحدة وشاهد طفلك بطلًا لقصة من حكاية، مجانًا وخلال دقيقة تقريبًا' },
+    cta_short: { en: 'Free: see your child on the cover', ar: 'مجانًا: شاهد طفلك على الغلاف' },
+    cta_story: { en: 'Try it free: see them on this cover', ar: 'جرّبها مجانًا: شاهد طفلك على هذا الغلاف' },
+    home_t: { en: 'Curious how your little one looks as the hero?', ar: 'هل تتساءل كيف سيبدو طفلك بطلًا للقصة؟' },
+    home_d: { en: 'Upload a photo and see them on a real Hikaya cover in about a minute. Free, private, and just for you.', ar: 'ارفع صورة وشاهده على غلاف حقيقي من حكاية خلال دقيقة تقريبًا، مجانًا وبخصوصية تامة ولك وحدك' },
+    home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
+
+    signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },
+    signin_d: { en: "The preview is free for signed-in families. Signing in keeps your child's photo private to your account.", ar: 'المعاينة مجانية للعائلات المسجّلة، وتسجيل الدخول يحفظ صورة طفلك خاصة بحسابك' },
+    signin_btn: { en: 'Sign in or create an account', ar: 'سجّل الدخول أو أنشئ حسابًا' },
+    closed_t: { en: 'Coming very soon', ar: 'قريبًا جدًا' },
+    closed_d: { en: 'The free cover preview is not open yet. Please check back soon.', ar: 'معاينة الغلاف المجانية غير متاحة بعد، عُد إلينا قريبًا' },
+
+    step_story: { en: '1. Choose a story', ar: '1- اختر قصة' },
+    step_child: { en: '2. Tell us about your child', ar: '2- أخبرنا عن طفلك' },
+    step_photo: { en: '3. Add one photo', ar: '3- أضف صورة واحدة' },
+    book_lang: { en: 'Cover language', ar: 'لغة الغلاف' },
+    lang_en: { en: 'English', ar: 'الإنجليزية' },
+    lang_ar: { en: 'Arabic', ar: 'العربية' },
+    name: { en: "Child's first name", ar: 'الاسم الأول للطفل' },
+    name_ph_en: { en: 'e.g. Adam', ar: 'مثال: Adam' },
+    name_ph_ar: { en: 'e.g. آدم', ar: 'مثال: آدم' },
+    name_err_en: { en: 'For an English cover, please type the name in English letters.', ar: 'للغلاف الإنجليزي، اكتب الاسم بأحرف إنجليزية' },
+    name_err_ar: { en: 'For an Arabic cover, please type the name in Arabic letters.', ar: 'للغلاف العربي، اكتب الاسم بأحرف عربية' },
+    age: { en: 'Age', ar: 'العمر' },
+    boy: { en: 'Boy', ar: 'ولد' },
+    girl: { en: 'Girl', ar: 'بنت' },
+    photo_btn: { en: 'Choose a photo', ar: 'اختر صورة' },
+    photo_change: { en: 'Change photo', ar: 'غيّر الصورة' },
+    photo_tips: { en: 'Best results: one child, face clearly visible and looking at the camera, good light, nothing on the head (caps and hats are removed in the preview), no sunglasses.', ar: 'لأفضل نتيجة: طفل واحد، والوجه واضح وينظر إلى الكاميرا، وإضاءة جيدة، ولا شيء على الرأس (تُزال القبعات في المعاينة)، وبدون نظارات شمسية' },
+    photo_checking: { en: 'Checking the photo…', ar: 'جارٍ فحص الصورة…' },
+    photo_ok: { en: 'Great photo, ready to go', ar: 'صورة رائعة وجاهزة' },
+    photo_noface: { en: "We couldn't find a clear face in this photo. Please choose one where your child's face is clearly visible.", ar: 'لم نجد وجهًا واضحًا في هذه الصورة، اختر صورة يظهر فيها وجه طفلك بوضوح' },
+    photo_many: { en: 'We found more than one face. For the best preview, choose a photo with only your child.', ar: 'وجدنا أكثر من وجه، لأفضل معاينة اختر صورة لطفلك وحده' },
+
+    consent: { en: 'I am the parent or legal guardian of this child (or have their permission), and I agree to the <a href="terms.html#cover-preview" target="_blank" rel="noopener">free preview terms</a> and <a href="privacy.html#cover-preview" target="_blank" rel="noopener">privacy notice</a>. I understand the preview is AI-generated, for illustration only, watermarked, and for personal viewing only.', ar: 'أنا والد هذا الطفل أو وليّ أمره القانوني (أو لديّ إذنه)، وأوافق على <a href="terms.html#cover-preview" target="_blank" rel="noopener">شروط المعاينة المجانية</a> و<a href="privacy.html#cover-preview" target="_blank" rel="noopener">إشعار الخصوصية</a>، وأفهم أن المعاينة مُنشأة بالذكاء الاصطناعي وللتوضيح فقط وتحمل علامة مائية وللمشاهدة الشخصية فقط' },
+    privacy_note: { en: 'Your photo is used only to make this preview. It is never shared, never used to train AI, and is deleted automatically within 48 hours.', ar: 'تُستخدم صورتك لإنشاء هذه المعاينة فقط، ولا تُشارك أبدًا ولا تُستخدم لتدريب الذكاء الاصطناعي، وتُحذف تلقائيًا خلال 48 ساعة' },
+    go: { en: 'Create my free preview', ar: 'أنشئ معاينتي المجانية' },
+    left: { en: '{n} free previews left today', ar: 'متبقٍ لك اليوم {n} من المعاينات المجانية' },
+    left_one: { en: '1 free preview left today', ar: 'متبقٍ لك اليوم معاينة مجانية واحدة' },
+    left_none: { en: "You've used today's free previews. Come back tomorrow for more.", ar: 'استخدمت معايناتك المجانية لليوم، عُد غدًا لمعاينات جديدة' },
+    missing: { en: 'Please choose a story, fill in the details, add a photo and tick the box.', ar: 'اختر قصة وأكمل البيانات وأضف صورة وضع علامة في المربع' },
+
+    w_title: { en: 'Painting {name} into the story…', ar: 'نرسم {name} داخل القصة…' },
+    w_1: { en: 'Studying the photo: hair, smile, those eyes…', ar: 'نتأمل الصورة: الشعر والابتسامة وتلك العيون…' },
+    w_2: { en: 'Choosing the right colours for the illustration…', ar: 'نختار الألوان المناسبة للرسم…' },
+    w_3: { en: 'Painting the hero into the scene…', ar: 'نرسم البطل داخل المشهد…' },
+    w_4: { en: 'Writing the name on the cover…', ar: 'نكتب الاسم على الغلاف…' },
+    w_5: { en: 'Checking every detail before we show you…', ar: 'نراجع كل التفاصيل قبل أن نعرضها عليك…' },
+    w_note: { en: 'This usually takes about a minute. Please keep this page open.', ar: 'يستغرق هذا عادة دقيقة تقريبًا، أبقِ هذه الصفحة مفتوحة' },
+
+    r_title: { en: 'Here is {name}, the hero!', ar: 'ها هو {name}، بطل القصة!' },
+    r_title_f: { en: 'Here is {name}, the hero!', ar: 'ها هي {name}، بطلة القصة!' },
+    r_label: { en: 'AI preview', ar: 'معاينة بالذكاء الاصطناعي' },
+    r_disclaimer: { en: 'This is an AI-generated preview for illustration only, shown in low resolution with a watermark. Your printed book is carefully finished in much higher quality, so details, colours and likeness may differ slightly. The preview is for your personal viewing only.', ar: 'هذه معاينة مُنشأة بالذكاء الاصطناعي للتوضيح فقط، معروضة بدقة منخفضة مع علامة مائية، ويُنفَّذ كتابك المطبوع بعناية وبجودة أعلى بكثير، لذا قد تختلف التفاصيل والألوان والشبه قليلًا، والمعاينة لمشاهدتك الشخصية فقط' },
+    r_order: { en: 'Create their book', ar: 'اصنع كتابهم' },
+    r_again: { en: 'Try another story', ar: 'جرّب قصة أخرى' },
+
+    e_limit: { en: "You've used today's free previews. Come back tomorrow, or create their book now.", ar: 'استخدمت معايناتك المجانية لليوم، عُد غدًا أو اصنع كتابهم الآن' },
+    e_busy: { en: "So many families are trying previews right now that we've paused them for today. Please try again tomorrow.", ar: 'عدد كبير من العائلات يجرّب المعاينة الآن لذا أوقفناها مؤقتًا لليوم، حاول مجددًا غدًا' },
+    e_rejected: { en: "This photo can't be used. Please choose a different photo of your child.", ar: 'لا يمكن استخدام هذه الصورة، اختر صورة أخرى لطفلك' },
+    e_failed: { en: "We couldn't finish a good preview this time, so this try doesn't count. Please try again, ideally with a different photo.", ar: 'لم نتمكن من إنهاء معاينة جيدة هذه المرة لذا لن تُحتسب هذه المحاولة، حاول مجددًا ويفضّل بصورة أخرى' },
+    e_generic: { en: 'Something went wrong. Please try again in a moment.', ar: 'حدث خطأ ما، حاول مجددًا بعد قليل' },
+    e_timeout: { en: 'This is taking longer than usual. Please try again in a few minutes.', ar: 'يستغرق الأمر وقتًا أطول من المعتاد، حاول مجددًا بعد بضع دقائق' },
+  };
+})();

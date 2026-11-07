@@ -1756,6 +1756,24 @@
   if (preStory) { selectStory(preStory); lockStory(); }
   else if (urlStory) { setStoryPending(true); lockStory(); }
 
+  // Arrived from the free cover preview: carry over what the parent already typed there.
+  (function prefillFromCoverPreview() {
+    const q = new URLSearchParams(window.location.search);
+    if (!q.get('cp_name') && !q.get('cp_gender')) return;
+    const fire = (el, ev) => el && el.dispatchEvent(new Event(ev, { bubbles: true }));
+    const lang = q.get('cp_lang');
+    const langEl = document.getElementById('book-language');
+    if (langEl && (lang === 'en' || lang === 'ar') && [...langEl.options].some(o => o.value === lang)) { langEl.value = lang; fire(langEl, 'change'); }
+    const nameEl = document.getElementById('child-name');
+    if (nameEl && q.get('cp_name') && !nameEl.value) { nameEl.value = q.get('cp_name').slice(0, 20); fire(nameEl, 'input'); }
+    const ageEl = document.getElementById('child-age');
+    const age = Number(q.get('cp_age'));
+    if (ageEl && age && !ageEl.value) { ageEl.value = String(Math.min(10, Math.max(2, age))); fire(ageEl, 'input'); fire(ageEl, 'change'); }
+    const g = q.get('cp_gender');
+    const gBtn = (g === 'boy' || g === 'girl') && document.querySelector('.gender-btn[data-value="' + g + '"]');
+    if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
+  })();
+
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
     const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];

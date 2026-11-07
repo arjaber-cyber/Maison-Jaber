@@ -35,6 +35,10 @@
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"
 
+# Free AI cover preview: deletes the child's photo, illustration and preview within 48 hours.
+[functions."purge-cover-previews"]
+  schedule = "23 * * * *"
+
 # Speed (Nov 2026): let browsers and Netlify's CDN reuse shop images instead of
 # re-checking them on every page view. One day fresh, then up to a week served
 # from cache while the new copy is fetched, so a replaced image shows within a day.

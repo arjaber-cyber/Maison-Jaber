@@ -137,6 +137,23 @@
 </section>
 
 <!-- 03 THEIR NEXT ADVENTURE -->
+<section class="cp-promo" aria-labelledby="cp-promo-t">
+  <div class="wrap"><div class="cp-promo-in">
+    <div>
+      <p class="eyebrow-line" data-i18n="cp.cta_short">Free: see your child on the cover</p>
+      <h2 id="cp-promo-t" data-i18n="cp.home_t">Curious how your little one looks as the hero?</h2>
+      <p data-i18n="cp.home_d">Upload a photo and see them on a real Hikaya cover in about a minute. Free, private, and just for you.</p>
+    </div>
+    <a class="btn btn-primary" href="cover-preview.html"><span data-i18n="cp.home_btn">Try the free cover preview</span> <span class="arr" aria-hidden="true">→</span></a>
+  </div></div>
+</section>
+<style>
+  .cp-promo { padding: 8px 0 26px; }
+  .cp-promo-in { display: flex; gap: 22px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: var(--card); border: 1px solid var(--taupe); border-radius: 18px; padding: clamp(20px, 4vw, 34px); }
+  .cp-promo-in > div { flex: 1 1 380px; }
+  .cp-promo h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.1; margin: 0 0 8px; }
+  .cp-promo p:not(.eyebrow-line) { margin: 0; color: var(--ink-soft); }
+</style>
 <section class="shelf" id="stories" aria-labelledby="new-title">
   <div class="wrap">
     <div class="shelf-head">
@@ -258,6 +275,7 @@
 <script src="/i18n.js" defer></script>
 <script src="/home6-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
+<script src="/cover-preview-i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
