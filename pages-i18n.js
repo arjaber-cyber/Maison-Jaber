@@ -387,6 +387,7 @@
   P.legal_terms_t = { en: 'Terms of Service', ar: 'شروط الخدمة' };
   P.legal_refund_t = { en: 'Refund Policy', ar: 'سياسة الاسترداد' };
   P.legal_updated = { en: 'Last updated: October 2026', ar: 'آخر تحديث: أكتوبر 2026' };
+  P.privacy_updated = { en: 'Last updated: November 2026', ar: 'آخر تحديث: نوفمبر 2026' };
 })();
 (function () {
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};

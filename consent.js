@@ -7,7 +7,7 @@
    - essential: always on, not a real choice (site can't function without it
      -- things like remembering your language/region/cart)
    - analytics: Google Analytics + Microsoft Clarity (heatmaps, recordings)
-   - marketing: Meta Pixel
+   - marketing: Google Ads cookies (Consent Mode ad_storage / ad_user_data / ad_personalization) + Meta Pixel
 
    Nothing analytics/marketing-related fires until the visitor actually
    chooses. Reopening later (e.g. a "Cookie Settings" footer link) is
@@ -74,18 +74,18 @@
     const ar = document.documentElement.lang === 'ar';
     const L = ar ? {
       aria: 'تفضيلات ملفات تعريف الارتباط',
-      long: 'نستخدم ملفات تعريف الارتباط الأساسية (السلة واللغة وكيف وصلت إلينا)، وبموافقتك فقط ملفات التحليلات (Google Analytics و Microsoft Clarity) والتسويق (Meta) لتحسين الموقع وإعلاناتنا',
+      long: 'نستخدم ملفات تعريف الارتباط الأساسية (السلة واللغة وكيف وصلت إلينا)، وبموافقتك فقط ملفات التحليلات (Google Analytics و Microsoft Clarity) والتسويق (Google Ads و Meta) لتحسين الموقع وإعلاناتنا',
       short: 'ملفات التحليلات والتسويق بموافقتك فقط',
       policy: 'سياسة الخصوصية', accept: 'قبول الكل', reject: 'رفض', customize: 'تخصيص',
       choose: 'اختر ما يناسبك', essential: 'أساسية (مفعّلة دائمًا: السلة، اللغة، المنطقة، كيف وصلت إلينا)',
-      analytics: 'التحليلات (Google Analytics و Microsoft Clarity)', marketing: 'التسويق (Meta: لقياس إعلاناتنا)', save: 'حفظ التفضيلات',
+      analytics: 'التحليلات (Google Analytics و Microsoft Clarity)', marketing: 'التسويق (Google Ads و Meta: لقياس إعلاناتنا)', save: 'حفظ التفضيلات',
     } : {
       aria: 'Cookie preferences',
-      long: 'We use essential cookies (cart, language, how you found us) and, only with your OK, analytics (Google Analytics, Microsoft Clarity) and marketing (Meta) cookies to improve the site and our ads.',
+      long: 'We use essential cookies (cart, language, how you found us) and, only with your OK, analytics (Google Analytics, Microsoft Clarity) and marketing (Google Ads, Meta) cookies to improve the site and our ads.',
       short: 'Analytics and marketing cookies, only with your OK.',
       policy: 'Privacy Policy', accept: 'Accept All', reject: 'Reject', customize: 'Customize',
       choose: "Choose what you're comfortable with:", essential: 'Essential (always on: cart, language, region, how you found us)',
-      analytics: 'Analytics (Google Analytics, Microsoft Clarity)', marketing: 'Marketing (Meta, to measure our ads)', save: 'Save Preferences',
+      analytics: 'Analytics (Google Analytics, Microsoft Clarity)', marketing: 'Marketing (Google Ads and Meta, to measure our ads)', save: 'Save Preferences',
     };
     banner.setAttribute('aria-label', L.aria);
     if (ar) banner.setAttribute('dir', 'rtl');

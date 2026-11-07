@@ -19,10 +19,13 @@
    real GA/Pixel scripts), so there's no broken network requests or errors
    in the meantime.
 
-   CONSENT: neither GA nor the Meta Pixel loads until the visitor has
-   actually granted that specific category via the cookie banner
-   (consent.js). If they grant consent after this page already loaded,
-   the relevant script loads right then, without needing a refresh.
+   CONSENT (Google Consent Mode v2, advanced, Nov 2026): Google's tag loads on every page, but
+   until the visitor accepts it runs with all Google consent set to "denied": no cookies are
+   written or read, and Google only receives cookieless signals it uses for modelled reporting
+   and modelled Google Ads conversions. "Analytics" in the banner grants analytics_storage;
+   "Marketing" grants ad_storage, ad_user_data and ad_personalization. A choice made later in
+   the visit is passed to Google immediately. Clarity and the Meta Pixel still load only after
+   their category is accepted.
 */
 
 window.HIKAYA_ANALYTICS_CONFIG = {
@@ -78,15 +81,37 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     return typeof window.hikayaHasConsent === 'function' && window.hikayaHasConsent(category);
   }
 
+  // The visitor's banner choice in Google's consent terms (nothing chosen yet = all denied).
+  function googleConsent() {
+    const a = hasConsent('analytics') ? 'granted' : 'denied';
+    const m = hasConsent('marketing') ? 'granted' : 'denied';
+    return { analytics_storage: a, ad_storage: m, ad_user_data: m, ad_personalization: m };
+  }
+  let lastGoogleConsent = '';
+  function updateGoogleConsent() {
+    if (!gaLoaded || !window.gtag) return;
+    const c = googleConsent(), key = JSON.stringify(c);
+    if (key === lastGoogleConsent) return;
+    lastGoogleConsent = key;
+    window.gtag('consent', 'update', c);
+  }
+
   function loadGA() {
-    if (gaLoaded || !gaConfigured || !hasConsent('analytics')) return;
+    // consent.js missing: fail closed (no Google tag at all) rather than guess the visitor's choice.
+    if (gaLoaded || !gaConfigured || typeof window.hikayaHasConsent !== 'function') return;
     gaLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    // Consent Mode v2: the defaults must reach Google before anything else.
+    const c0 = googleConsent();
+    lastGoogleConsent = JSON.stringify(c0);
+    window.gtag('consent', 'default', c0);
+    window.gtag('set', 'ads_data_redaction', true); // no ad identifiers while ad consent is denied
+    window.gtag('set', 'url_passthrough', true);    // keeps the ad click id across pages without cookies
     const s = document.createElement('script');
     s.async = true;
     s.src = `https://www.googletagmanager.com/gtag/js?id=${cfg.GA_MEASUREMENT_ID}`;
     document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
     // The landing page's own address, with its campaign tags (they are removed from the address bar).
     const gaCfg = { page_location: landingHref };
@@ -212,11 +237,12 @@ window.HIKAYA_ANALYTICS_CONFIG = {
 
      Delivery is a small outbox on this device (localStorage), keyed by order number:
        1. the order goes into the outbox once (the first server summary wins);
-       2. it is sent to GA only when analytics cookies are accepted AND Google's tag has really loaded,
-          and only marked "sent" once GA's own callback confirms it went out;
+       2. it is sent to GA once Google's tag has really loaded (cookieless if the visitor hasn't
+          accepted cookies, per Consent Mode), and only marked "sent" once GA's callback confirms it;
        3. if the page is refreshed, closed or left before that, it is retried on the next page view
-          (a payment-return revisit, a refresh, or the visitor accepting cookies later), for up to 72 h;
-       4. a refusal of cookies is respected: nothing is sent unless the visitor says yes.
+          (a payment-return revisit or a refresh), for up to 72 h;
+       4. a refusal of cookies is respected: Google gets no cookies or identifiers, only the
+          anonymous cookieless purchase signal used for modelled conversions.
      GA itself also ignores a second purchase with the same transaction_id. The Meta Pixel (marketing
      consent) is tracked separately, with the order number as its de-duplication event id. */
   const SENT_KEY = 'hk_ga_sent_orders';        // order numbers GA has confirmed (kept from the old version)
@@ -263,8 +289,8 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       const e = o[id];
       if (!e || !e.ev || !e.p || now - (e.ts || 0) > OUTBOX_TTL) { delete o[id]; changed = true; return; }
       if (!e.ga && alreadySent(id)) { e.ga = 1; changed = true; }
-      // GA4: needs analytics consent and the real Google tag; marked sent only from GA's callback.
-      if (!e.ga && !inFlight[id] && gaLoaded && window.gtag && hasConsent('analytics')) {
+      // GA4: needs the real Google tag; marked sent only from GA's callback.
+      if (!e.ga && !inFlight[id] && gaLoaded && window.gtag) { // sent cookieless until consent (Consent Mode)
         inFlight[id] = true;
         const params = Object.assign({}, e.p, {
           transport_type: 'beacon', event_timeout: 4000,
@@ -472,6 +498,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     if (untracked) return;
     loadClarity();
     loadGA();
+    updateGoogleConsent(); // a choice made on this page goes to Google straight away
     loadPixel();
     flushPurchases(); // confirmed orders not yet delivered (refresh, revisit, cookies accepted later)
   }
