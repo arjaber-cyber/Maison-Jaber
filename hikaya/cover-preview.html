@@ -306,7 +306,7 @@
   });
 
   // ---------- submit ----------
-  function err(k) { const m = $('msg'); m.hidden = !k; m.textContent = k ? T(k) : ''; }
+  function err(k) { const m = $('msg'); m.hidden = !k; m.textContent = k ? T(k) : ''; if (k) setTimeout(() => m.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400); }
   $('v-form').addEventListener('submit', async (e) => {
     e.preventDefault(); err('');
     const nameOk = checkName(true);
@@ -314,13 +314,15 @@
     if (state.remaining !== null && state.remaining <= 0) { err('left_none'); return; }
     const name = $('cp-name').value.trim().replace(/\s+/g, ' ');
     $('go').disabled = true;
+    // Show the waiting screen straight away: uploading and checking the photo takes a few seconds.
+    show('v-wait'); $('w-title').textContent = T('w_title', { name }); $('w-step').textContent = T('w_1'); $('w-bar').style.width = '3%';
     try {
       const r = await call({ action: 'start', story_slug: state.slug, lang: state.lang, child_name: name, child_age: Number($('cp-age').value), child_gender: state.gender, photo_b64: state.photo, consent: true, consent_version: CONSENT_VERSION });
       if (r.status === 200 && r.id) { track('cover_preview_start', { story: state.slug }); setLeft(r.remaining); waitFor(r.id, name); return; }
       const map = { limit: 'e_limit', busy: 'e_busy', photo_rejected: 'e_rejected', name: state.lang === 'ar' ? 'name_err_ar' : 'name_err_en', not_open: 'closed_d', off: 'closed_d' };
       if (r.code === 'limit') setLeft(0);
-      err(map[r.code] || 'e_generic');
-    } catch (er) { if (er.code === 'auth') { show('v-signin'); return; } err('e_generic'); }
+      show('v-form'); err(map[r.code] || 'e_generic');
+    } catch (er) { if (er.code === 'auth') { show('v-signin'); return; } show('v-form'); err('e_generic'); }
     $('go').disabled = state.remaining !== null && state.remaining <= 0;
   });
 
