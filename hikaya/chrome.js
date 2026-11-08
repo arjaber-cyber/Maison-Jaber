@@ -29,9 +29,9 @@
   };
 
   function topHtml() {
-    const nav = [['index.html', 'nav_home', 'Home'], ['stories.html', 'nav_stories', 'Stories'], ['age-groups.html', 'nav_ages', 'Age Groups'], ['our-world.html', 'nav_world', 'Our World'], ['gifts.html', 'nav_gifts', 'Gifts'], ['about.html', 'nav_about', 'Our Story']];
+    const nav = [['index.html', 'nav_home', 'Home'], ['stories.html', 'nav_stories', 'Stories'], ['age-groups.html', 'nav_ages', 'Age Groups'], ['our-world.html', 'nav_world', 'Our World'], ['gifts.html', 'nav_gifts', 'Gifts'], ['cover-preview.html', 'nav_cover', 'Free cover preview'], ['about.html', 'nav_about', 'Our Story']];
     const here = location.pathname.split('/').pop() || 'index.html';
-    const li = nav.map(([h, k, fb]) => `<li><a href="${h}"${here === h ? ' aria-current="page"' : ''} data-i18n="home6.${k}">${fb}</a></li>`).join('');
+    const li = nav.map(([h, k, fb]) => `<li><a href="${h}"${here === h ? ' aria-current="page"' : ''}${k === 'nav_cover' ? ' class="nav-cp"' : ''} data-i18n="home6.${k}">${fb}</a></li>`).join('');
     return `
 <a class="skip" href="#main" data-i18n="home6.skip">Skip to content</a>
 <div class="hk-welcome-bar" data-hk-welcome="bar" role="region" aria-label="Welcome offer" hidden></div>

@@ -473,6 +473,10 @@
             <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
           </ul>
         </details>
+        <div class="cp-nudge" id="cp-nudge" hidden>
+          <div><b data-i18n="cp.pz_t">Want to see them on the cover first?</b><span data-i18n="cp.pz_d">Try our free AI cover preview in about a minute.</span></div>
+          <a href="cover-preview.html" id="cp-nudge-link" target="_blank" rel="noopener"><span data-i18n="cp.pz_btn">Try it free</span> ✨</a>
+        </div>
         <div class="photo-upload" id="photo-upload">
           <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" data-i18n-aria="a11y.child_photo" />
           <svg class="up-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>
@@ -690,6 +694,7 @@
   // (and their extra-character info) once fetched, without blocking the page.
   const STORY_THEMES = {}; // filled from the live catalogue (see loadStoryCatalog)
   const STORY_CATALOG = {}; // title -> full story record, once fetched
+  window.STORY_CATALOG = STORY_CATALOG; // read by the cover-preview nudge
   // Story pages link here with the story's slug (?story=cloud-ship); the wizard keys stories by title.
   const SLUG_TO_TITLE = {};
   function resolveStory(v) { if (!v) return null; if (STORY_THEMES[v]) return v; return SLUG_TO_TITLE[v] || null; }
@@ -1920,6 +1925,7 @@
 </script>
 
 <script src="/home6-i18n.js" defer></script>
+<script src="/cover-preview-i18n.js" defer></script>
 <script src="/pages-i18n.js" defer></script>
 <script src="chrome.js" defer></script>
 <script src="story-finder.js" defer></script>
@@ -1946,5 +1952,19 @@
   document.addEventListener('hikaya:langchange', paint);
 })();
 </script>
+<script>/* Free AI cover preview nudge on the photo step (hidden for parents who came from the preview) */
+(function(){try{
+  var q=new URLSearchParams(location.search); if(q.get('cp_name')||q.get('cp_gender'))return;
+  var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","why-is-baby-looking-at-me"];
+  var box=document.getElementById('cp-nudge'),a=document.getElementById('cp-nudge-link'); if(!box||!a)return; box.hidden=false;
+  a.addEventListener('click',function(){try{
+    var slug=q.get('story')||''; var cat=window.STORY_CATALOG||{}; var si=document.getElementById('story-input'); var info=si&&cat[si.value]; if(info&&info.slug)slug=info.slug;
+    var p=new URLSearchParams(); if(ok.indexOf(slug)>-1)p.set('s',slug);
+    var n=(document.getElementById('child-name')||{}).value||'', g=(document.getElementById('child-gender')||{}).value||'', ag=(document.getElementById('child-age')||{}).value||'', l=(document.getElementById('book-language')||{}).value||'';
+    if(n)p.set('cp_name',n.trim()); if(g)p.set('cp_gender',g); if(ag)p.set('cp_age',ag); if(l)p.set('cp_lang',l);
+    a.href='cover-preview.html'+(p.toString()?'?'+p.toString():'');
+    if(window.hikayaTrackEvent)window.hikayaTrackEvent('cover_preview_nudge_click',{story:slug});
+  }catch(e){}});
+}catch(e){}})();</script>
 </body>
 </html>

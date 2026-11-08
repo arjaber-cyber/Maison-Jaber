@@ -10,6 +10,10 @@
     cta_story: { en: 'Try it free: see them on this cover', ar: 'جرّبها مجانًا: شاهد طفلك على هذا الغلاف' },
     home_t: { en: 'Curious how your little one looks as the hero?', ar: 'هل تتساءل كيف سيبدو طفلك بطلًا للقصة؟' },
     home_d: { en: 'Upload a photo and see them on a real Hikaya cover in about a minute. Free, private, and just for you.', ar: 'ارفع صورة وشاهده على غلاف حقيقي من حكاية خلال دقيقة تقريبًا، مجانًا وبخصوصية تامة ولك وحدك' },
+    hero_pill: { en: 'New · Free: see your child on the cover', ar: 'جديد · مجانًا: شاهد طفلك على الغلاف' },
+    pz_t: { en: 'Want to see them on the cover first?', ar: 'هل تريد أن ترى طفلك على الغلاف أولًا؟' },
+    pz_d: { en: 'Try our free AI cover preview in about a minute. Your details here stay saved.', ar: 'جرّب معاينة الغلاف المجانية بالذكاء الاصطناعي خلال دقيقة تقريبًا، وتبقى بياناتك هنا محفوظة' },
+    pz_btn: { en: 'Try it free', ar: 'جرّبها مجانًا' },
     home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
 
     signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },

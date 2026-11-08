@@ -378,6 +378,11 @@
     if (!q.enabled) { show('v-closed'); return; }
     setLeft(q.remaining);
     show('v-form');
+    // Arriving from the order form: carry over what the parent already typed there.
+    const pl = params.get('cp_lang'); if (pl === 'en' || pl === 'ar') state.lang = pl;
+    const pg = params.get('cp_gender'); if (pg === 'boy' || pg === 'girl') { state.gender = pg; $('gender-seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === pg))); }
+    const pa = Number(params.get('cp_age')); if (pa >= 1 && pa <= 12) $('cp-age').value = String(Math.round(pa));
+    if (params.get('cp_name')) $('cp-name').value = params.get('cp_name').slice(0, 20);
     syncLang();
     loadStories();
     loadFace();
