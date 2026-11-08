@@ -1450,3 +1450,18 @@ html.hk-consent-open .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 4px + en
 .st-family .hk-special { margin: 0 0 6px; }
 .st-family h2 { font-size: 1.25rem; line-height: 1.25; margin: 0 0 4px; }
 .st-family p:last-child { margin: 0; font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
+
+/* Free AI cover preview (Nov 2026): first-screen invitation on the homepage hero, menu item, order-form nudge. */
+.cp-pill { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 9px 16px; border-radius: 999px; background: rgba(199,165,108,.16); border: 1px solid rgba(199,165,108,.55); color: var(--brand-dark); font-weight: 700; font-size: 14px; text-decoration: none; }
+.cp-pill:hover { background: rgba(199,165,108,.28); }
+.cp-pill .arr { transition: transform .2s var(--ease); }
+.cp-pill:hover .arr { transform: translateX(3px); }
+[dir="rtl"] .cp-pill .arr { transform: scaleX(-1); }
+@media (max-width: 767px) {
+  .hero .cp-pill { order: 2; align-self: center; margin: 12px 0 0; font-size: 13.5px; padding: 8px 14px; }
+}
+.main-nav a.nav-cp, .mobile-nav a.nav-cp { color: var(--brand); font-weight: 700; }
+.cp-nudge { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 14px 0 4px; padding: 12px 14px; border-radius: 14px; background: rgba(199,165,108,.12); border: 1px dashed rgba(199,165,108,.7); font-size: 13.5px; }
+.cp-nudge b { display: block; font-size: 14px; color: var(--brand-dark, #573624); }
+.cp-nudge span { color: var(--ink-soft); }
+.cp-nudge a { flex: none; font-weight: 700; color: var(--brand, #8A5638); text-decoration: underline; text-underline-offset: 3px; }
