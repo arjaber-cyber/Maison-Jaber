@@ -709,3 +709,17 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
+
+/* Free cover preview, privacy tidy-up (Nov 2026): runs on every shop page. Removes the earlier version's records that
+   held a child's details on the device (hk_cp_handoff, and child details inside hk_cp_pending), and deletes a pending
+   preview record once it is older than 6 hours. Only ids needed to resume a preview are ever kept. */
+(function () {
+  try {
+    localStorage.removeItem('hk_cp_handoff');
+    var raw = localStorage.getItem('hk_cp_pending'); if (!raw) return;
+    var p = null; try { p = JSON.parse(raw); } catch (e) {}
+    if (!p || !(p.id || p.rid) || !(Date.now() - (p.t || 0) < 6 * 3600 * 1000)) { localStorage.removeItem('hk_cp_pending'); return; }
+    var keep = { id: p.id || undefined, rid: p.rid || undefined, t: p.t, uid: p.uid || undefined };
+    if (JSON.stringify(keep) !== raw) localStorage.setItem('hk_cp_pending', JSON.stringify(keep));
+  } catch (e) {}
+})();

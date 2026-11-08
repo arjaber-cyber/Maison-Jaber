@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
+<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>See your child on the cover, free — Hikaya by Maison Jaber</title>
@@ -255,10 +255,24 @@
   }
 
   // ---------- pending preview (survives refresh, time-outs and closing the tab) ----------
-  const PKEY = 'hk_cp_pending';
-  const pendingGet = () => { try { const p = JSON.parse(localStorage.getItem(PKEY) || 'null'); return p && p.id && Date.now() - p.t < 6 * 3600 * 1000 ? p : null; } catch (e) { return null; } };
-  const pendingSet = (p) => { try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch (e) {} };
+  // Only what recovery needs is kept on the device: the preview id (once known), the submission's request id, the start
+  // time and the signed-in account. The child's details come back from the server for the owner when the preview resumes.
+  // Expired records are deleted when found; records from the earlier version (which also held the child's details) are
+  // rewritten without them.
+  const PKEY = 'hk_cp_pending', PTTL = 6 * 3600 * 1000;
   const pendingClear = () => { try { localStorage.removeItem(PKEY); } catch (e) {} };
+  const pendingSet = (p) => { try { localStorage.setItem(PKEY, JSON.stringify({ id: p.id || undefined, rid: p.rid || undefined, t: p.t, uid: p.uid || undefined })); } catch (e) {} };
+  const pendingGet = () => {
+    let p = null; try { p = JSON.parse(localStorage.getItem(PKEY) || 'null'); } catch (e) { pendingClear(); return null; }
+    if (!p) return null;
+    if (!(p.id || p.rid) || !(Date.now() - (p.t || 0) < PTTL)) { pendingClear(); return null; }
+    if (p.child || Object.keys(p).some(k => !['id', 'rid', 't', 'uid'].includes(k))) pendingSet(p);
+    return { id: p.id, rid: p.rid, t: p.t, uid: p.uid };
+  };
+  pendingGet(); // tidy up straight away, even before sign-in is known
+  try { localStorage.removeItem('hk_cp_handoff'); } catch (e) {} // earlier version's cross-tab hand-off (held child details)
+  const newRid = () => { try { return crypto.randomUUID(); } catch (e) { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12); } };
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   // ---------- stories ----------
   function storyTitle(s) { return state.lang === 'ar' ? (s.title_ar || s.title) : s.title; }
@@ -378,31 +392,56 @@
     state.busy = true; updateGo();
     // Show the waiting screen straight away: uploading and checking the photo takes a few seconds.
     show('v-wait'); resetWait(); $('w-title').textContent = T('w_title', { name }); $('w-step').textContent = T('w_1'); $('w-bar').style.width = '3%';
-    try {
-      const r = await call({ action: 'start', story_slug: state.slug, lang: state.lang, child_name: name, child_age: child.age, child_gender: state.gender, photo_b64: photo, consent: true, consent_version: CONSENT_VERSION }, 60000);
-      if (r.http === 200 && r.id) {
-        track('cover_preview_start', { story: state.slug });
-        const p = { id: r.id, t: Date.now(), uid: session && session.user && session.user.id, child };
-        pendingSet(p); setLeft(r.remaining); state.busy = false; waitFor(p, false); return;
+    // One request id per submission, saved before sending. Retries reuse it, so if the server accepted the first
+    // attempt but its answer never arrived, the retry gets that same preview back and no second preview is used.
+    const p = { rid: newRid(), t: Date.now(), uid: session && session.user && session.user.id };
+    pendingSet(p);
+    const req = { action: 'start', request_id: p.rid, story_slug: state.slug, lang: state.lang, child_name: name, child_age: child.age, child_gender: state.gender, photo_b64: photo, consent: true, consent_version: CONSENT_VERSION };
+    let r = null;
+    for (let attempt = 0; attempt < 3 && !r; attempt++) {
+      try {
+        const x = await call(req, 60000);
+        if (x.http >= 500 && x.http !== 503) throw new Error('server ' + x.http);
+        r = x;
+      } catch (er) {
+        if (er.code === 'auth') { state.busy = false; show('v-signin'); return; }
+        $('w-recon').hidden = false;
+        await sleep(2500 * (attempt + 1));
       }
-      const map = { limit: 'e_limit', busy: 'e_busy', photo_rejected: 'e_rejected', name: state.lang === 'ar' ? 'name_err_ar' : 'name_err_en', not_open: 'closed_d', off: 'closed_d' };
-      if (r.code === 'limit') setLeft(0);
-      show('v-form'); err(map[r.code] || 'e_generic');
-    } catch (er) { if (er.code === 'auth') { show('v-signin'); state.busy = false; return; } show('v-form'); err('e_generic'); }
-    state.busy = false; updateGo();
+    }
+    $('w-recon').hidden = true;
+    state.busy = false;
+    if (!r) { waitFor(p, false, child); updateGo(); return; } // no answer at all: look the submission up by its request id
+    if (r.http === 200 && r.id) {
+      track('cover_preview_start', { story: state.slug, replay: !!r.replay });
+      p.id = r.id; pendingSet(p); setLeft(r.remaining); waitFor(p, false, child); return;
+    }
+    pendingClear();
+    if (r.code === 'photo_group' || r.code === 'photo_noface') { rejectPhoto(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); show('v-form'); err(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); updateGo(); return; }
+    const map = { limit: 'e_limit', busy: 'e_busy', photo_rejected: 'e_rejected', name: state.lang === 'ar' ? 'name_err_ar' : 'name_err_en', not_open: 'closed_d', off: 'closed_d' };
+    if (r.code === 'limit') setLeft(0);
+    show('v-form'); err(map[r.code] || 'e_generic');
+    updateGo();
   });
+  // The server found a problem the browser check missed (or could not check): the photo is cleared and must be replaced.
+  function rejectPhoto(k) {
+    photoSeq++; state.photo = ''; state.photoTried = true; state.checking = false;
+    $('thumb').classList.add('bad'); pstat('bad', T(k)); updateGo();
+    track('cover_preview_photo', { result: k === 'photo_many' ? 'group_server' : 'no_face_server' });
+  }
 
   // ---------- waiting + result ----------
   // Progress only moves while the status checks are getting through; if they fail we say so and keep trying.
   let waitRun = 0;
   function resetWait() { $('w-recon').hidden = true; $('w-slow').hidden = true; $('w-note').hidden = false; document.querySelector('#v-wait .cp-spin').hidden = false; }
-  function waitFor(p, resumed) {
+  function waitFor(p, resumed, knownChild) {
     const run = ++waitRun;
-    const name = p.child.name;
+    let child = knownChild || null;
     show('v-wait'); resetWait();
-    $('w-title').textContent = T('w_title', { name });
+    const setTitle = () => { $('w-title').textContent = child && child.name ? T('w_title', { name: child.name }) : T('w_title_x'); };
+    setTitle();
     const steps = ['w_1', 'w_2', 'w_3', 'w_4', 'w_5'];
-    const t0 = p.t; let lastOk = Date.now(), fails = 0, done = false, slowShown = false;
+    const t0 = p.t; let lastOk = Date.now(), fails = 0, missing = 0, done = false, slowShown = false;
     // Check on our own for 4 minutes from the start, and always for at least 90 seconds after a resume or "Check again".
     const giveUpAt = Math.max(t0 + 4 * 60 * 1000, Date.now() + 90 * 1000);
     const alive = () => !done && run === waitRun;
@@ -420,33 +459,42 @@
     const slow = () => {
       slowShown = true; $('w-slow').hidden = false; $('w-note').hidden = true;
       document.querySelector('#v-wait .cp-spin').hidden = true;
-      track('cover_preview_slow', { story: p.child.story });
+      track('cover_preview_slow', { story: child && child.story });
     };
+    const finish = (k) => { stop(); pendingClear(); backToForm(child); if (k) err(k); };
     const poll = async () => {
       if (!alive()) return;
-      // After 4 minutes stop checking on our own and let the parent check again (the preview stays saved).
       if (!slowShown && Date.now() > giveUpAt) { stop(); slow(); return; }
       let r = null;
-      try { r = await call({ action: 'status', id: p.id }); }
+      try { r = await call(p.id ? { action: 'status', id: p.id } : { action: 'status', request_id: p.rid }); }
       catch (er) { if (er.code === 'auth') { stop(); show('v-signin'); return; } }
       if (!alive()) return;
       if (r && r.http === 200) {
-        fails = 0; lastOk = Date.now();
+        fails = 0; missing = 0; lastOk = Date.now();
+        if (r.id && !p.id) { p.id = r.id; pendingSet(p); }
+        if (r.child && r.child.name) { child = r.child; if (child.story) state.slug = child.story; setTitle(); }
         if (typeof r.remaining === 'number') setLeft(r.remaining);
-        if (r.status === 'ok' && r.preview_url) { stop(); pendingClear(); showResult(r.preview_url, p.child); track('cover_preview_ok', { story: p.child.story, resumed: !!resumed, secs: Math.round((Date.now() - t0) / 1000) }); return; }
-        if (r.status === 'failed') { stop(); pendingClear(); backToForm(p.child); err('e_failed'); return; }
-        if (r.status === 'rejected') { stop(); pendingClear(); backToForm(p.child); err('e_rejected'); return; }
+        if (r.status === 'ok' && r.preview_url) { stop(); pendingClear(); showResult(r.preview_url, child || {}); track('cover_preview_ok', { story: child && child.story, resumed: !!resumed, secs: Math.round((Date.now() - t0) / 1000) }); return; }
+        if (r.status === 'failed') { finish('e_failed'); return; }
+        if (r.status === 'rejected') {
+          finish(r.reason === 'group' ? 'photo_many' : r.reason === 'noface' ? 'photo_noface' : 'e_rejected');
+          if (r.reason === 'group' || r.reason === 'noface') rejectPhoto(r.reason === 'group' ? 'photo_many' : 'photo_noface');
+          return;
+        }
         // Still "working" after 10 minutes means the job died; it no longer counts against the free previews.
-        if (r.status === 'working' && Date.now() - t0 > 10 * 60 * 1000) { stop(); pendingClear(); backToForm(p.child); err('e_failed'); return; }
+        if (r.status === 'working' && Date.now() - t0 > 10 * 60 * 1000) { finish('e_failed'); return; }
       } else if (r && r.http === 401) { stop(); show('v-signin'); return; }
-      else if (r && r.http === 404) { stop(); pendingClear(); backToForm(p.child); err('e_generic'); return; }
+      else if (r && r.http === 404) {
+        // By preview id: gone. By request id: the submission never reached us (give it time to arrive first).
+        if (p.id || (++missing >= 3 && Date.now() - t0 > 45 * 1000)) { finish('e_generic'); return; }
+      }
       else { fails++; }
       paint();
       setTimeout(poll, fails ? Math.min(10000, 2000 * fails) : 3000);
     };
-    setTimeout(poll, resumed ? 0 : 6000);
-    $('w-check').onclick = () => { waitFor({ ...p }, true); };
-    $('w-new').onclick = () => { stop(); pendingClear(); backToForm(p.child); };
+    setTimeout(poll, resumed ? 0 : (p.id ? 6000 : 1500));
+    $('w-check').onclick = () => { waitFor({ ...p }, true, child); };
+    $('w-new').onclick = () => { finish(''); };
   }
   window.addEventListener('online', () => { /* the next scheduled check runs straight after; nothing else to do */ });
   function backToForm(child) {
@@ -455,7 +503,7 @@
     updateGo();
   }
   function showResult(url, child) {
-    state.gender = child.gender || state.gender;
+    child = child || {}; state.gender = child.gender || state.gender;
     $('r-title').textContent = T(child.gender === 'girl' ? 'r_title_f' : 'r_title', { name: child.name });
     const fr = $('r-frame');
     fr.style.backgroundImage = 'url("' + url + '")';
@@ -496,7 +544,7 @@
     // A preview that was still being made when the page was refreshed, timed out or closed: pick it up again.
     // Checking its status is free; it never starts (or charges) a new preview.
     const p = pendingGet();
-    if (p && (!p.uid || p.uid === session.user.id)) { if (p.child && p.child.story) state.slug = p.child.story; waitFor(p, true); return; }
+    if (p && (!p.uid || p.uid === session.user.id)) { waitFor(p, true); return; }
     if (p) pendingClear();
     show('v-form');
   }

@@ -1,13 +1,15 @@
 /* Hikaya: private hand-off of the child's details between the free cover preview and the order form (Nov 2026).
    The child's name, age, gender and book language never go in the URL, so a parent can copy or share the page
-   link without sharing their child's details.
-   - Kept in sessionStorage: this browser tab/session only, gone when it is closed.
-   - The order form opens the preview in a new tab, and new tabs don't inherit sessionStorage, so the details are
-     also left in a short-lived local "hand-off" slot (10 minutes) that the receiving page reads once and deletes.
-   - Old links that still carry ?cp_name=… are read once, then cleaned from the address bar. */
+   link without sharing their child's details, and they are never written to persistent browser storage:
+   - Kept in sessionStorage only: this tab's session, gone when it is closed.
+   - The order form opens the preview in a new tab with window.open (not "noopener"), which gives the new tab a copy
+     of this tab's sessionStorage, so nothing needs to be left in localStorage for it.
+   - Old links that still carry ?cp_name=… are read once, then cleaned from the address bar.
+   - The earlier version's localStorage hand-off slot (hk_cp_handoff) is deleted wherever this script loads. */
 (function () {
-  var SKEY = 'hk_cp_child', LKEY = 'hk_cp_handoff', TTL = 10 * 60 * 1000;
+  var SKEY = 'hk_cp_child', OLD_LKEY = 'hk_cp_handoff';
   var LEGACY = ['cp_name', 'cp_age', 'cp_gender', 'cp_lang'];
+  try { localStorage.removeItem(OLD_LKEY); } catch (e) {}
 
   function clean(c) {
     if (!c || typeof c !== 'object') return null;
@@ -24,19 +26,11 @@
     var c = clean(child); if (!c) return;
     c.from = from || ''; c.t = Date.now();
     try { sessionStorage.setItem(SKEY, JSON.stringify(c)); } catch (e) {}
-    try { localStorage.setItem(LKEY, JSON.stringify(c)); } catch (e) {}
   }
 
   function read() {
     var c = null;
     try { c = JSON.parse(sessionStorage.getItem(SKEY) || 'null'); } catch (e) {}
-    try {
-      var h = JSON.parse(localStorage.getItem(LKEY) || 'null');
-      localStorage.removeItem(LKEY); // one-time hand-off
-      if (h && Date.now() - (h.t || 0) < TTL && (!c || (h.t || 0) > (c.t || 0))) {
-        c = h; sessionStorage.setItem(SKEY, JSON.stringify(c));
-      }
-    } catch (e) {}
     if (!c) return null;
     var out = clean(c); if (out) { out.from = c.from || ''; out.t = c.t || 0; }
     return out;
@@ -53,10 +47,14 @@
     return c;
   }
 
-  function clear() {
-    try { sessionStorage.removeItem(SKEY); } catch (e) {}
-    try { localStorage.removeItem(LKEY); } catch (e) {}
+  function clear() { try { sessionStorage.removeItem(SKEY); } catch (e) {} }
+
+  // Open a page in a new tab that starts with a copy of this tab's session (falls back to this tab if blocked).
+  function openWithSession(url) {
+    var w = null; try { w = window.open(url, '_blank'); } catch (e) {}
+    if (!w) location.href = url;
+    return w;
   }
 
-  window.hikayaCpHandoff = { save: save, read: read, fromLegacyUrl: fromLegacyUrl, clear: clear };
+  window.hikayaCpHandoff = { save: save, read: read, fromLegacyUrl: fromLegacyUrl, clear: clear, openWithSession: openWithSession };
 })();
