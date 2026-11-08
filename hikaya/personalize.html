@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="robots" content="noindex, nofollow" /><!-- Private page: keep it out of search engines (do not remove). -->
-<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
+<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Create Their Story — Hikaya by Maison Jaber</title>
@@ -1960,12 +1960,14 @@
   var q=new URLSearchParams(location.search);
   var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","why-is-baby-looking-at-me"];
   var box=document.getElementById('cp-nudge'),a=document.getElementById('cp-nudge-link'); if(!box||!a)return; box.hidden=false;
-  a.addEventListener('click',function(){try{
+  a.addEventListener('click',function(ev){try{
     var slug=q.get('story')||''; var cat=window.STORY_CATALOG||{}; var si=document.getElementById('story-input'); var info=si&&cat[si.value]; if(info&&info.slug)slug=info.slug;
     var n=(document.getElementById('child-name')||{}).value||'', g=(document.getElementById('child-gender')||{}).value||'', ag=(document.getElementById('child-age')||{}).value||'', l=(document.getElementById('book-language')||{}).value||'';
     if(window.hikayaCpHandoff)window.hikayaCpHandoff.save({name:n,age:ag,gender:g,lang:l,story:ok.indexOf(slug)>-1?slug:''},'order-form');
-    a.href='cover-preview.html'+(ok.indexOf(slug)>-1?'?s='+encodeURIComponent(slug):'');
+    var url='cover-preview.html'+(ok.indexOf(slug)>-1?'?s='+encodeURIComponent(slug):'');
     if(window.hikayaTrackEvent)window.hikayaTrackEvent('cover_preview_nudge_click',{story:slug});
+    // New tab that starts with a copy of this tab's session, so the details travel without the URL or localStorage.
+    if(window.hikayaCpHandoff&&window.hikayaCpHandoff.openWithSession){ev.preventDefault();window.hikayaCpHandoff.openWithSession(url);}else{a.href=url;}
   }catch(e){}});
 }catch(e){}})();</script>
 </body>

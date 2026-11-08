@@ -666,8 +666,12 @@ window.HIKAYA_TRANSLATIONS = {
   const LANG_NAMES = { en: 'EN', de: 'DE', ar: 'AR' };
   const LANG_LABELS = { en: 'English', de: 'Deutsch', ar: 'العربية' };
 
+  // An explicit ?lang=ar / ?lang=en in the address is the visitor's choice: it wins on first load and is remembered
+  // (so it survives sign-in and the return to the page), Nov 2026.
+  try { const q = new URLSearchParams(location.search).get('lang'); if (q === 'ar' || q === 'en') localStorage.setItem(LANG_KEY, q); } catch (_) {}
+
   function getLang() {
-    const l = localStorage.getItem(LANG_KEY);
+    let l = null; try { l = localStorage.getItem(LANG_KEY); } catch (_) {}
     return (l === 'en' || l === 'ar') ? l : 'en'; // DE hidden for GCC launch
   }
 

@@ -62,6 +62,7 @@
     w_3: { en: 'Painting the hero into the scene…', ar: 'نرسم البطل داخل المشهد…' },
     w_4: { en: 'Writing the name on the cover…', ar: 'نكتب الاسم على الغلاف…' },
     w_5: { en: 'Checking every detail before we show you…', ar: 'نراجع كل التفاصيل قبل أن نعرضها عليك…' },
+    w_title_x: { en: 'Painting your little one into the story…', ar: 'نرسم طفلك داخل القصة…' },
     w_reconnect: { en: 'Connection lost. Reconnecting… your preview is still being made.', ar: 'انقطع الاتصال، نعيد الاتصال الآن… ومعاينتك ما زالت قيد الإنشاء' },
     w_resumed: { en: 'Welcome back. Picking up your preview where you left off…', ar: 'أهلًا بعودتك، نكمل معاينتك من حيث توقفت…' },
     w_slow_t: { en: 'Still working on it', ar: 'ما زلنا نعمل عليها' },
