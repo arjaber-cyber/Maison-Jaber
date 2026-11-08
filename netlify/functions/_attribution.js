@@ -17,6 +17,13 @@ const H = () => ({ apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`
 
 const clip = (v, n = 120) => (v == null || v === '' ? null : String(v).slice(0, n));
 const CODE = /^[a-z0-9-]{2,40}$/;
+const CLICK = /^[\w-]{10,200}$/;
+
+// The order's Google click ids: the most recent visit that carried one (last touch, else first).
+function clickIds(first, last) {
+  const pick = [last, first].find(t => t && (t.gc || t.gb || t.wb));
+  return pick ? { gclid: pick.gc || null, gbraid: pick.gb || null, wbraid: pick.wb || null } : {};
+}
 
 function cleanTouch(t) {
   if (!t || typeof t !== 'object') return null;
@@ -25,6 +32,10 @@ function cleanTouch(t) {
     src: clip(t.src, 60), med: clip(t.med, 60), cmp: clip(t.cmp), cnt: clip(t.cnt), trm: clip(t.trm),
     hk: CODE.test(String(t.hk || '').toLowerCase()) ? String(t.hk).toLowerCase() : null,
     rh: clip(t.rh), lp: clip(t.lp, 160), clk: ['meta', 'google', 'tiktok'].includes(t.clk) ? t.clk : null,
+    // Google ad click ids from the landing URL (Nov 2026).
+    gc: CLICK.test(String(t.gc || '')) ? String(t.gc) : null,
+    gb: CLICK.test(String(t.gb || '')) ? String(t.gb) : null,
+    wb: CLICK.test(String(t.wb || '')) ? String(t.wb) : null,
     fbc: /^fb\.1\.\d+\.[\w-]+$/.test(String(t.fbc || '')) ? String(t.fbc).slice(0, 520) : null,
     ts: Number.isFinite(ts) && ts > 1.7e12 && ts < Date.now() + 864e5 ? ts : null,
   };
@@ -94,7 +105,7 @@ async function saveAttribution(orderId, input, event) {
     const attribution = await buildAttribution(input, event);
     if (!attribution) return null;
     const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${encodeURIComponent(orderId)}`, {
-      method: 'PATCH', headers: { ...H(), Prefer: 'return=minimal' }, body: JSON.stringify({ attribution }),
+      method: 'PATCH', headers: { ...H(), Prefer: 'return=minimal' }, body: JSON.stringify({ attribution, ...clickIds(attribution.first, attribution.last) }),
     });
     if (!r.ok) console.warn('attribution save failed', r.status, (await r.text()).slice(0, 200));
     return attribution;
@@ -104,4 +115,4 @@ async function saveAttribution(orderId, input, event) {
   }
 }
 
-module.exports = { saveAttribution, buildAttribution, describe, cleanTouch };
+module.exports = { saveAttribution, buildAttribution, describe, cleanTouch, clickIds };

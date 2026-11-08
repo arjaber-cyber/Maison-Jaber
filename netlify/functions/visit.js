@@ -19,9 +19,29 @@ const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SECRET = process.env.VISIT_HASH_SECRET || SUPABASE_KEY || 'hikaya';
 
-const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase', 'whatsapp_click', 'newsletter_signup']);
+const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup']);
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|meta-externalagent|headless|lighthouse|pagespeed|python|curl|wget|httpclient|axios|node-fetch|go-http|java\/|scrapy|phantom|selenium|puppeteer|playwright/i;
 const OWN_HOSTS = /(^|\.)maison-jaber\.com$|netlify\.app$/i;
+
+const ORDER_RE = /^HK-\d{6,12}$/;
+const CLICK_RE = /^[\w-]{10,200}$/;
+const clickId = (v) => (v && CLICK_RE.test(String(v)) ? String(v) : null);
+
+// Purchase beacons (Nov 2026): never trust the browser's amount. Look the order up and take the
+// real AED amount, currency and payment status from it. Unknown or old order numbers are dropped.
+async function orderFacts(orderNumber) {
+  if (!ORDER_RE.test(String(orderNumber || ''))) return null;
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/orders?order_number=eq.${encodeURIComponent(orderNumber)}&select=amount,currency,charged_aed,payment_status,order_type,created_at&limit=1`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
+    });
+    if (!r.ok) return null;
+    const [o] = await r.json();
+    if (!o || Date.now() - Date.parse(o.created_at) > 7 * 864e5) return null;
+    const aed = o.charged_aed != null ? Number(o.charged_aed) : (String(o.currency || 'AED') === 'AED' ? Number(o.amount) : null);
+    return { aed, currency: o.currency || 'AED', status: o.payment_status || null, type: o.order_type || 'sale' };
+  } catch { return null; }
+}
 
 const clip = (v, n) => (v == null || v === '' ? null : String(v).slice(0, n));
 const NO = { statusCode: 204, headers: { 'Cache-Control': 'no-store' }, body: '' };
@@ -96,7 +116,23 @@ exports.handler = async (event) => {
     country: country(h),
     device: device(ua),
     lang: clip(p.l, 5),
+    gclid: clickId(p.gc), gbraid: clickId(p.gb), wbraid: clickId(p.wb),
   };
+  // The device's saved first touch (analytics.js), so later events keep the original source.
+  const ft = p.ft && typeof p.ft === 'object' ? p.ft : null;
+  if (ft) {
+    row.ft_source = clip(ft.s, 60); row.ft_medium = clip(ft.m, 60); row.ft_campaign = clip(ft.c, 120);
+    row.ft_referrer = clip(ft.r, 120); row.ft_click = ['meta', 'google', 'tiktok'].includes(ft.k) ? ft.k : null;
+  }
+  if (p.e === 'purchase' || p.e === 'complimentary_order_complete') {
+    const f = await orderFacts(p.o);
+    if (!f || f.type === 'test') return NO; // only real, recent orders are counted
+    row.order_number = String(p.o);
+    row.value_aed = f.aed;
+    row.currency = f.currency;
+    row.payment_status = f.status;
+    if (p.e === 'purchase') row.value = f.aed;
+  }
 
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/site_events`, {

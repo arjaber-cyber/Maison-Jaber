@@ -324,7 +324,10 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       o[id] = { ev: built.ev, p: built.p, ts: Date.now(), ga: 0, px: 0 };
       writeOutbox(o);
       // Cookie-free counter and Clarity: once per order, when it is first confirmed on this device.
-      countEvent(built.ev === 'purchase' ? 'purchase' : 'complimentary_order_complete', { value: built.p.value });
+      countEvent(built.ev === 'purchase' ? 'purchase' : 'complimentary_order_complete', {
+        value: built.p.value, order_number: id, currency: built.p.currency || s.currency || null,
+        payment_status: s.payment_status || (built.ev === 'purchase' ? 'paid' : 'waived'),
+      });
       if (clarityLoaded && window.clarity) window.clarity('event', built.ev);
     }
     flushPurchases();
@@ -374,9 +377,16 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      visitor, consent or not, because nothing here identifies anyone: no
      cookies, nothing stored on the device, and the server only keeps an
      anonymous daily hash. Page views + shop steps only. */
-  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, whatsapp_click: 1, newsletter_signup: 1 };
+  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1 };
   let noCount = false;
   try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
+  function firstTouchForCount() {
+    try {
+      const a = readAttr(); const t = a && a.first;
+      if (!t) return null;
+      return { s: t.src || null, m: t.med || null, c: t.cmp || null, r: t.rh || null, k: t.clk || null };
+    } catch (e) { return null; }
+  }
   function countEvent(name, params) {
     if (untracked || noCount || !COUNTED[name] || /^\/test/.test(location.pathname)) return; // staging copies are not real visitors
     params = params || {};
@@ -386,7 +396,15 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       p: location.pathname,
       r: document.referrer || '',
       us: q && q.get('utm_source'), um: q && q.get('utm_medium'), uc: q && q.get('utm_campaign'),
-      ck: !!(q && (q.get('fbclid') || q.get('gclid'))),
+      ck: !!(q && (q.get('fbclid') || q.get('gclid') || q.get('gbraid') || q.get('wbraid'))),
+      // Google ad click ids, only as they appear on the landing URL (Nov 2026 marketing report).
+      gc: q && q.get('gclid') ? q.get('gclid').slice(0, 200) : null,
+      gb: q && q.get('gbraid') ? q.get('gbraid').slice(0, 200) : null,
+      wb: q && q.get('wbraid') ? q.get('wbraid').slice(0, 200) : null,
+      // This device's first touch (saved on landing, 90 days), so later events keep the original source.
+      ft: firstTouchForCount(),
+      // Purchase beacons: the order number; the server looks up the real paid amount itself.
+      o: params.order_number || null, c: params.currency || null, ps: params.payment_status || null,
       l: (document.documentElement.lang || '').slice(0, 5),
       s: params.step || null, st: params.story || null, v: params.value != null ? params.value : null,
     });
@@ -395,7 +413,6 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     } catch (e) {}
     try { fetch('/.netlify/functions/visit', { method: 'POST', body: body, keepalive: true, headers: { 'Content-Type': 'text/plain' } }).catch(function () {}); } catch (e) {}
   }
-  countEvent('pageview');
 
   /* ---------- Where this customer came from (Oct 2026) ----------
      Remembers, on this device only, how the visitor first found us and how
@@ -407,7 +424,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      removed from the address bar so links look clean. */
   const ATTR_KEY = 'hikaya_attr_v1';
   const ATTR_DAYS = 90;
-  const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'ttclid', 'igshid'];
+  const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'gbraid', 'wbraid', 'ttclid', 'igshid'];
   const landingHref = location.href;
   /* Payment providers and sign-in pages send shoppers back to us; they are never a traffic source.
      (Also add these as "unwanted referrals" in GA4: Admin > Data streams > Configure tag settings.) */
@@ -447,13 +464,16 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       src: clip(q.get('utm_source'), 60), med: clip(q.get('utm_medium'), 60), cmp: clip(q.get('utm_campaign')),
       cnt: clip(q.get('utm_content')), trm: clip(q.get('utm_term')), hk: clip(q.get('hk'), 40),
       rh: external ? clip(refHost) : null, lp: clip(location.pathname + (q.get('s') ? '?s=' + q.get('s') : ''), 160),
-      clk: fbclid ? 'meta' : q.get('gclid') ? 'google' : q.get('ttclid') ? 'tiktok' : null,
+      clk: fbclid ? 'meta' : (q.get('gclid') || q.get('gbraid') || q.get('wbraid')) ? 'google' : q.get('ttclid') ? 'tiktok' : null,
+      gc: clip(q.get('gclid'), 200), gb: clip(q.get('gbraid'), 200), wb: clip(q.get('wbraid'), 200),
       fbc: fbclid ? 'fb.1.' + Date.now() + '.' + clip(fbclid, 500) : null,
       ts: Date.now(),
     };
     const next = { first: prev ? prev.first : touch, last: touch, n: ((prev && prev.n) || 0) + 1 };
     try { localStorage.setItem(ATTR_KEY, JSON.stringify(next)); } catch (e) {}
   })();
+  // Counted after the touch is saved (so the first touch goes with it) and before the tags are removed.
+  countEvent('pageview');
   // Clean the address bar (the visit counter above has already read the tags).
   (function stripTags() {
     try {

@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Hikaya Marketing Report
+  version: 1.0.0
+  description: >
+    Read-only, aggregated daily marketing data for Hikaya by Maison Jaber (maison-jaber.com).
+    Counts and AED sums only. No customer names, emails, phones, addresses, photos or order details.
+    Dates are UAE dates (Asia/Dubai). Attribution is first touch: the visitor's first pageview carries
+    utm source / medium / campaign (or Google ad click / referrer) through to later events and orders.
+    Use paid_purchases and paid_revenue_aed for ROAS and CPA. free_code_* (creator, gift and fully waived
+    orders) must never be counted as revenue. Test orders are excluded. Ad spend is not included: join
+    Google Ads data on date + campaign where source=google and medium=cpc.
+servers:
+  - url: https://zxzlarlpoctpnnnvzced.supabase.co/functions/v1
+paths:
+  /marketing-report:
+    get:
+      operationId: getMarketingReport
+      summary: Daily marketing rows by date, country, source, medium and campaign
+      description: >
+        Returns one row per date x country x source x medium x campaign. At most 400 days per request.
+        If both dates are omitted, returns today (UAE time).
+      parameters:
+        - name: date_from
+          in: query
+          required: false
+          description: First UAE date to include (YYYY-MM-DD). Defaults to date_to.
+          schema: { type: string, format: date, example: "2026-11-01" }
+        - name: date_to
+          in: query
+          required: false
+          description: Last UAE date to include (YYYY-MM-DD). Defaults to today in Asia/Dubai.
+          schema: { type: string, format: date, example: "2026-11-08" }
+      responses:
+        "200":
+          description: Aggregated rows
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Report" }
+        "400":
+          description: Bad or too-long date range
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "401":
+          description: Missing or wrong API key
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "429":
+          description: Too many failed key attempts
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+      security:
+        - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    Row:
+      type: object
+      properties:
+        date: { type: string, format: date, description: UAE date }
+        country: { type: string, description: "Visitor country (from IP geolocation; delivery country for orders with no linked visit)", example: United Arab Emirates }
+        country_code: { type: string, nullable: true, description: ISO 3166-1 alpha-2, example: AE }
+        source: { type: string, description: "utm_source, else google for ad clicks, else referrer (google, instagram...) or (direct); (unknown) for orders with no tracking", example: google }
+        medium: { type: string, description: "utm_medium, else cpc / organic / social / referral / (none)", example: cpc }
+        campaign: { type: string, description: "utm_campaign or (not set)", example: hikaya_search_uae }
+        sessions: { type: integer, description: Visits; a new session starts after 30 minutes without activity }
+        unique_visitors: { type: integer, description: Anonymous daily visitors (each counts once per day) }
+        personalize_starts: { type: integer, description: Visitors who entered the personalisation steps }
+        add_to_cart: { type: integer, description: Add-to-cart events }
+        checkouts: { type: integer, description: Checkouts started (begin_checkout events) }
+        paid_purchases: { type: integer, description: "Real paid orders (order_type sale, payment_status paid, amount > 0)" }
+        free_code_purchases: { type: integer, description: "Creator / gift / fully waived orders. Never revenue." }
+        paid_revenue_aed: { type: number, description: Amount actually charged in AED on paid orders. Use for ROAS. }
+        free_code_revenue_aed: { type: number, description: Amount charged on free-code orders (normally 0). Exclude from ROAS. }
+    Totals:
+      type: object
+      properties:
+        sessions: { type: integer }
+        unique_visitors: { type: integer }
+        personalize_starts: { type: integer }
+        add_to_cart: { type: integer }
+        checkouts: { type: integer }
+        paid_purchases: { type: integer }
+        free_code_purchases: { type: integer }
+        paid_revenue_aed: { type: number }
+        free_code_revenue_aed: { type: number }
+    Report:
+      type: object
+      properties:
+        date_from: { type: string, format: date }
+        date_to: { type: string, format: date }
+        timezone: { type: string, example: Asia/Dubai }
+        currency: { type: string, example: AED }
+        attribution: { type: string, example: first_touch }
+        generated_at: { type: string, format: date-time }
+        rows:
+          type: array
+          items: { $ref: "#/components/schemas/Row" }
+        totals: { $ref: "#/components/schemas/Totals" }
+        notes:
+          type: array
+          items: { type: string }
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+        message: { type: string }

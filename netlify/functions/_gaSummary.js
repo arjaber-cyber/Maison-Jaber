@@ -35,6 +35,7 @@ function gaSummary(order) {
   return {
     confirmed: true, // built by our server from the stored order: the only source allowed to send a GA purchase
     kind,
+    payment_status: order.payment_status || null,
     transaction_id: order.order_number,
     value: kind === 'purchase' ? value : 0,
     currency: order.currency || (region && region.currency) || 'AED',
