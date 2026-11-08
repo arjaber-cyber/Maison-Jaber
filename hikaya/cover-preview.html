@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
+<style>html.i18n-wait body{visibility:hidden}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>See your child on the cover, free — Hikaya by Maison Jaber</title>
+<meta name="description" content="Upload one photo and see your child as the hero of a Hikaya story cover, free, in about a minute." />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<link rel="stylesheet" href="hikaya.css" />
+<style>
+  .cp { max-width: 860px; margin: 0 auto; padding: 28px 0 70px; }
+  .cp-hero { text-align: center; margin-bottom: 26px; }
+  .cp-hero h1 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; margin: 6px 0 10px; color: var(--ink); }
+  .cp-hero p { color: var(--ink-soft); max-width: 560px; margin: 0 auto; }
+  .cp-card { background: var(--white); border: 1px solid var(--taupe); border-radius: 18px; padding: clamp(20px, 4vw, 34px); box-shadow: var(--shadow); }
+  .cp-card + .cp-card { margin-top: 18px; }
+  .cp-center { text-align: center; }
+  .cp h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 14px; color: var(--ink); font-family: var(--sans); }
+  .cp-stories { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; max-height: 420px; overflow: auto; padding: 4px; }
+  .cp-story { border: 2px solid transparent; border-radius: 12px; padding: 0; background: none; cursor: pointer; text-align: start; font: inherit; color: inherit; }
+  .cp-story img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; display: block; background: var(--sand); }
+  .cp-story span { display: block; font-size: 12.5px; line-height: 1.3; padding: 6px 4px 4px; color: var(--ink-soft); }
+  .cp-story[aria-pressed="true"] { border-color: var(--brand); background: var(--card); }
+  .cp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cp-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+  .cp-field label, .cp-lbl { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .cp-field input, .cp-field select { font: inherit; font-size: 16px; padding: 11px 13px; border: 1px solid var(--taupe); border-radius: 12px; background: #fff; color: var(--ink); }
+  .cp-field input:focus, .cp-field select:focus { outline: none; border-color: var(--brand); }
+  .cp-seg { display: flex; gap: 8px; }
+  .cp-seg button { flex: 1; min-height: 46px; border: 1.5px solid var(--taupe); background: #fff; border-radius: 12px; font: inherit; font-weight: 700; cursor: pointer; color: var(--ink); }
+  .cp-seg button[aria-pressed="true"] { border-color: var(--brand); background: var(--brand); color: var(--white); }
+  .cp-err { color: #A23B2A; font-size: 13px; margin: 2px 0 0; }
+  .cp-photo { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .cp-thumb { width: 96px; height: 96px; border-radius: 14px; object-fit: cover; background: var(--sand); display: none; }
+  .cp-tips { font-size: 13px; color: var(--ink-soft); margin: 12px 0 0; }
+  .cp-pstat { font-size: 13.5px; margin: 8px 0 0; }
+  .cp-pstat.ok { color: #2F6B3A; }
+  .cp-pstat.bad { color: #A23B2A; }
+  .cp-consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .cp-consent input { margin-top: 4px; width: 18px; height: 18px; flex: none; accent-color: var(--brand); }
+  .cp-consent a { color: var(--brand); }
+  .cp-priv { font-size: 12.5px; color: var(--ink-soft); margin: 12px 0 0; }
+  .cp-go { width: 100%; margin-top: 18px; }
+  .cp-go[disabled] { opacity: .55; cursor: not-allowed; }
+  .cp-left { text-align: center; font-size: 13px; color: var(--ink-soft); margin: 10px 0 0; }
+  .cp-msg { text-align: center; font-size: 14px; margin: 12px 0 0; color: #A23B2A; }
+  .cp-wait { text-align: center; padding: 40px 10px; }
+  .cp-wait h2 { font-family: var(--serif); font-size: 1.8rem; font-weight: 600; }
+  .cp-spin { width: 64px; height: 64px; margin: 6px auto 22px; border-radius: 50%; border: 4px solid var(--sand); border-top-color: var(--brand); animation: cpspin 1s linear infinite; }
+  @keyframes cpspin { to { transform: rotate(360deg); } }
+  .cp-bar { height: 6px; background: var(--sand); border-radius: 6px; overflow: hidden; max-width: 360px; margin: 18px auto 10px; }
+  .cp-bar i { display: block; height: 100%; width: 0; background: var(--brand); transition: width 1s linear; }
+  .cp-res { text-align: center; }
+  .cp-res h2 { font-family: var(--serif); font-size: 2rem; font-weight: 600; }
+  .cp-frame { position: relative; width: min(100%, 520px); aspect-ratio: 1; margin: 6px auto 0; border-radius: 12px; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(38,28,23,.45); background: var(--sand) center/cover no-repeat;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .cp-frame::after { content: ''; position: absolute; inset: 0; }
+  .cp-badge { position: absolute; top: 10px; inset-inline-start: 10px; z-index: 2; background: rgba(38,28,23,.78); color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; padding: 5px 10px; border-radius: 20px; }
+  .cp-disc { font-size: 12.5px; color: var(--ink-soft); max-width: 520px; margin: 14px auto 0; line-height: 1.55; }
+  .cp-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+  @media (max-width: 560px) { .cp-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-page="cover-preview">
+<div id="hk-top"></div>
+<main id="main" tabindex="-1">
+<div class="wrap">
+<div class="cp">
+  <header class="cp-hero">
+    <p class="eyebrow-line" data-i18n="cp.eyebrow">Free preview</p>
+    <h1 data-i18n="cp.title">See your child on the cover</h1>
+    <p data-i18n="cp.sub">Upload one photo and see your little one as the hero of a Hikaya story, free, in about a minute.</p>
+  </header>
+
+  <div id="v-loading" class="cp-card cp-center"><div class="cp-spin" aria-hidden="true"></div></div>
+
+  <div id="v-signin" class="cp-card cp-center" hidden>
+    <h2 data-i18n="cp.signin_t">Sign in to try it free</h2>
+    <p style="color:var(--ink-soft);margin:0 0 18px" data-i18n="cp.signin_d">The preview is free for signed-in families.</p>
+    <a class="btn btn-primary" href="login.html?redirect=cover-preview.html" data-i18n="cp.signin_btn">Sign in or create an account</a>
+  </div>
+
+  <div id="v-closed" class="cp-card cp-center" hidden>
+    <h2 data-i18n="cp.closed_t">Coming very soon</h2>
+    <p style="color:var(--ink-soft);margin:0" data-i18n="cp.closed_d">The free cover preview is not open yet. Please check back soon.</p>
+  </div>
+
+  <form id="v-form" hidden novalidate>
+    <div class="cp-card">
+      <h2 data-i18n="cp.step_story">1. Choose a story</h2>
+      <div class="cp-stories" id="stories" role="group"></div>
+    </div>
+
+    <div class="cp-card">
+      <h2 data-i18n="cp.step_child">2. Tell us about your child</h2>
+      <div class="cp-field">
+        <span class="cp-lbl" data-i18n="cp.book_lang">Cover language</span>
+        <div class="cp-seg" id="lang-seg">
+          <button type="button" data-v="en" aria-pressed="true" data-i18n="cp.lang_en">English</button>
+          <button type="button" data-v="ar" aria-pressed="false" data-i18n="cp.lang_ar">Arabic</button>
+        </div>
+      </div>
+      <div class="cp-row">
+        <div class="cp-field">
+          <label for="cp-name" data-i18n="cp.name">Child's first name</label>
+          <input id="cp-name" maxlength="20" autocomplete="off" />
+          <p class="cp-err" id="name-err" hidden></p>
+        </div>
+        <div class="cp-field">
+          <label for="cp-age" data-i18n="cp.age">Age</label>
+          <select id="cp-age"></select>
+        </div>
+      </div>
+      <div class="cp-seg" id="gender-seg">
+        <button type="button" data-v="boy" aria-pressed="false" data-i18n="cp.boy">Boy</button>
+        <button type="button" data-v="girl" aria-pressed="false" data-i18n="cp.girl">Girl</button>
+      </div>
+    </div>
+
+    <div class="cp-card">
+      <h2 data-i18n="cp.step_photo">3. Add one photo</h2>
+      <div class="cp-photo">
+        <img class="cp-thumb" id="thumb" alt="" />
+        <label class="btn btn-secondary" for="cp-file" id="file-lbl"><span data-i18n="cp.photo_btn">Choose a photo</span></label>
+        <input type="file" id="cp-file" accept="image/*" hidden />
+      </div>
+      <p class="cp-pstat" id="pstat" hidden></p>
+      <p class="cp-tips" data-i18n="cp.photo_tips">Best results: one child, face clearly visible.</p>
+    </div>
+
+    <div class="cp-card">
+      <label class="cp-consent"><input type="checkbox" id="cp-consent" /><span data-i18n-html="cp.consent">I agree to the free preview terms.</span></label>
+      <p class="cp-priv" data-i18n="cp.privacy_note">Your photo is used only to make this preview.</p>
+      <button type="submit" class="btn btn-primary cp-go" id="go" data-i18n="cp.go">Create my free preview</button>
+      <p class="cp-left" id="left"></p>
+      <p class="cp-msg" id="msg" hidden></p>
+    </div>
+  </form>
+
+  <div id="v-wait" class="cp-card cp-wait" hidden aria-live="polite">
+    <div class="cp-spin" aria-hidden="true"></div>
+    <h2 id="w-title"></h2>
+    <p id="w-step" style="color:var(--ink-soft);margin:6px 0 0"></p>
+    <div class="cp-bar"><i id="w-bar"></i></div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin:0" data-i18n="cp.w_note">This usually takes about a minute.</p>
+  </div>
+
+  <div id="v-result" class="cp-card cp-res" hidden>
+    <h2 id="r-title"></h2>
+    <div class="cp-frame" id="r-frame" role="img"><span class="cp-badge" data-i18n="cp.r_label">AI preview</span></div>
+    <p class="cp-disc" data-i18n="cp.r_disclaimer">This is an AI-generated preview for illustration only.</p>
+    <div class="cp-actions">
+      <a class="btn btn-primary" id="r-order" href="personalize.html"><span data-i18n="cp.r_order">Create their book</span> <span class="arr" aria-hidden="true">→</span></a>
+      <button type="button" class="btn btn-secondary" id="r-again" data-i18n="cp.r_again">Try another story</button>
+    </div>
+    <p class="cp-left" id="r-left"></p>
+  </div>
+</div>
+</div>
+</main>
+<div id="hk-foot"></div>
+
+<script src="/i18n.js" defer></script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="/cover-preview-i18n.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="chrome.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const SB_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
+  const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
+  const FN = SB_URL + '/functions/v1/cover-preview-live';
+  const CONSENT_VERSION = 'cp-2026-11-07';
+  // Stories the preview engine knows (each has its cover facts on the server).
+  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','why-is-baby-looking-at-me'];
+  const EN_RE = /^[A-Za-z][A-Za-z' -]{0,19}$/;
+  const AR_RE = /^[ء-ي٠-٩ٰ-ۓ ]{1,20}$/;
+  const supabase = createClient(SB_URL, SB_ANON);
+
+  const $ = (id) => document.getElementById(id);
+  const T = (k, vars) => { let s = (window.hikayaT && window.hikayaT('cp.' + k)) || k; if (vars) for (const v in vars) s = s.replace('{' + v + '}', vars[v]); return s; };
+  const uiLang = () => (window.hikayaLang ? window.hikayaLang() : (document.documentElement.lang === 'ar' ? 'ar' : 'en'));
+  const views = ['v-loading', 'v-signin', 'v-closed', 'v-form', 'v-wait', 'v-result'];
+  const show = (v) => { views.forEach(x => { $(x).hidden = x !== v; }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const track = (ev, p) => { try { window.hikayaTrackEvent && window.hikayaTrackEvent(ev, p || {}); } catch (e) {} };
+
+  let deviceId = '';
+  try { deviceId = localStorage.getItem('hk_cp_device') || ''; if (!deviceId) { deviceId = crypto.randomUUID(); localStorage.setItem('hk_cp_device', deviceId); } } catch (e) {}
+
+  const params = new URLSearchParams(location.search);
+  let pendingSlug = params.get('s') || '';
+  try { if (!pendingSlug) pendingSlug = localStorage.getItem('hk_cp_story') || ''; if (params.get('s')) localStorage.setItem('hk_cp_story', params.get('s')); } catch (e) {}
+
+  const state = { slug: SUPPORTED.includes(pendingSlug) ? pendingSlug : '', lang: uiLang() === 'ar' ? 'ar' : 'en', gender: '', photo: '', remaining: null, stories: [] };
+  let session = null;
+
+  async function call(body) {
+    const { data } = await supabase.auth.getSession();
+    session = data.session;
+    if (!session) throw Object.assign(new Error('auth'), { code: 'auth' });
+    const r = await fetch(FN, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SB_ANON, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ ...body, device_id: deviceId }) });
+    let j = {}; try { j = await r.json(); } catch (e) {}
+    return { status: r.status, ...j };
+  }
+
+  function setLeft(n) {
+    state.remaining = n;
+    const txt = n <= 0 ? T('left_none') : n === 1 ? T('left_one') : T('left', { n });
+    $('left').textContent = txt; $('r-left').textContent = txt;
+    $('go').disabled = n <= 0;
+  }
+
+  // ---------- stories ----------
+  function storyTitle(s) { return state.lang === 'ar' ? (s.title_ar || s.title) : s.title; }
+  function storyCover(s) { return '/story-assets/' + s.slug + '/cover' + (state.lang === 'ar' ? '-ar' : '') + '.jpg'; }
+  function renderStories() {
+    const box = $('stories'); box.innerHTML = '';
+    state.stories.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'cp-story'; b.setAttribute('aria-pressed', String(s.slug === state.slug));
+      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.src = storyCover(s);
+      const sp = document.createElement('span'); sp.textContent = storyTitle(s);
+      b.append(img, sp);
+      b.addEventListener('click', () => { state.slug = s.slug; try { localStorage.setItem('hk_cp_story', s.slug); } catch (e) {} renderStories(); });
+      box.appendChild(b);
+    });
+    const sel = box.querySelector('[aria-pressed="true"]');
+    if (sel) sel.scrollIntoView({ block: 'nearest' });
+  }
+  async function loadStories() {
+    let list = [];
+    try { const r = await fetch('/.netlify/functions/get-stories', { headers: { Accept: 'application/json' } }); const j = await r.json(); list = (j.stories || []).filter(s => SUPPORTED.includes(s.slug) && s.active !== false); } catch (e) {}
+    if (!list.length) list = SUPPORTED.map(slug => ({ slug, title: slug.replace(/-/g, ' ') }));
+    if (state.slug) list.sort((a, b) => (b.slug === state.slug) - (a.slug === state.slug));
+    state.stories = list; renderStories();
+  }
+
+  // ---------- child ----------
+  for (let a = 1; a <= 12; a++) { const o = document.createElement('option'); o.value = a; o.textContent = a; if (a === 5) o.selected = true; $('cp-age').appendChild(o); }
+  function seg(id, key, cb) {
+    $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+      state[key] = b.dataset.v;
+      $(id).querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      cb && cb();
+    }));
+  }
+  function syncLang() {
+    $('lang-seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === state.lang)));
+    $('cp-name').placeholder = T(state.lang === 'ar' ? 'name_ph_ar' : 'name_ph_en');
+    $('cp-name').dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+    checkName(); if (state.stories.length) renderStories();
+  }
+  seg('lang-seg', 'lang', syncLang);
+  seg('gender-seg', 'gender');
+  function checkName(strict) {
+    const v = $('cp-name').value.trim().replace(/\s+/g, ' ');
+    const ok = !v ? !strict : (state.lang === 'ar' ? AR_RE : EN_RE).test(v);
+    $('name-err').hidden = ok; if (!ok) $('name-err').textContent = T(state.lang === 'ar' ? 'name_err_ar' : 'name_err_en');
+    return ok && !!v;
+  }
+  $('cp-name').addEventListener('input', () => checkName());
+
+  // ---------- photo ----------
+  let faceReady = null;
+  function loadFace() {
+    if (faceReady) return faceReady;
+    faceReady = (async () => {
+      for (let i = 0; i < 40 && !window.faceapi; i++) await new Promise(r => setTimeout(r, 150));
+      if (!window.faceapi) return false;
+      await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights');
+      return true;
+    })().catch(() => false);
+    return faceReady;
+  }
+  function pstat(kind, txt) { const p = $('pstat'); p.hidden = false; p.className = 'cp-pstat ' + kind; p.textContent = txt; }
+  $('cp-file').addEventListener('change', async (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    state.photo = ''; pstat('', T('photo_checking'));
+    try {
+      const bmp = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
+      const max = 1024, sc = Math.min(1, max / Math.max(bmp.naturalWidth, bmp.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.naturalWidth * sc); c.height = Math.round(bmp.naturalHeight * sc);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      const dataUrl = c.toDataURL('image/jpeg', 0.9);
+      $('thumb').src = dataUrl; $('thumb').style.display = 'block';
+      $('file-lbl').querySelector('span').textContent = T('photo_change');
+      let faces = -1;
+      if (await loadFace()) { try { faces = (await faceapi.detectAllFaces(c, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.4 }))).length; } catch (er) { faces = -1; } }
+      if (faces === 0) { pstat('bad', T('photo_noface')); return; }
+      state.photo = dataUrl;
+      if (faces > 1) pstat('bad', T('photo_many')); else pstat('ok', T('photo_ok'));
+    } catch (er) { pstat('bad', T('e_generic')); }
+  });
+
+  // ---------- submit ----------
+  function err(k) { const m = $('msg'); m.hidden = !k; m.textContent = k ? T(k) : ''; }
+  $('v-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); err('');
+    const nameOk = checkName(true);
+    if (!state.slug || !nameOk || !state.gender || !state.photo || !$('cp-consent').checked) { err('missing'); return; }
+    if (state.remaining !== null && state.remaining <= 0) { err('left_none'); return; }
+    const name = $('cp-name').value.trim().replace(/\s+/g, ' ');
+    $('go').disabled = true;
+    try {
+      const r = await call({ action: 'start', story_slug: state.slug, lang: state.lang, child_name: name, child_age: Number($('cp-age').value), child_gender: state.gender, photo_b64: state.photo, consent: true, consent_version: CONSENT_VERSION });
+      if (r.status === 200 && r.id) { track('cover_preview_start', { story: state.slug }); setLeft(r.remaining); waitFor(r.id, name); return; }
+      const map = { limit: 'e_limit', busy: 'e_busy', photo_rejected: 'e_rejected', name: state.lang === 'ar' ? 'name_err_ar' : 'name_err_en', not_open: 'closed_d', off: 'closed_d' };
+      if (r.code === 'limit') setLeft(0);
+      err(map[r.code] || 'e_generic');
+    } catch (er) { if (er.code === 'auth') { show('v-signin'); return; } err('e_generic'); }
+    $('go').disabled = state.remaining !== null && state.remaining <= 0;
+  });
+
+  // ---------- waiting + result ----------
+  function waitFor(id, name) {
+    show('v-wait');
+    $('w-title').textContent = T('w_title', { name });
+    const steps = ['w_1', 'w_2', 'w_3', 'w_4', 'w_5'];
+    const t0 = Date.now(); let done = false;
+    const tick = setInterval(() => {
+      const s = (Date.now() - t0) / 1000;
+      $('w-step').textContent = T(steps[Math.min(steps.length - 1, Math.floor(s / 12))]);
+      $('w-bar').style.width = Math.min(95, (s / 60) * 90) + '%';
+    }, 1000);
+    $('w-step').textContent = T(steps[0]);
+    const stop = () => { done = true; clearInterval(tick); };
+    const poll = async () => {
+      if (done) return;
+      if (Date.now() - t0 > 4 * 60 * 1000) { stop(); show('v-form'); err('e_timeout'); return; }
+      try {
+        const r = await call({ action: 'status', id });
+        if (typeof r.remaining === 'number') setLeft(r.remaining);
+        if (r.status === 'ok' && r.preview_url) { stop(); showResult(r.preview_url, name); track('cover_preview_ok', { story: state.slug }); return; }
+        if (r.status === 'failed') { stop(); show('v-form'); err('e_failed'); return; }
+        if (r.status === 'rejected') { stop(); show('v-form'); err('e_rejected'); return; }
+      } catch (er) {}
+      setTimeout(poll, 3000);
+    };
+    setTimeout(poll, 6000);
+  }
+  function showResult(url, name) {
+    $('r-title').textContent = T(state.gender === 'girl' ? 'r_title_f' : 'r_title', { name });
+    const fr = $('r-frame');
+    fr.style.backgroundImage = 'url("' + url + '")';
+    fr.setAttribute('aria-label', T('r_label'));
+    const q = new URLSearchParams({ story: state.slug, cp_name: $('cp-name').value.trim(), cp_age: $('cp-age').value, cp_gender: state.gender, cp_lang: state.lang });
+    $('r-order').href = 'personalize.html?' + q.toString();
+    show('v-result');
+  }
+  $('r-again').addEventListener('click', () => { err(''); show('v-form'); });
+  $('r-order').addEventListener('click', () => track('cover_preview_order_click', { story: state.slug }));
+  // The preview is for viewing only: no right-click, drag or long-press save.
+  ['contextmenu', 'dragstart'].forEach(ev => $('r-frame').addEventListener(ev, e => e.preventDefault()));
+
+  // ---------- start ----------
+  async function start() {
+    const { data } = await supabase.auth.getSession();
+    session = data.session;
+    if (!session) { show('v-signin'); return; }
+    let q;
+    try { q = await call({ action: 'quota' }); } catch (e) { show('v-signin'); return; }
+    if (q.status === 401) { show('v-signin'); return; }
+    if (!q.enabled) { show('v-closed'); return; }
+    setLeft(q.remaining);
+    show('v-form');
+    syncLang();
+    loadStories();
+    loadFace();
+  }
+  document.addEventListener('hikaya:langchange', () => { if (!$('v-form').hidden) syncLang(); });
+  if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(start, 0); else document.addEventListener('DOMContentLoaded', start);
+</script>
+</body>
+</html>

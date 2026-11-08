@@ -131,7 +131,17 @@
 
   <p id="data-deletion"><strong>Deleting your data:</strong> if you signed in with Facebook or Google, see <a href="data-deletion.html">how to delete your data</a> for how to remove Hikaya from your account and ask us to delete what we hold.</p>
 
-  <h2>9. Contact us</h2>
+  <h2 id="cover-preview">9. Free AI cover preview</h2>
+  <p>If you use the free cover preview, we handle your child's photo as follows:</p>
+  <ul>
+    <li><strong>What we collect:</strong> one photo of your child, the first name, age and boy or girl you enter, the story and language you choose, your account, a random device code and a scrambled (hashed) form of your internet address. The device code and hashed address are used only to apply the daily limits and prevent misuse.</li>
+    <li><strong>How it is used:</strong> only to create your preview. Our system describes the photo (for example hair and skin colour) so the illustration matches your child, and checks the result before showing it. We do not use the photo for facial recognition, to identify anyone, for marketing or for any other purpose.</li>
+    <li><strong>Who processes it:</strong> the photo is sent securely to <strong>OpenAI</strong>, the AI provider that creates the illustration on our behalf. Under OpenAI's business terms, data sent through its API is not used to train its models; OpenAI may keep it for up to 30 days only to monitor for abuse, and then deletes it. The photo and preview are stored in private storage at <strong>Supabase</strong>. We never sell or share it with anyone else.</li>
+    <li><strong>How long we keep it:</strong> the photo, the illustration and the watermarked preview are deleted automatically within 48 hours. A short record without any images (story, first name, age, date and status) is kept to apply limits and prevent misuse, and is deleted on request.</li>
+    <li><strong>Your choice:</strong> the preview is optional and not needed to order a book. You can ask us to delete your preview data sooner at any time by emailing <a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a>.</li>
+  </ul>
+
+  <h2>10. Contact us</h2>
   <p>If you have questions about this policy or how your information is handled, please reach out through our <a href="contact.html">Contact page</a>.</p>
 </div>
 <div class="wrap legal-body" lang="ar" dir="rtl" data-lang-only="ar">
@@ -194,7 +204,17 @@
 
   <p><strong>حذف بياناتك:</strong> إن سجّلت الدخول عبر فيسبوك أو Google، اطّلع على <a href="data-deletion.html">طريقة حذف بياناتك</a> لإزالة حكاية من حسابك وطلب حذف ما نحتفظ به</p>
 
-  <h2>9- تواصل معنا</h2>
+  <h2 id="cover-preview-ar">9- معاينة الغلاف المجانية بالذكاء الاصطناعي</h2>
+  <p>إذا استخدمت معاينة الغلاف المجانية فإننا نتعامل مع صورة طفلك كما يلي:</p>
+  <ul>
+    <li><strong>ما نجمعه:</strong> صورة واحدة لطفلك، والاسم الأول والعمر وكونه ولدًا أو بنتًا كما تُدخلها، والقصة واللغة التي تختارها، وحسابك، ورمز جهاز عشوائي، وصيغة مشفّرة من عنوان الإنترنت الخاص بك، ويُستخدم رمز الجهاز والعنوان المشفّر فقط لتطبيق الحدود اليومية ومنع إساءة الاستخدام</li>
+    <li><strong>كيف نستخدمها:</strong> لإنشاء معاينتك فقط، إذ يصف نظامنا الصورة (مثل لون الشعر والبشرة) ليتطابق الرسم مع طفلك، ثم يراجع النتيجة قبل عرضها، ولا نستخدم الصورة للتعرّف على الوجوه أو لتحديد هوية أي شخص أو للتسويق أو لأي غرض آخر</li>
+    <li><strong>من يعالجها:</strong> تُرسل الصورة بشكل آمن إلى <strong>OpenAI</strong>، مزوّد الذكاء الاصطناعي الذي ينشئ الرسم نيابة عنا، ووفقًا لشروط OpenAI للأعمال لا تُستخدم البيانات المرسلة عبر واجهتها البرمجية لتدريب نماذجها، وقد تحتفظ بها مدة أقصاها 30 يومًا لرصد إساءة الاستخدام فقط ثم تحذفها، وتُحفظ الصورة والمعاينة في تخزين خاص لدى <strong>Supabase</strong>، ولا نبيعها ولا نشاركها مع أي جهة أخرى</li>
+    <li><strong>مدة الاحتفاظ:</strong> تُحذف الصورة والرسم والمعاينة ذات العلامة المائية تلقائيًا خلال 48 ساعة، ونحتفظ بسجل قصير دون أي صور (القصة والاسم الأول والعمر والتاريخ والحالة) لتطبيق الحدود ومنع إساءة الاستخدام، ويُحذف عند الطلب</li>
+    <li><strong>اختيارك:</strong> المعاينة اختيارية وليست مطلوبة لطلب كتاب، ويمكنك أن تطلب منا حذف بيانات معاينتك في أي وقت عبر البريد <a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a></li>
+  </ul>
+
+  <h2>10- تواصل معنا</h2>
   <p>إن كان لديك سؤال عن هذه السياسة أو عن طريقة التعامل مع معلوماتك، تواصل معنا عبر صفحة <a href="contact.html">تواصل معنا</a>.</p>
 </div>
 
@@ -210,5 +230,6 @@
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
 <script src="chrome.js" defer></script>
+<script>/* Arabic readers: jump to the Arabic copy of the cover-preview section */window.addEventListener("load",function(){try{if(location.hash==="#cover-preview"&&document.documentElement.lang==="ar"){var e=document.getElementById("cover-preview-ar");e&&e.scrollIntoView()}}catch(e){}});</script>
 </body>
 </html>

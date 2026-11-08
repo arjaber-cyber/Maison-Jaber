@@ -156,7 +156,7 @@
   // Guest option: back to checkout already unlocked, or straight to the shop. Hidden for the admin sign-in.
   const guestLink = document.getElementById('guest-link');
   if (safeReturnTo === 'checkout.html') guestLink.href = 'checkout.html?guest=1';
-  if (safeReturnTo === 'admin.html') document.getElementById('guest-opt').style.display = 'none';
+  if (safeReturnTo === 'admin.html' || safeReturnTo === 'cover-preview.html') document.getElementById('guest-opt').style.display = 'none';
 
   if (safeReturnTo === 'admin.html') {
     document.getElementById('login-title').setAttribute('data-i18n', 'login.admin_title');
