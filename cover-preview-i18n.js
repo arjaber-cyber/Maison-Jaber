@@ -14,6 +14,8 @@
     pz_t: { en: 'Want to see them on the cover first?', ar: 'هل تريد أن ترى طفلك على الغلاف أولًا؟' },
     pz_d: { en: 'Try our free AI cover preview in about a minute. Your details here stay saved.', ar: 'جرّب معاينة الغلاف المجانية بالذكاء الاصطناعي خلال دقيقة تقريبًا، وتبقى بياناتك هنا محفوظة' },
     pz_btn: { en: 'Try it free', ar: 'جرّبها مجانًا' },
+    hero_btn: { en: 'Preview their cover', ar: 'شاهد طفلك على الغلاف' },
+    hero_btn_sub: { en: 'Free with sign-in', ar: 'مجانًا مع تسجيل الدخول' },
     home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
 
     signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },
@@ -42,7 +44,9 @@
     photo_checking: { en: 'Checking the photo…', ar: 'جارٍ فحص الصورة…' },
     photo_ok: { en: 'Great photo, ready to go', ar: 'صورة رائعة وجاهزة' },
     photo_noface: { en: "We couldn't find a clear face in this photo. Please choose one where your child's face is clearly visible.", ar: 'لم نجد وجهًا واضحًا في هذه الصورة، اختر صورة يظهر فيها وجه طفلك بوضوح' },
-    photo_many: { en: 'We found more than one face. For the best preview, choose a photo with only your child.', ar: 'وجدنا أكثر من وجه، لأفضل معاينة اختر صورة لطفلك وحده' },
+    photo_many: { en: 'This photo shows more than one person. Please choose a photo showing only your child.', ar: 'يظهر في هذه الصورة أكثر من شخص، اختر صورة يظهر فيها طفلك وحده' },
+    photo_need: { en: 'Add a photo showing only your child to continue.', ar: 'أضف صورة يظهر فيها طفلك وحده للمتابعة' },
+    photo_nocheck: { en: "Photo added. We couldn't check it automatically, so please make sure it shows only your child.", ar: 'أُضيفت الصورة، ولم نتمكن من فحصها تلقائيًا، فتأكد أنها تُظهر طفلك وحده' },
 
     consent: { en: 'I am the parent or legal guardian of this child (or have their permission), and I agree to the <a href="terms.html#cover-preview" target="_blank" rel="noopener">free preview terms</a> and <a href="privacy.html#cover-preview" target="_blank" rel="noopener">privacy notice</a>. I understand the preview is AI-generated, for illustration only, watermarked, and for personal viewing only.', ar: 'أنا والد هذا الطفل أو وليّ أمره القانوني (أو لديّ إذنه)، وأوافق على <a href="terms.html#cover-preview" target="_blank" rel="noopener">شروط المعاينة المجانية</a> و<a href="privacy.html#cover-preview" target="_blank" rel="noopener">إشعار الخصوصية</a>، وأفهم أن المعاينة مُنشأة بالذكاء الاصطناعي وللتوضيح فقط وتحمل علامة مائية وللمشاهدة الشخصية فقط' },
     privacy_note: { en: 'Your photo is used only to make this preview. It is never shared, never used to train AI, and is deleted automatically within 48 hours.', ar: 'تُستخدم صورتك لإنشاء هذه المعاينة فقط، ولا تُشارك أبدًا ولا تُستخدم لتدريب الذكاء الاصطناعي، وتُحذف تلقائيًا خلال 48 ساعة' },
@@ -58,6 +62,12 @@
     w_3: { en: 'Painting the hero into the scene…', ar: 'نرسم البطل داخل المشهد…' },
     w_4: { en: 'Writing the name on the cover…', ar: 'نكتب الاسم على الغلاف…' },
     w_5: { en: 'Checking every detail before we show you…', ar: 'نراجع كل التفاصيل قبل أن نعرضها عليك…' },
+    w_reconnect: { en: 'Connection lost. Reconnecting… your preview is still being made.', ar: 'انقطع الاتصال، نعيد الاتصال الآن… ومعاينتك ما زالت قيد الإنشاء' },
+    w_resumed: { en: 'Welcome back. Picking up your preview where you left off…', ar: 'أهلًا بعودتك، نكمل معاينتك من حيث توقفت…' },
+    w_slow_t: { en: 'Still working on it', ar: 'ما زلنا نعمل عليها' },
+    w_slow_d: { en: "This is taking longer than usual. Your preview is saved, so you can check again now or come back to this page later. Checking again doesn't use another free preview.", ar: 'يستغرق الأمر وقتًا أطول من المعتاد، ومعاينتك محفوظة، فيمكنك التحقق مجددًا الآن أو العودة إلى هذه الصفحة لاحقًا، والتحقق مجددًا لا يستهلك معاينة مجانية أخرى' },
+    w_check: { en: 'Check again', ar: 'تحقّق مجددًا' },
+    w_new: { en: 'Start a new preview instead', ar: 'ابدأ معاينة جديدة بدلًا منها' },
     w_note: { en: 'This usually takes about a minute. Please keep this page open.', ar: 'يستغرق هذا عادة دقيقة تقريبًا، أبقِ هذه الصفحة مفتوحة' },
 
     r_title: { en: 'Here is {name}, the hero!', ar: 'ها هو {name}، بطل القصة!' },
