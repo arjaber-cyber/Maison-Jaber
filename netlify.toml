@@ -31,6 +31,11 @@
 [functions."tamara-sweep"]
   schedule = "41 * * * *"
 
+# Google Ads offline conversions for confirmed paid orders (Data Manager API). Idempotent; dry run
+# unless GADS_UPLOADS_LIVE = 1; does nothing until the Google credentials are set.
+[functions."gads-conversions"]
+  schedule = "37 * * * *"
+
 # Deletes uploaded child photos older than 15 days (our promise to parents).
 [functions."purge-child-photos"]
   schedule = "30 2 * * *"

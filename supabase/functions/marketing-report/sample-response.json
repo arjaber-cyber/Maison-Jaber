@@ -1,0 +1,80 @@
+{
+  "date_from": "2026-11-07",
+  "date_to": "2026-11-08",
+  "timezone": "Asia/Dubai",
+  "currency": "AED",
+  "attribution": "first_touch",
+  "generated_at": "2026-11-08T12:00:00.000Z",
+  "rows": [
+    {
+      "date": "2026-11-07",
+      "country": "United Arab Emirates",
+      "country_code": "AE",
+      "source": "google",
+      "medium": "cpc",
+      "campaign": "hikaya_search_uae",
+      "sessions": 14,
+      "unique_visitors": 12,
+      "personalize_starts": 5,
+      "add_to_cart": 2,
+      "checkouts": 2,
+      "paid_purchases": 1,
+      "free_code_purchases": 0,
+      "paid_revenue_aed": 169,
+      "free_code_revenue_aed": 0
+    },
+    {
+      "date": "2026-11-07",
+      "country": "Saudi Arabia",
+      "country_code": "SA",
+      "source": "instagram",
+      "medium": "social",
+      "campaign": "(not set)",
+      "sessions": 6,
+      "unique_visitors": 5,
+      "personalize_starts": 2,
+      "add_to_cart": 1,
+      "checkouts": 1,
+      "paid_purchases": 0,
+      "free_code_purchases": 1,
+      "paid_revenue_aed": 0,
+      "free_code_revenue_aed": 0
+    },
+    {
+      "date": "2026-11-08",
+      "country": "United Arab Emirates",
+      "country_code": "AE",
+      "source": "(direct)",
+      "medium": "(none)",
+      "campaign": "(not set)",
+      "sessions": 9,
+      "unique_visitors": 8,
+      "personalize_starts": 1,
+      "add_to_cart": 0,
+      "checkouts": 0,
+      "paid_purchases": 0,
+      "free_code_purchases": 0,
+      "paid_revenue_aed": 0,
+      "free_code_revenue_aed": 0
+    }
+  ],
+  "totals": {
+    "sessions": 29,
+    "unique_visitors": 25,
+    "personalize_starts": 8,
+    "add_to_cart": 3,
+    "checkouts": 3,
+    "paid_purchases": 1,
+    "free_code_purchases": 1,
+    "paid_revenue_aed": 169,
+    "free_code_revenue_aed": 0
+  },
+  "notes": [
+    "Use paid_revenue_aed and paid_purchases for ROAS / CPA. free_code_* are creator, gift and fully waived orders and must never count as revenue.",
+    "Test orders are excluded. Only orders with payment_status 'paid' count as paid purchases (pending, cancelled, failed and refunded orders are excluded).",
+    "Attribution is the visitor's first touch: the source saved on their device on first visit (90 days), else the first pageview of that visitor-day.",
+    "unique_visitors are anonymous daily visitors (a visitor counts once per day). sessions break after 30 minutes without activity.",
+    "personalize_starts = visitors who entered the personalisation steps; add_to_cart and checkouts are event counts.",
+    "Ad spend is not included: join Google Ads data on date + campaign (source=google, medium=cpc)."
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://maison-jaber.com/schemas/hikaya-marketing-report.json",
+  "title": "Hikaya marketing report (200 response)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["date_from", "date_to", "timezone", "currency", "attribution", "generated_at", "rows", "totals", "notes"],
+  "properties": {
+    "date_from": { "type": "string", "format": "date", "description": "First UAE date included" },
+    "date_to": { "type": "string", "format": "date", "description": "Last UAE date included" },
+    "timezone": { "const": "Asia/Dubai" },
+    "currency": { "const": "AED" },
+    "attribution": { "const": "first_touch" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "rows": {
+      "type": "array",
+      "description": "One row per date x country x source x medium x campaign. Sorted by date, then sessions (desc).",
+      "items": { "$ref": "#/$defs/row" }
+    },
+    "totals": { "$ref": "#/$defs/totals" },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "aed": { "type": "number", "minimum": 0, "description": "AED, 2 decimals" },
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "country", "country_code", "source", "medium", "campaign", "sessions", "unique_visitors",
+                   "personalize_starts", "add_to_cart", "checkouts", "paid_purchases", "free_code_purchases",
+                   "paid_revenue_aed", "free_code_revenue_aed"],
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "country": { "type": "string", "description": "English country name, or \"Unknown\"" },
+        "country_code": { "type": ["string", "null"], "pattern": "^[A-Z]{2}$" },
+        "source": { "type": "string", "description": "e.g. google, instagram, facebook, (direct), (unknown)" },
+        "medium": { "type": "string", "description": "e.g. cpc, organic, social, referral, (none), (not set), (unknown)" },
+        "campaign": { "type": "string", "description": "utm_campaign, or (not set) / (unknown)" },
+        "sessions": { "$ref": "#/$defs/count" },
+        "unique_visitors": { "$ref": "#/$defs/count" },
+        "personalize_starts": { "$ref": "#/$defs/count" },
+        "add_to_cart": { "$ref": "#/$defs/count" },
+        "checkouts": { "$ref": "#/$defs/count" },
+        "paid_purchases": { "$ref": "#/$defs/count" },
+        "free_code_purchases": { "$ref": "#/$defs/count" },
+        "paid_revenue_aed": { "$ref": "#/$defs/aed" },
+        "free_code_revenue_aed": { "$ref": "#/$defs/aed" }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sessions", "unique_visitors", "personalize_starts", "add_to_cart", "checkouts", "paid_purchases",
+                   "free_code_purchases", "paid_revenue_aed", "free_code_revenue_aed"],
+      "properties": {
+        "sessions": { "$ref": "#/$defs/count" },
+        "unique_visitors": { "$ref": "#/$defs/count" },
+        "personalize_starts": { "$ref": "#/$defs/count" },
+        "add_to_cart": { "$ref": "#/$defs/count" },
+        "checkouts": { "$ref": "#/$defs/count" },
+        "paid_purchases": { "$ref": "#/$defs/count" },
+        "free_code_purchases": { "$ref": "#/$defs/count" },
+        "paid_revenue_aed": { "$ref": "#/$defs/aed" },
+        "free_code_revenue_aed": { "$ref": "#/$defs/aed" }
+      }
+    }
+  }
+}
