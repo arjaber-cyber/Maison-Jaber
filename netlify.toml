@@ -94,6 +94,13 @@
   status = 301
   force = true
 
+# Server code and database scripts kept in the repo (supabase/) are not part of the website (Nov 2026).
+[[redirects]]
+  from = "/supabase/*"
+  to = "/hikaya/404.html"
+  status = 404
+  force = true
+
 # Internal SEO generator scripts (tools/seo/) are not part of the website.
 [[redirects]]
   from = "/tools/*"
