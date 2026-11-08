@@ -585,7 +585,7 @@
             <li id="nx2">We create and print: our team illustrates your child into the story and prints the hardcover.</li>
             <li id="nx3">Delivered gift-boxed: about 5 working days.</li>
           </ol>
-          <p class="check-note" data-i18n="lx.check_note">There is no preview step, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.</p>
+          <p class="check-note" data-i18n="lx.check_note">You can preview the cover before ordering. Once you order, we create and print the full book, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.</p>
         </div>
         <div class="upload-status" id="upload-status" role="status" aria-live="polite" hidden><div class="up-bar"><span id="up-fill"></span></div><p id="up-text"></p></div>
         <div class="wizard-nav">
@@ -618,6 +618,7 @@
 <div id="hk-foot"></div>
 
 <script src="family.js"></script>
+<script src="cp-handoff.js"></script>
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
   const supabase = createClient(
@@ -1762,20 +1763,19 @@
   else if (urlStory) { setStoryPending(true); lockStory(); }
 
   // Arrived from the free cover preview: carry over what the parent already typed there.
+  // The details come from this browser session (cp-handoff.js), never from the URL, so the page link is safe to share.
   (function prefillFromCoverPreview() {
-    const q = new URLSearchParams(window.location.search);
-    if (!q.get('cp_name') && !q.get('cp_gender')) return;
+    const H = window.hikayaCpHandoff; if (!H) return;
+    const c = H.fromLegacyUrl() || H.read();
+    if (!c || !/^(preview|legacy-url)$/.test(c.from || '')) return; // only details from a finished preview
     const fire = (el, ev) => el && el.dispatchEvent(new Event(ev, { bubbles: true }));
-    const lang = q.get('cp_lang');
     const langEl = document.getElementById('book-language');
-    if (langEl && (lang === 'en' || lang === 'ar') && [...langEl.options].some(o => o.value === lang)) { langEl.value = lang; fire(langEl, 'change'); }
+    if (langEl && c.lang && [...langEl.options].some(o => o.value === c.lang)) { langEl.value = c.lang; fire(langEl, 'change'); }
     const nameEl = document.getElementById('child-name');
-    if (nameEl && q.get('cp_name') && !nameEl.value) { nameEl.value = q.get('cp_name').slice(0, 20); fire(nameEl, 'input'); }
+    if (nameEl && c.name && !nameEl.value) { nameEl.value = c.name; fire(nameEl, 'input'); }
     const ageEl = document.getElementById('child-age');
-    const age = Number(q.get('cp_age'));
-    if (ageEl && age && !ageEl.value) { ageEl.value = String(Math.min(10, Math.max(2, age))); fire(ageEl, 'input'); fire(ageEl, 'change'); }
-    const g = q.get('cp_gender');
-    const gBtn = (g === 'boy' || g === 'girl') && document.querySelector('.gender-btn[data-value="' + g + '"]');
+    if (ageEl && c.age && !ageEl.value) { ageEl.value = String(Math.min(10, Math.max(2, c.age))); fire(ageEl, 'input'); fire(ageEl, 'change'); }
+    const gBtn = c.gender && document.querySelector('.gender-btn[data-value="' + c.gender + '"]');
     if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
   })();
 
@@ -1920,6 +1920,7 @@
       window.hikayaTrackEvent('add_to_cart', Object.assign({ story: item.slug || item.story, age_edition: item.ageEdition },
         ecomItem ? { currency: (window.hikayaRegion && window.hikayaRegion().currency) || 'AED', value: ecomItem.price, items: [ecomItem] } : {}));
     }
+    try { window.hikayaCpHandoff && window.hikayaCpHandoff.clear(); } catch (_) {}
     window.location.href = 'book-added.html';
   });
 </script>
@@ -1952,17 +1953,18 @@
   document.addEventListener('hikaya:langchange', paint);
 })();
 </script>
-<script>/* Free AI cover preview nudge on the photo step (hidden for parents who came from the preview) */
+<script>/* Free AI cover preview nudge on the photo step (hidden for parents who came from the preview).
+   The child's details go to the preview privately (cp-handoff.js), not in the link. */
 (function(){try{
-  var q=new URLSearchParams(location.search); if(q.get('cp_name')||q.get('cp_gender'))return;
+  var H=window.hikayaCpHandoff, c=H&&(H.fromLegacyUrl()||H.read()); if(c&&/^(preview|legacy-url)$/.test(c.from||''))return;
+  var q=new URLSearchParams(location.search);
   var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","why-is-baby-looking-at-me"];
   var box=document.getElementById('cp-nudge'),a=document.getElementById('cp-nudge-link'); if(!box||!a)return; box.hidden=false;
   a.addEventListener('click',function(){try{
     var slug=q.get('story')||''; var cat=window.STORY_CATALOG||{}; var si=document.getElementById('story-input'); var info=si&&cat[si.value]; if(info&&info.slug)slug=info.slug;
-    var p=new URLSearchParams(); if(ok.indexOf(slug)>-1)p.set('s',slug);
     var n=(document.getElementById('child-name')||{}).value||'', g=(document.getElementById('child-gender')||{}).value||'', ag=(document.getElementById('child-age')||{}).value||'', l=(document.getElementById('book-language')||{}).value||'';
-    if(n)p.set('cp_name',n.trim()); if(g)p.set('cp_gender',g); if(ag)p.set('cp_age',ag); if(l)p.set('cp_lang',l);
-    a.href='cover-preview.html'+(p.toString()?'?'+p.toString():'');
+    if(window.hikayaCpHandoff)window.hikayaCpHandoff.save({name:n,age:ag,gender:g,lang:l,story:ok.indexOf(slug)>-1?slug:''},'order-form');
+    a.href='cover-preview.html'+(ok.indexOf(slug)>-1?'?s='+encodeURIComponent(slug):'');
     if(window.hikayaTrackEvent)window.hikayaTrackEvent('cover_preview_nudge_click',{story:slug});
   }catch(e){}});
 }catch(e){}})();</script>

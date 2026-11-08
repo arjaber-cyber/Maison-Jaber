@@ -1465,3 +1465,18 @@ html.hk-consent-open .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 4px + en
 .cp-nudge b { display: block; font-size: 14px; color: var(--brand-dark, #573624); }
 .cp-nudge span { color: var(--ink-soft); }
 .cp-nudge a { flex: none; font-weight: 700; color: var(--brand, #8A5638); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Free cover preview: second hero button, beside Create Their Story (Nov 2026). */
+.hero-ctas .cp-hero-btn { flex-direction: column; gap: 1px; line-height: 1.15; padding-block: 9px; }
+.cp-hero-btn .cp-hero-main { display: inline-flex; align-items: center; gap: 6px; }
+.cp-hero-btn .cp-hero-sub { font-size: 11.5px; font-weight: 600; letter-spacing: .02em; opacity: .78; }
+.hero-explore { display: inline-block; margin-top: 14px; font-size: 14px; font-weight: 700; color: var(--brand-dark); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 767px) {
+  .hero .hero-explore { display: none; } /* phones keep the first screen to price + the two buttons; Stories is in the menu */
+  /* Both hero buttons share one row so the free preview is in the first screen too. */
+  .hero .hero-ctas { flex-wrap: nowrap; }
+  .hero .hero-ctas .btn { flex: 1 1 0; min-width: 0; padding-inline: 10px; font-size: 14.5px; white-space: normal; text-align: center; line-height: 1.15; }
+  .hero .hero-ctas .btn-primary .arr { display: none; }
+  .hero .hero-ctas .cp-hero-btn { padding-block: 6px; }
+  .hero .cp-hero-btn .cp-hero-sub { font-size: 11px; }
+}

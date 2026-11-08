@@ -12,7 +12,7 @@ const path = require("path");
 const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "../..");
-const I18N_FILES = ["i18n.js", "home6-i18n.js", "pages-i18n.js", "gifts-i18n.js", "guides-i18n.js", "countries-i18n.js"];
+const I18N_FILES = ["i18n.js", "home6-i18n.js", "pages-i18n.js", "gifts-i18n.js", "guides-i18n.js", "countries-i18n.js", "cover-preview-i18n.js"];
 const OUT = path.join(ROOT, "netlify/shared/ar-seo-data.js");
 
 // Load every translation file the way the browser does.

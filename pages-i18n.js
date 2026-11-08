@@ -477,7 +477,7 @@
     nx1: { en: 'Checkout: pay securely by card, Apple Pay or Google Pay. Your order is confirmed once payment goes through.', ar: 'الدفع: ادفع بأمان بالبطاقة أو Apple Pay أو Google Pay، ويتأكد طلبك فور نجاح الدفع' },
     nx2: { en: 'We create and print: our team illustrates {name} into the story and prints the hardcover.', ar: 'الصنع والطباعة: يرسم فريقنا {name} داخل القصة ويطبع الكتاب بغلاف مقوّى' },
     nx3: { en: 'Delivered gift-boxed: {eta}.', ar: 'التوصيل في علبة هدايا: {eta}' },
-    check_note: { en: 'There is no preview step, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.', ar: 'لا توجد خطوة معاينة، لذا يرجى التأكد من الاسم والعمر والصورة الآن، وإن احتجت إلى تعديل بعد الطلب فتواصل معنا سريعًا وسنعدّله إن لم يبدأ الإنتاج' },
+    check_note: { en: 'You can preview the cover before ordering. Once you order, we create and print the full book, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.', ar: 'يمكنك معاينة الغلاف قبل الطلب، وبعد الطلب نُنشئ الكتاب كاملًا ونطبعه، لذا تأكد من الاسم والعمر والصورة الآن، وإن احتجت إلى تعديل بعد الطلب فتواصل معنا سريعًا وسنعدّله إن لم يبدأ الإنتاج' },
     uploading: { en: 'Saving your photo securely… {pct}%', ar: 'نحفظ صورتك بأمان… {pct}%' },
     upload_fail: { en: "We couldn't save your photo. Please check your connection and try again. Nothing has been charged.", ar: 'تعذّر حفظ صورتك، يرجى التحقق من الاتصال والمحاولة مرة أخرى، ولم يُخصم أي مبلغ' },
     book_lang: { en: 'Book language', ar: 'لغة الكتاب' },
