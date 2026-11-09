@@ -15,7 +15,7 @@
     pz_d: { en: 'Try our free AI cover preview in about a minute. Your details here stay saved.', ar: 'جرّب معاينة الغلاف المجانية بالذكاء الاصطناعي خلال دقيقة تقريبًا، وتبقى بياناتك هنا محفوظة' },
     pz_btn: { en: 'Try it free', ar: 'جرّبها مجانًا' },
     hero_btn: { en: 'Preview their cover', ar: 'شاهد طفلك على الغلاف' },
-    hero_btn_sub: { en: 'Free with sign-in', ar: 'مجانًا مع تسجيل الدخول' },
+    hero_btn_sub: { en: 'Ready in about a minute', ar: 'جاهز خلال دقيقة تقريبًا' },
     home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
 
     signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },
