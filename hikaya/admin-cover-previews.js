@@ -45,7 +45,7 @@
     const spendToday = tRows.reduce((a, r) => a + cost(r), 0) * USD_AED;
     const spendAll = rows.reduce((a, r) => a + cost(r), 0) * USD_AED;
 
-    const modeText = { off: 'Off: hidden from everyone', test: 'Test: only the testers below can use it', live: 'Live: every signed-in customer can use it' };
+    const modeText = { off: 'Off: hidden from everyone', test: 'Test: only the testers below can use it', live: 'Live: every visitor can use it (no sign-in needed)' };
     root.innerHTML = `
       <div class="op-kpis">
         <div class="op-kpi ${s.mode === 'live' ? 'ok' : s.mode === 'test' ? 'warn' : ''}"><div class="l">Status</div><div class="n" style="text-transform:capitalize">${esc(s.mode)}</div><div class="s">${esc(modeText[s.mode] || '')}</div></div>
@@ -60,7 +60,7 @@
         <div class="dc-panel-head"><h2 style="margin:0;font-size:18px">Settings</h2></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px">
           <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600">Who can use it
-            <select id="cpv-mode"><option value="off">Off (hidden)</option><option value="test">Test (testers only)</option><option value="live">Live (all signed-in customers)</option></select></label>
+            <select id="cpv-mode"><option value="off">Off (hidden)</option><option value="test">Test (testers only)</option><option value="live">Live (all visitors)</option></select></label>
           <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600">Previews per account per day
             <input id="cpv-perday" type="number" min="0" max="20" /></label>
           <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600">Daily spending cap (AED)
@@ -80,7 +80,7 @@
             ${r.preview_url ? `<a href="${esc(r.preview_url)}" target="_blank" rel="noopener"><img src="${esc(r.preview_url)}" alt="" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px"></a>` : `<div style="aspect-ratio:1;border-radius:8px;background:#f3ead8;display:flex;align-items:center;justify-content:center;color:#8a7766;margin-bottom:8px;text-align:center;padding:10px">${r.purged_at ? 'Deleted after 48 hours' : r.status === 'ok' ? 'Preview link not loaded' : esc(st[0])}</div>`}
             <b>${esc(r.child_name)}</b> · ${esc(r.child_gender)} · ${esc(r.child_age)} · ${r.lang === 'ar' ? 'AR' : 'EN'}<br>
             ${esc(r.story_slug)}<br>
-            <span style="color:#8a7766">${when(r.created_at)} · ${esc(r.email || '')}</span><br>
+            <span style="color:#8a7766">${when(r.created_at)} · ${esc(r.email || 'Guest')}</span><br>
             <span class="${st[1] === 'ok' ? '' : ''}" style="font-weight:700;color:${st[1] === 'ok' ? '#2f6b3a' : st[1] === 'warn' ? '#a2612a' : '#555'}">${esc(st[0])}</span>${r.review_notes ? ` · ${esc(r.review_notes)}` : ''}${r.error ? ` · ${esc(r.error)}` : ''}${r.ms ? ` · ${Math.round(r.ms / 1000)}s` : ''} · AED ${(cost(r) * USD_AED).toFixed(2)}
           </article>`; }).join('')}</div>` : '<p class="vz-empty">No previews yet.</p>'}
       </section>`;
@@ -88,7 +88,7 @@
     $('cpv-mode').value = s.mode; $('cpv-perday').value = s.per_day; $('cpv-cap').value = s.cap_aed; $('cpv-testers').value = s.testers;
     $('cpv-save').addEventListener('click', async () => {
       const mode = $('cpv-mode').value;
-      if (mode === 'live' && s.mode !== 'live' && !confirm('Turn the free cover preview on for every signed-in customer?')) return;
+      if (mode === 'live' && s.mode !== 'live' && !confirm('Turn the free cover preview on for every visitor?')) return;
       $('cpv-saved').textContent = 'Saving…';
       try {
         await api('POST', { action: 'settings', mode, per_day: $('cpv-perday').value, cap_aed: $('cpv-cap').value, testers: $('cpv-testers').value });

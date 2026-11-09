@@ -214,6 +214,12 @@
   const track = (ev, p) => { try { window.hikayaTrackEvent && window.hikayaTrackEvent(ev, p || {}); } catch (e) {} };
 
   let deviceId = '';
+  // No sign-in needed (Nov 2026): visitors who are not signed in try it as a guest with a private random key kept on
+  // this device. Signed-in customers keep using their account, so their previews stay linked to it.
+  let guestToken = '';
+  try { guestToken = localStorage.getItem('hk_cp_guest') || ''; if (!/^[A-Za-z0-9-]{32,64}$/.test(guestToken)) { guestToken = (crypto.randomUUID() + crypto.randomUUID()).replace(/-/g, ''); localStorage.setItem('hk_cp_guest', guestToken); } } catch (e) {}
+  if (!guestToken) { try { guestToken = (crypto.randomUUID() + crypto.randomUUID()).replace(/-/g, ''); } catch (e) { guestToken = Array.from({ length: 40 }, () => Math.floor(Math.random() * 36).toString(36)).join(''); } }
+  const ownerId = () => (session && session.user ? session.user.id : 'g:' + guestToken.slice(0, 12));
   try { deviceId = localStorage.getItem('hk_cp_device') || ''; if (!deviceId) { deviceId = crypto.randomUUID(); localStorage.setItem('hk_cp_device', deviceId); } } catch (e) {}
 
   const params = new URLSearchParams(location.search);
@@ -230,12 +236,11 @@
 
   async function call(body, ms) {
     const { data } = await supabase.auth.getSession();
-    session = data.session;
-    if (!session) throw Object.assign(new Error('auth'), { code: 'auth' });
+    session = data.session && !data.session.user.is_anonymous ? data.session : null;
     // A request that hangs counts as a failed check, so the page can say it is reconnecting.
     const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), ms || 20000);
     try {
-      const r = await fetch(FN, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json', apikey: SB_ANON, Authorization: 'Bearer ' + session.access_token }, body: JSON.stringify({ ...body, device_id: deviceId }) });
+      const r = await fetch(FN, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json', apikey: SB_ANON, Authorization: 'Bearer ' + (session ? session.access_token : SB_ANON) }, body: JSON.stringify({ ...body, device_id: deviceId, ...(session ? {} : { guest_token: guestToken }) }) });
       let j = {}; try { j = await r.json(); } catch (e) {}
       return { http: r.status, ...j, status: j.status !== undefined ? j.status : r.status };
     } finally { clearTimeout(to); }
@@ -394,7 +399,7 @@
     show('v-wait'); resetWait(); $('w-title').textContent = T('w_title', { name }); $('w-step').textContent = T('w_1'); $('w-bar').style.width = '3%';
     // One request id per submission, saved before sending. Retries reuse it, so if the server accepted the first
     // attempt but its answer never arrived, the retry gets that same preview back and no second preview is used.
-    const p = { rid: newRid(), t: Date.now(), uid: session && session.user && session.user.id };
+    const p = { rid: newRid(), t: Date.now(), uid: ownerId() };
     pendingSet(p);
     const req = { action: 'start', request_id: p.rid, story_slug: state.slug, lang: state.lang, child_name: name, child_age: child.age, child_gender: state.gender, photo_b64: photo, consent: true, consent_version: CONSENT_VERSION };
     let r = null;
@@ -528,12 +533,10 @@
     syncLang();
   }
   async function start() {
-    const { data } = await supabase.auth.getSession();
-    session = data.session;
-    if (!session) { show('v-signin'); return; }
     let q;
-    try { q = await call({ action: 'quota' }); } catch (e) { show('v-signin'); return; }
-    if (q.http === 401) { show('v-signin'); return; }
+    try { q = await call({ action: 'quota' }); } catch (e) { q = null; }
+    if (!q || q.http !== 200) { try { q = await call({ action: 'quota' }); } catch (e) { q = null; } }
+    if (!q || q.http !== 200) { show('v-closed'); return; }
     if (!q.enabled) { show('v-closed'); return; }
     setLeft(q.remaining);
     // Arriving from the order form: carry over what the parent already typed there (kept in this session, not the URL).
@@ -544,7 +547,7 @@
     // A preview that was still being made when the page was refreshed, timed out or closed: pick it up again.
     // Checking its status is free; it never starts (or charges) a new preview.
     const p = pendingGet();
-    if (p && (!p.uid || p.uid === session.user.id)) { waitFor(p, true); return; }
+    if (p && (!p.uid || p.uid === ownerId())) { waitFor(p, true); return; }
     if (p) pendingClear();
     show('v-form');
   }

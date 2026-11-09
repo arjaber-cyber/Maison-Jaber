@@ -3,7 +3,7 @@
 //   POST { action:"start", request_id, story_slug, lang, child_name, child_age, child_gender, photo_b64, device_id, consent:true, consent_version }
 //   POST { action:"status", id } or { action:"status", request_id }
 //   POST { action:"quota" }
-// Every call needs a signed-in customer (Supabase user JWT in Authorization).
+// Signed-in customers send their Supabase JWT; guests send body.guest_token (no sign-in needed, Nov 2026).
 // Settings live in app_flags: cover_preview_mode (off|test|live), cover_preview_testers (comma emails),
 // cover_preview_per_day (default 5), cover_preview_daily_cap_aed (default 100).
 // The clean cover never leaves the server: customers only ever get a 560px watermarked copy via a short signed URL.
@@ -330,12 +330,23 @@ async function flags() {
   };
 }
 
-async function userFrom(req: Request) {
+// Signed-in customer (Supabase user JWT), or a guest (Nov 2026: no sign-in needed to try the preview).
+// A guest sends a long random guest_token kept on their device; its hash becomes a stable private id, so
+// their tries, status checks and limits work exactly like a signed-in customer's. Device, network and the
+// daily AED cap still apply on top.
+const GUEST_RE = /^[A-Za-z0-9-]{32,64}$/;
+async function userFrom(req: Request, body: any): Promise<{ id: string; email?: string | null; guest?: boolean } | null> {
   const jwt = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
-  if (!jwt) return null;
-  const { data, error } = await sb.auth.getUser(jwt);
-  if (error || !data?.user) return null;
-  return data.user;
+  if (jwt) {
+    const { data, error } = await sb.auth.getUser(jwt);
+    if (!error && data?.user && !(data.user as any).is_anonymous) return data.user;
+  }
+  const g = String(body?.guest_token || "");
+  if (GUEST_RE.test(g)) {
+    const h = await sha256("cp-guest|" + g);
+    return { id: `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20, 32)}`, email: "", guest: true };
+  }
+  return null;
 }
 
 async function sha256(s: string) {
@@ -497,7 +508,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return json(405, { error: "POST only" });
   const body = await req.json().catch(() => ({}));
   const f = await flags();
-  const user = await userFrom(req);
+  const user = await userFrom(req, body);
   if (!user) return json(401, { code: "signin" });
   const email = user.email ?? "";
   const ip = (req.headers.get("x-forwarded-for") || "").split(",")[0].trim();
