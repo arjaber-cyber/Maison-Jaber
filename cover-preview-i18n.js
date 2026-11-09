@@ -15,12 +15,16 @@
     pz_d: { en: 'Try our free AI cover preview in about a minute. Your details here stay saved.', ar: 'جرّب معاينة الغلاف المجانية بالذكاء الاصطناعي خلال دقيقة تقريبًا، وتبقى بياناتك هنا محفوظة' },
     pz_btn: { en: 'Try it free', ar: 'جرّبها مجانًا' },
     hero_btn: { en: 'Preview their cover', ar: 'شاهد طفلك على الغلاف' },
-    hero_btn_sub: { en: 'Free with sign-in', ar: 'مجانًا مع تسجيل الدخول' },
+    hero_btn_sub: { en: 'Free · takes 1 minute', ar: 'مجانًا · خلال دقيقة' },
     home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
 
     signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },
     signin_d: { en: "The preview is free for signed-in families. Signing in keeps your child's photo private to your account.", ar: 'المعاينة مجانية للعائلات المسجّلة، وتسجيل الدخول يحفظ صورة طفلك خاصة بحسابك' },
     signin_btn: { en: 'Sign in or create an account', ar: 'سجّل الدخول أو أنشئ حسابًا' },
+    signin_t_name: { en: "One last step to see {name}'s cover", ar: 'خطوة أخيرة لتشاهد {name} على الغلاف' },
+    signin_d_name: { en: "Sign in or create a free account in a few seconds. We'll bring you straight back and start making {name}'s cover. Signing in keeps your child's photo private to your account.", ar: 'سجّل الدخول أو أنشئ حسابًا مجانيًا في ثوانٍ، وسنعيدك مباشرة ونبدأ تجهيز غلاف {name}، وتسجيل الدخول يحفظ صورة طفلك خاصة بحسابك' },
+    signin_edit: { en: 'Back to edit details', ar: 'العودة لتعديل البيانات' },
+    signin_tip: { en: 'Tip: signing in with Google, or with the 6-digit code from the email, brings you right back here.', ar: 'نصيحة: تسجيل الدخول عبر Google أو بالرمز المكوّن من 6 أرقام من البريد يعيدك إلى هنا مباشرة' },
     closed_t: { en: 'Coming very soon', ar: 'قريبًا جدًا' },
     closed_d: { en: 'The free cover preview is not open yet. Please check back soon.', ar: 'معاينة الغلاف المجانية غير متاحة بعد، عُد إلينا قريبًا' },
 

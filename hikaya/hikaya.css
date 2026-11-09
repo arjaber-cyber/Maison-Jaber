@@ -1218,9 +1218,10 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
   .hero .hero-copy h1 { position: absolute; inset-inline: 0; bottom: 100%; margin: 0; padding-bottom: 16px; color: #fff; font-size: clamp(2.05rem, 9.4vw, 2.6rem); line-height: 1.03; text-shadow: 0 1px 14px rgba(0, 0, 0, .3); }
   .hero .hero-copy .lede, .hero .hero-copy .hand { display: none; }
   .hero .hero-copy h1 { order: 0; }
-  .hero .hero-assure { order: 1; margin: 0 0 12px; font-size: 14px; }
-  .hero .hero-ctas { order: 2; gap: 10px; }
-  .hero .hero-trust { order: 3; display: block; margin: 12px 0 0; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
+  .hero .hero-ctas { order: 1; gap: 10px; }
+  .hero .hero-assure { order: 2; margin: 12px 0 0; font-size: 14px; } /* buttons first (9 Nov 2026), price just under them */
+  .hero .hk-welcome-line { order: 3; }
+  .hero .hero-trust { order: 4; display: block; margin: 12px 0 0; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
   .hero .hero-trust a { color: inherit; }
 
   /* Arabic on phones: an Arabic book cover on a sand band, headline below it (no text over the cover's own title). */
@@ -1476,7 +1477,7 @@ html.hk-consent-open .hk-wa { bottom: calc(var(--hk-consent-h, 120px) + 4px + en
   /* Both hero buttons share one row so the free preview is in the first screen too. */
   .hero .hero-ctas { flex-wrap: nowrap; }
   .hero .hero-ctas .btn { flex: 1 1 0; min-width: 0; padding-inline: 10px; font-size: 14.5px; white-space: normal; text-align: center; line-height: 1.15; }
-  .hero .hero-ctas .btn-primary .arr { display: none; }
+  .hero .hero-ctas .btn .arr { display: none; }
   .hero .hero-ctas .cp-hero-btn { padding-block: 6px; }
   .hero .cp-hero-btn .cp-hero-sub { font-size: 11px; }
 }

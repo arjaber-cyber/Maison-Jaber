@@ -87,9 +87,11 @@
   <div id="v-loading" class="cp-card cp-center"><div class="cp-spin" aria-hidden="true"></div></div>
 
   <div id="v-signin" class="cp-card cp-center" hidden>
-    <h2 data-i18n="cp.signin_t">Sign in to try it free</h2>
-    <p style="color:var(--ink-soft);margin:0 0 18px" data-i18n="cp.signin_d">The preview is free for signed-in families.</p>
-    <a class="btn btn-primary" href="login.html?redirect=cover-preview.html" data-i18n="cp.signin_btn">Sign in or create an account</a>
+    <h2 id="si-t">Sign in to try it free</h2>
+    <p id="si-d" style="color:var(--ink-soft);margin:0 0 18px">The preview is free for signed-in families.</p>
+    <a class="btn btn-primary" id="si-go" href="login.html?redirect=cover-preview.html" data-i18n="cp.signin_btn">Sign in or create an account</a>
+    <p id="si-tip" hidden style="font-size:12.5px;color:var(--ink-soft);margin:14px 0 0" data-i18n="cp.signin_tip">Tip: signing in with Google, or with the 6-digit code from the email, brings you right back here.</p>
+    <p id="si-back" hidden style="margin:10px 0 0"><button type="button" id="si-edit" style="background:none;border:0;padding:0;font:inherit;font-size:14px;font-weight:700;color:var(--brand-dark);text-decoration:underline;text-underline-offset:3px;cursor:pointer" data-i18n="cp.signin_edit">Back to edit details</button></p>
   </div>
 
   <div id="v-closed" class="cp-card cp-center" hidden>
@@ -274,6 +276,28 @@
   const newRid = () => { try { return crypto.randomUUID(); } catch (e) { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 12); } };
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
+  // ---------- guests (9 Nov 2026) ----------
+  // Visitors fill in the whole form first; sign-in is asked for only when they tap Create. Generating still needs a
+  // signed-in account (the server is unchanged). To carry their work through sign-in, the form and the checked photo
+  // are kept in this tab's sessionStorage only (gone when the tab closes), used once straight after sign-in, then deleted.
+  // Anything older than 30 minutes is thrown away unused.
+  const GKEY = 'hk_cp_guest', GTTL = 30 * 60 * 1000;
+  const guestClear = () => { try { sessionStorage.removeItem(GKEY); } catch (e) {} };
+  const guestSave = (child, photo) => { try { sessionStorage.setItem(GKEY, JSON.stringify({ child, photo, t: Date.now() })); return true; } catch (e) { guestClear(); return false; } };
+  const guestTake = () => {
+    let g = null; try { g = JSON.parse(sessionStorage.getItem(GKEY) || 'null'); } catch (e) {}
+    guestClear();
+    if (!g || !g.child || !(Date.now() - (g.t || 0) < GTTL)) return null;
+    return g;
+  };
+  function showSignin(name) {
+    const named = !!name;
+    $('si-t').textContent = named ? T('signin_t_name', { name }) : T('signin_t');
+    $('si-d').textContent = named ? T('signin_d_name', { name }) : T('signin_d');
+    $('si-tip').hidden = !named; $('si-back').hidden = !named;
+    show('v-signin');
+  }
+
   // ---------- stories ----------
   function storyTitle(s) { return state.lang === 'ar' ? (s.title_ar || s.title) : s.title; }
   function storyCover(s) { return '/story-assets/' + s.slug + '/cover' + (state.lang === 'ar' ? '-ar' : '') + '.jpg'; }
@@ -389,6 +413,12 @@
     const name = $('cp-name').value.trim().replace(/\s+/g, ' ');
     const child = { name, age: Number($('cp-age').value), gender: state.gender, lang: state.lang, story: state.slug };
     HK.save(child, 'preview-form');
+    // Not signed in yet: keep what they've done and ask them to sign in now.
+    if (!session) {
+      const kept = guestSave(child, photo);
+      track('cover_preview_signin_wall', { story: state.slug, kept: kept ? 1 : 0 });
+      showSignin(name); return;
+    }
     state.busy = true; updateGo();
     // Show the waiting screen straight away: uploading and checking the photo takes a few seconds.
     show('v-wait'); resetWait(); $('w-title').textContent = T('w_title', { name }); $('w-step').textContent = T('w_1'); $('w-bar').style.width = '3%';
@@ -404,7 +434,7 @@
         if (x.http >= 500 && x.http !== 503) throw new Error('server ' + x.http);
         r = x;
       } catch (er) {
-        if (er.code === 'auth') { state.busy = false; show('v-signin'); return; }
+        if (er.code === 'auth') { state.busy = false; showSignin(''); return; }
         $('w-recon').hidden = false;
         await sleep(2500 * (attempt + 1));
       }
@@ -467,7 +497,7 @@
       if (!slowShown && Date.now() > giveUpAt) { stop(); slow(); return; }
       let r = null;
       try { r = await call(p.id ? { action: 'status', id: p.id } : { action: 'status', request_id: p.rid }); }
-      catch (er) { if (er.code === 'auth') { stop(); show('v-signin'); return; } }
+      catch (er) { if (er.code === 'auth') { stop(); showSignin(''); return; } }
       if (!alive()) return;
       if (r && r.http === 200) {
         fails = 0; missing = 0; lastOk = Date.now();
@@ -483,7 +513,7 @@
         }
         // Still "working" after 10 minutes means the job died; it no longer counts against the free previews.
         if (r.status === 'working' && Date.now() - t0 > 10 * 60 * 1000) { finish('e_failed'); return; }
-      } else if (r && r.http === 401) { stop(); show('v-signin'); return; }
+      } else if (r && r.http === 401) { stop(); showSignin(''); return; }
       else if (r && r.http === 404) {
         // By preview id: gone. By request id: the submission never reached us (give it time to arrive first).
         if (p.id || (++missing >= 3 && Date.now() - t0 > 45 * 1000)) { finish('e_generic'); return; }
@@ -530,12 +560,25 @@
   async function start() {
     const { data } = await supabase.auth.getSession();
     session = data.session;
-    if (!session) { show('v-signin'); return; }
+    // Guests see the form straight away; sign-in is asked for when they tap Create.
+    if (!session) { startGuest(); return; }
     let q;
-    try { q = await call({ action: 'quota' }); } catch (e) { show('v-signin'); return; }
-    if (q.http === 401) { show('v-signin'); return; }
+    try { q = await call({ action: 'quota' }); } catch (e) { session = null; startGuest(); return; }
+    if (q.http === 401) { session = null; startGuest(); return; }
     if (!q.enabled) { show('v-closed'); return; }
     setLeft(q.remaining);
+    // Just signed in after filling the form as a guest: put everything back and carry on making the cover.
+    const g = guestTake();
+    if (g) {
+      if (g.child.story && SUPPORTED.includes(g.child.story)) state.slug = g.child.story;
+      applyChild(g.child); syncLang(); loadStories(); loadFace();
+      $('cp-consent').checked = true;
+      if (g.photo) { state.photo = g.photo; state.photoTried = true; $('thumb').src = g.photo; $('thumb').style.display = 'block'; $('file-lbl').querySelector('span').textContent = T('photo_change'); pstat('ok', T('photo_ok')); }
+      show('v-form'); updateGo();
+      track('cover_preview_signin_return', { story: state.slug, photo: g.photo ? 1 : 0 });
+      if (g.photo && state.slug && (state.remaining === null || state.remaining > 0)) setTimeout(() => $('v-form').requestSubmit(), 300);
+      return;
+    }
     // Arriving from the order form: carry over what the parent already typed there (kept in this session, not the URL).
     applyChild(carried);
     syncLang();
@@ -548,6 +591,14 @@
     if (p) pendingClear();
     show('v-form');
   }
+  function startGuest() {
+    $('left').textContent = '';
+    applyChild(carried); syncLang(); loadStories(); loadFace();
+    show('v-form'); updateGo();
+    track('cover_preview_guest_form', {});
+  }
+  $('si-edit').addEventListener('click', () => { show('v-form'); updateGo(); });
+  $('si-go').addEventListener('click', () => track('cover_preview_signin_click', {}));
   document.addEventListener('hikaya:langchange', () => { if (!$('v-form').hidden) syncLang(); });
   if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(start, 0); else document.addEventListener('DOMContentLoaded', start);
 </script>
