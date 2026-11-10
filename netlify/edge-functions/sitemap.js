@@ -40,6 +40,7 @@ const STATIC_PAGES = [
   ["guide-christmas-gift-ideas.html", "0.7", "monthly"],
   ["guide-gifts-from-grandparents.html", "0.7", "monthly"],
   ["guide-uae-national-day-gift-ideas.html", "0.7", "monthly"],
+  ["free-cover-preview.html", "0.8", "weekly"],
   // END STATIC_PAGES (tools/seo/register_pages.py adds new pages above this line)
 ];
 

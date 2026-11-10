@@ -32,7 +32,7 @@ except Exception as e:
 
 node = r'''
 global.window = {}; global.document = { addEventListener() {}, documentElement: {}, createElement() { return { style: {} }; }, head: { appendChild() {} } };
-for (const f of ['./home6-i18n.js', './pages-i18n.js', './gifts-i18n.js', './guides-i18n.js', './countries-i18n.js']) require(f);
+for (const f of ['./home6-i18n.js', './pages-i18n.js', './gifts-i18n.js', './guides-i18n.js', './countries-i18n.js', './cover-preview-i18n.js', './fcp-i18n.js']) require(f);
 const T = window.HIKAYA_TRANSLATIONS, bad = [];
 for (const ns in T) for (const k in T[ns]) { const ar = T[ns][k] && T[ns][k].ar; if (typeof ar !== 'string') continue;
   const c = ar.replace(/<[^>]+>/g, '').replace(/\d\.\d/g, '').replace(/\.\.\./g, '').replace(/[A-Za-z0-9@_-]+\.(com|ae|html|net|org)/gi, '');

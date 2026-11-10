@@ -227,6 +227,12 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     const sig = (window.hikayaCart.getCart() || []).map(function (i) { return i.id; }).sort().join(',');
     try { if (sessionStorage.getItem('hk_bc_sig') === sig) return; sessionStorage.setItem('hk_bc_sig', sig); } catch (err) {}
     window.hikayaTrackEvent('begin_checkout', p);
+    // Free cover preview -> checkout (Nov 2026): this device made a cover preview in the last 30 days
+    // (cover-preview.html saves only the time and story, no child details).
+    try {
+      const cp = JSON.parse(localStorage.getItem('hk_cp_done') || 'null');
+      if (cp && cp.t && Date.now() - cp.t < 30 * 86400000) window.hikayaTrackEvent('cover_preview_to_checkout', { story: cp.story || '', currency: p.currency, value: p.value });
+    } catch (err) {}
   }, true);
 
   /* ---------- purchase: exactly once per confirmed, paid order (reworked Nov 2026) ----------

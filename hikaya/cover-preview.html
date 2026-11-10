@@ -5,6 +5,9 @@
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Private flow (child name / photo / preview): kept out of search results. Not blocked in robots.txt on purpose, so
+     Google can read this noindex. The public, indexable page about the preview is free-cover-preview.html. -->
+<meta name="robots" content="noindex, nofollow" />
 <title>See your child on the cover, free — Hikaya by Maison Jaber</title>
 <meta name="description" content="Upload one photo and see your child as the hero of a Hikaya story cover, free, in about a minute." />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -191,7 +194,8 @@
 <script src="/region.js" defer></script>
 <script src="/cart.js" defer></script>
 <script src="chrome.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
+<!-- face-api.js (the in-browser photo check, ~650 KB) is NOT loaded with the page: it is fetched once the parent
+     starts filling in the form (loadFace below), so the page opens fast on mobile. -->
 <script src="cp-handoff.js"></script>
 
 <script type="module">
@@ -334,13 +338,22 @@
   function loadFace() {
     if (faceReady) return faceReady;
     faceReady = (async () => {
-      for (let i = 0; i < 40 && !window.faceapi; i++) await new Promise(r => setTimeout(r, 150));
+      if (!window.faceapi) {
+        await new Promise(res => {
+          const sc = document.createElement('script');
+          sc.src = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js';
+          sc.async = true; sc.onload = sc.onerror = res; document.head.appendChild(sc);
+          setTimeout(res, 20000); // slow network: carry on without the browser check (the server still checks)
+        });
+      }
       if (!window.faceapi) return false;
       await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights');
       return true;
     })().catch(() => false);
     return faceReady;
   }
+  // The parent has started the preview (touched the form): fetch the photo checker now, in the background.
+  ['pointerdown', 'focusin', 'keydown'].forEach(ev => $('v-form').addEventListener(ev, () => { loadFace(); }, { once: true, passive: true }));
   function pstat(kind, txt) { const p = $('pstat'); p.hidden = false; p.className = 'cp-pstat ' + kind; p.textContent = txt; }
   // Count faces, ignoring tiny faces far in the background (posters, people far behind).
   async function countFaces(c) {
@@ -394,6 +407,7 @@
     const name = $('cp-name').value.trim().replace(/\s+/g, ' ');
     const child = { name, age: Number($('cp-age').value), gender: state.gender, lang: state.lang, story: state.slug };
     HK.save(child, 'preview-form');
+    track('cover_preview_started', { story: state.slug, book_lang: state.lang });
     state.busy = true; updateGo();
     // Show the waiting screen straight away: uploading and checking the photo takes a few seconds.
     show('v-wait'); resetWait(); $('w-title').textContent = T('w_title', { name }); $('w-step').textContent = T('w_1'); $('w-bar').style.width = '3%';
@@ -479,7 +493,7 @@
         if (r.id && !p.id) { p.id = r.id; pendingSet(p); }
         if (r.child && r.child.name) { child = r.child; if (child.story) state.slug = child.story; setTitle(); }
         if (typeof r.remaining === 'number') setLeft(r.remaining);
-        if (r.status === 'ok' && r.preview_url) { stop(); pendingClear(); showResult(r.preview_url, child || {}); track('cover_preview_ok', { story: child && child.story, resumed: !!resumed, secs: Math.round((Date.now() - t0) / 1000) }); return; }
+        if (r.status === 'ok' && r.preview_url) { stop(); pendingClear(); showResult(r.preview_url, child || {}); track('cover_preview_ok', { story: child && child.story, resumed: !!resumed, secs: Math.round((Date.now() - t0) / 1000) }); track('cover_preview_completed', { story: child && child.story, resumed: !!resumed }); markDone(child && child.story); return; }
         if (r.status === 'failed') { finish('e_failed'); return; }
         if (r.status === 'rejected') {
           finish(r.reason === 'group' ? 'photo_many' : r.reason === 'noface' ? 'photo_noface' : 'e_rejected');
@@ -519,7 +533,9 @@
     show('v-result');
   }
   $('r-again').addEventListener('click', () => { err(''); show('v-form'); updateGo(); });
-  $('r-order').addEventListener('click', () => track('cover_preview_order_click', { story: state.slug }));
+  $('r-order').addEventListener('click', () => { track('cover_preview_order_click', { story: state.slug }); track('cover_preview_to_personalisation', { story: state.slug }); });
+  // Remembered on this device (no child details) so analytics.js can send cover_preview_to_checkout if they go on to check out.
+  function markDone(story) { try { localStorage.setItem('hk_cp_done', JSON.stringify({ t: Date.now(), story: story || '' })); } catch (e) {} }
   // The preview is for viewing only: no right-click, drag or long-press save.
   ['contextmenu', 'dragstart'].forEach(ev => $('r-frame').addEventListener(ev, e => e.preventDefault()));
 

@@ -93,6 +93,7 @@ for G in GUIDES:
       <h2 data-i18n="gdg.cta_t">Make them the hero of their own story</h2>
       <p data-i18n="gdg.cta_d">A personalised hardcover storybook with their name and face, gift-boxed and delivered across the UAE and GCC.</p>
       <p class="guide-cta-btns"><a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a> <a class="text-link" href="{G['gift']}"><span data-i18n="gdg.cta_gift">See the gift ideas</span> <span aria-hidden="true">→</span></a></p>
+      <p class="cp-try"><a href="free-cover-preview.html"><span aria-hidden="true">✨</span> <span data-i18n="home6.cp_try">Not sure yet? Try their cover free</span></a></p>
     </aside>
     <nav class="guide-more" aria-labelledby="more-h"><h2 id="more-h" data-i18n="gdg.more">More guides</h2><ul>{others}</ul></nav>
   </div>

@@ -1,16 +1,11 @@
 User-agent: *
 Allow: /
-# Private / personal-data pages of the public shop (also carry <meta name="robots" content="noindex">)
+# Private / personal-data pages of the public shop. They are NOT blocked here on purpose (Nov 2026): each one
+# carries <meta name="robots" content="noindex"> plus an X-Robots-Tag: noindex header (netlify.toml), and Google
+# can only obey a noindex it is allowed to read. Blocking them here would let their addresses (e.g. old links that
+# carried a child's name) show up in Google as "indexed, though blocked by robots.txt".
+# Covers the free cover preview flow (cover-preview.html), the order form, cart, checkout, account and order pages.
 Disallow: /hikaya/admin.html
-Disallow: /hikaya/account.html
-Disallow: /hikaya/login.html
-Disallow: /hikaya/checkout.html
-Disallow: /hikaya/personalize.html
-Disallow: /hikaya/cart.html
-Disallow: /hikaya/book-added.html
-Disallow: /hikaya/invoice.html
-Disallow: /hikaya/track-order.html
-Disallow: /hikaya/search.html
 Disallow: /test/
 Disallow: /test2/
 Disallow: /test3/
