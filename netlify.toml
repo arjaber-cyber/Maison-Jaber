@@ -44,6 +44,10 @@
 [functions."purge-cover-previews"]
   schedule = "23 * * * *"
 
+# Daily 06:00 UAE (02:00 UTC): report of the last 24 hours of cover previews, with the generated covers.
+[functions."cover-preview-report"]
+  schedule = "0 2 * * *"
+
 # Speed (Nov 2026): let browsers and Netlify's CDN reuse shop images instead of
 # re-checking them on every page view. One day fresh, then up to a week served
 # from cache while the new copy is fetched, so a replaced image shows within a day.
