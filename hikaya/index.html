@@ -57,7 +57,14 @@
       <p class="lede" data-i18n="home6.hero_sub">Personalised children’s storybooks starring your child, in Arabic or English. Hardcover, gift-boxed and delivered across the UAE &amp; GCC.</p>
       <div class="hero-ctas">
         <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn-secondary cp-hero-btn" href="cover-preview.html" data-cp-entry="home_hero"><span class="cp-hero-main"><span aria-hidden="true">✨</span> <span data-i18n="cp.hero_btn">Preview their cover</span></span><span class="cp-hero-sub" data-i18n="cp.hero_btn_sub">Ready in about a minute</span></a>
+      </div>
+      <!-- Free cover preview CTA (Nov 2026): opens the existing preview flow, never checkout -->
+      <div class="cp-card cp-card-hero">
+        <div class="cp-card-copy">
+          <p class="cp-card-t"><span class="cp-spark" aria-hidden="true">✨</span> <span data-i18n="cp.free_t">Try Your Child’s Cover Free</span></p>
+          <p class="cp-card-d" data-i18n="cp.free_d">See their name on a personalised Hikaya cover before you order. No payment needed.</p>
+        </div>
+        <a class="btn cp-gold" href="cover-preview.html" data-cp-entry="home_hero"><span data-i18n="cp.free_btn">Try Free Cover Preview</span> <span class="arr" aria-hidden="true">→</span></a>
       </div>
       <a class="hero-explore" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a>
       <p class="hero-assure" data-hk-price-line>Personalised hardcover · <s class="hk-was">AED 199</s> <span class="hk-now">AED 169</span> · Gift packaging included</p>
@@ -137,29 +144,32 @@
   </div>
 </section>
 
-<!-- 03 THEIR NEXT ADVENTURE -->
+<!-- 03 FREE COVER PREVIEW, repeated just above the story shelf (Nov 2026) -->
 <section class="cp-promo" aria-labelledby="cp-promo-t">
-  <div class="wrap"><div class="cp-promo-in">
-    <div>
+  <div class="wrap"><div class="cp-card cp-promo-in">
+    <div class="cp-card-copy">
       <p class="eyebrow-line" data-i18n="cp.cta_short">Free: see your child on the cover</p>
-      <h2 id="cp-promo-t" data-i18n="cp.home_t">Curious how your little one looks as the hero?</h2>
-      <p data-i18n="cp.home_d">Upload a photo and see them on a real Hikaya cover in about a minute. Free, private, and just for you.</p>
+      <h2 id="cp-promo-t" data-i18n="cp.free_t">Try Your Child’s Cover Free</h2>
+      <p class="cp-card-d" data-i18n="cp.free_d">See their name on a personalised Hikaya cover before you order. No payment needed.</p>
     </div>
     <div class="cp-promo-act">
-      <a class="btn btn-primary" href="cover-preview.html" data-cp-entry="home_promo"><span data-i18n="cp.home_btn">Try the free cover preview</span> <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn cp-gold" href="cover-preview.html" data-cp-entry="home_promo"><span data-i18n="cp.free_btn">Try Free Cover Preview</span> <span class="arr" aria-hidden="true">→</span></a>
       <p class="cp-try"><a href="free-cover-preview.html" data-i18n="home6.cp_learn">How the free cover preview works</a></p>
     </div>
   </div></div>
 </section>
+
 <style>
   .cp-promo { padding: 8px 0 26px; }
-  .cp-promo-in { display: flex; gap: 22px; align-items: center; justify-content: space-between; flex-wrap: wrap; background: var(--card); border: 1px solid var(--taupe); border-radius: 18px; padding: clamp(20px, 4vw, 34px); }
-  .cp-promo-in > div { flex: 1 1 380px; }
+  .cp-promo-in { justify-content: space-between; gap: 18px 28px; background: linear-gradient(135deg, var(--white), var(--card)); padding: clamp(20px, 4vw, 34px); }
+  .cp-promo-in > .cp-card-copy { flex: 1 1 380px; }
   .cp-promo-in > .cp-promo-act { flex: 0 0 auto; text-align: center; }
-  .cp-promo-act .cp-try { margin-top: 10px; font-size: 13.5px; }
-  .cp-promo h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.1; margin: 0 0 8px; }
-  .cp-promo p:not(.eyebrow-line) { margin: 0; color: var(--ink-soft); }
+  .cp-promo-act .cp-try { margin-top: 12px; font-size: 13.5px; }
+  .cp-promo h2 { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.2rem); line-height: 1.1; margin: 0 0 8px; color: var(--brand-dark); }
+  .cp-promo .cp-card-d { font-size: 15px; }
+  @media (max-width: 767px) { .cp-promo-in { text-align: center; } .cp-promo-in > .cp-promo-act { flex: 1 1 100%; } }
 </style>
+<!-- 03b THEIR NEXT ADVENTURE -->
 <section class="shelf" id="stories" aria-labelledby="new-title">
   <div class="wrap">
     <div class="shelf-head">

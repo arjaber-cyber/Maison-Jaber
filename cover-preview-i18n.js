@@ -17,6 +17,9 @@
     hero_btn: { en: 'Preview their cover', ar: 'شاهد طفلك على الغلاف' },
     hero_btn_sub: { en: 'Ready in about a minute', ar: 'جاهز خلال دقيقة تقريبًا' },
     home_btn: { en: 'Try the free cover preview', ar: 'جرّب معاينة الغلاف المجانية' },
+    free_t: { en: 'Try Your Child’s Cover Free', ar: 'جرّب غلاف طفلك مجانًا' },
+    free_d: { en: 'See their name on a personalised Hikaya cover before you order. No payment needed.', ar: 'شاهد اسم طفلك على غلاف مخصص من حكاية قبل أن تطلب، دون أي دفع' },
+    free_btn: { en: 'Try Free Cover Preview', ar: 'جرّب معاينة الغلاف مجانًا' },
 
     signin_t: { en: 'Sign in to try it free', ar: 'سجّل الدخول لتجربتها مجانًا' },
     signin_d: { en: "The preview is free for signed-in families. Signing in keeps your child's photo private to your account.", ar: 'المعاينة مجانية للعائلات المسجّلة، وتسجيل الدخول يحفظ صورة طفلك خاصة بحسابك' },
