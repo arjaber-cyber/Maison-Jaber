@@ -59,6 +59,57 @@
   for = "/story-assets/*"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+# Private pages (Nov 2026): never in search results. Header + the page's own <meta name="robots">; these pages are
+# deliberately NOT blocked in robots.txt (except admin) so Google can see the noindex. Includes the free cover
+# preview flow (cover-preview.html), whose child name / photo / preview must never be indexed.
+[[headers]]
+  for = "/hikaya/cover-preview.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/personalize.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/cart.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/checkout.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/book-added.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/account.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/login.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/invoice.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/track-order.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/search.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/feedback.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/hikaya/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
 [[headers]]
   for = "/test/*"
   [headers.values]

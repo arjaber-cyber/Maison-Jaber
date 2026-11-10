@@ -90,8 +90,9 @@ def faqs(c):
 
 head_tpl = open(ROOT + '/hikaya/our-world.html', encoding='utf-8').read().split('<link rel="canonical"')[0]
 FONTS = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap'
-assets = f'''<link rel="icon" type="image/png" href="images/favicon-star.png" />
-<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+assets = f'''<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <!-- Fonts load without blocking the first paint. -->
@@ -165,6 +166,7 @@ for c in C:
     <h1 id="ctry-title" data-i18n="ctry.{kk}_h1">{e(h1[0])}</h1>
     <p class="lede" data-i18n="ctry.{kk}_lede">{e(lede[0])}</p>
     <p class="ctry-cta"><a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a> <button type="button" class="text-link ctry-region" data-region="{key}" hidden></button></p>
+    <p class="cp-try"><a href="free-cover-preview.html"><span aria-hidden="true">✨</span> <span data-i18n="home6.cp_try">Not sure yet? Try their cover free</span></a></p>
   </div></div>
 </section>
 <section class="wrap gift-intro"><p data-i18n="ctry.{kk}_intro">{e(intro_en)}</p></section>

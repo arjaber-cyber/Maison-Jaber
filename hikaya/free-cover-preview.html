@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<!-- Robots: indexable public page (Nov 2026). Explains the free cover preview and links into the existing,
+     noindexed preview flow (cover-preview.html). Arabic version: ?lang=ar (served in Arabic by the SEO layer).
+     Light on purpose: no preview-generation, face-check or database scripts load here. -->
+<script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
+<style>html.i18n-wait body{visibility:hidden}</style>
+<link rel="canonical" href="https://maison-jaber.com/hikaya/free-cover-preview.html" />
+<meta property="og:url" content="https://maison-jaber.com/hikaya/free-cover-preview.html" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Hikaya by Maison Jaber" />
+<meta property="og:image" content="https://maison-jaber.com/story-assets/door-of-a-thousand-stars/cover.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Free Personalised Book Cover Preview UAE | Hikaya</title>
+<meta name="description" content="See your child as the hero of a personalised Hikaya storybook. Create a free book-cover preview in minutes—no payment needed. UAE and GCC delivery." />
+<meta property="og:title" content="Free Personalised Book Cover Preview UAE | Hikaya" />
+<meta property="og:description" content="See your child as the hero of a personalised Hikaya storybook. Create a free book-cover preview in minutes—no payment needed. UAE and GCC delivery." />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Fonts load without blocking the first paint. -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&family=Caveat:wght@500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" /></noscript>
+<link rel="stylesheet" href="hikaya.css" />
+<style>
+  .fcp-hero { background: var(--ivory); padding: 26px 0 34px; }
+  .fcp-hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(22px, 4vw, 56px); align-items: center; }
+  .fcp-hero h1 { font-size: clamp(2.1rem, 4.2vw, 3.3rem); line-height: 1.05; margin: 8px 0 14px; }
+  .fcp-hero .lede { max-width: 540px; }
+  .fcp-cta { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-top: 22px; }
+  .fcp-cta small { font-size: 13px; color: var(--ink-soft); padding-inline-start: 4px; }
+  .fcp-facts { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; font-weight: 600; color: var(--ink); }
+  .fcp-facts li::before { content: "✓"; color: var(--brand); margin-inline-end: 6px; }
+  .fcp-cover { position: relative; max-width: 420px; justify-self: center; width: 100%; }
+  .fcp-cover img { width: 100%; height: auto; aspect-ratio: 1; border-radius: 10px; box-shadow: 0 22px 44px -20px rgba(38,28,23,.5); display: block; background: var(--sand); }
+  .fcp-cover .tag { position: absolute; top: 10px; inset-inline-start: 10px; background: rgba(38,28,23,.78); color: #fff; font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 20px; }
+  .fcp-steps { counter-reset: s; }
+  .fcp-steps .step { padding-bottom: 4px; }
+  .fcp-points { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .fcp-point { background: var(--white); border: 1px solid rgba(216,197,179,.6); border-radius: var(--r-card, 14px); padding: 22px; }
+  .fcp-point h2 { font-family: var(--sans); font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; }
+  .fcp-point p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin: 0; }
+  .fcp-point ul { margin: 12px 0 0; padding-inline-start: 18px; font-size: 14px; color: var(--ink); line-height: 1.7; }
+  .fcp-point a { color: var(--brand); font-weight: 600; font-size: 14px; display: inline-block; margin-top: 10px; }
+  .fcp-samples .sgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fcp-note { font-size: 13.5px; color: var(--ink-soft); margin: -6px 0 18px; }
+  .fcp-final { text-align: center; background: var(--card); border: 1px solid var(--taupe); border-radius: 18px; padding: clamp(24px, 5vw, 44px); }
+  .fcp-final h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); margin: 0 0 8px; }
+  .fcp-final p { color: var(--ink-soft); margin: 0 0 18px; }
+  @media (max-width: 860px) {
+    .fcp-hero .wrap { grid-template-columns: 1fr; }
+    .fcp-cover { max-width: 300px; order: -1; }
+    .fcp-points { grid-template-columns: 1fr; }
+    .fcp-samples .sgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is the cover preview free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, completely. Creating a cover preview costs nothing and you don’t need a card or any payment."}}, {"@type": "Question", "name": "Do I need to order after creating it?", "acceptedAnswer": {"@type": "Answer", "text": "No. The preview comes with no obligation. If you love it, you can order the book straight from the preview page and your child’s details carry over for that visit."}}, {"@type": "Question", "name": "Is my child’s photo private?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The photo is used only to make your preview. It is never published or sold, never used to train AI models, and it is deleted automatically within 48 hours together with the preview."}}, {"@type": "Question", "name": "How long does delivery take?", "acceptedAnswer": {"@type": "Answer", "text": "If you order the book, delivery takes about 5 working days in the UAE and about 7 working days in the rest of the GCC. Delivery is free across the UAE."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Hikaya", "item": "https://maison-jaber.com/hikaya/"}, {"@type": "ListItem", "position": 2, "name": "Free cover preview", "item": "https://maison-jaber.com/hikaya/free-cover-preview.html"}]}</script>
+</head>
+<body data-page="free-cover-preview">
+<div id="hk-top"></div>
+<main id="main" tabindex="-1">
+
+<section class="fcp-hero" aria-labelledby="fcp-title">
+  <div class="wrap">
+    <div>
+      <nav class="crumbs" aria-label="Breadcrumb" data-i18n-aria="a11y.breadcrumb"><ol><li><a href="index.html" data-i18n="gft.crumb_home">Home</a></li><li aria-current="page" data-i18n="fcp.crumb">Free cover preview</li></ol></nav>
+      <p class="eyebrow-line" data-i18n="fcp.eyebrow">Free · No payment needed</p>
+      <h1 id="fcp-title" data-i18n="fcp.h1">Try Your Child’s Personalised Book Cover Free</h1>
+      <p class="lede" data-i18n="fcp.lede">Upload one photo and see your child’s name and face on a real Hikaya storybook cover in about a minute, before you order anything. It’s free, private and needs no payment.</p>
+      <div class="fcp-cta">
+        <a class="btn btn-primary" href="cover-preview.html" data-cp-entry="landing_hero"><span data-i18n="fcp.cta">Create my free cover preview</span> <span class="arr" aria-hidden="true">→</span></a>
+        <small data-i18n="fcp.cta_sub">Ready in about a minute</small>
+      </div>
+      <ul class="fcp-facts"><li data-i18n="fcp.f_free">Free, no card needed</li><li data-i18n="fcp.f_noorder">No obligation to order</li><li data-i18n="fcp.f_private">Photo deleted within 48 hours</li></ul>
+    </div>
+    <div class="fcp-cover">
+      <img src="/story-assets/door-of-a-thousand-stars/cover-600.jpg" data-src-ar="/story-assets/door-of-a-thousand-stars/cover-ar-600.jpg" width="600" height="600" fetchpriority="high" decoding="async" alt="Sample Hikaya storybook cover with the hero child illustrated on the front" data-i18n-alt="fcp.hero_alt" />
+      <span class="tag" data-i18n="fcp.samples_h">Sample covers</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec wrap journey" aria-labelledby="how-h">
+  <div class="sec-head"><h2 id="how-h" class="small" data-i18n="fcp.how_h">How it works</h2></div>
+  <ol class="steps fcp-steps">
+    <li class="step"><div class="step-top"><span class="step-num">1</span><h3 data-i18n="fcp.s1_t">Choose a story</h3></div><p data-i18n="fcp.s1_d">Pick one of our stories for ages 2 to 8, from bedtime adventures to Christmas and new-sibling stories.</p></li>
+    <li class="step"><div class="step-top"><span class="step-num">2</span><h3 data-i18n="fcp.s2_t">Enter their name</h3></div><p data-i18n="fcp.s2_d">Type your child’s first name and age, and choose an English or Arabic cover.</p></li>
+    <li class="step"><div class="step-top"><span class="step-num">3</span><h3 data-i18n="fcp.s3_t">Upload one photo</h3></div><p data-i18n="fcp.s3_d">One clear photo with only your child in it and their face easy to see.</p></li>
+    <li class="step"><div class="step-top"><span class="step-num">4</span><h3 data-i18n="fcp.s4_t">See their cover</h3></div><p data-i18n="fcp.s4_d">In about a minute your child appears as the hero on the cover, with their name in the title.</p></li>
+  </ol>
+  <p style="margin-top:22px"><a class="btn btn-primary" href="cover-preview.html" data-cp-entry="landing_steps"><span data-i18n="fcp.cta">Create my free cover preview</span> <span class="arr" aria-hidden="true">→</span></a></p>
+</section>
+
+<section class="sec wrap" aria-label="No payment, privacy and delivery" data-i18n-aria="fcp.points_aria">
+  <div class="fcp-points">
+    <div class="fcp-point"><h2 data-i18n="fcp.pay_h">No payment needed</h2><p data-i18n="fcp.pay_d">The cover preview is completely free. You don’t add a card, you don’t pay anything, and you don’t have to order afterwards. It’s simply a way to see your child as the hero before you decide.</p></div>
+    <div class="fcp-point"><h2 data-i18n="fcp.priv_h">Your child’s photo stays private</h2><p data-i18n="fcp.priv_d">The photo is used only to make your preview. It is never published, never sold and never used to train AI models, and the photo and the preview are deleted automatically within 48 hours. Only you see the result.</p><a href="privacy.html#cover-preview" data-i18n="fcp.priv_link">Read how we protect photos</a></div>
+    <div class="fcp-point"><h2 data-i18n="fcp.book_h">Love it? Order the real book</h2><p data-i18n="fcp.book_d">Your finished book is a printed hardcover with your child as the hero, in English or Arabic, and your own message on the first page. The preview is a quick AI sample; the cover in your book is illustrated with more care and detail.</p>
+      <ul><li data-i18n="fcp.b_hard">Printed hardcover, 21×21 cm</li><li data-i18n="fcp.b_box">Arrives gift-boxed in Hikaya packaging</li><li data-i18n="fcp.b_uae">Free delivery across the UAE, about 5 working days</li><li data-i18n="fcp.b_gcc">Delivery across the GCC, about 7 working days</li></ul></div>
+  </div>
+</section>
+
+<section class="sec wrap fcp-samples" aria-labelledby="samples-h">
+  <div class="sec-head"><h2 id="samples-h" class="small" data-i18n="fcp.samples_h">Sample covers</h2></div>
+  <p class="fcp-note" data-i18n="fcp.samples_d">Example covers shown with our sample character. Your preview shows your child instead.</p>
+  <ul class="sgrid">
+    <li class="story-card"><div class="cover"><img src="/story-assets/door-of-a-thousand-stars/cover-600.jpg" data-src-ar="/story-assets/door-of-a-thousand-stars/cover-ar-600.jpg" alt="Sample cover: Door of a Thousand Stars" data-i18n-alt="fcp.alt_door" width="560" height="560" loading="lazy" decoding="async" /></div><div class="body"><h3><a href="story.html?s=door-of-a-thousand-stars" data-i18n="fcp.t_door">Door of a Thousand Stars</a></h3></div></li>
+    <li class="story-card"><div class="cover"><img src="/story-assets/to-the-rescue/cover-600.jpg" data-src-ar="/story-assets/to-the-rescue/cover-ar-600.jpg" alt="Sample cover: To the Rescue!" data-i18n-alt="fcp.alt_rescue" width="560" height="560" loading="lazy" decoding="async" /></div><div class="body"><h3><a href="story.html?s=to-the-rescue" data-i18n="fcp.t_rescue">To the Rescue!</a></h3></div></li>
+    <li class="story-card"><div class="cover"><img src="/story-assets/grandpas-wild-safari/cover-600.jpg" data-src-ar="/story-assets/grandpas-wild-safari/cover-ar-600.jpg" alt="Sample cover: Grandpa's Wild Safari" data-i18n-alt="fcp.alt_safari" width="560" height="560" loading="lazy" decoding="async" /></div><div class="body"><h3><a href="story.html?s=grandpas-wild-safari" data-i18n="fcp.t_safari">Grandpa’s Wild Safari</a></h3></div></li>
+    <li class="story-card"><div class="cover"><img src="/story-assets/christmas-star/cover-600.jpg" data-src-ar="/story-assets/christmas-star/cover-ar-600.jpg" alt="Sample cover: The Christmas Star That Went Missing" data-i18n-alt="fcp.alt_star" width="560" height="560" loading="lazy" decoding="async" /></div><div class="body"><h3><a href="story.html?s=christmas-star" data-i18n="fcp.t_star">The Christmas Star That Went Missing</a></h3></div></li>
+  </ul>
+  <p style="margin-top:22px"><a class="text-link" href="stories.html"><span data-i18n="fcp.samples_more">Browse all stories</span> <span aria-hidden="true">→</span></a></p>
+</section>
+
+<section class="sec wrap gift-faq faq-group" aria-labelledby="faq-h">
+  <h2 id="faq-h" data-i18n="fcp.faq_h">Questions about the free cover preview</h2>
+  <details open><summary><span data-i18n="fcp.q_free">Is the cover preview free?</span></summary><div class="faq-a"><p data-i18n="fcp.a_free">Yes, completely. Creating a cover preview costs nothing and you don’t need a card or any payment.</p></div></details><details><summary><span data-i18n="fcp.q_order">Do I need to order after creating it?</span></summary><div class="faq-a"><p data-i18n="fcp.a_order">No. The preview comes with no obligation. If you love it, you can order the book straight from the preview page and your child’s details carry over for that visit.</p></div></details><details><summary><span data-i18n="fcp.q_private">Is my child’s photo private?</span></summary><div class="faq-a"><p data-i18n="fcp.a_private">Yes. The photo is used only to make your preview. It is never published or sold, never used to train AI models, and it is deleted automatically within 48 hours together with the preview.</p></div></details><details><summary><span data-i18n="fcp.q_delivery">How long does delivery take?</span></summary><div class="faq-a"><p data-i18n="fcp.a_delivery">If you order the book, delivery takes about 5 working days in the UAE and about 7 working days in the rest of the GCC. Delivery is free across the UAE.</p></div></details>
+</section>
+
+<section class="sec wrap" aria-labelledby="final-h">
+  <div class="fcp-final">
+    <h2 id="final-h" data-i18n="fcp.final_h">See them as the hero, free</h2>
+    <p data-i18n="fcp.final_d">One photo, about a minute, no payment.</p>
+    <a class="btn btn-primary" href="cover-preview.html" data-cp-entry="landing_final"><span data-i18n="fcp.cta">Create my free cover preview</span> <span class="arr" aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<section class="sec wrap" aria-labelledby="more-h">
+  <div class="sec-head"><h2 id="more-h" class="small" data-i18n="fcp.more_h">Explore Hikaya</h2></div>
+  <nav class="gift-links" aria-labelledby="more-h"><a class="pill" href="stories.html" data-i18n="fcp.samples_more">Browse all stories</a><a class="pill" href="gifts.html" data-i18n="gft.crumb">Gifts</a><a class="pill" href="gift-birthday.html" data-i18n="gft.o_birthday">Birthday</a><a class="pill" href="gift-christmas.html" data-i18n="gft.o_christmas">Christmas</a><a class="pill" href="personalised-books-uae.html" data-i18n="home6_regions.UAE">UAE</a><a class="pill" href="help.html" data-i18n="home6.nav_faq">FAQ</a></nav>
+</section>
+</main>
+<div id="hk-foot"></div>
+<script>/* Arabic covers for Arabic visitors (the server already does this on ?lang=ar) */(function(){function s(){var ar=document.documentElement.lang==="ar";document.querySelectorAll("img[data-src-ar]").forEach(function(i){var w=ar?i.dataset.srcAr:i.dataset.srcAr.replace("/cover-ar-","/cover-");if(i.getAttribute("src")!==w)i.setAttribute("src",w)})}s();document.addEventListener("hikaya:langchange",s);document.addEventListener("DOMContentLoaded",s)})();</script>
+<script src="/i18n.js" defer></script>
+<script src="/home6-i18n.js" defer></script>
+<script src="/pages-i18n.js" defer></script>
+<script src="/gifts-i18n.js" defer></script>
+<script src="/fcp-i18n.js" defer></script>
+<script src="/consent.js" defer></script>
+<script src="/analytics.js" defer></script>
+<script src="/region.js" defer></script>
+<script src="/cart.js" defer></script>
+<script src="chrome.js" defer></script>
+</body>
+</html>

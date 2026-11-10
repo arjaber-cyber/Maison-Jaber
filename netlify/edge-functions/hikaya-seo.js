@@ -208,6 +208,10 @@ export const PAGES = {
     en: { title: "UAE National Day Gift Ideas for Kids | Hikaya", desc: "Gift and activity ideas for children for UAE National Day (Eid Al Etihad) on 2 December, from a personalised storybook to heritage visits, plus ordering tips." },
     ar: { title: "أفكار هدايا عيد الاتحاد للأطفال | حكاية", desc: "أفكار هدايا وأنشطة للأطفال في عيد الاتحاد الإماراتي في 2 ديسمبر، من قصة مخصصة باسم الطفل إلى زيارة الأماكن التراثية، مع نصائح للطلب في الوقت المناسب" },
   },
+  "free-cover-preview.html": {
+    en: { title: "Free Personalised Book Cover Preview UAE | Hikaya", desc: "See your child as the hero of a personalised Hikaya storybook. Create a free book-cover preview in minutes—no payment needed. UAE and GCC delivery." },
+    ar: { title: "معاينة غلاف قصة مخصصة لطفلك مجاناً | حكاية", desc: "شاهد طفلك بطلًا لقصة مخصصة من حكاية، أنشئ معاينة مجانية لغلاف الكتاب خلال دقائق ودون أي دفع، مع التوصيل في الإمارات ودول الخليج" },
+  },
   // END PAGES (tools/seo/register_pages.py adds new pages above this line)
 };
 
@@ -217,7 +221,7 @@ export const PAGES = {
 // the page, and the real footer replaces them as soon as the page script runs.
 const SITE_LINKS = [
   ["index.html", "Home", "الرئيسية"], ["stories.html", "All stories", "جميع القصص"], ["age-groups.html", "Stories by age", "القصص حسب العمر"],
-  ["gifts.html", "Personalised gifts", "هدايا مخصصة"], ["gift-birthday.html", "Birthday gifts", "هدايا عيد الميلاد"], ["gift-eid-ramadan.html", "Eid & Ramadan gifts", "هدايا العيد ورمضان"],
+  ["gifts.html", "Personalised gifts", "هدايا مخصصة"], ["free-cover-preview.html", "Free cover preview", "معاينة الغلاف المجانية"], ["gift-birthday.html", "Birthday gifts", "هدايا عيد الميلاد"], ["gift-eid-ramadan.html", "Eid & Ramadan gifts", "هدايا العيد ورمضان"],
   ["gift-christmas.html", "Christmas gifts", "هدايا الكريسماس"], ["gift-new-sibling.html", "New sibling gifts", "هدايا المولود الجديد"], ["gift-first-day-of-school.html", "First day of school", "أول يوم في المدرسة"],
   ["guides.html", "Gift guides", "أدلة الهدايا"], ["personalised-books-uae.html", "UAE", "الإمارات"], ["personalised-books-saudi-arabia.html", "Saudi Arabia", "السعودية"],
   ["personalised-books-qatar.html", "Qatar", "قطر"], ["personalised-books-kuwait.html", "Kuwait", "الكويت"], ["personalised-books-bahrain.html", "Bahrain", "البحرين"],
@@ -713,6 +717,8 @@ async function seoPage(request, context, state) {
     if (bi >= 0) {
       const sh = shieldScripts(html.slice(bi));
       let body = translateBodyAr(sh.out);
+      // Images with an Arabic version (e.g. Arabic sample covers): <img src="…" data-src-ar="…">
+      body = body.replace(/<img\b[^>]*\sdata-src-ar="([^"]+)"[^>]*>/gi, (tag, ar) => tag.replace(/\ssrc="[^"]*"/, ` src="${ar}"`));
       body = regionFillsAr(body);
       body = arLinks(body, BASE + file);
       html = html.slice(0, bi) + sh.restore(body);
@@ -768,6 +774,7 @@ export const config = {
   cache: "manual",
   path: [
     // PATHS (tools/seo/register_pages.py adds new pages below this line)
+    "/hikaya/free-cover-preview.html",
     "/hikaya/guide-uae-national-day-gift-ideas.html",
     "/hikaya/",
     "/hikaya/index.html",

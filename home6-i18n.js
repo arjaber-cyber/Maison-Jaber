@@ -16,6 +16,8 @@
     nav_world: { en: 'Our World', ar: 'عالمنا' },
     nav_gifts: { en: 'Gifts', ar: 'الهدايا' },
     nav_cover: { en: 'Free cover preview', ar: 'معاينة الغلاف مجانًا' },
+    cp_try: { en: 'Not sure yet? Try their cover free', ar: 'لست متأكدًا بعد؟ جرّب غلاف طفلك مجانًا' },
+    cp_learn: { en: 'How the free cover preview works', ar: 'كيف تعمل معاينة الغلاف المجانية' },
     nav_guides: { en: 'Gift guides', ar: 'أدلة الهدايا' },
     foot_deliver: { en: 'We deliver to', ar: 'نوصل إلى' },
     nav_home: { en: 'Home', ar: 'الرئيسية' },
