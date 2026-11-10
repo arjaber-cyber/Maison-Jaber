@@ -559,7 +559,7 @@
     applyChild(carried);
     syncLang();
     loadStories();
-    loadFace();
+    // The photo checker (face-api.js) loads once the parent starts filling in the form, not here (mobile speed).
     // A preview that was still being made when the page was refreshed, timed out or closed: pick it up again.
     // Checking its status is free; it never starts (or charges) a new preview.
     const p = pendingGet();
