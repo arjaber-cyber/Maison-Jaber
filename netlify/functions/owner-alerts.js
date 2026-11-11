@@ -183,6 +183,10 @@ async function ensureTemplate() {
     const dbg = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
     diag.scopes = ((dbg.data && dbg.data.scopes) || []).join(',');
     diag.app = dbg.data && dbg.data.application;
+    diag.granular = JSON.stringify((dbg.data && dbg.data.granular_scopes) || []).slice(0, 400);
+    diag.token_type = dbg.data && dbg.data.type;
+    const me = await g('me?fields=id,name'); diag.me = me.error ? me.error.message : `${me.name}#${me.id}`;
+    const ph = await g(`${sender}?fields=display_phone_number,verified_name,status`); diag.phone = ph.error ? ph.error.message : `${ph.display_phone_number} ${ph.verified_name} ${ph.status}`;
     ((dbg.data && dbg.data.granular_scopes) || []).forEach(sc => { if (/whatsapp/.test(sc.scope)) (sc.target_ids || []).forEach(id => cands.add(id)); });
   } catch {}
   try {
