@@ -1506,3 +1506,85 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
 /* Link to the free cover preview landing page (free-cover-preview.html), Nov 2026 */
 .cp-try { margin: 12px 0 0; font-size: 14.5px; font-weight: 600; }
 .cp-try a { color: var(--brand); text-decoration: underline; text-underline-offset: 3px; }
+
+/* =====================================================================
+   Homepage hero, mobile conversion update (Nov 2026) — section.hero.hx
+   Phones: logo bar, photo, headline, price, Tabby/Tamara line, the free cover
+   preview button and Explore Our Stories all fit the first screen. The photo
+   takes whatever height is left: 100svh (Safari's visible area with its bars
+   showing) minus the bars above the hero (--hx-top) minus the content under
+   the photo (--hx-below), both measured by home6.js. It never grows past the
+   photo's own 4:5 shape, so it is never stretched or zoomed in.
+   ===================================================================== */
+.hx-l { display: block; }
+.hx-buy { margin-top: 26px; }
+.hx-price { margin: 0; font-family: var(--serif); color: var(--ink); line-height: 1.1; }
+.hx-price .hk-now { font-size: 2.05rem; font-weight: 700; letter-spacing: -.01em; }
+.hx-price .hk-was { font-size: 1.15rem; font-weight: 500; opacity: .7; margin-inline-end: 8px; }
+.hx-bnpl { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 14px; color: var(--ink-soft); line-height: 1.4; }
+.hx-bnpl[hidden], .hx-bnpl [hidden] { display: none !important; }
+.hx-bnpl-amt { font-weight: 700; color: var(--ink); }
+.hx-bnpl-logos { display: inline-flex; align-items: center; gap: 6px; }
+.hx-logo { display: block; height: 22px; width: auto; aspect-ratio: 38 / 24; border-radius: 3px; }
+.hx-logo.hx-logo-tamara { aspect-ratio: auto; border-radius: 0; }
+.hx-ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 24px; }
+.hx-cta-primary { min-height: 54px; padding-inline: 30px; font-size: 15.5px; box-shadow: 0 10px 24px -14px rgba(87,54,36,.7); }
+.hx-cta-secondary { min-height: 54px; }
+.hx-facts { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); }
+.hx-facts li + li::before { content: "·"; margin-inline: 8px; color: var(--gold); }
+.hero.hx .hand { margin-top: 26px; }
+
+@media (max-width: 767px) {
+  /* Compact top bars on the homepage only (welcome code bar, country/language bar, logo bar). */
+  body.hk-home #hk-top { min-height: 110px; }
+  .hk-home .hk-welcome-bar .wrap { min-height: 30px; padding-block: 3px; }
+  .hk-home .utility .wrap { min-height: 32px; }
+  .hk-home .utility .msg { padding-block: 4px; }
+  .hk-home .site-header .wrap { min-height: 54px; }
+  .hk-home .site-header .wordmark.logo { padding-block: 4px; }
+  .hk-home .site-header .wordmark.logo img { height: 42px; }
+
+  .hero.hx .hero-media { aspect-ratio: auto; width: auto;
+    height: clamp(180px, calc(100vh - var(--hx-top, 110px) - var(--hx-below, 196px)), 125vw); }
+  @supports (height: 100svh) {
+    .hero.hx .hero-media { height: clamp(180px, calc(100svh - var(--hx-top, 110px) - var(--hx-below, 196px)), 125vw); }
+  }
+  .hero.hx .hero-media img { object-position: 50% var(--hx-focus, 24%); }
+  .hero.hx .hero-media::after { height: min(58%, 170px); background: linear-gradient(to bottom, rgba(30, 18, 10, 0), rgba(30, 18, 10, .72)); }
+  .hero.hx .hero-note { top: 8px; bottom: auto; inset-inline-end: 10px; font-size: 10.5px; padding: 3px 9px; }
+
+  .hero.hx .hero-copy { position: relative; margin: 0; padding-block: 12px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .hero.hx .hero-copy h1 { position: absolute; inset-inline: 0; bottom: 100%; margin: 0; padding-bottom: 12px; text-align: start; color: #fff;
+    font-size: clamp(1.7rem, min(8.2vw, 5.1svh), 2.4rem); line-height: 1.04; text-shadow: 0 1px 14px rgba(0, 0, 0, .32); }
+  /* Two lines on phones: "Their name. Their story." / "A memory they'll keep." */
+  .hero.hx .hx-l1, .hero.hx .hx-l2 { display: inline; }
+  [dir="rtl"] .hero.hx .hx-l1::after { content: "،"; }
+  [dir="rtl"] .hero.hx .hero-copy h1 { line-height: 1.25; font-size: clamp(1.75rem, min(8.4vw, 5.2svh), 2.4rem); }
+  .hero.hx .lede, .hero.hx .hand { display: none; }
+
+  .hero.hx .hx-buy { margin-top: 0; display: flex; flex-direction: column; align-items: center; }
+  .hero.hx .hx-price .hk-now { font-size: 1.85rem; }
+  .hero.hx .hx-price .hk-was { font-size: 1.05rem; }
+  .hero.hx .hx-bnpl { justify-content: center; margin-top: 4px; font-size: 13px; gap: 3px 5px; }
+  .hero.hx .hx-logo { height: 20px; }
+  .hero.hx .hx-ctas { width: 100%; flex-direction: column; gap: 2px; margin-top: 12px; }
+  .hero.hx .hx-cta-primary { width: 100%; min-height: 52px; font-size: 16px; }
+  .hero.hx .hx-cta-secondary { min-height: 42px; padding: 0 12px; background: none; border: 0; color: var(--brand-dark); font-size: 14.5px;
+    text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  .hero.hx .hx-facts { justify-content: center; margin-top: 4px; font-size: 12px; row-gap: 2px; }
+  .hero.hx .hx-facts li + li::before { margin-inline: 6px; }
+}
+@media (max-width: 380px) {
+  .hero.hx .hx-facts { font-size: 11.5px; }
+  .hero.hx .hx-bnpl { font-size: 12.5px; }
+}
+.hero.hx .lede { margin-bottom: 0; }
+/* Short phones (iPhone SE): the photo shows less height, so frame it a little lower, keeping the face and the book title above the headline. */
+@media (max-width: 767px) and (max-height: 600px) { .hero.hx .hero-media img { object-position: 50% 31%; } }
+/* Tablets (photo above the text): a slightly shorter photo keeps the price and buttons in the first screen. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero.hx .hero-media { aspect-ratio: 16 / 9; }
+  .hero.hx .hero-copy h1 { margin-bottom: 14px; }
+  .hero.hx .hx-buy { margin-top: 20px; }
+  .hero.hx .hx-ctas { margin-top: 18px; }
+}

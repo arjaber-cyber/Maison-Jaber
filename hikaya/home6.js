@@ -71,7 +71,48 @@
     } catch (e) { /* gradient placeholders stay */ }
   }
 
-  function boot() { render(); renderOccasions(); initReveal(); renderSiblings(); }
+  /* Phone hero fit (Nov 2026): tell the CSS how tall the bars above the hero are (--hx-top) and how much
+     content sits under the photo (--hx-below); the photo takes the rest of Safari's visible height (100svh).
+     The delivery/gift-box facts line counts too when the photo can still be at least 300px tall; on small
+     phones (iPhone SE) it moves just below the fold so the price, installments and buttons stay in view. */
+  function fitHero() {
+    const hero = document.querySelector('.hero.hx'); if (!hero) return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const probe = document.createElement('div');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+    document.body.appendChild(probe);
+    let raf = 0;
+    const run = () => {
+      raf = 0;
+      if (!mq.matches) { hero.style.removeProperty('--hx-top'); hero.style.removeProperty('--hx-below'); return; }
+      const copy = hero.querySelector('.hero-copy'), ctas = hero.querySelector('.hx-ctas'), facts = hero.querySelector('.hx-facts');
+      if (!copy || !ctas) return;
+      const top = Math.round(hero.getBoundingClientRect().top + window.scrollY);
+      const c = copy.getBoundingClientRect(), padB = parseFloat(getComputedStyle(copy).paddingBottom) || 0;
+      const withCtas = Math.ceil(ctas.getBoundingClientRect().bottom - c.top + 6);
+      const withFacts = facts ? Math.ceil(facts.getBoundingClientRect().bottom - c.top + padB) : withCtas;
+      const svh = probe.getBoundingClientRect().height || window.innerHeight;
+      const imgMax = hero.getBoundingClientRect().width * 1.25;
+      const below = Math.min(imgMax, svh - top - withFacts) >= 300 ? withFacts : withCtas;
+      hero.style.setProperty('--hx-top', top + 'px');
+      hero.style.setProperty('--hx-below', below + 'px');
+    };
+    const later = () => { if (!raf) raf = requestAnimationFrame(run); };
+    run();
+    window.addEventListener('resize', later);
+    if (mq.addEventListener) mq.addEventListener('change', later);
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(later);
+      ro.observe(hero.querySelector('.hero-copy'));
+      document.querySelectorAll('.hk-welcome-bar, .utility, .site-header').forEach(el => ro.observe(el));
+    }
+    document.addEventListener('hikaya:langchange', later);
+    document.addEventListener('hikaya:regionchange', later);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  }
+
+  function boot() { fitHero(); render(); renderOccasions(); initReveal(); renderSiblings(); }
   document.addEventListener('hikaya:regionchange', renderSiblings);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); renderSiblings(); });

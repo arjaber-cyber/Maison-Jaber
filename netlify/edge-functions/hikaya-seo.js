@@ -418,7 +418,8 @@ function regionFillsAr(body) {
   body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-price-now\b[^>]*>/gi, () => priceHtmlAr());
   body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-eta-short\b[^>]*>/gi, () => esc(String(tAr("lx.eta_short")).replace("{n}", UAE.eta)));
   body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-eta(?=[\s>])[^>]*>/gi, () => esc(eta));
-  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-delivery\b[^>]*>/gi, () => esc(tAr("home6.del_uae")));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-delivery(?![-\w])[^>]*>/gi, () => esc(tAr("home6.del_uae")));
+  body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-delivery-short\b[^>]*>/gi, () => esc(tAr("home6.del_uae_short")));
   body = fillElements(body, /<([a-z0-9]+)\b[^>]*\sdata-hk-offer="([^"]*)"[^>]*>/gi, tag => {
     const want = ((tag.match(/data-hk-offer="([^"]*)"/) || [])[1] || "price box delivery eta privacy").split(/\s+/);
     const parts = {
