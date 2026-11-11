@@ -17,7 +17,7 @@
 // Each alert is claimed in Supabase `owner_alerts` first, so nothing is ever sent twice.
 // Dry run (logs only) when OWNER_ALERTS_LIVE = 0.
 
-const { sendOwnerAlert } = require('./_whatsapp');
+const { sendOwnerAlert, sendTemplate } = require('./_whatsapp');
 const { SUPABASE_URL, SUPABASE_KEY } = require('./_pricing');
 
 const STUCK_MIN = 15;          // order placed, still unpaid after this many minutes
@@ -51,11 +51,13 @@ async function note(key, result) {
   }).catch(() => {});
 }
 let templateReady = false; // set by ensureTemplate(); until approved, alerts wait (they stay inside their look-back window)
-async function send(key, kind, title, details) {
-  if (!templateReady && process.env.WHATSAPP_OWNER_ALERT_TEMPLATE == null) { console.log('[waiting for template]', kind, title); return; }
+// legacy = the 4 fields of the already-approved "hikaya_new_order" template
+// ("New order {{1}} received. Amount: {{2}}. Customer: {{3}}. Books: {{4}}. ..."), used until
+// "hikaya_owner_alert" exists and is approved on the alert sender's WhatsApp account.
+async function send(key, kind, title, details, legacy) {
   if (!live()) { console.log('[dry run]', kind, title, '|', details); return; }
   if (!(await claim(key, kind))) return;
-  const out = await sendOwnerAlert(title, details);
+  const out = templateReady ? await sendOwnerAlert(title, details) : await sendTemplate(process.env.WHATSAPP_ORDER_TEMPLATE || 'hikaya_new_order', legacy);
   await note(key, out.sent ? 'sent' : `failed ${out.code || ''} ${out.error || ''}`);
 }
 
@@ -89,7 +91,12 @@ async function stuckAtPayment(titles) {
       [o.phone, waLink(o.phone), o.email].filter(Boolean).join(' · '),
       books(o, titles),
     ].filter(Boolean);
-    await send(`pay:${o.order_number}`, 'stuck_payment', 'Stuck at payment', parts.join(' | '));
+    await send(`pay:${o.order_number}`, 'stuck_payment', 'Stuck at payment', parts.join(' | '), [
+      `⚠️ NOT PAID ${o.order_number} (stuck at payment: ${WHY[o.payment_status] || o.payment_status}, ${ago(o.created_at)})`,
+      `${money(o)} via ${METHOD[o.payment_method] || o.payment_method || '?'}${o.promo_code ? ', code ' + o.promo_code : ''}`,
+      [o.full_name, o.city, o.phone, waLink(o.phone), o.email].filter(Boolean).join(', '),
+      books(o, titles) || '-',
+    ]);
   }
 }
 
@@ -114,7 +121,12 @@ async function checkoutNoOrder(titles) {
       `${s.device || '?'} · ${s.country || '?'} · ${s.lang === 'ar' ? 'Arabic site' : 'English site'} · from ${src}`,
       'No contact details (no order placed)',
     ].filter(Boolean);
-    await send(`checkout:${s.visitor}`, 'checkout_no_order', 'Checkout, no order', parts.join(' | '));
+    await send(`checkout:${s.visitor}`, 'checkout_no_order', 'Checkout, no order', parts.join(' | '), [
+      `⚠️ NOT PLACED YET: a shopper reached checkout ${ago(s.created_at)} and has not pressed Pay`,
+      s.value != null ? `cart ${s.currency || 'AED'} ${Number(s.value).toFixed(0)}` : '-',
+      `${s.device || '?'}, ${s.country || '?'}, ${s.lang === 'ar' ? 'Arabic' : 'English'} site, from ${src} (no contact details)`,
+      stories || '-',
+    ]);
   }
 }
 
@@ -152,7 +164,12 @@ async function summary(titles) {
     `Paid orders: ${paid.length}${paid.length ? ' (AED ' + aed.toFixed(0) + ')' : ''}${free.length ? ' · free-code orders: ' + free.length : ''}`,
     unpaid.length ? `Still unpaid: ${unpaid.length}` : '',
   ].filter(Boolean);
-  await send(key, 'cart_summary', 'Cart summary', parts.join(' | '));
+  await send(key, 'cart_summary', 'Cart summary', parts.join(' | '), [
+    `📊 SUMMARY ${dubai(fromMs)}-${dubai(slotEnd)} (not a new order): ${cartVisitors.size} added to cart, ${coVisitors.size} reached checkout`,
+    `${paid.length} paid${paid.length ? ' (AED ' + aed.toFixed(0) + ')' : ''}${free.length ? ', ' + free.length + ' free-code' : ''}${unpaid.length ? ', ' + unpaid.length + ' still unpaid' : ''}`,
+    'shop activity',
+    top || '-',
+  ]);
 }
 
 /* ---------- 0. One-time setup: create the "hikaya_owner_alert" template on the alert sender's WhatsApp account ----------
@@ -163,7 +180,7 @@ async function ensureTemplate() {
   const flag = (await sb('app_flags?key=eq.owner_alert_template&select=value,updated_at'))[0];
   let state = {}; try { state = flag ? JSON.parse(flag.value) : {}; } catch {}
   if (state.status === 'APPROVED') { templateReady = true; return; }
-  if (flag && Date.now() - Date.parse(flag.updated_at) < (state.status === 'no_waba' || state.status === 'create_failed' ? 4 : 30) * 60e3 && state.status) return;
+  if (flag && Date.now() - Date.parse(flag.updated_at) < (state.status === 'no_waba' ? 360 : state.status === 'create_failed' ? 60 : 30) * 60e3 && state.status) return;
   const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
   const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
   const save = async (v) => {

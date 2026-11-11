@@ -138,4 +138,24 @@ async function sendOwnerAlert(title, details) {
   }
 }
 
-module.exports = { enabled, sendOtp, sendOrderAlert, sendOwnerAlert };
+// Any approved English template to the owner, with plain body parameters. Never throws.
+async function sendTemplate(name, params) {
+  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
+  if (!token || !sender) return { sent: false, error: 'not_configured' };
+  try {
+    const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
+    const clean = v => String(v == null ? '' : v).replace(/[\n\t\r]+/g, ' ').replace(/ {4,}/g, '   ').trim().slice(0, 300) || '-';
+    const res = await fetch(`${GRAPH}/${sender}/messages`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messaging_product: 'whatsapp', to, type: 'template',
+        template: { name, language: { code: 'en' }, components: [{ type: 'body', parameters: (params || []).map(p => ({ type: 'text', text: clean(p) })) }] } }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) { const err = (data && data.error) || {}; console.error('whatsapp template send failed', name, res.status, err.code, err.message); return { sent: false, status: res.status, code: err.code, error: err.message }; }
+    return { sent: true };
+  } catch (e) { console.error('whatsapp template send error', e && e.message); return { sent: false, error: e && e.message }; }
+}
+
+module.exports = { enabled, sendOtp, sendOrderAlert, sendOwnerAlert, sendTemplate };
