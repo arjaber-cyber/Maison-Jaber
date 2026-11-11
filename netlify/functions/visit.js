@@ -19,13 +19,17 @@ const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SECRET = process.env.VISIT_HASH_SECRET || SUPABASE_KEY || 'hikaya';
 
-const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup']);
+const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup',
+  // Campaign attribution (Nov 2026): free cover preview funnel + seconds on screen per page.
+  'cover_preview_started', 'cover_preview_ok', 'page_time']);
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|meta-externalagent|headless|lighthouse|pagespeed|python|curl|wget|httpclient|axios|node-fetch|go-http|java\/|scrapy|phantom|selenium|puppeteer|playwright/i;
 const OWN_HOSTS = /(^|\.)maison-jaber\.com$|netlify\.app$/i;
 
 const ORDER_RE = /^HK-\d{6,12}$/;
 const CLICK_RE = /^[\w-]{10,200}$/;
 const clickId = (v) => (v && CLICK_RE.test(String(v)) ? String(v) : null);
+const CAMPAIGN_RE = /^\d{5,20}$/;
+const campaignId = (v) => (v != null && CAMPAIGN_RE.test(String(v)) ? String(v) : null);
 
 // Purchase beacons (Nov 2026): never trust the browser's amount. Look the order up and take the
 // real AED amount, currency and payment status from it. Unknown or old order numbers are dropped.
@@ -117,12 +121,26 @@ exports.handler = async (event) => {
     device: device(ua),
     lang: clip(p.l, 5),
     gclid: clickId(p.gc), gbraid: clickId(p.gb), wbraid: clickId(p.wb),
+    gad_campaign_id: campaignId(p.gci),
   };
+  if (p.e === 'page_time') {
+    const secs = Number(p.v);
+    if (!Number.isFinite(secs) || secs < 1) return NO;
+    row.value = Math.min(Math.round(secs), 1800);
+  }
+  // The device's most recent ad / campaign touch (30 days), so every step keeps its campaign.
+  const lt = p.lt && typeof p.lt === 'object' ? p.lt : null;
+  if (lt) {
+    row.lt_source = clip(lt.s, 60); row.lt_medium = clip(lt.m, 60); row.lt_campaign = clip(lt.c, 120);
+    row.lt_click = ['meta', 'google', 'tiktok'].includes(lt.k) ? lt.k : null;
+    row.lt_campaign_id = campaignId(lt.g);
+  }
   // The device's saved first touch (analytics.js), so later events keep the original source.
   const ft = p.ft && typeof p.ft === 'object' ? p.ft : null;
   if (ft) {
     row.ft_source = clip(ft.s, 60); row.ft_medium = clip(ft.m, 60); row.ft_campaign = clip(ft.c, 120);
     row.ft_referrer = clip(ft.r, 120); row.ft_click = ['meta', 'google', 'tiktok'].includes(ft.k) ? ft.k : null;
+    row.ft_campaign_id = campaignId(ft.g);
   }
   if (p.e === 'purchase' || p.e === 'complimentary_order_complete') {
     const f = await orderFacts(p.o);

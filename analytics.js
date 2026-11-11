@@ -383,20 +383,35 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      visitor, consent or not, because nothing here identifies anyone: no
      cookies, nothing stored on the device, and the server only keeps an
      anonymous daily hash. Page views + shop steps only. */
-  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1 };
+  /* Campaign attribution (Nov 2026): cover_preview_started / cover_preview_ok (free cover preview funnel)
+     and page_time (seconds the page was actually on screen, for engagement) are counted too. */
+  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1, cover_preview_started: 1, cover_preview_ok: 1, page_time: 1 };
   let noCount = false;
   try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
   function firstTouchForCount() {
     try {
       const a = readAttr(); const t = a && a.first;
       if (!t) return null;
-      return { s: t.src || null, m: t.med || null, c: t.cmp || null, r: t.rh || null, k: t.clk || null };
+      return { s: t.src || null, m: t.med || null, c: t.cmp || null, r: t.rh || null, k: t.clk || null, g: t.gci || null };
     } catch (e) { return null; }
   }
+  /* The most recent ad / campaign that brought this device (last non-direct touch, 30 days), sent with every
+     counted event so preview starts, checkouts and purchases on later pages keep their campaign. */
+  function lastTouchForCount() {
+    try {
+      const a = readAttr(); const t = a && a.last;
+      if (!t || Date.now() - (t.ts || 0) > 30 * 864e5) return null;
+      if (!(t.gci || t.clk || t.cmp || t.src)) return null;
+      return { s: t.src || null, m: t.med || null, c: t.cmp || null, k: t.clk || null, g: t.gci || null };
+    } catch (e) { return null; }
+  }
+  // The landing address as it arrived (the tags are removed from the address bar shortly after).
+  const landingQuery = (function () { try { return new URLSearchParams(location.search); } catch (e) { return null; } })();
   function countEvent(name, params) {
     if (untracked || noCount || !COUNTED[name] || /^\/test/.test(location.pathname)) return; // staging copies are not real visitors
     params = params || {};
-    let q = null; try { q = new URLSearchParams(location.search); } catch (e) {}
+    // Landing tags only go with the landing page view (they used to be gone from the address bar by then).
+    const q = name === 'pageview' && !internalNav ? landingQuery : null;
     const body = JSON.stringify({
       e: name,
       p: location.pathname,
@@ -407,8 +422,11 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       gc: q && q.get('gclid') ? q.get('gclid').slice(0, 200) : null,
       gb: q && q.get('gbraid') ? q.get('gbraid').slice(0, 200) : null,
       wb: q && q.get('wbraid') ? q.get('wbraid').slice(0, 200) : null,
+      // Google Ads campaign id that auto-tagging adds to the landing URL (gad_campaignid).
+      gci: q && /^\d{5,20}$/.test(q.get('gad_campaignid') || '') ? q.get('gad_campaignid') : null,
       // This device's first touch (saved on landing, 90 days), so later events keep the original source.
       ft: firstTouchForCount(),
+      lt: lastTouchForCount(),
       // Purchase beacons: the order number; the server looks up the real paid amount itself.
       o: params.order_number || null, c: params.currency || null, ps: params.payment_status || null,
       l: (document.documentElement.lang || '').slice(0, 5),
@@ -430,7 +448,13 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      removed from the address bar so links look clean. */
   const ATTR_KEY = 'hikaya_attr_v1';
   const ATTR_DAYS = 90;
-  const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'gbraid', 'wbraid', 'ttclid', 'igshid'];
+  const TRACK_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id', 'hk', 'fbclid', 'gclid', 'gbraid', 'wbraid', 'gad_source', 'gad_campaignid', 'ttclid', 'igshid'];
+  // Read by Google's own tag from the real address bar (conversion linker / url_passthrough): removed only
+  // once Google's tag has loaded, so ad clicks are never lost before Google sees them (Nov 2026 fix).
+  const GOOGLE_PARAMS = ['gclid', 'gbraid', 'wbraid', 'gad_source', 'gad_campaignid', '_gl'];
+  /* Moving between our own pages: with consent denied, Google's url_passthrough copies the click id onto our
+     internal links. That is the same ad visit, never a new one, so it is neither re-counted nor re-saved. */
+  const internalNav = (function () { try { return !!document.referrer && /(^|\.)maison-jaber\.com$|netlify\.app$/i.test(new URL(document.referrer).hostname); } catch (e) { return false; } })();
   const landingHref = location.href;
   /* Payment providers and sign-in pages send shoppers back to us; they are never a traffic source.
      (Also add these as "unwanted referrals" in GA4: Admin > Data streams > Configure tag settings.) */
@@ -445,7 +469,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // Ad / campaign tags seen on landing, kept for this tab in case cookies are accepted on a later page.
   try {
     const lq = new URLSearchParams(location.search), keep = new URLSearchParams();
-    ['gclid', 'gbraid', 'wbraid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'].forEach(function (k) { if (lq.get(k)) keep.set(k, lq.get(k).slice(0, 200)); });
+    ['gclid', 'gbraid', 'wbraid', 'gad_source', 'gad_campaignid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'].forEach(function (k) { if (lq.get(k)) keep.set(k, lq.get(k).slice(0, 200)); });
     if (keep.toString()) sessionStorage.setItem('hk_ga_campaign', keep.toString());
   } catch (e) {}
   const clip = (v, n) => (v == null || v === '' ? null : String(v).slice(0, n || 120));
@@ -465,13 +489,15 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     const tagged = TRACK_PARAMS.some(function (k) { return q.get(k); });
     const prev = readAttr();
     if (!tagged && !external && prev) return; // moving around the site, or a plain return visit
+    if (internalNav && prev) return; // tags copied onto our own links (Google url_passthrough): same visit
     const fbclid = q.get('fbclid');
     const touch = {
       src: clip(q.get('utm_source'), 60), med: clip(q.get('utm_medium'), 60), cmp: clip(q.get('utm_campaign')),
       cnt: clip(q.get('utm_content')), trm: clip(q.get('utm_term')), hk: clip(q.get('hk'), 40),
       rh: external ? clip(refHost) : null, lp: clip(location.pathname + (q.get('s') ? '?s=' + q.get('s') : ''), 160),
-      clk: fbclid ? 'meta' : (q.get('gclid') || q.get('gbraid') || q.get('wbraid')) ? 'google' : q.get('ttclid') ? 'tiktok' : null,
+      clk: fbclid ? 'meta' : (q.get('gclid') || q.get('gbraid') || q.get('wbraid') || q.get('gad_campaignid')) ? 'google' : q.get('ttclid') ? 'tiktok' : null,
       gc: clip(q.get('gclid'), 200), gb: clip(q.get('gbraid'), 200), wb: clip(q.get('wbraid'), 200),
+      gci: /^\d{5,20}$/.test(q.get('gad_campaignid') || '') ? q.get('gad_campaignid') : null,
       fbc: fbclid ? 'fb.1.' + Date.now() + '.' + clip(fbclid, 500) : null,
       ts: Date.now(),
     };
@@ -481,13 +507,45 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   // Counted after the touch is saved (so the first touch goes with it) and before the tags are removed.
   countEvent('pageview');
   // Clean the address bar (the visit counter above has already read the tags).
-  (function stripTags() {
+  function stripTags(keys) {
     try {
       const u = new URL(location.href);
       let changed = false;
-      TRACK_PARAMS.forEach(function (k) { if (u.searchParams.has(k)) { u.searchParams.delete(k); changed = true; } });
+      keys.forEach(function (k) { if (u.searchParams.has(k)) { u.searchParams.delete(k); changed = true; } });
       if (changed) history.replaceState(history.state, '', u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : '') + u.hash);
     } catch (e) {}
+  }
+  stripTags(TRACK_PARAMS.filter(function (k) { return GOOGLE_PARAMS.indexOf(k) === -1; }));
+  /* Google ad click ids stay in the address bar until Google's tag has loaded and read them (it keeps them
+     for the visit itself: cookies with consent, link decoration without). Then they are removed too.
+     If Google's tag can't load (blocked, no consent.js), they are removed after 8 seconds anyway. */
+  (function stripGoogleLater() {
+    if (!GOOGLE_PARAMS.some(function (k) { return landingQuery && landingQuery.has(k); })) return;
+    const started = Date.now();
+    (function wait() {
+      if (gaLibReady() || Date.now() - started > 8000) { setTimeout(function () { stripTags(GOOGLE_PARAMS); }, gaLibReady() ? 500 : 0); return; }
+      setTimeout(wait, 250);
+    })();
+  })();
+
+  /* Engagement time, cookie-free (Nov 2026): seconds this page was actually visible, sent once when the
+     visitor leaves or hides the page. Nothing identifying; feeds "average engagement time" per campaign. */
+  (function pageTime() {
+    if (untracked) return;
+    let visibleMs = 0, since = document.visibilityState === 'hidden' ? 0 : Date.now(), sent = false;
+    function pause() { if (since) { visibleMs += Date.now() - since; since = 0; } }
+    function send() {
+      pause();
+      if (sent) return;
+      const secs = Math.round(visibleMs / 1000);
+      if (secs < 1) return;
+      sent = true;
+      countEvent('page_time', { value: Math.min(secs, 1800) });
+    }
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') send(); else if (!since) since = Date.now();
+    });
+    window.addEventListener('pagehide', send);
   })();
 
   function cookie(name) {

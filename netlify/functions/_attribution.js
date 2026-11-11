@@ -22,7 +22,11 @@ const CLICK = /^[\w-]{10,200}$/;
 // The order's Google click ids: the most recent visit that carried one (last touch, else first).
 function clickIds(first, last) {
   const pick = [last, first].find(t => t && (t.gc || t.gb || t.wb));
-  return pick ? { gclid: pick.gc || null, gbraid: pick.gb || null, wbraid: pick.wb || null } : {};
+  const out = pick ? { gclid: pick.gc || null, gbraid: pick.gb || null, wbraid: pick.wb || null } : {};
+  // Google Ads campaign of the order (Nov 2026): the touch with the click, else the latest touch carrying one.
+  const camp = [pick, last, first].find(t => t && t.gci);
+  if (camp) out.gad_campaign_id = camp.gci;
+  return out;
 }
 
 function cleanTouch(t) {
@@ -36,6 +40,8 @@ function cleanTouch(t) {
     gc: CLICK.test(String(t.gc || '')) ? String(t.gc) : null,
     gb: CLICK.test(String(t.gb || '')) ? String(t.gb) : null,
     wb: CLICK.test(String(t.wb || '')) ? String(t.wb) : null,
+    // Google Ads campaign id from auto-tagging (gad_campaignid), Nov 2026.
+    gci: /^\d{5,20}$/.test(String(t.gci || '')) ? String(t.gci) : null,
     fbc: /^fb\.1\.\d+\.[\w-]+$/.test(String(t.fbc || '')) ? String(t.fbc).slice(0, 520) : null,
     ts: Number.isFinite(ts) && ts > 1.7e12 && ts < Date.now() + 864e5 ? ts : null,
   };
