@@ -19,7 +19,7 @@ const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SECRET = process.env.VISIT_HASH_SECRET || SUPABASE_KEY || 'hikaya';
 
-const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup',
+const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'add_payment_info', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup',
   // Campaign attribution (Nov 2026): free cover preview funnel + seconds on screen per page.
   'cover_preview_started', 'cover_preview_ok', 'page_time']);
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|meta-externalagent|headless|lighthouse|pagespeed|python|curl|wget|httpclient|axios|node-fetch|go-http|java\/|scrapy|phantom|selenium|puppeteer|playwright/i;
@@ -142,6 +142,9 @@ exports.handler = async (event) => {
     row.ft_referrer = clip(ft.r, 120); row.ft_click = ['meta', 'google', 'tiktok'].includes(ft.k) ? ft.k : null;
     row.ft_campaign_id = campaignId(ft.g);
   }
+  // Pay pressed and the order was created (Nov 2026): keeps the order number so the owner's
+  // "checkout, no order" alert (owner-alerts.js) knows this shopper did place an order.
+  if (p.e === 'add_payment_info' && ORDER_RE.test(String(p.o || ''))) row.order_number = String(p.o);
   if (p.e === 'purchase' || p.e === 'complimentary_order_complete') {
     const f = await orderFacts(p.o);
     if (!f || f.type === 'test') return NO; // only real, recent orders are counted

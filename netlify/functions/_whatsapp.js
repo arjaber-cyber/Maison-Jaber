@@ -98,4 +98,44 @@ async function sendOrderAlert(order, items) {
   }
 }
 
-module.exports = { enabled, sendOtp, sendOrderAlert };
+// Owner-only shop alerts (Nov 2026): stuck at payment, checkout without an order, add-to-cart summary.
+// Template WHATSAPP_OWNER_ALERT_TEMPLATE (default "hikaya_owner_alert", Utility, English):
+//   "Hikaya alert: {{1}}  Details: {{2}}  Open the Hikaya dashboard to follow up."
+// Only ever messages OWNER_WHATSAPP. Never throws.
+async function sendOwnerAlert(title, details) {
+  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
+  if (!token || !sender) return { sent: false, error: 'not_configured' };
+  try {
+    const to = String(process.env.OWNER_WHATSAPP || '+971528011773').replace(/[^\d]/g, '');
+    const template = process.env.WHATSAPP_OWNER_ALERT_TEMPLATE || 'hikaya_owner_alert';
+    // Template parameters may not contain new lines, tabs or more than 4 spaces in a row.
+    const clean = (v, n) => String(v == null ? '' : v).replace(/[\n\t\r]+/g, ' · ').replace(/ {4,}/g, '   ').trim().slice(0, n) || '-';
+    const res = await fetch(`${GRAPH}/${sender}/messages`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to,
+        type: 'template',
+        template: {
+          name: template,
+          language: { code: 'en' },
+          components: [{ type: 'body', parameters: [clean(title, 80), clean(details, 900)].map(text => ({ type: 'text', text })) }],
+        },
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const err = (data && data.error) || {};
+      console.error('whatsapp owner alert failed', res.status, err.code, err.message);
+      return { sent: false, status: res.status, code: err.code, error: err.message };
+    }
+    return { sent: true, id: data.messages && data.messages[0] && data.messages[0].id };
+  } catch (e) {
+    console.error('whatsapp owner alert error', e && e.message);
+    return { sent: false, error: e && e.message };
+  }
+}
+
+module.exports = { enabled, sendOtp, sendOrderAlert, sendOwnerAlert };

@@ -1571,6 +1571,8 @@
       document.getElementById('progress-step-3').classList.add('active');
 
       if (window.hikayaTagOrder && orderNumber) window.hikayaTagOrder(orderNumber);
+      // Order placed (free code / other paths): tells the owner's checkout alert this shopper did order.
+      if (window.hikayaTrackEvent && orderNumber) window.hikayaTrackEvent('add_payment_info', { order_number: orderNumber, payment_type: serverFree ? 'free' : (order.paymentMethod || '') });
       /* Purchase tracking (Nov 2026): only from our server's confirmed summary (gaSummary). A free order
          (creator / gift code) comes back as 'complimentary' and is never a GA purchase; a test order sends
          nothing. Paths without a server summary (legacy cash on delivery / PayTabs) send nothing here. */
@@ -1618,6 +1620,7 @@
         if (!res.ok || !data.redirectUrl) throw new Error(data.error || '');
         try { sessionStorage.setItem('hk_pending_order', JSON.stringify({ orderNumber: data.orderNumber, trackingToken: data.trackingToken || '', items: order.items, email: order.email, total: data.total, currency: data.currency, chargedAed: data.chargedAed, coupon: order.promoCode || null, shipping: finalPricing.deliveryFee })); } catch {}
         if (window.hikayaTagOrder) window.hikayaTagOrder(data.orderNumber);
+        if (window.hikayaTrackEvent) window.hikayaTrackEvent('add_payment_info', { order_number: data.orderNumber, currency: data.currency, value: data.total, payment_type: viaTabby ? 'tabby' : viaTamara ? 'tamara' : 'card' });
         placeOrderBtn.textContent = viaTabby ? t('pg.tabby_redirect', 'Taking you to Tabby…') : viaTamara ? t('pg.tamara_redirect', 'Taking you to Tamara…') : t('pg.ziina_redirect', 'Taking you to secure payment…');
         window.location.href = data.redirectUrl;
       } catch (err) {

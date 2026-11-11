@@ -385,7 +385,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      anonymous daily hash. Page views + shop steps only. */
   /* Campaign attribution (Nov 2026): cover_preview_started / cover_preview_ok (free cover preview funnel)
      and page_time (seconds the page was actually on screen, for engagement) are counted too. */
-  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1, cover_preview_started: 1, cover_preview_ok: 1, page_time: 1 };
+  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, add_payment_info: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1, cover_preview_started: 1, cover_preview_ok: 1, page_time: 1 };
   let noCount = false;
   try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
   function firstTouchForCount() {
@@ -615,6 +615,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       // back to a custom event for anything else.
       const metaEventMap = {
         begin_checkout: 'InitiateCheckout',
+        add_payment_info: 'AddPaymentInfo',
         purchase: 'Purchase',
         add_to_cart: 'AddToCart',
         view_item: 'ViewContent',
