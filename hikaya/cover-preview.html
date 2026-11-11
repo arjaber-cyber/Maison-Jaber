@@ -95,6 +95,12 @@
     <a class="btn btn-primary" href="login.html?redirect=cover-preview.html" data-i18n="cp.signin_btn">Sign in or create an account</a>
   </div>
 
+  <div id="v-neterr" class="cp-card cp-center" hidden>
+    <h2 data-i18n="cp.net_t">We couldn't connect</h2>
+    <p style="color:var(--ink-soft);margin:0 0 18px" data-i18n="cp.net_d">The free cover preview is open, but your connection dropped while the page was loading. Please try again.</p>
+    <button type="button" class="btn btn-primary" id="net-retry" data-i18n="cp.net_btn">Try again</button>
+  </div>
+
   <div id="v-closed" class="cp-card cp-center" hidden>
     <h2 data-i18n="cp.closed_t">Coming very soon</h2>
     <p style="color:var(--ink-soft);margin:0" data-i18n="cp.closed_d">The free cover preview is not open yet. Please check back soon.</p>
@@ -213,7 +219,7 @@
   const $ = (id) => document.getElementById(id);
   const T = (k, vars) => { let s = (window.hikayaT && window.hikayaT('cp.' + k)) || k; if (vars) for (const v in vars) s = s.replace('{' + v + '}', vars[v]); return s; };
   const uiLang = () => (window.hikayaLang ? window.hikayaLang() : (document.documentElement.lang === 'ar' ? 'ar' : 'en'));
-  const views = ['v-loading', 'v-signin', 'v-closed', 'v-form', 'v-wait', 'v-result'];
+  const views = ['v-loading', 'v-signin', 'v-closed', 'v-neterr', 'v-form', 'v-wait', 'v-result'];
   const show = (v) => { views.forEach(x => { $(x).hidden = x !== v; }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const track = (ev, p) => { try { window.hikayaTrackEvent && window.hikayaTrackEvent(ev, p || {}); } catch (e) {} };
 
@@ -549,10 +555,16 @@
     syncLang();
   }
   async function start() {
-    let q;
-    try { q = await call({ action: 'quota' }); } catch (e) { q = null; }
-    if (!q || q.http !== 200) { try { q = await call({ action: 'quota' }); } catch (e) { q = null; } }
-    if (!q || q.http !== 200) { show('v-closed'); return; }
+    /* Nov 2026: a first request can be lost (phone network, the server waking up). Try up to 4 times with short
+       pauses while the spinner shows; "Coming very soon" only when the server really says the preview is closed. */
+    let q = null;
+    for (let i = 0; i < 4; i++) {
+      if (i) await new Promise(r => setTimeout(r, [0, 1200, 2500, 4000][i]));
+      try { q = await call({ action: 'quota' }, 12000); } catch (e) { q = null; }
+      if (q && (q.http === 200 || q.http === 401)) break;
+    }
+    if (q && q.http === 401) { show('v-signin'); return; }
+    if (!q || q.http !== 200) { show('v-neterr'); return; }
     if (!q.enabled) { show('v-closed'); return; }
     setLeft(q.remaining);
     // Arriving from the order form: carry over what the parent already typed there (kept in this session, not the URL).
@@ -568,6 +580,7 @@
     show('v-form');
   }
   document.addEventListener('hikaya:langchange', () => { if (!$('v-form').hidden) syncLang(); });
+  $('net-retry').addEventListener('click', () => { show('v-loading'); start(); });
   if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(start, 0); else document.addEventListener('DOMContentLoaded', start);
 </script>
 </body>

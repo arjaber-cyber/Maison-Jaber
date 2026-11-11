@@ -26,6 +26,10 @@
     signin_btn: { en: 'Sign in or create an account', ar: 'سجّل الدخول أو أنشئ حسابًا' },
     closed_t: { en: 'Coming very soon', ar: 'قريبًا جدًا' },
     closed_d: { en: 'The free cover preview is not open yet. Please check back soon.', ar: 'معاينة الغلاف المجانية غير متاحة بعد، عُد إلينا قريبًا' },
+    // Connection problem while opening the page (Nov 2026): never shown as "Coming very soon".
+    net_t: { en: "We couldn't connect", ar: 'تعذّر الاتصال' },
+    net_d: { en: 'The free cover preview is open, but your connection dropped while the page was loading. Please try again.', ar: 'معاينة الغلاف المجانية متاحة، لكن الاتصال انقطع أثناء تحميل الصفحة، حاول مرة أخرى' },
+    net_btn: { en: 'Try again', ar: 'حاول مرة أخرى' },
 
     step_story: { en: '1. Choose a story', ar: '1- اختر قصة' },
     step_child: { en: '2. Tell us about your child', ar: '2- أخبرنا عن طفلك' },
