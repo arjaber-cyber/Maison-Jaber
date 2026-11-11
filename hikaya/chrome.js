@@ -193,6 +193,14 @@
       el.hidden = !show; if (!show) return;
       const amt = el.querySelector('.hx-bnpl-amt'); if (amt) amt.textContent = fmt(Math.round(rr.bookNow / 4 * 100) / 100, rr);
       el.querySelectorAll('[data-bnpl]').forEach(img => { img.hidden = !on[img.dataset.bnpl]; });
+      /* Same size for both logos: the Tabby chip takes the width the Tamara badge actually draws at (same height). */
+      const tmImg = el.querySelector('img[data-bnpl="tamara"]');
+      if (tmImg && !tmImg.dataset.hxSized) {
+        tmImg.dataset.hxSized = '1';
+        const match = () => { const w = tmImg.getBoundingClientRect().width; if (w > 8) el.style.setProperty('--hx-chip-w', Math.round(w) + 'px'); };
+        tmImg.addEventListener('load', match); if (tmImg.complete) match();
+        window.addEventListener('resize', match);
+      }
       const tm = el.querySelector('img.hx-logo-tamara'); // Tamara's official badge, in the page language (same asset as checkout)
       if (tm) { const want = `https://cdn.tamara.co/assets/svg/tamara-logo-badge-${lang() === 'ar' ? 'ar' : 'en'}.svg`; if (tm.getAttribute('src') !== want) tm.setAttribute('src', want); }
       const or = el.querySelector('.hx-or'); if (or) or.hidden = !(on.tabby && on.tamara);

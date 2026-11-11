@@ -1593,3 +1593,12 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
   .hero.hx .hx-facts li:last-child { flex-basis: 100%; }
   .hero.hx .hx-facts li:last-child::before { content: none; }
 }
+/* Tabby + Tamara logos at one size (Nov 2026): both 22px tall (20px on phones); the Tabby chip (Tabby green, Tabby
+   wordmark) is as wide as the Tamara badge draws, set by chrome.js as --hx-chip-w. */
+.hx-chip-tabby { display: inline-flex; align-items: center; justify-content: center; height: 22px; width: var(--hx-chip-w, 58px);
+  background: #6CFF93; border-radius: 5px; flex: none; }
+.hx-chip-tabby img { display: block; height: 48%; width: auto; }
+.hx-logo.hx-logo-tamara { height: 22px; }
+@media (max-width: 767px) {
+  .hero.hx .hx-chip-tabby, .hero.hx .hx-logo.hx-logo-tamara { height: 20px; }
+}
