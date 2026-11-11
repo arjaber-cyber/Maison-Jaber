@@ -36,15 +36,17 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://maison-jaber.com/#website","name":"Hikaya by Maison Jaber","alternateName":["Hikaya","Maison Jaber","حكاية"],"url":"https://maison-jaber.com/","inLanguage":["en","ar"],"publisher":{"@id":"https://maison-jaber.com/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://maison-jaber.com/hikaya/search.html?q={search_term_string}"},"query-input":"required name=search_term_string"}}</script>
 </head>
 
-<body>
+<body class="hk-home">
 <div id="hk-top"></div>
 
 <main id="main" tabindex="-1">
 
-<!-- 01 HERO -->
-<section class="hero" aria-labelledby="hero-title" data-sticky-after>
+<!-- 01 HERO (Nov 2026 mobile conversion update): on phones the whole first screen (photo, headline, price,
+     Tabby/Tamara line, free cover preview button, Explore Our Stories) fits one screen; sizes follow the real
+     visible height (svh). Desktop keeps the side-by-side layout. Price, installments and delivery follow the
+     shopper's country (chrome.js renderRegion); the installment line shows only where Tabby/Tamara work (UAE, AED). -->
+<section class="hero hx" aria-labelledby="hero-title" data-sticky-after>
   <div class="hero-media">
-    
     <picture>
       <source media="(max-width: 767px)" srcset="images/hom-hero-01-m.webp" />
       <img src="images/hom-hero-01.webp" width="2400" height="1500" fetchpriority="high" alt="A child reading an example personalised Hikaya hardcover with her name on the cover" data-i18n-alt="home6.hero_alt" />
@@ -53,24 +55,21 @@
   </div>
   <div class="wrap">
     <div class="hero-copy">
-      <h1 id="hero-title" data-i18n-html="home6.hero_h1">Their name.<br>Their story.<br>A memory they'll keep.</h1>
+      <h1 id="hero-title" data-i18n-html="home6.hero_h1"><span class="hx-l hx-l1">Their name.</span> <span class="hx-l hx-l2">Their story.</span> <span class="hx-l hx-l3">A memory they'll keep.</span></h1>
       <p class="lede" data-i18n="home6.hero_sub">Personalised children’s storybooks starring your child, in Arabic or English. Hardcover, gift-boxed and delivered across the UAE &amp; GCC.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+      <div class="hx-buy">
+        <p class="hx-price" data-hk-price-now><s class="hk-was"><span class="sr-only">Was </span><bdi>AED 199</bdi></s> <span class="hk-now"><span class="sr-only">now </span><bdi>AED 169</bdi></span></p>
+        <p class="hx-bnpl" data-hk-bnpl><span data-i18n="home6.bnpl_pre">Or 4 payments of</span> <bdi class="hx-bnpl-amt" dir="ltr">AED 42.25</bdi> <span data-i18n="home6.bnpl_with">with</span> <span class="hx-bnpl-logos"><img class="hx-logo" data-bnpl="tabby" src="images/pay/tabby.svg" width="38" height="24" alt="Tabby" /><span class="hx-or" data-i18n="home6.bnpl_or">or</span><img class="hx-logo hx-logo-tamara" data-bnpl="tamara" src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-en.svg" height="20" alt="Tamara" onerror="this.onerror=null;this.src='images/pay/tamara.svg';this.classList.remove('hx-logo-tamara')" /></span></p>
       </div>
-      <!-- Free cover preview CTA (Nov 2026): opens the existing preview flow, never checkout -->
-      <div class="cp-card cp-card-hero">
-        <div class="cp-card-copy">
-          <p class="cp-card-t"><span class="cp-spark" aria-hidden="true">✨</span> <span data-i18n="cp.free_t">Try Your Child’s Cover Free</span></p>
-          <p class="cp-card-d" data-i18n="cp.free_d">See their name on a personalised Hikaya cover before you order. No payment needed.</p>
-        </div>
-        <a class="btn cp-gold" href="cover-preview.html" data-cp-entry="home_hero"><span data-i18n="cp.free_btn">Try Free Cover Preview</span> <span class="arr" aria-hidden="true">→</span></a>
+      <div class="hx-ctas">
+        <a class="btn btn-primary hx-cta-primary" href="cover-preview.html" data-cp-entry="home_hero"><span data-i18n="home6.cta_cover_free">Try Your Child’s Cover FREE</span> <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-secondary hx-cta-secondary" href="stories.html" data-i18n="home6.cta_explore_ours">Explore Our Stories</a>
       </div>
-      <a class="hero-explore" href="stories.html" data-i18n="home6.cta_explore">Explore Stories</a>
-      <p class="hero-assure" data-hk-price-line>Personalised hardcover · <s class="hk-was">AED 199</s> <span class="hk-now">AED 169</span> · Gift packaging included</p>
-      <ul class="hk-offer hk-offer-quiet" data-hk-offer="delivery eta"><li>Free UAE delivery</li><li>Delivered in about 5 working days</li></ul>
-      <p class="hk-welcome-line" data-hk-welcome="line" hidden></p>
-      <p class="hero-trust"><a href="privacy.html" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a> · <span data-i18n="lx.tr_secure">Secure payment</span></p>
+      <ul class="hx-facts">
+        <li data-i18n="lx.tr_book">Personalised hardcover</li>
+        <li data-i18n="home6.fact_luxbox">Luxury gift box included</li>
+        <li data-hk-delivery-short>Free UAE delivery</li>
+      </ul>
       <span class="hand" data-i18n="home6.hero_hand">Little stories. Big memories.</span>
     </div>
   </div>

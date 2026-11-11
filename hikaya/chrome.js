@@ -178,6 +178,25 @@
       };
       el.innerHTML = want.map(w => parts[w] || '').join('');
     });
+    /* Homepage hero (Nov 2026): short delivery fact, and the Tabby/Tamara installment line.
+       Tabby and Tamara are offered for UAE / AED orders only (region.js, checkout), so the line shows only there,
+       with only the providers that are switched on. Amount = book price / 4 (AED 169 → AED 42.25), never shown as the book price. */
+    document.querySelectorAll('[data-hk-delivery-short]').forEach(el => {
+      const kk = k || regionKey(); const rr = regionObj(kk);
+      el.textContent = (kk === 'UAE' || !rr || !rr.deliveryFee) ? t('home6.del_uae_short', 'Free UAE delivery')
+        : t('home6.del_gcc_short', 'Delivery to {country}: {fee}').replace('{country}', countryName(kk)).replace('{fee}', fmt(rr.deliveryFee, rr));
+    });
+    document.querySelectorAll('[data-hk-bnpl]').forEach(el => {
+      const kk = k || regionKey(); const rr = regionObj(kk);
+      const on = { tabby: !!(window.hikayaTabbyOn && window.hikayaTabbyOn()), tamara: !!(window.hikayaTamaraOn && window.hikayaTamaraOn()) };
+      const show = kk === 'UAE' && rr && rr.currency === 'AED' && rr.bookNow > 0 && (on.tabby || on.tamara);
+      el.hidden = !show; if (!show) return;
+      const amt = el.querySelector('.hx-bnpl-amt'); if (amt) amt.textContent = fmt(Math.round(rr.bookNow / 4 * 100) / 100, rr);
+      el.querySelectorAll('[data-bnpl]').forEach(img => { img.hidden = !on[img.dataset.bnpl]; });
+      const tm = el.querySelector('img.hx-logo-tamara'); // Tamara's official badge, in the page language (same asset as checkout)
+      if (tm) { const want = `https://cdn.tamara.co/assets/svg/tamara-logo-badge-${lang() === 'ar' ? 'ar' : 'en'}.svg`; if (tm.getAttribute('src') !== want) tm.setAttribute('src', want); }
+      const or = el.querySelector('.hx-or'); if (or) or.hidden = !(on.tabby && on.tamara);
+    });
     document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
     const regionWrap = document.querySelector('.utility .region');
@@ -537,7 +556,7 @@
       /* Mobile UX (Nov 2026): the button also steps aside while a photo-upload area, a step's Continue
          button or the checkout payment controls pass through the bottom of the screen, so it never
          covers them. Help stays one scroll away (and in the footer). */
-      const CTL = '#photo-upload, #extra-photo-upload, .fam-slot .photo-upload, .wizard-nav, #payment-area, #place-order, #paytabs-frame-wrap, .summary-box .btn-primary, main .btn-primary, main .sf-chip';
+      const CTL = '#photo-upload, #extra-photo-upload, .fam-slot .photo-upload, .wizard-nav, #payment-area, #place-order, #paytabs-frame-wrap, .summary-box .btn-primary, main .btn-primary, main .sf-chip, .hx-ctas, .hx-bnpl';
       if ('IntersectionObserver' in window && document.querySelector('main')) {
         let io = null; const hits = new Set();
         /* Watch the strip of screen the button actually sits in (it moves up while the cookie banner is open). */

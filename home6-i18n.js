@@ -244,4 +244,16 @@
     label: { en: 'WhatsApp', ar: 'واتساب' },
     hours: { en: 'A real person replies, usually within a few hours', ar: 'يرد عليك شخص حقيقي، عادةً خلال ساعات قليلة' },
   };
+
+  // --- Homepage hero, mobile conversion update (Nov 2026) ---
+  // Headline lines are spans so phones can set "Their name. Their story." on one line (spans stay block lines on larger screens).
+  T.home6.hero_h1 = { en: '<span class="hx-l hx-l1">Their name.</span> <span class="hx-l hx-l2">Their story.</span> <span class="hx-l hx-l3">A memory they\'ll keep.</span>', ar: '<span class="hx-l hx-l1">اسمهم</span> <span class="hx-l hx-l2">قصتهم</span> <span class="hx-l hx-l3">ذكرى تبقى معهم</span>' };
+  T.home6.cta_cover_free = { en: 'Try Your Child’s Cover FREE', ar: 'جرّب غلاف طفلك مجانًا' };
+  T.home6.cta_explore_ours = { en: 'Explore Our Stories', ar: 'اكتشف قصصنا' };
+  T.home6.fact_luxbox = { en: 'Luxury gift box included', ar: 'علبة هدية فاخرة مشمولة' };
+  T.home6.del_gcc_short = { en: 'Delivery to {country}: {fee}', ar: 'التوصيل إلى {country}: {fee}' };
+  // Installment line under the price (UAE / AED only, where Tabby and Tamara are offered): "Or 4 payments of AED 42.25 with [Tabby] or [Tamara]"
+  T.home6.bnpl_pre = { en: 'Or 4 payments of', ar: 'أو 4 دفعات بقيمة' };
+  T.home6.bnpl_with = { en: 'with', ar: 'مع' };
+  T.home6.bnpl_or = { en: 'or', ar: 'أو' };
 })();
