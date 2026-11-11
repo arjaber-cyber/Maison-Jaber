@@ -189,6 +189,23 @@ async function ensureTemplate() {
     const ph = await g(`${sender}?fields=display_phone_number,verified_name,status`); diag.phone = ph.error ? ph.error.message : `${ph.display_phone_number} ${ph.verified_name} ${ph.status}`;
     ((dbg.data && dbg.data.granular_scopes) || []).forEach(sc => { if (/whatsapp/.test(sc.scope)) (sc.target_ids || []).forEach(id => cands.add(id)); });
   } catch {}
+  // More ways to find the business that owns the token / app, then its WhatsApp accounts.
+  const bizIds = new Set();
+  const probe = async (label, path) => { const r = await g(path); diag[label] = r.error ? `err ${r.error.code}: ${String(r.error.message).slice(0, 60)}` : JSON.stringify(r).slice(0, 160); return r; };
+  const meB = await probe('me_business', 'me?fields=business,owner_business');
+  [meB.business, meB.owner_business].forEach(b => b && b.id && bizIds.add(b.id));
+  try {
+    const dbg2 = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
+    const appId = dbg2.data && dbg2.data.app_id;
+    if (appId) { const a = await probe('app', `${appId}?fields=id,name,business`); if (a.business && a.business.id) bizIds.add(a.business.id); }
+  } catch {}
+  await probe('waba_known', '1492270739537979?fields=id,name');
+  for (const b of bizIds) {
+    for (const edge of ['owned_whatsapp_business_accounts', 'client_whatsapp_business_accounts']) {
+      const w = await probe(`${edge.split('_')[0]}_${b}`, `${b}/${edge}?fields=id,name`);
+      (w.data || []).forEach(x => cands.add(x.id));
+    }
+  }
   try {
     const biz = await g('me/businesses?fields=id,name');
     if (biz.error) diag.biz_err = biz.error.message;
