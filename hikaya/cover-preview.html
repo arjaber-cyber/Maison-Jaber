@@ -27,9 +27,14 @@
   .cp-center { text-align: center; }
   .cp h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 14px; color: var(--ink); font-family: var(--sans); }
   .cp-stories { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; max-height: 420px; overflow: auto; padding: 4px; }
-  .cp-story { border: 2px solid transparent; border-radius: 12px; padding: 0; background: none; cursor: pointer; text-align: start; font: inherit; color: inherit; }
-  .cp-story img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; display: block; background: var(--sand); }
-  .cp-story span { display: block; font-size: 12.5px; line-height: 1.3; padding: 6px 4px 4px; color: var(--ink-soft); }
+  /* Every cover the same size and lined up at the top (Nov 2026): a button centres its content by default, so a short
+     title pushed its cover down; now covers sit at the top and titles take the same two-line space. */
+  .cp-stories { align-items: start; }
+  .cp-story { display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; width: 100%; min-width: 0;
+    border: 2px solid transparent; border-radius: 12px; padding: 0; background: none; cursor: pointer; text-align: start; font: inherit; color: inherit; }
+  .cp-story img { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 10px; display: block; flex: none; background: var(--sand); }
+  .cp-story span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+    font-size: 12.5px; line-height: 1.3; min-height: calc(2 * 1.3em + 10px); padding: 6px 4px 4px; color: var(--ink-soft); }
   .cp-story[aria-pressed="true"] { border-color: var(--brand); background: var(--card); }
   .cp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .cp-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
