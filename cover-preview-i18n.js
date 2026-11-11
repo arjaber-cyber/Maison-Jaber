@@ -56,7 +56,7 @@
     photo_nocheck: { en: "Photo added. We couldn't check it automatically, so please make sure it shows only your child.", ar: 'أُضيفت الصورة، ولم نتمكن من فحصها تلقائيًا، فتأكد أنها تُظهر طفلك وحده' },
 
     // Short consent (Nov 2026): the full points (parent/guardian, AI-generated, watermarked, personal use) stay in the linked terms.
-    consent: { en: 'I’m this child’s parent and allow Hikaya to use this photo for the preview. <a href="terms.html#cover-preview" target="_blank" rel="noopener">Terms</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">Privacy</a>', ar: 'أنا وليّ أمر الطفل وأسمح لحكاية باستخدام هذه الصورة للمعاينة · <a href="terms.html#cover-preview" target="_blank" rel="noopener">الشروط</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">الخصوصية</a>' },
+    consent: { en: 'I allow Hikaya to use this photo for the preview. <a href="terms.html#cover-preview" target="_blank" rel="noopener">Terms</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">Privacy</a>', ar: 'أسمح لحكاية باستخدام هذه الصورة للمعاينة · <a href="terms.html#cover-preview" target="_blank" rel="noopener">الشروط</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">الخصوصية</a>' },
     privacy_note: { en: 'Your photo is used only to make this preview. It is never shared, never used to train AI, and is deleted automatically within 48 hours.', ar: 'تُستخدم صورتك لإنشاء هذه المعاينة فقط، ولا تُشارك أبدًا ولا تُستخدم لتدريب الذكاء الاصطناعي، وتُحذف تلقائيًا خلال 48 ساعة' },
     go: { en: 'Create my free preview', ar: 'أنشئ معاينتي المجانية' },
     left: { en: '{n} free previews left today', ar: 'متبقٍ لك اليوم {n} من المعاينات المجانية' },
