@@ -50,7 +50,9 @@ async function note(key, result) {
     method: 'PATCH', headers: H, body: JSON.stringify({ result: String(result).slice(0, 300) }),
   }).catch(() => {});
 }
+let templateReady = false; // set by ensureTemplate(); until approved, alerts wait (they stay inside their look-back window)
 async function send(key, kind, title, details) {
+  if (!templateReady && process.env.WHATSAPP_OWNER_ALERT_TEMPLATE == null) { console.log('[waiting for template]', kind, title); return; }
   if (!live()) { console.log('[dry run]', kind, title, '|', details); return; }
   if (!(await claim(key, kind))) return;
   const out = await sendOwnerAlert(title, details);
@@ -153,8 +155,65 @@ async function summary(titles) {
   await send(key, 'cart_summary', 'Cart summary', parts.join(' | '));
 }
 
+/* ---------- 0. One-time setup: create the "hikaya_owner_alert" template on the alert sender's WhatsApp account ----------
+   Progress is kept in app_flags "owner_alert_template" (JSON). Re-checks the status at most every 30 min until approved. */
+const GRAPH = 'https://graph.facebook.com/v21.0';
+const TEMPLATE = process.env.WHATSAPP_OWNER_ALERT_TEMPLATE || 'hikaya_owner_alert';
+async function ensureTemplate() {
+  const flag = (await sb('app_flags?key=eq.owner_alert_template&select=value,updated_at'))[0];
+  let state = {}; try { state = flag ? JSON.parse(flag.value) : {}; } catch {}
+  if (state.status === 'APPROVED') { templateReady = true; return; }
+  if (flag && Date.now() - Date.parse(flag.updated_at) < 30 * 60e3 && state.status) return;
+  const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
+  const save = async (v) => {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/app_flags?on_conflict=key`, {
+      method: 'POST', headers: Object.assign({}, H, { Prefer: 'resolution=merge-duplicates,return=minimal' }),
+      body: JSON.stringify({ key: 'owner_alert_template', value: JSON.stringify(Object.assign({ at: new Date().toISOString() }, v)), updated_at: new Date().toISOString() }),
+    });
+    if (!r.ok) console.error('owner-alerts: flag save failed', r.status, await r.text());
+  };
+  if (!sender || !token) return save({ status: 'not_configured' });
+  const g = async (path, init) => { const r = await fetch(`${GRAPH}/${path}`, Object.assign({ headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }, init || {})); return r.json().catch(() => ({})); };
+
+  // Which WhatsApp Business Account owns the alert sender? Check the known ones plus any the token can manage.
+  const cands = new Set([process.env.ALERT_WA_WABA_ID, '1492270739537979'].filter(Boolean));
+  try {
+    const dbg = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
+    ((dbg.data && dbg.data.granular_scopes) || []).forEach(s => { if (/whatsapp/.test(s.scope)) (s.target_ids || []).forEach(id => cands.add(id)); });
+  } catch {}
+  let waba = null;
+  for (const id of cands) {
+    const nums = await g(`${id}/phone_numbers?fields=id,display_phone_number`);
+    if ((nums.data || []).some(n => String(n.id) === String(sender))) { waba = id; break; }
+  }
+  if (!waba) return save({ status: 'no_waba', tried: [...cands] });
+
+  const existing = await g(`${waba}/message_templates?name=${TEMPLATE}&fields=id,name,status,category,rejected_reason,language`);
+  const found = (existing.data || []).find(t => t.name === TEMPLATE);
+  if (found && found.status === 'APPROVED') templateReady = true;
+  if (found) return save({ status: found.status, id: found.id, category: found.category, reason: found.rejected_reason || null, waba });
+
+  const created = await g(`${waba}/message_templates`, {
+    method: 'POST',
+    body: JSON.stringify({
+      name: TEMPLATE,
+      category: 'UTILITY',
+      language: 'en',
+      components: [{
+        type: 'BODY',
+        text: 'Hikaya alert: {{1}}\n\n{{2}}\n\nOpen the Hikaya dashboard to follow up.',
+        example: { body_text: [['Stuck at payment', 'HK-123456 · AED 169 via Tabby | payment not completed, placed 22 min ago | Sara, Dubai | +971501112222']] },
+      }],
+    }),
+  });
+  if (created.error) return save({ status: 'create_failed', waba, code: created.error.code, error: created.error.message, detail: created.error.error_user_msg || null });
+  return save({ status: created.status || 'PENDING', id: created.id, category: created.category, waba });
+}
+
 exports.handler = async () => {
   if (!SUPABASE_KEY) return { statusCode: 200, body: 'no key' };
+  try { await ensureTemplate(); } catch (e) { console.error('owner-alerts template', e && e.message); }
   let titles = {};
   try { titles = Object.fromEntries((await sb('stories?select=slug,title')).map(s => [s.slug, s.title])); } catch {}
   for (const [name, fn] of [['stuck', stuckAtPayment], ['checkout', checkoutNoOrder], ['summary', summary]]) {
