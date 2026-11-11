@@ -249,16 +249,40 @@
   const state = { slug: SUPPORTED.includes(pendingSlug) ? pendingSlug : '', lang: uiLang() === 'ar' ? 'ar' : 'en', gender: '', photo: '', photoTried: false, checking: false, busy: false, remaining: null, stories: [] };
   let session = null;
 
-  async function call(body, ms) {
-    const { data } = await supabase.auth.getSession();
-    session = data.session && !data.session.user.is_anonymous ? data.session : null;
-    // A request that hangs counts as a failed check, so the page can say it is reconnecting.
-    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), ms || 20000);
+  // Nov 2026: on some phones the connection to the Supabase server drops mid-wait while maison-jaber.com still works,
+  // so the page sat on "Reconnecting…" although the cover was ready. Read-only checks (status / quota) now fall back to
+  // a same-site route (/.netlify/functions/cover-preview-status) after a failed direct check, and stay on whichever
+  // route last worked. Starting a preview always goes direct.
+  const PROXY = '/.netlify/functions/cover-preview-status';
+  let viaProxy = false;
+  async function getSessionSoon() {
+    // getSession() can stall on iPhones (auth lock after the tab was in the background); never let it block a check.
     try {
-      const r = await fetch(FN, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json', apikey: SB_ANON, Authorization: 'Bearer ' + (session ? session.access_token : SB_ANON) }, body: JSON.stringify({ ...body, device_id: deviceId, ...(session ? {} : { guest_token: guestToken }) }) });
-      let j = {}; try { j = await r.json(); } catch (e) {}
-      return { http: r.status, ...j, status: j.status !== undefined ? j.status : r.status };
-    } finally { clearTimeout(to); }
+      const res = await Promise.race([supabase.auth.getSession(), sleep(3000).then(() => null)]);
+      if (res) { const d = res.data && res.data.session; session = d && !d.user.is_anonymous ? d : null; }
+    } catch (e) {}
+    return session;
+  }
+  async function call(body, ms) {
+    await getSessionSoon();
+    const readOnly = body.action === 'status' || body.action === 'quota';
+    const once = async (url) => {
+      // A request that hangs counts as a failed check, so the page can say it is reconnecting.
+      const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), ms || (readOnly ? 10000 : 20000));
+      try {
+        const r = await fetch(url, { method: 'POST', cache: 'no-store', signal: ctl.signal, headers: { 'Content-Type': 'application/json', apikey: SB_ANON, Authorization: 'Bearer ' + (session ? session.access_token : SB_ANON) }, body: JSON.stringify({ ...body, device_id: deviceId, ...(session ? {} : { guest_token: guestToken }) }) });
+        if (url === PROXY && r.status === 502) throw new Error('upstream');
+        let j = {}; try { j = await r.json(); } catch (e) {}
+        return { http: r.status, ...j, status: j.status !== undefined ? j.status : r.status };
+      } finally { clearTimeout(to); }
+    };
+    if (!readOnly) return once(FN);
+    try { return await once(viaProxy ? PROXY : FN); }
+    catch (e) {
+      // This route failed: try the other one straight away and keep using it if it works.
+      viaProxy = !viaProxy;
+      return once(viaProxy ? PROXY : FN);
+    }
   }
 
   function setLeft(n) {
@@ -492,12 +516,18 @@
       track('cover_preview_slow', { story: child && child.story });
     };
     const finish = (k) => { stop(); pendingClear(); backToForm(child); if (k) err(k); };
+    let timer = null, inFlight = false;
+    const schedule = (ms) => { clearTimeout(timer); timer = setTimeout(poll, ms); };
+    // Coming back to the page (phones pause timers in the background) or getting back online: check straight away.
+    kickWait = () => { if (alive() && !inFlight) schedule(0); };
     const poll = async () => {
-      if (!alive()) return;
+      if (!alive() || inFlight) return;
       if (!slowShown && Date.now() > giveUpAt) { stop(); slow(); return; }
       let r = null;
+      inFlight = true;
       try { r = await call(p.id ? { action: 'status', id: p.id } : { action: 'status', request_id: p.rid }); }
-      catch (er) { if (er.code === 'auth') { stop(); show('v-signin'); return; } }
+      catch (er) { if (er.code === 'auth') { inFlight = false; stop(); show('v-signin'); return; } }
+      inFlight = false;
       if (!alive()) return;
       if (r && r.http === 200) {
         fails = 0; missing = 0; lastOk = Date.now();
@@ -520,13 +550,16 @@
       }
       else { fails++; }
       paint();
-      setTimeout(poll, fails ? Math.min(10000, 2000 * fails) : 3000);
+      schedule(fails ? Math.min(8000, 2000 * fails) : 3000);
     };
-    setTimeout(poll, resumed ? 0 : (p.id ? 6000 : 1500));
+    schedule(resumed ? 0 : (p.id ? 6000 : 1500));
     $('w-check').onclick = () => { waitFor({ ...p }, true, child); };
     $('w-new').onclick = () => { finish(''); };
   }
-  window.addEventListener('online', () => { /* the next scheduled check runs straight after; nothing else to do */ });
+  let kickWait = () => {};
+  window.addEventListener('online', () => kickWait());
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') kickWait(); });
+  window.addEventListener('pageshow', () => kickWait());
   function backToForm(child) {
     show('v-form');
     if (child) { if (child.story) state.slug = child.story; applyChild(child); }
