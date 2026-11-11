@@ -269,6 +269,12 @@ exports.handler = async () => {
   try { await ensureTemplate(); } catch (e) { console.error('owner-alerts template', e && e.message); }
   let titles = {};
   try { titles = Object.fromEntries((await sb('stories?select=slug,title')).map(s => [s.slug, s.title])); } catch {}
+  // One-time confirmation that the alerts reach the owner's WhatsApp.
+  try {
+    await send('hello:v1', 'setup', 'Alerts are on', 'You will get stuck-at-payment, checkout-without-order and cart-summary alerts here.', [
+      '✅ ALERTS ON (test message, not a real order)', '-', 'Hikaya shop alerts: stuck at payment, checkout without order, cart summary 10/13/16/19/22', '-',
+    ]);
+  } catch (e) { console.error('owner-alerts hello', e && e.message); }
   for (const [name, fn] of [['stuck', stuckAtPayment], ['checkout', checkoutNoOrder], ['summary', summary]]) {
     try { await fn(titles); } catch (e) { console.error('owner-alerts', name, e && e.message); }
   }
