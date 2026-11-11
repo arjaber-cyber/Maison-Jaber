@@ -163,7 +163,7 @@ async function ensureTemplate() {
   const flag = (await sb('app_flags?key=eq.owner_alert_template&select=value,updated_at'))[0];
   let state = {}; try { state = flag ? JSON.parse(flag.value) : {}; } catch {}
   if (state.status === 'APPROVED') { templateReady = true; return; }
-  if (flag && Date.now() - Date.parse(flag.updated_at) < 30 * 60e3 && state.status) return;
+  if (flag && Date.now() - Date.parse(flag.updated_at) < (state.status === 'no_waba' || state.status === 'create_failed' ? 4 : 30) * 60e3 && state.status) return;
   const sender = process.env.WHATSAPP_ALERT_PHONE_NUMBER_ID || process.env.ALERT_WA_PHONE_ID || process.env.WHATSAPP_PHONE_NUMBER_ID;
   const token = process.env.ALERT_WA_TOKEN || process.env.WHATSAPP_TOKEN;
   const save = async (v) => {
@@ -176,18 +176,33 @@ async function ensureTemplate() {
   if (!sender || !token) return save({ status: 'not_configured' });
   const g = async (path, init) => { const r = await fetch(`${GRAPH}/${path}`, Object.assign({ headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }, init || {})); return r.json().catch(() => ({})); };
 
-  // Which WhatsApp Business Account owns the alert sender? Check the known ones plus any the token can manage.
-  const cands = new Set([process.env.ALERT_WA_WABA_ID, '1492270739537979'].filter(Boolean));
+  // Which WhatsApp Business Account owns the alert sender? Check the known ones plus any the token can see.
+  const cands = new Set([process.env.ALERT_WA_WABA_ID, process.env.WHATSAPP_WABA_ID, '1492270739537979'].filter(Boolean));
+  const diag = { sender: String(sender).slice(-4) };
   try {
     const dbg = await g(`debug_token?input_token=${encodeURIComponent(token)}`);
-    ((dbg.data && dbg.data.granular_scopes) || []).forEach(s => { if (/whatsapp/.test(s.scope)) (s.target_ids || []).forEach(id => cands.add(id)); });
+    diag.scopes = ((dbg.data && dbg.data.scopes) || []).join(',');
+    diag.app = dbg.data && dbg.data.application;
+    ((dbg.data && dbg.data.granular_scopes) || []).forEach(sc => { if (/whatsapp/.test(sc.scope)) (sc.target_ids || []).forEach(id => cands.add(id)); });
+  } catch {}
+  try {
+    const biz = await g('me/businesses?fields=id,name');
+    if (biz.error) diag.biz_err = biz.error.message;
+    for (const b of (biz.data || [])) {
+      for (const edge of ['owned_whatsapp_business_accounts', 'client_whatsapp_business_accounts']) {
+        const w = await g(`${b.id}/${edge}?fields=id,name`);
+        (w.data || []).forEach(x => cands.add(x.id));
+      }
+    }
   } catch {}
   let waba = null;
+  diag.tried = {};
   for (const id of cands) {
     const nums = await g(`${id}/phone_numbers?fields=id,display_phone_number`);
+    diag.tried[id] = nums.error ? `err ${nums.error.code}: ${String(nums.error.message).slice(0, 80)}` : (nums.data || []).map(n => `${n.display_phone_number}#${String(n.id).slice(-4)}`).join(' ');
     if ((nums.data || []).some(n => String(n.id) === String(sender))) { waba = id; break; }
   }
-  if (!waba) return save({ status: 'no_waba', tried: [...cands] });
+  if (!waba) return save(Object.assign({ status: 'no_waba' }, diag));
 
   const existing = await g(`${waba}/message_templates?name=${TEMPLATE}&fields=id,name,status,category,rejected_reason,language`);
   const found = (existing.data || []).find(t => t.name === TEMPLATE);
