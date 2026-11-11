@@ -1588,3 +1588,8 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
   .hero.hx .hx-buy { margin-top: 20px; }
   .hero.hx .hx-ctas { margin-top: 18px; }
 }
+/* Phones: facts as two tidy lines (hardcover · gift box / delivery), never a stray dot at the start of a line. */
+@media (max-width: 767px) {
+  .hero.hx .hx-facts li:last-child { flex-basis: 100%; }
+  .hero.hx .hx-facts li:last-child::before { content: none; }
+}
