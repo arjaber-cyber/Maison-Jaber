@@ -171,7 +171,7 @@ window.hikayaChargedAed = function (total, region) {
   const t2 = Math.round(Number(total) * 100) / 100; // the server rounds the local total first, then converts
   return Math.round(t2 * rate * 100) / 100;
 };
-/* Fixed-amount discount codes (e.g. FIRSTSTORY = AED 20) in the shopper's currency, using the same
+/* Fixed-amount discount codes (e.g. FIRSTORDER = AED 20) in the shopper's currency, using the same
    ratio as the book price, rounded to a clean amount: whole units for AED/SAR/QAR, 0.25 for KWD/BHD/OMR.
    AED 20 -> AED 20, SAR 20, QAR 20, KWD 1.75, BHD 2, OMR 2.
    KEEP IN SYNC with codeAmountLocal() in netlify/functions/_pricing.js (the server charges this exact amount). */

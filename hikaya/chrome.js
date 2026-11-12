@@ -649,7 +649,7 @@
     const og = document.querySelector('meta[property="og:url"]'); if (og) og.content = url;
   }
 
-  /* ---------------- Welcome code (FIRSTSTORY) ----------------
+  /* ---------------- Welcome code (FIRSTORDER) ----------------
      One place for the first-order code shown around the site. Amounts follow the
      shopper's country (AED 20, SAR 20, QAR 20, KWD 1.75, BHD 2, OMR 2 via
      hikayaCodeAmount in region.js, the same rule the payment server uses).
@@ -658,7 +658,7 @@
        data-hk-welcome="line" quiet line under the home hero
        data-hk-welcome="card" price card on story pages
        data-hk-welcome="cart" one-tap card in the cart summary */
-  const WELCOME = { on: true, code: 'FIRSTSTORY', aed: 20 };
+  const WELCOME = { on: true, code: 'FIRSTORDER', aed: 20 };
   const WTXT = {
     en: {
       bar: 'Welcome gift: {amt} off your first story with code {code}', barShort: '{amt} off your first story · {code}', copy: 'Copy', copied: 'Copied',
