@@ -93,6 +93,21 @@
       </div>`).join('')}</div>`;
   }
 
+  /* Time on site (Nov 2026): from the page_time events, measured since 11 Nov 2026 only. */
+  const secsTxt = n => { n = Number(n || 0); return n >= 60 ? Math.floor(n / 60) + 'm ' + Math.round(n % 60) + 's' : (Math.round(n * 10) / 10) + 's'; };
+  function engagement(e) {
+    if (!e || !e.visitors) return '';
+    const since = new Date(e.since).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Asia/Dubai' });
+    return `
+      <div class="op-kpis vz-kpis">
+        <div class="op-kpi"><div class="l">Stayed more than 5s</div><div class="n">${num(e.over5)}</div><div class="s">${pct(e.over5, e.visitors)}% of ${num(e.visitors)} visitors</div></div>
+        <div class="op-kpi"><div class="l">Avg time on site</div><div class="n">${secsTxt(e.avg_all)}</div><div class="s">all visitors</div></div>
+        <div class="op-kpi"><div class="l">Avg time, 5s+ visitors</div><div class="n">${secsTxt(e.avg_over5)}</div><div class="s">the ones who stayed</div></div>
+        <div class="op-kpi"><div class="l">Typical stay</div><div class="n">${secsTxt(e.median_timed)}</div><div class="s">median, measured visits</div></div>
+      </div>
+      <p class="vz-note" style="margin-top:-6px">Time on site counts only seconds the page was on screen, and only for visitors since ${esc(since)} (when timing started). A visitor who left in under a second has no time recorded and counts as 0.</p>`;
+  }
+
   function render(d) {
     const body = $('vz-body'); if (!body) return;
     body.dataset.loaded = '1';
@@ -111,6 +126,7 @@
         <div class="op-kpi"><div class="l">Went to checkout</div><div class="n">${num(f.checkout)}</div><div class="s">${pct(f.checkout, total)}% of visitors</div></div>
         <div class="op-kpi ${f.purchase ? 'ok' : ''}"><div class="l">Ordered</div><div class="n">${num(f.purchase)}</div><div class="s">${pct(f.purchase, total)}% conversion</div></div>
       </div>
+      ${engagement(d.engagement)}
 
       <div class="vz-grid">
         <section class="dc-panel vz-wide"><div class="dc-panel-head"><h2>Visitors over time</h2><p>${d.bucket === 'hour' ? 'By hour, Dubai time.' : 'By day.'}</p></div>${timeline(d)}</section>
@@ -122,8 +138,8 @@
         </section>
 
         <section class="dc-panel vz-wide"><div class="dc-panel-head"><h2>Where visitors came from</h2><p>Judged by the first page each visitor opened that day.</p></div>
-          ${(d.sources || []).length ? `<div class="vz-table-wrap"><table class="vz-table"><thead><tr><th>Source</th><th>Visitors</th><th>Personalised</th><th>Checkout</th><th>Ordered</th></tr></thead><tbody>
-          ${d.sources.map(s => `<tr><td>${esc(s.name)}</td><td>${num(s.visitors)}</td><td>${num(s.personalise)} <small>${pct(s.personalise, s.visitors)}%</small></td><td>${num(s.checkout)}</td><td>${num(s.purchases)}</td></tr>`).join('')}
+          ${(d.sources || []).length ? `<div class="vz-table-wrap"><table class="vz-table"><thead><tr><th>Source</th><th>Visitors</th><th>Personalised</th><th>Checkout</th><th>Ordered</th><th>Stayed 5s+</th></tr></thead><tbody>
+          ${d.sources.map(s => `<tr><td>${esc(s.name)}</td><td>${num(s.visitors)}</td><td>${num(s.personalise)} <small>${pct(s.personalise, s.visitors)}%</small></td><td>${num(s.checkout)}</td><td>${num(s.purchases)}</td><td>${s.measured ? `${num(s.over5)} <small>${pct(s.over5, s.measured)}%</small>` : '–'}</td></tr>`).join('')}
           </tbody></table></div>` : '<div class="vz-empty">No data yet.</div>'}
         </section>
 
