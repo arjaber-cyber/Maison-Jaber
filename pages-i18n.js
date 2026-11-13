@@ -643,8 +643,8 @@
   "ar": "كيف أدفع؟"
  },
  "a16": {
-  "en": "By card, Apple Pay or Google Pay on Ziina's secure payment page. Payments are charged in UAE dirhams (AED); if you shop in another GCC currency, you'll see the AED amount before you pay. We never see or store your card details.",
-  "ar": "بالبطاقة أو Apple Pay أو Google Pay عبر صفحة الدفع الآمنة من Ziina، ويُحتسب المبلغ بالدرهم الإماراتي، وإن كنت تتسوّق بعملة خليجية أخرى فسترى المبلغ بالدرهم قبل الدفع، ولا نطّلع على بيانات بطاقتك ولا نحفظها"
+  "en": "By card, Apple Pay or Google Pay on Ziina's secure payment page, or split it into interest-free payments with Tabby or Tamara (available on UAE orders). Payments are charged in UAE dirhams (AED); if you shop in another GCC currency, you'll see the AED amount before you pay. We never see or store your card details.",
+  "ar": "بالبطاقة أو Apple Pay أو Google Pay عبر صفحة الدفع الآمنة من Ziina، أو قسّط المبلغ على دفعات بدون فوائد مع تابي أو تمارا (متاح للطلبات داخل الإمارات)، ويُحتسب المبلغ بالدرهم الإماراتي، وإن كنت تتسوّق بعملة خليجية أخرى فسترى المبلغ بالدرهم قبل الدفع، ولا نطّلع على بيانات بطاقتك ولا نحفظها"
  },
  "q17": {
   "en": "What if my book arrives damaged or misprinted?",
