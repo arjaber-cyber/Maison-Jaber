@@ -134,7 +134,7 @@
     fq3: { en: "How closely will the illustration look like my child?", ar: "إلى أي حد ستشبه الرسومات طفلي؟" },
     fa3: { en: "Your child is drawn in the Hikaya storybook style: recognisable, but illustrated rather than a photo pasted onto the page.", ar: "يُرسم طفلك بأسلوب حكاية: يمكن التعرّف عليه، لكنه رسم وليس صورة ملصقة على الصفحة" },
     fq4: { en: "Can I see the book before it's printed?", ar: "هل يمكنني رؤية الكتاب قبل الطباعة؟" },
-    fa4: { en: "Not at the moment. Once you order, we create, print and pack your child's book, so please double-check the name, age and photo before checkout.", ar: "ليس حاليًا، بعد الطلب نصنع كتاب طفلك ونطبعه ونغلّفه، لذا يرجى التأكد من الاسم والعمر والصورة قبل الدفع" },
+    fa4: { en: "Yes, for the cover: our free cover preview shows your child on a sample cover before you order, and our team refines the final cover by hand so the printed one is even more beautiful.", ar: "نعم للغلاف، فمعاينة الغلاف المجانية تُريك طفلك على غلاف تجريبي قبل الطلب، ويحسّن فريقنا الغلاف النهائي يدويًا ليكون المطبوع أجمل" },
     fq5: { en: "Can I order for siblings?", ar: "هل يمكنني الطلب للإخوة؟" },
     fa5: { en: "Yes. Add a book for each child to the same order. Two books get 10% off each plus free delivery; three or more get 15% off.", ar: "نعم، أضف كتابًا لكل طفل في الطلب نفسه، كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 15%" },
     fq6: { en: "Can I make changes after ordering?", ar: "هل يمكنني التعديل بعد الطلب؟" },
@@ -535,8 +535,8 @@
   "ar": "هل سأرى معاينة قبل الطباعة؟"
  },
  "a4": {
-  "en": "Not at the moment. We create and print your book straight after payment, so please double-check the name, age and photo before you check out.",
-  "ar": "ليس حاليًا، فنحن نصنع كتابك ونطبعه مباشرة بعد الدفع، لذا يرجى التأكد من الاسم والعمر والصورة قبل إتمام الطلب"
+  "en": "Yes, for the cover. Try our <a href=\"free-cover-preview.html\">free cover preview</a> to see your child on a sample cover before you order. The preview is a quick AI sample: for your book, our team refines the cover by hand so the printed one is even more beautiful. Inside pages aren't previewed, so please double-check the name, age and photo before you check out.",
+  "ar": "نعم، للغلاف، جرّب <a href=\"free-cover-preview.html\">معاينة الغلاف المجانية</a> لترى طفلك على غلاف تجريبي قبل الطلب، والمعاينة نموذج سريع بالذكاء الاصطناعي، أما في كتابك فيعتني فريقنا بالغلاف ويحسّنه يدويًا ليكون الغلاف المطبوع أجمل، ولا تتوفر معاينة للصفحات الداخلية، لذا يرجى التأكد من الاسم والعمر والصورة قبل إتمام الطلب"
  },
  "q5": {
   "en": "Can I make changes after ordering?",
