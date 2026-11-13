@@ -32,6 +32,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   GA_MEASUREMENT_ID: 'G-5L1750Y0YL',   // GA4: Hikaya - maison-jaber.com
   CLARITY_PROJECT_ID: 'yu5qjkitji',    // Microsoft Clarity: Hikaya - maison-jaber.com
   META_PIXEL_ID: '000000000000000',    // <-- replace with your real Pixel ID
+  TIKTOK_PIXEL_ID: '',                 // <-- TikTok Pixel ID (Events Manager); empty = TikTok Pixel off
 };
 
 (function () {
@@ -54,6 +55,17 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   let gaLoaded = false;
   const earlyEvents = []; // GA events fired before consent, replayed if GA loads later
   let pixelLoaded = false;
+  // TikTok Pixel (Nov 2026): same rules as the Meta Pixel (marketing consent only, same shop events).
+  const ttConfigured = !!(cfg.TIKTOK_PIXEL_ID && /^[A-Z0-9]{10,}$/i.test(cfg.TIKTOK_PIXEL_ID));
+  let ttLoaded = false;
+  const TT_EVENTS = { view_item: 'ViewContent', add_to_cart: 'AddToCart', begin_checkout: 'InitiateCheckout', add_payment_info: 'AddPaymentInfo', sign_up: 'CompleteRegistration' };
+  function ttParams(p) {
+    p = p || {};
+    const items = Array.isArray(p.items) ? p.items : [];
+    const out = { currency: p.currency, value: p.value, content_type: 'product' };
+    if (items.length) out.contents = items.map(function (i) { return { content_id: i.item_id, content_name: i.item_name, quantity: i.quantity || 1, price: i.price }; });
+    return out;
+  }
   let clarityLoaded = false;
   const page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
   // Internal / personal-document pages are never tracked.
@@ -313,7 +325,12 @@ window.HIKAYA_ANALYTICS_CONFIG = {
         else window.fbq('trackCustom', e.ev, e.p, { eventID: id });
         e.px = 1; changed = true;
       }
-      if (e.ga && (e.px || !pixelConfigured)) { delete o[id]; changed = true; }
+      // TikTok Pixel: marketing consent only; the order number is the event id.
+      if (!e.tt && ttLoaded && window.ttq && hasConsent('marketing')) {
+        if (e.ev === 'purchase') window.ttq.track('CompletePayment', ttParams(e.p), { event_id: id });
+        e.tt = 1; changed = true;
+      }
+      if (e.ga && (e.px || !pixelConfigured) && (e.tt || !ttConfigured)) { delete o[id]; changed = true; }
     });
     if (changed) writeOutbox(o);
   }
@@ -376,6 +393,28 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     } catch (e) {}
     window.fbq('init', cfg.META_PIXEL_ID);
     window.fbq('track', 'PageView');
+    /* eslint-enable */
+  }
+
+  function loadTikTok() {
+    if (ttLoaded || !ttConfigured || !hasConsent('marketing')) return;
+    ttLoaded = true;
+    /* eslint-disable */
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject = t; var ttq = w[t] = w[t] || [];
+      ttq.methods = ['page', 'track', 'identify', 'instances', 'debug', 'on', 'off', 'once', 'ready', 'alias', 'group', 'enableCookie', 'disableCookie', 'holdConsent', 'revokeConsent', 'grantConsent'];
+      ttq.setAndDefer = function (t, e) { t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))); }; };
+      for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+      ttq.instance = function (t) { for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]); return e; };
+      ttq.load = function (e, n) {
+        var r = 'https://analytics.tiktok.com/i18n/pixel/events.js';
+        ttq._i = ttq._i || {}; ttq._i[e] = []; ttq._i[e]._u = r; ttq._t = ttq._t || {}; ttq._t[e] = +new Date; ttq._o = ttq._o || {}; ttq._o[e] = n || {};
+        var s = d.createElement('script'); s.type = 'text/javascript'; s.async = !0; s.src = r + '?sdkid=' + e + '&lib=' + t;
+        var f = d.getElementsByTagName('script')[0]; f.parentNode.insertBefore(s, f);
+      };
+      ttq.load(cfg.TIKTOK_PIXEL_ID);
+      ttq.page();
+    }(window, document, 'ttq');
     /* eslint-enable */
   }
 
@@ -584,6 +623,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     loadGA();
     updateGoogleConsent(); // a choice made on this page goes to Google straight away
     loadPixel();
+    loadTikTok();
     flushPurchases(); // confirmed orders not yet delivered (refresh, revisit, cookies accepted later)
   }
 
@@ -625,6 +665,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       const opts = eventId ? { eventID: String(eventId) } : undefined;
       if (metaName) window.fbq('track', metaName, params, opts);
       else window.fbq('trackCustom', eventName, params, opts);
+    }
+    if (ttLoaded && window.ttq && TT_EVENTS[eventName]) {
+      window.ttq.track(TT_EVENTS[eventName], ttParams(params), eventId ? { event_id: String(eventId) } : undefined);
     }
   };
 })();

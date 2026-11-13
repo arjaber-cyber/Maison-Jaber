@@ -645,10 +645,22 @@ window.HIKAYA_TRANSLATIONS = {
 
 (function () {
   // Load Arabic-capable font and inject base RTL rules once, on every page.
-  const fontLink = document.createElement('link');
-  fontLink.rel = 'stylesheet';
-  fontLink.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap';
-  document.head.appendChild(fontLink);
+  /* Speed (Nov 2026): the Arabic font (Cairo) is only needed in Arabic. Arabic visitors get it straight
+     away; English visitors get it after the page has loaded (so it no longer competes with the first
+     screen on phones), ready if they switch to Arabic. */
+  function addCairo() {
+    if (document.getElementById('hk-cairo-font')) return;
+    const fontLink = document.createElement('link');
+    fontLink.id = 'hk-cairo-font';
+    fontLink.rel = 'stylesheet';
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap';
+    document.head.appendChild(fontLink);
+  }
+  const rootEl = document.documentElement;
+  if (rootEl.dir === 'rtl' || (rootEl.lang || '').toLowerCase().indexOf('ar') === 0) addCairo();
+  else if (document.readyState === 'complete') addCairo();
+  else window.addEventListener('load', addCairo, { once: true });
+  window.hikayaLoadArabicFont = addCairo;
 
   const rtlStyle = document.createElement('style');
   rtlStyle.textContent = `
@@ -687,6 +699,7 @@ window.HIKAYA_TRANSLATIONS = {
     const lang = getLang();
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    if (lang === 'ar' && window.hikayaLoadArabicFont) window.hikayaLoadArabicFont();
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const val = t(el.getAttribute('data-i18n'));
