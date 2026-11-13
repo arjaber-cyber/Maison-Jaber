@@ -433,11 +433,16 @@
   function coverHtml(s, extraClass, opts) {
     opts = opts || {};
     const alt = opts.alt ? esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) })) : '';
-    /* QA-09: cards use the 600px cover (cover-600.jpg) when it exists next to the full-size file; the story page keeps the large cover. */
-    const small = !opts.eager && /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(s.cover || '') ? s.cover.replace(/\.jpg$/, '-600.jpg') : '';
+    /* QA-09: cards use the 600px cover (cover-600.jpg) when it exists next to the full-size file.
+       Speed (Nov 2026): every shop cover also has a 900px WebP (cover-900.webp, ~80 KB instead of ~250 KB),
+       so phones with sharp screens and the story page's main cover no longer download the 1200px JPG.
+       If a size is ever missing (e.g. a new story without it), the image drops its size list and uses src. */
+    const shop = /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(s.cover || '');
+    const small = shop && !opts.eager ? s.cover.replace(/\.jpg$/, '-600.jpg') : '';
     /* sizes = how wide a card really is: ~62vw in the phone carousels, ~46vw in the phone grid, ~300px on desktop.
        (It used to say 92vw on phones, which made phones download the 1200px file for a ~230px card.) */
-    const srcset = small ? ` srcset="${esc(small)} 600w, ${esc(s.cover)} 1200w" sizes="(max-width: 767px) 62vw, (max-width: 1023px) 34vw, 300px"` : '';
+    const sizes = opts.eager ? '(max-width: 767px) 100vw, 46vw' : '(max-width: 767px) 62vw, (max-width: 1023px) 34vw, 300px';
+    const srcset = shop ? ` srcset="${esc(s.cover.replace(/\.jpg$/, '-600.jpg'))} 600w, ${esc(s.cover.replace(/\.jpg$/, '-900.webp'))} 900w, ${esc(s.cover)} 1200w" sizes="${sizes}" onerror="this.onerror=null;this.removeAttribute('srcset')"` : '';
     const img = s.cover ? `<img src="${esc(small || s.cover)}"${srcset} alt="${alt}"${opts.eager ? ' fetchpriority="high"' : ' loading="lazy"'} decoding="async" width="560" height="560" />` : '';
     return `<div class="cover${extraClass ? ' ' + extraClass : ''}">${img}${s.cover ? '' : `<div class="ttl" aria-hidden="true"><small>Hikaya</small><span>${titleHtml(s)}</span></div>`}</div>`;
   }

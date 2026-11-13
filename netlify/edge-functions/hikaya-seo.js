@@ -14,7 +14,7 @@
 // Arabic copy carries no full stops (brand rule).
 // To change a page's Google title or description, edit PAGES below.
 
-import { AR_H1, AR_FAQ, AR_TEXT } from "../shared/ar-seo-data.js";
+import { AR_H1, AR_FAQ, AR_TEXT, EN_TEXT } from "../shared/ar-seo-data.js";
 
 const SITE = "https://maison-jaber.com";
 const BASE = SITE + "/hikaya/";
@@ -147,7 +147,7 @@ export const PAGES = {
     ar: { title: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية", desc: "هدية للطفل الأكبر عند قدوم مولود جديد: كتاب قصة مخصص يكون هو بطله، في علبة هدية وبالعربية أو الإنجليزية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-first-day-of-school.html": {
-    en: { title: "First Day of School Gift: Personalised Storybook | Hikaya", desc: "Help them feel brave for a big first day: a personalised storybook about courage and new beginnings, with your child as the hero. Delivered across the UAE and GCC." },
+    en: { title: "First Day of School Gift: Personalised Storybook | Hikaya", desc: "Help them feel brave for a big first day: a personalised storybook about courage and new beginnings, with your child as the hero. UAE & GCC delivery." },
     ar: { title: "هدية أول يوم مدرسة | قصة مخصصة باسم طفلك | حكاية", desc: "ساعده على الشعور بالشجاعة في يومه الأول: كتاب قصة مخصص عن الشجاعة والبدايات الجديدة يكون طفلك بطله، مع التوصيل في الإمارات ودول الخليج" },
   },
   // Gift guides (phase 3, Nov 2026)
@@ -160,11 +160,11 @@ export const PAGES = {
     ar: { title: "أفكار هدايا عيد ميلاد لطفل لديه كل شيء | حكاية", desc: "نفدت أفكار الألعاب؟ هدايا عيد ميلاد مميزة للأطفال من 2 إلى 8 سنوات، من التذكارات والتجارب إلى قصة مخصصة باسم الطفل، مع نصائح حسب العمر" },
   },
   "guide-new-sibling.html": {
-    en: { title: "Preparing Your Child for a New Baby: A Parent's Guide | Hikaya", desc: "Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that make them feel special." },
+    en: { title: "Preparing Your Child for a New Baby: A Parent's Guide | Hikaya", desc: "Simple, practical ways to help an older child welcome a new baby brother or sister: what to say, how stories help, and small rituals that help." },
     ar: { title: "تهيئة طفلك لقدوم مولود جديد: دليل لطيف للأهل | حكاية", desc: "طرق بسيطة وعملية لمساعدة الطفل الأكبر على استقبال أخ أو أخت جديدة: ماذا تقول، وكيف تساعد القصص، وعادات صغيرة تشعره بأنه مميز" },
   },
   "guide-first-day-of-school.html": {
-    en: { title: "First Day of School: 8 Ways to Help Kids Feel Brave | Hikaya", desc: "Starting nursery or school? Eight gentle, practical ways to help your child feel ready and brave for their first day, from practice runs to stories about courage." },
+    en: { title: "First Day of School: 8 Ways to Help Kids Feel Brave | Hikaya", desc: "Starting nursery or school? Eight gentle ways to help your child feel ready and brave for their first day, from practice runs to stories about courage." },
     ar: { title: "أول يوم في المدرسة: 8 طرق لمساعدة طفلك على الشجاعة | حكاية", desc: "هل يبدأ طفلك الحضانة أو المدرسة؟ ثماني طرق لطيفة وعملية لمساعدته على الاستعداد والشجاعة في يومه الأول، من التجربة المسبقة إلى قصص الشجاعة" },
   },
   "guides.html": {
@@ -172,7 +172,7 @@ export const PAGES = {
     ar: { title: "أدلة الهدايا ونصائح للأهل | حكاية من ميزون جابر", desc: "أفكار هدايا لأعياد الميلاد والعيد، ونصائح لطيفة للحظات الطفولة الكبيرة مثل قدوم مولود جديد أو أول يوم في المدرسة، من حكاية من ميزون جابر" },
   },
   "guide-christmas-gift-ideas.html": {
-    en: { title: "Christmas Gift Ideas for Kids: 10 Magical Presents | Hikaya", desc: "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they are the hero to new family traditions, plus when to order." },
+    en: { title: "Christmas Gift Ideas for Kids: 10 Magical Presents | Hikaya", desc: "Thoughtful Christmas gift ideas for children aged 2 to 8 in the UAE and GCC, from a storybook where they're the hero to new traditions, plus when to order." },
     ar: { title: "أفكار هدايا الكريسماس للأطفال: 10 هدايا ساحرة | حكاية", desc: "أفكار هدايا كريسماس مميزة للأطفال من 2 إلى 8 سنوات في الإمارات ودول الخليج، من قصة يكون الطفل بطلها إلى عادات عائلية جديدة، مع موعد الطلب المناسب" },
   },
   "guide-gifts-from-grandparents.html": {
@@ -181,7 +181,7 @@ export const PAGES = {
   },
   // Country delivery pages (Nov 2026)
   "personalised-books-uae.html": {
-    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card, Tabby or Tamara." },
+    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks starring your child, in Arabic or English. AED 169, free UAE delivery in about 5 working days, gift-boxed. Pay by card, Tabby or Tamara." },
     ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا" },
   },
   "personalised-books-saudi-arabia.html": {
@@ -296,15 +296,19 @@ const storyPremise = (s, l) => (l === "ar" ? arNoStops(localized(s.premise, "ar"
 const firstLine = (s, l) => { const p = storyPremise(s, l); const m = p.match(/^.+?[.!?؟](?=\s|$)/); return (m ? m[0] : p).trim(); };
 // Server-rendered story cards: the same look as the shop's cards, so search engines that don't run
 // JavaScript still see every story, its cover and a link. The page script replaces them on load.
+// Same cover sizes as the shop (chrome.js coverHtml): 600px JPG, 900px WebP, 1200px JPG.
+const coverSrcset = (cover, sizes) => ` srcset="${esc(cover.replace(/\.jpg$/, "-600.jpg"))} 600w, ${esc(cover.replace(/\.jpg$/, "-900.webp"))} 900w, ${esc(cover)} 1200w" sizes="${sizes}" onerror="this.onerror=null;this.removeAttribute('srcset')"`;
 function cardsHtml(list, l) {
   return list.map(s => {
     const t = storyTitle(s, l);
     const cover = (l === "ar" && s.cover_image_url_ar) || s.cover_image_url || "";
-    const small = /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(cover) ? cover.replace(/\.jpg$/, "-600.jpg") : cover;
+    const shop = /\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(cover);
+    const small = shop ? cover.replace(/\.jpg$/, "-600.jpg") : cover;
+    const set = shop ? coverSrcset(cover, "(max-width: 767px) 62vw, (max-width: 1023px) 34vw, 300px") : "";
     const href = `story.html?s=${encodeURIComponent(s.slug)}${l === "ar" ? "&amp;lang=ar" : ""}`;
     const alt = l === "ar" ? `غلاف ${t}` : `Cover of ${t}`;
     const line = firstLine(s, l);
-    return `<li class="story-card"><div class="cover">${small ? `<img src="${esc(small)}" alt="${esc(alt)}" loading="lazy" decoding="async" width="560" height="560" />` : ""}</div><div class="body"><h3><a href="${href}">${esc(t)}</a></h3>${line ? `<p class="line">${esc(line)}</p>` : ""}</div></li>`;
+    return `<li class="story-card"><div class="cover">${small ? `<img src="${esc(small)}"${set} alt="${esc(alt)}" loading="lazy" decoding="async" width="560" height="560" />` : ""}</div><div class="body"><h3><a href="${href}">${esc(t)}</a></h3>${line ? `<p class="line">${esc(line)}</p>` : ""}</div></li>`;
   }).join("");
 }
 
@@ -318,6 +322,10 @@ function cardsHtml(list, l) {
 // does once the browser has translated it. English pages are not touched.
 // ---------------------------------------------------------------------------------------------
 const tAr = key => (Object.prototype.hasOwnProperty.call(AR_TEXT, key) ? AR_TEXT[key] : null);
+// English pages (Nov 2026): the same story details, shelves, age-page content and header links are now
+// also served in English before any script runs (SEO report: English pages relied on JavaScript).
+const tEnK = key => (Object.prototype.hasOwnProperty.call(EN_TEXT, key) ? EN_TEXT[key] : null);
+const tx = (l, key) => (l === "ar" ? tAr(key) : tEnK(key));
 const VOID_TAGS = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
 
 // Inline <script>/<style> blocks are set aside while the body is rewritten, then put back unchanged.
@@ -440,15 +448,18 @@ function regionFillsAr(body) {
 }
 
 // Age page (browse.js ages()): subtitle, theme tiles, popular stories, quote and button for the chosen band.
-const bandWordsAr = b => { const [a, z] = String(b).split("-"); return String(tAr("a11y.band_words")).replace("{a}", a).replace("{b}", z); };
-function agePageAr(html, band, all) {
-  const key = band.replace("-", "_"), lbl = bandWordsAr(band);
+const bandWordsAr = b => bandWords(b, "ar");
+const bandWords = (b, l) => { const [a, z] = String(b).split("-"); return String(tx(l, "a11y.band_words") || "{a}–{b}").replace("{a}", a).replace("{b}", z); };
+function agePageAr(html, band, all) { return agePageFill(html, band, all, "ar"); }
+function agePageFill(html, band, all, l) {
+  const tAr = key => tx(l, key);
+  const key = band.replace("-", "_"), lbl = bandWords(band, l);
   const [lo, hi] = band.split("-").map(Number);
   const inBand = s => ((s.age_bands && s.age_bands.length) ? s.age_bands : ["2-8"]).some(b => { const [a, z] = String(b).split("-").map(Number); return a < hi && z > lo; });
   html = html.replace(/<h1 id="age-title">[^<]*<\/h1>/, `<h1 id="age-title">${esc(String(tAr("pg.age_title")).replace("{band}", lbl))}</h1>`);
   html = html.replace(/<p class="lede" id="age-sub">[^<]*<\/p>/, `<p class="lede" id="age-sub">${esc(tAr("pg.age_sub_" + key) || "")}</p>`);
   html = html.replace('<ul class="tiles" id="tiles"></ul>', `<ul class="tiles" id="tiles">${Object.keys(THEME_GROUPS).map(g => `<li><a class="tile" href="stories.html?age=${band}&amp;theme=${g}"><span>${esc(tAr("pg.w_" + g))}</span><small>${esc(tAr("pg.w_" + g + "_d") || "")}</small></a></li>`).join("")}</ul>`);
-  if (all && all.length) html = html.replace('<ul class="sgrid" id="popular"></ul>', `<ul class="sgrid" id="popular">${cardsHtml(all.filter(inBand).sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0)).slice(0, 8), "ar")}</ul>`);
+  if (all && all.length) html = html.replace('<ul class="sgrid" id="popular"></ul>', `<ul class="sgrid" id="popular">${cardsHtml(all.filter(inBand).sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0)).slice(0, 8), l)}</ul>`);
   html = html.replace('<blockquote id="age-quote"></blockquote>', `<blockquote id="age-quote">${esc(tAr("pg.age_quote_" + key) || "")}</blockquote>`);
   html = html.replace(/(<a class="btn btn-primary" id="age-cta" href=")stories\.html\?age=[0-9-]+("><span>)[^<]*(<\/span>)/, (m, a, b, c) => `${a}stories.html?age=${band}${b}${esc(String(tAr("pg.age_browse")).replace("{band}", lbl))}${c}`);
   return html;
@@ -457,13 +468,22 @@ function agePageAr(html, band, all) {
 // Header navigation in the raw HTML (the real header is drawn by chrome.js and replaces this).
 // It sits inside #hk-top, whose height is already reserved, so nothing moves when the header loads.
 const TOP_LINKS = [["index.html", "home6.nav_home"], ["stories.html", "home6.nav_stories"], ["age-groups.html", "home6.nav_ages"], ["our-world.html", "home6.nav_world"], ["gifts.html", "home6.nav_gifts"], ["about.html", "home6.nav_about"], ["help.html", "home6.nav_faq"]];
-function topLinksHtmlAr() {
-  return `<nav class="ssr-links ssr-top" aria-label="${esc(tAr("a11y.main_nav") || "القائمة الرئيسية")}"><ul>${TOP_LINKS.map(([f, k]) => `<li><a href="${f}?lang=ar">${esc(tAr(k))}</a></li>`).join("")}<li><a href="personalize.html">${esc(tAr("home6.cta_create"))}</a></li></ul></nav>`;
+function topLinksHtmlAr() { return topLinksHtml("ar"); }
+function topLinksHtml(l) {
+  const q = l === "ar" ? "?lang=ar" : "";
+  return `<nav class="ssr-links ssr-top" aria-label="${esc(tx(l, "a11y.main_nav") || (l === "ar" ? "القائمة الرئيسية" : "Main"))}"><ul>${TOP_LINKS.map(([f, k]) => `<li><a href="${f}${q}">${esc(tx(l, k))}</a></li>`).join("")}<li><a href="personalize.html">${esc(tx(l, "home6.cta_create"))}</a></li></ul></nav>`;
 }
 
 // Story details the story page fills in the browser (browse.js), served in Arabic.
 const THEME_GROUPS = { courage: ["confidence", "courage", "new"], kindness: ["kindness", "friendship"], emotions: ["emotions", "honesty"], imagination: ["adventure", "bedtime", "imagination"], family: ["family"], growing: ["growing", "change", "screen", "responsibility"] };
 const groupOf = m => Object.keys(THEME_GROUPS).find(g => THEME_GROUPS[g].includes(m)) || null;
+function ageTextL(bands, l) {
+  if (l === "ar") return ageTextAr(bands);
+  const list = (bands || []).map(b => String(b).split("-").map(Number)).filter(p => p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])).sort((x, y) => x[0] - y[0]);
+  if (!list.length) return "";
+  if (list.length === 1) return String(tEnK("a11y.age_range") || "Ages {a}–{b}").replace("{a}", list[0][0]).replace("{b}", list[0][1]);
+  return "Ages " + list.map(p => `${p[0]}–${p[1]}`).join(" · ");
+}
 function ageTextAr(bands) {
   const list = (bands || []).map(b => String(b).split("-").map(Number)).filter(p => p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])).sort((x, y) => x[0] - y[0]);
   if (!list.length) return "";
@@ -471,35 +491,41 @@ function ageTextAr(bands) {
   return "من " + list.map(p => `${p[0]} إلى ${p[1]}`).join(" ومن ") + " سنوات";
 }
 const arPunct = v => String(v || "").replace(/([؀-ۿ)»])\.\s+(?=[؀-ۿ«])/g, "$1، ").replace(/\.\s*$/, "");
-function storyPageAr(html, s, all) {
-  const title = storyTitle(s, "ar");
+function storyPageAr(html, s, all) { return storyPageFill(html, s, all, "ar"); }
+function storyPageFill(html, s, all, l) {
+  const tAr = key => tx(l, key);
+  const ar = l === "ar";
+  const title = storyTitle(s, l);
   const bands = Array.isArray(s.age_bands) ? s.age_bands : String(s.age_ranges || "").split(",").filter(Boolean);
-  const cover = s.cover_image_url_ar || s.cover_image_url || "";
-  const ages = [ageTextAr(bands), s.page_count ? String(tAr("pg.pages")).replace("{n}", s.page_count) : ""].filter(Boolean).join(" · ");
+  const cover = (ar && s.cover_image_url_ar) || s.cover_image_url || "";
+  const ages = [ageTextL(bands, l), s.page_count ? String(tAr("pg.pages")).replace("{n}", s.page_count) : ""].filter(Boolean).join(" · ");
   const chips = [...new Set((s.moments || []).map(m => tAr("home6.th_" + m) || tAr("pg.w_" + (groupOf(m) || "courage"))).filter(Boolean))];
   const learns = [...new Set((s.moments || []).map(m => groupOf(m) || "courage"))].slice(0, 4).map(g => tAr("pg.w_" + g)).filter(Boolean);
-  const happens = arPunct(localized(s.synopsis, "ar") || s.description_ar || storyPremise(s, "ar"));
+  const happens = ar ? arPunct(localized(s.synopsis, "ar") || s.description_ar || storyPremise(s, "ar"))
+    : (localized(s.synopsis, "en") || (s.description && s.description !== storyPremise(s, "en") ? s.description : storyPremise(s, "en")));
   const band = bands[0];
   const inBand = x => { if (!band) return true; const [lo, hi] = band.split("-").map(Number); const bs = (x.age_bands && x.age_bands.length) ? x.age_bands : ["2-8"]; return bs.some(b => { const [a, z] = String(b).split("-").map(Number); return a < hi && z > lo; }); };
   const more = (all || []).filter(x => x.slug !== s.slug && inBand(x)).sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || (a.sort_order || 0) - (b.sort_order || 0)).slice(0, 10);
   html = html.replace('<li aria-current="page" id="crumb-title"></li>', `<li aria-current="page" id="crumb-title">${esc(title)}</li>`);
   html = html.replace('<p class="ages" id="st-ages"></p>', `<p class="ages" id="st-ages">${esc(ages)}</p>`);
   if (chips.length) html = html.replace('<ul class="chips" id="st-chips"></ul>', `<ul class="chips" id="st-chips">${chips.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`);
-  if (cover) html = html.replace('<div class="main" id="st-main"></div>', `<div class="main" id="st-main"><div class="cover"><img src="${esc(cover)}" alt="${esc(String(tAr("lx.cover_alt")).replace("{title}", title))}" fetchpriority="high" decoding="async" width="560" height="560" /></div></div>`);
+  if (cover) html = html.replace('<div class="main" id="st-main"></div>', `<div class="main" id="st-main"><div class="cover"><img src="${esc(cover)}"${/\/story-assets\/[^/]+\/cover(-ar)?\.jpg$/.test(cover) ? coverSrcset(cover, "(max-width: 767px) 100vw, 46vw") : ""} alt="${esc(String(tAr("lx.cover_alt")).replace("{title}", title))}" fetchpriority="high" decoding="async" width="560" height="560" /></div></div>`);
   html = html.replace('<div class="pdp-price" id="st-price"></div>', `<div class="pdp-price" id="st-price"><span class="now">${UAE.now}</span><span class="was"><span class="sr-only">${esc(tAr("lx.was"))} </span>${UAE.was}</span></div>`);
   html = html.replace('<a class="btn btn-primary" id="st-cta" href="personalize.html"', `<a class="btn btn-primary" id="st-cta" href="personalize.html?story=${encodeURIComponent(s.slug)}"`);
   if (happens) html = html.replace('<p class="prose" id="st-happens"></p>', `<p class="prose" id="st-happens">${esc(happens)}</p>`);
   if (learns.length) html = html.replace('<ul class="learn" id="st-learns"></ul>', `<ul class="learn" id="st-learns">${learns.map(l => `<li><span>${esc(l)}</span></li>`).join("")}</ul>`);
-  if (more.length) html = html.replace('<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title"></ul>', `<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title">${cardsHtml(more, "ar")}</ul>`);
+  if (more.length) html = html.replace('<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title"></ul>', `<ul class="track" id="track-more" tabindex="0" aria-labelledby="more-title">${cardsHtml(more, l)}</ul>`);
   return html;
 }
 
 // Homepage: "Their Next Adventure" shelf (newest first, like home6.js) and the shop-by-occasion tiles.
 const OCC_TILES = [["birthday", "gift-birthday.html"], ["eid", "gift-eid-ramadan.html"], ["christmas", "gift-christmas.html"], ["newbaby", "gift-new-sibling.html"], ["school", "gift-first-day-of-school.html"], ["justbecause", "stories.html?occasion=justbecause"]];
-function homeAr(html, all) {
+function homeAr(html, all) { return homeFill(html, all, "ar"); }
+function homeFill(html, all, l) {
+  const tAr = key => tx(l, key);
   if (all && all.length) {
     const newest = [...all].sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")) || (b.sort_order || 0) - (a.sort_order || 0)).slice(0, 6);
-    html = html.replace('<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title"></ul>', `<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title">${cardsHtml(newest, "ar")}</ul>`);
+    html = html.replace('<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title"></ul>', `<ul class="track" id="track-new" tabindex="0" aria-labelledby="new-title">${cardsHtml(newest, l)}</ul>`);
   }
   html = html.replace('<ul class="occ-grid" id="occ-grid"></ul>', `<ul class="occ-grid" id="occ-grid">${OCC_TILES.map(([k, href]) => `<li><a class="occ-tile" href="${href}"><span class="occ-t">${esc(tAr("occ." + k) || k)}</span><small>${esc(tAr("occ." + k + "_d") || "")}</small></a></li>`).join("")}</ul>`);
   return html;
@@ -592,9 +618,15 @@ async function seoPage(request, context, state) {
       const premAr = arNoStops(localized(s.premise, "ar") || s.description_ar || localized(s.card_note, "ar") || "");
       const bands = Array.isArray(s.age_bands) ? s.age_bands : String(s.age_ranges || "").split(",").filter(Boolean);
       const agesEn = bands.length ? ` Ages ${bands.map(b => b.replace("-", "–")).join(", ")}.` : "";
+      // Google shows about 155 characters: the essentials (personalised, ages, hardcover, gift box, delivery) come
+      // first, and the story's first line is added only when it fits whole (SEO report, Nov 2026).
+      const fitDesc = (head, lines, max) => { for (const line of lines) { if (line && `${head} ${line}`.length <= max) return `${head} ${line}`; } return clip(head, max); };
+      const noteEn = localized(s.card_note, "en"), noteAr = arNoStops(localized(s.card_note, "ar"));
+      const lineEn = (premEn.match(/^.+?[.!?](?=\s|$)/) || [premEn])[0].trim();
+      const lineAr = arNoStops((premAr.match(/^.+?[.!?؟](?=\s|$)/) || [premAr])[0].trim());
       meta = lang === "ar"
-        ? { title: `${tAr} | قصة مخصصة باسم طفلك | حكاية`, desc: clip(`قصة ${tAr} المخصصة: ${premAr}، يكون طفلك بطلها باسمه وصورته، بغلاف مقوّى وفي علبة هدية`, 300) }
-        : { title: `${tEn} – Personalised Children's Book | Hikaya`, desc: clip(`${tEn}: a personalised storybook with your child as the hero. ${premEn}${agesEn} Hardcover, gift-boxed, delivered across the UAE and GCC.`, 300) };
+        ? { title: `${tAr} | قصة مخصصة باسم طفلك | حكاية`, desc: fitDesc(`${tAr}: قصة مخصصة يكون طفلك بطلها باسمه وصورته، بغلاف مقوّى في علبة هدية مع التوصيل في الإمارات والخليج`, [lineAr && `- ${lineAr}`, noteAr && `- ${noteAr}`], 160) }
+        : { title: `${tEn} – Personalised Children's Book | Hikaya`, desc: fitDesc(`${tEn}: a personalised storybook starring your child.${agesEn} Hardcover, gift-boxed, UAE & GCC delivery.`, [lineEn, noteEn && noteEn.replace(/[.!]?$/, ".")], 160) };
       html = html.replace('<h1 id="st-title"></h1>', `<h1 id="st-title">${esc(lang === "ar" ? tAr : tEn)}</h1>`);
       html = html.replace('<p class="premise" id="st-premise"></p>', `<p class="premise" id="st-premise">${esc(lang === "ar" ? premAr : premEn)}</p>`);
       image = (lang === "ar" && s.cover_image_url_ar) || s.cover_image_url || null;
@@ -724,6 +756,14 @@ async function seoPage(request, context, state) {
       body = arLinks(body, BASE + file);
       html = html.slice(0, bi) + sh.restore(body);
     }
+  } else {
+    // English pages: story details, homepage shelf and occasion tiles, age-page content and the header
+    // links in the HTML itself (same fills as Arabic, in English). The page scripts redraw them on load.
+    const all = (isStory || file === "index.html" || file === "age-groups.html") ? await loadStories() : null;
+    if (isStory && storyRow) html = storyPageFill(html, storyRow, all, "en");
+    if (file === "index.html") html = homeFill(html, all, "en");
+    if (file === "age-groups.html") html = agePageFill(html, AGE_BANDS.includes(url.searchParams.get("age")) ? url.searchParams.get("age") : "4-6", all, "en");
+    html = html.replace('<div id="hk-top"></div>', `<div id="hk-top">${topLinksHtml("en")}</div>`);
   }
 
   // Pages without their own structured data get a page type and breadcrumb trail.
