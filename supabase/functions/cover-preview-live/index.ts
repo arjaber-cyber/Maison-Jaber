@@ -64,7 +64,7 @@ async function openai(path: string, init: RequestInit) {
 }
 
 // ---------- per-cover facts (who to replace, old name, who must stay) ----------
-const COVERS: Record<string, { en: string; ar: string; who: string; keep?: string; titleEn: string; titleAr: string }> = {
+const COVERS: Record<string, { en: string; ar: string; who: string; keep?: string; titleEn: string; titleAr: string; titleArGirl?: string; arVerb?: [string, string]; adult?: { role: string; who: string; outfit: string } }> = {
   "christmas-star": { en: "Leen", ar: "لين", who: "the child kneeling in the snow holding the glowing star", titleEn: "{N} and the Christmas Star That Went Missing", titleAr: "{N} و نجمة الميلاد التي ضاعت" },
   "christmas-tree-door": { en: "Diana", ar: "ديانا", who: "the child in red pyjamas standing at the round door", keep: "the small white dragon and the little elf in the green coat", titleEn: "{N} and the Christmas Tree Door", titleAr: "{N} وباب شجرة عيد الميلاد" },
   "door-of-a-thousand-stars": { en: "Hadi", ar: "هادي", who: "the child in the starry blue cape sitting on the rock", keep: "the smiling yellow star character", titleEn: "{N} and the Door of a Thousand Stars", titleAr: "{N} وباب الألف نجمة" },
@@ -78,11 +78,12 @@ const COVERS: Record<string, { en: string; ar: string; who: string; keep?: strin
   "the-cracked-blue-vase": { en: "Leo", ar: "ليو", who: "the child at the table with chin on hand", titleEn: "{N} and the Cracked Blue Vase", titleAr: "{N} و المزهرية الزرقاء المكسورة" },
   "the-last-box": { en: "Salma", ar: "سلمى", who: "the child standing by the cardboard box", titleEn: "{N} and the Last Box", titleAr: "{N} و الصندوق الأخير" },
   "to-the-rescue": { en: "Kabir", ar: "كبير", who: "the boy running in the centre in the green jacket", keep: "the girl in overalls, the grandfather in the hat, the woman, and all the animals, unchanged", titleEn: "{N} to the Rescue!", titleAr: "{N} إلى الإنقاذ!" },
+  "uae-national-day": { en: "Jack", ar: "جاك", who: "the young boy sitting on the man's lap, smiling up at him and holding a small UAE flag", keep: "the father (the adult man with the beard, grey polo shirt and UAE-flag scarf) exactly as he is: same face, beard, hair, skin and pose", titleEn: "{N} Celebrates UAE National Day", titleAr: "{N} يحتفل باليوم الوطني الإماراتي", titleArGirl: "{N} تحتفل باليوم الوطني الإماراتي", arVerb: ["يحتفل", "تحتفل"], adult: { role: "father", who: "the father (the adult man with the beard sitting behind the child, holding the child on his lap)", outfit: "the same grey polo shirt and red, green, white and black UAE-flag scarf" } },
   "why-is-baby-looking-at-me": { en: "Eva", ar: "ايفا", who: "the older child lying on the rug in the red top", keep: "the baby, unchanged", titleEn: "{N} Why Is Baby Looking at Me?", titleAr: "{N} لماذا ينظر إليّ المولود الصغير؟" },
 };
 
 // Original character's gender, and a boy's outfit for covers whose original character is a girl.
-const ORIG: Record<string, { g: "girl" | "boy"; boyOutfit?: string }> = {
+const ORIG: Record<string, { g: "girl" | "boy"; boyOutfit?: string; girlOutfit?: string }> = {
   "christmas-star": { g: "girl", boyOutfit: "the same brown winter coat, cream knitted scarf and mittens, with dark brown trousers (nothing pink)" },
   "christmas-tree-door": { g: "girl", boyOutfit: "the same deep-red pyjamas cut as boy's pyjamas: a plain button-up pyjama shirt and straight trousers, no bows or frills" },
   "door-of-a-thousand-stars": { g: "boy" },
@@ -96,8 +97,34 @@ const ORIG: Record<string, { g: "girl" | "boy"; boyOutfit?: string }> = {
   "the-cracked-blue-vase": { g: "boy" },
   "the-last-box": { g: "girl", boyOutfit: "the same striped knitted cardigan over a plain white T-shirt, with jeans, boy's cut" },
   "to-the-rescue": { g: "boy" },
+  "uae-national-day": { g: "boy", girlOutfit: "the same light-blue short-sleeved T-shirt in a girl's cut and the same khaki shorts, the same backpack straps; neat and simple, nothing boyish about the styling" },
   "why-is-baby-looking-at-me": { g: "girl", boyOutfit: "a plain red crew-neck T-shirt in the same red (no ruffles, no dress), with trousers where visible" },
 };
+
+// The full title for this child (Arabic titles with a verb use the feminine form for a girl, e.g. "تحتفل").
+const isGirl = (job: any) => /girl|female/i.test(job?.child_gender ?? job?.gender ?? "");
+function titleFor(c: any, job: any) {
+  if (!c) return "";
+  const ar = job.lang === "ar";
+  return (ar ? (isGirl(job) && c.titleArGirl ? c.titleArGirl : c.titleAr) : c.titleEn).replace("{N}", job.child_name ?? "");
+}
+
+// Gender version of a cover (the "base"): a girl cover made into a boy, or (uae-national-day) a boy cover made into a girl.
+function promptBaseGirl(job: any) {
+  const c = COVERS[job.story_slug]; const o = ORIG[job.story_slug];
+  const ar = job.lang === "ar";
+  const verb = ar && c?.arVerb ? `\n\nTITLE: change only the verb "${c.arVerb[0]}" to the feminine "${c.arVerb[1]}" (same lettering style, colour, size and position). The name "${c.ar}" and every other word stay exactly as they are.` : `\n\nALL text and logos stay exactly as they are (do not change the name or any word).`;
+  return `Image 1 is the finished cover of a children's storybook. Make a version of this exact cover where the main character (${c?.who ?? "the main child"}) is a GIRL of the same age instead of a boy.
+
+Change only that character:
+- A girl with a clearly girlish, sweet face and a neat girl's hairstyle (for example shoulder-length hair or hair tied back); natural, happy expression looking up at the man, exactly like the original.
+- Outfit: ${o?.girlOutfit ?? "the same outfit in a girl's version"}. Nothing boyish in face, hair or styling.
+- Keep exactly the same pose, body position, head angle, gaze, hand positions (still holding the small UAE flag), size and place in the picture.
+${c?.keep ? `Keep ${c.keep}.` : ""}
+Everything else stays pixel-for-pixel the same: background, objects, colours, lighting and the painterly illustration style.${verb}
+
+Square image.`;
+}
 
 // Prompt to turn a girl cover into a boy version (generic boy, outfit adapted). Text stays exactly the same.
 function promptBase(job: any) {
@@ -118,6 +145,8 @@ function outfitRule(job: any) {
   const o = ORIG[job.story_slug];
   const boy = !/girl|female/i.test(job.child_gender ?? "");
   const usingBoyBase = !!job.base_path;
+  if (!boy && o?.g === "boy" && o.girlOutfit && !usingBoyBase)
+    return `CLOTHING: the original character is a boy, so make the outfit a girl's version: ${o.girlOutfit}.`;
   if (boy && o?.g === "girl" && !usingBoyBase)
     return `CLOTHING: the original character is a girl, so convert the outfit to a boy's version: ${o.boyOutfit}. Same colours and overall look, but no dress, skirt, ruffles, frills, lace, bows, hair clips, puffed sleeves or pink.`;
   return `CLOTHING: keep the outfit from image 1 exactly (same garments, colours and patterns). Do not use any clothing from the photo.${boy ? " The outfit must look like a boy's outfit: no dress, skirt, ruffles, frills, lace, bows or hair clips." : ""}`;
@@ -129,13 +158,25 @@ function promptV3(job: any) {
   const ar = job.lang === "ar";
   const girl = /girl|female/i.test(job.child_gender ?? "");
   const oldName = c ? (ar ? c.ar : c.en) : "";
-  const title = c ? (ar ? c.titleAr : c.titleEn).replace("{N}", job.child_name) : "";
+  const title = titleFor(c, job);
+  const adult = !!(job.adult_photo_path && c?.adult);
+  const keepLine = c?.keep && !adult ? `Keep ${c.keep}.` : "";
+  // The father's rules can be replaced per story from app_flags (cover_adult_rule_<slug>) without a redeploy.
+  const adultBlock = adult && job.adultRule ? `\n\n${job.adultRule}` : adult ? `
+
+SECOND PERSON TO CHANGE: also repaint ${c!.adult!.who} as the man in image 3 (a real photo of the child's ${c!.adult!.role}). Image 3 is ONLY a reference for his identity.
+- Keep his exact pose, position, size, head angle, gaze toward the child and hands from image 1, and his outfit: ${c!.adult!.outfit}. Do not use clothing from image 3.
+- Match his face shape, eyes, eyebrows, nose, mouth, ears, skin tone, hair colour and hairline, and his beard or moustache exactly as in image 3 (clean-shaven if he is clean-shaven), and glasses if he wears them. He must look like the same adult age as in image 3.
+- No headwear on him (no ghutra, cap or hat, no sunglasses): show his natural hair; where image 3 hides it, paint short, neat hair matching his eyebrows and beard.
+- Paint him in the same illustration style and light as the rest of the cover, never a pasted photo face.
+- Never mix the two people: the child's features come only from image 2, the father's only from image 3. The child and the father must clearly look like two different people.` : "";
+  const verbRule = ar && girl && c?.arVerb ? ` The verb must be the feminine "${c.arVerb[1]}" (never "${c.arVerb[0]}").` : "";
   const headRule = girl
     ? `If the girl in image 2 wears a hijab, paint a simple, neat hijab in a soft colour that suits the cover. Remove every other kind of headwear (caps, hats, hoods, headbands, hair clips that hide the hair, sunglasses on the head) and show her natural hair as in the photo.`
     : `Remove everything the boy wears on his head in image 2 (cap, hat, ghutra, agal, kufi, hood, headband, sunglasses on the head). Show his natural hair: where the photo hides it, paint short, neat hair matching his visible hair colour, eyebrows and skin tone.`;
-  return `TASK: personalise a children's storybook cover. Image 1 = the finished cover. Image 2 = a real photo of the customer's child, a ${job.child_age}-year-old ${job.child_gender}. Image 2 is ONLY a reference for this child's identity (face, skin tone, hair).
+  return `TASK: personalise a children's storybook cover. Image 1 = the finished cover. Image 2 = a real photo of the customer's child, a ${job.child_age}-year-old ${job.child_gender}. Image 2 is ONLY a reference for this child's identity (face, skin tone, hair).${adult ? " Image 3 = a real photo of the child's father." : ""}
 
-WHO TO CHANGE: only ${c ? c.who : "the main child character"}. ${c?.keep ? `Keep ${c.keep}.` : ""} Everything else in image 1 stays exactly the same: composition, framing, background, objects, colours, lighting, the Hikaya logo and the painterly illustration style.
+WHO TO CHANGE: ${adult ? "" : "only "}${c ? c.who : "the main child character"}${adult ? ", and the father (see below)" : ""}. ${keepLine} Everything else in image 1 stays exactly the same: composition, framing, background, objects, colours, lighting, the Hikaya logo and the painterly illustration style.
 
 MAKE IT LOOK HAND-PAINTED, NOT PASTED:
 - Repaint the whole character (head, hair, neck, hands) in the cover's illustration style. Never paste or blend the photo face.
@@ -149,11 +190,11 @@ LIKENESS (most important): a parent must instantly recognise their child. Match 
 
 ${outfitRule(job)}
 
-HEAD: ${headRule}
+HEAD: ${headRule}${adultBlock}
 
-TITLE TEXT: The title currently contains the name "${oldName}". Erase "${oldName}" completely and write "${job.child_name}" in its place, in exactly the same lettering style, colour, size, effect and position. ${ar ? `Arabic letters, right-to-left, spelled exactly: ${job.child_name} (letter by letter: ${[...job.child_name].join(" ")}).` : `Spelled exactly: ${job.child_name}, in plain letters with no accents, dots, umlauts, stars or decorative marks on or above any letter.`} After the change the full title must read: "${title}". The name "${oldName}" must not appear anywhere. Do not change, move or misspell any other word, the Hikaya logo or any small text.
+TITLE TEXT: The title currently contains the name "${oldName}". Erase "${oldName}" completely and write "${job.child_name}" in its place, in exactly the same lettering style, colour, size, effect and position. ${ar ? `Arabic letters, right-to-left, spelled exactly: ${job.child_name} (letter by letter: ${[...job.child_name].join(" ")}).` : `Spelled exactly: ${job.child_name}, in plain letters with no accents, dots, umlauts, stars or decorative marks on or above any letter.`} After the change the full title must read: "${title}".${verbRule} The name "${oldName}" must not appear anywhere. Do not change, move or misspell any other word, the Hikaya logo or any small text.
 
-OUTPUT: one square image, same as image 1 except the child and the name.`;
+OUTPUT: one square image, same as image 1 except the child${adult ? ", the father" : ""} and the name.`;
 }
 
 // ---------- v4: read the photo first, then paint with an exact description ----------
@@ -255,16 +296,17 @@ async function startCover(job: any) {
 const QA_MODEL = Deno.env.get("COVER_QA_MODEL") ?? "gpt-4.1";
 const PEOPLE_MODEL = Deno.env.get("COVER_PEOPLE_MODEL") ?? "gpt-4.1-mini";
 const toDataUrl = (b: Uint8Array) => { let s = ""; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000)); return "data:image/jpeg;base64," + btoa(s); };
-async function qaJob(job: any, coverBytes?: Uint8Array) {
+async function qaJob(job: any, coverBytes?: Uint8Array, adultPhoto?: Uint8Array | null) {
   try {
     const c = COVERS[job.story_slug]; const ar = job.lang === "ar";
     const oldName = c ? (ar ? c.ar : c.en) : "";
-    const expected = c ? (ar ? c.titleAr : c.titleEn).replace("{N}", job.child_name) : "";
+    const expected = titleFor(c, job);
     const cover = coverBytes ?? (job.base_path ? await download(job.base_path) : await siteCover(job.story_slug, job.lang));
     const photo = await download(job.photo_path);
     const result = await download(job.result_path);
     const boy = !/girl|female/i.test(job.child_gender ?? "");
-    const text = `You are a strict quality checker for a personalised children's storybook cover. Image A = the original cover template. Image B = a photo of the customer's child (${job.child_age}-year-old ${job.child_gender}). Image C = the generated personalised cover.
+    const adult = !!(adultPhoto && c?.adult);
+    const text = `You are a strict quality checker for a personalised children's storybook cover. Image A = the original cover template. Image B = a photo of the customer's child (${job.child_age}-year-old ${job.child_gender}). Image C = the generated personalised cover.${adult ? ` Image D = a photo of the child's ${c!.adult!.role}; in C, ${c!.adult!.who} should now look like the man in D (same pose as in A; judge his face, beard, skin and hair, not his clothes).` : ""}
 Check image C and reply with JSON only:
 {"title_read": "<transcribe the big main title of C exactly as it is painted, letter by letter, in its original script. Copy mistakes exactly; do NOT correct spelling, do NOT add words that are not there. Leave out the small subtitle/tagline and the Hikaya logo>",
  "name_correct": <true if the child's name in C is exactly "${job.child_name}" with correct spelling>,
@@ -275,7 +317,9 @@ Check image C and reply with JSON only:
  "pose_kept": <true if the character's pose and head angle follow image A>,
  "headwear_ok": <true if ${boy ? "the boy wears nothing on his head (no cap, hat, ghutra, hood)" : "the girl wears no headwear except possibly a hijab"}>,
  "outfit_ok": <true if the outfit matches image A's outfit and ${boy ? "looks like a boy's outfit (no dress, ruffles, bows, frills, pink girly details)" : "is appropriate"}>,
- "others_ok": <true if every other person, baby, animal and object looks the same as in image A; false if any of them took the child's face, hair, glasses or features, or changed>,
+ "others_ok": <true if every other person${adult ? " (apart from the father, who was meant to change)" : ""}, baby, animal and object looks the same as in image A; false if any of them took the child's face, hair, glasses or features, or changed>,${adult ? `
+ "adult_likeness": <1-5, would the family instantly recognise the man in D as the father in C: face shape, eyes, nose, skin tone, hair, beard>,
+ "adult_ok": <true if the father in C keeps the pose of A, looks like a natural painted adult (not pasted), wears no cap, hat or sunglasses (a ghutra is fine if the man in D wears one), and does not share the child's face>,` : ""}
  "gender_ok": <true if the personalised character clearly reads as a ${boy ? "boy" : "girl"} (hair, face, clothes)>,
  "gender_look": <1-5, how clearly and naturally the character reads as a ${boy ? "boy (5 = clearly boyish face, build and styling; 1 = looks girly)" : "girl (5 = clearly girlish face and styling; 1 = looks boyish)"}>,
  "skin_tone_photo": <1-6 Fitzpatrick type of the child's face in B>,
@@ -291,6 +335,7 @@ Check image C and reply with JSON only:
         { type: "input_image", image_url: toDataUrl(cover), detail: "low" },
         { type: "input_image", image_url: toDataUrl(photo), detail: "low" },
         { type: "input_image", image_url: toDataUrl(result), detail: "high" },
+        ...(adult ? [{ type: "input_image", image_url: toDataUrl(adultPhoto!), detail: "low" }] : []),
       ] }] }) });
     const j = await r.json();
     if (!r.ok) throw new Error(j?.error?.message ?? `HTTP ${r.status}`);
@@ -306,7 +351,8 @@ Check image C and reply with JSON only:
     q.name_separate = new RegExp(`(^|[\\s\\n])${nm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([\\s\\n!?,.:؟]|$)`, "u").test(raw);
     q.tone_diff = (q.skin_tone_photo != null && q.skin_tone_cover != null) ? Math.abs(q.skin_tone_photo - q.skin_tone_cover) : null;
     q.pass = !!(q.title_match && q.name_separate && !q.old_name_in_title && !q.old_name_visible && q.likeness >= 4 && q.head_natural >= 4 && q.headwear_ok && q.outfit_ok && q.others_ok && q.gender_ok !== false && !q.artifacts
-      && (q.gender_look == null || q.gender_look >= 4) && (q.tone_diff == null || q.tone_diff <= 1) && q.hair_match !== false && q.age_ok !== false);
+      && (q.gender_look == null || q.gender_look >= 4) && (q.tone_diff == null || q.tone_diff <= 1) && q.hair_match !== false && q.age_ok !== false
+      && (!adult || ((q.adult_likeness ?? 0) >= 4 && q.adult_ok !== false)));
     q.ms = Math.round(performance.now() - t0);
     const u = j.usage ?? {};
     const qcost = ((u.input_tokens ?? 0) * 2 + (u.output_tokens ?? 0) * 8) / 1e6;
@@ -416,12 +462,18 @@ async function watermark(bytes: Uint8Array) {
   return await img.encodeJPEG(72);
 }
 
-async function genOnce(job: any, cover: Uint8Array, photo: Uint8Array) {
+// Optional extra prompt rules per story, kept in app_flags (key cover_extra_<slug>), so a cover can be tuned without a redeploy.
+async function storyExtra(key: string) {
+  const { data } = await sb.from("app_flags").select("value").eq("key", key).maybeSingle();
+  return String(data?.value ?? "").trim();
+}
+async function genOnce(job: any, cover: Uint8Array, photo: Uint8Array, adultPhoto?: Uint8Array | null) {
   const fd = new FormData();
   fd.append("model", "gpt-image-2");
-  fd.append("prompt", prompt(job));
+  fd.append("prompt", prompt(job) + (job.extra ? `\n\nEXTRA RULES FOR THIS COVER:\n${job.extra}` : ""));
   fd.append("image[]", new Blob([cover], { type: "image/jpeg" }), "cover.jpg");
   fd.append("image[]", new Blob([photo], { type: "image/jpeg" }), "child.jpg");
+  if (adultPhoto) fd.append("image[]", new Blob([adultPhoto], { type: "image/jpeg" }), "father.jpg");
   fd.append("size", "1024x1024"); fd.append("quality", "medium"); fd.append("n", "1");
   fd.append("output_format", "jpeg"); fd.append("output_compression", "88");
   const { j, ms } = await openai("images/edits", { method: "POST", body: fd });
@@ -429,7 +481,7 @@ async function genOnce(job: any, cover: Uint8Array, photo: Uint8Array) {
 }
 
 const titleOk = (q: any) => !!(q && q.title_match && q.name_separate && !q.old_name_in_title && !q.old_name_visible);
-const score = (q: any) => (q?.pass ? 100 : 0) + (titleOk(q) ? 50 : 0) + (q?.likeness ?? 0) + (q?.head_natural ?? 0) + (q?.gender_look ?? 0);
+const score = (q: any) => (q?.pass ? 100 : 0) + (titleOk(q) ? 50 : 0) + (q?.likeness ?? 0) + (q?.head_natural ?? 0) + (q?.gender_look ?? 0) + (q?.adult_likeness ?? 0);
 
 async function readQa(id: string) {
   const { data } = await sb.from("cover_previews").select("qa,qa_status,qa_cost_usd").eq("id", id).single();
@@ -444,15 +496,19 @@ async function processPreview(row: any) {
     const photo = await download(row.photo_path);
     const job: any = { ...row, variant: "v4r", model: "gpt-image-2", quality: "medium" };
     try { job.analysis = await analyzePhoto(row.photo_path, photo); } catch { /* paint without the description */ }
+    try { job.extra = await storyExtra(`cover_extra_${row.story_slug}`); } catch { /* none */ }
+    try { job.adultRule = await storyExtra(`cover_adult_rule_${row.story_slug}`); } catch { /* default rules */ }
+    const adultPhoto = row.adult_photo_path && COVERS[row.story_slug]?.adult ? await download(row.adult_photo_path) : null;
+    if (!adultPhoto) job.adult_photo_path = null;
     const start = await startCover(job);
     job.base_path = start.base_path;
 
     // attempt 1
-    const g1 = await genOnce(job, start.bytes, photo);
+    const g1 = await genOnce(job, start.bytes, photo, adultPhoto);
     spend += g1.cost;
     const p1 = `site/results/${row.id}.jpg`;
     await upload(p1, g1.bytes);
-    await qaJob({ ...job, result_path: p1 }, start.bytes);
+    await qaJob({ ...job, result_path: p1 }, start.bytes, adultPhoto);
     const r1 = await readQa(row.id); qaSpend += Number(r1?.qa_cost_usd ?? 0);
     let best = { bytes: g1.bytes, path: p1, qa: r1?.qa, status: r1?.qa_status };
 
@@ -460,11 +516,11 @@ async function processPreview(row: any) {
     let retried = false;
     if (r1?.qa_status === "fail") {
       retried = true;
-      const g2 = await genOnce(job, start.bytes, photo);
+      const g2 = await genOnce(job, start.bytes, photo, adultPhoto);
       spend += g2.cost;
       const p2 = `site/results/${row.id}-2.jpg`;
       await upload(p2, g2.bytes);
-      await qaJob({ ...job, result_path: p2 }, start.bytes);
+      await qaJob({ ...job, result_path: p2 }, start.bytes, adultPhoto);
       const r2 = await readQa(row.id); qaSpend += Number(r2?.qa_cost_usd ?? 0);
       if (score(r2?.qa) >= score(r1?.qa)) best = { bytes: g2.bytes, path: p2, qa: r2?.qa, status: r2?.qa_status };
     }
@@ -498,15 +554,94 @@ async function rowByRequest(userId: string, rid: string) {
 // The answer to a "start" whose request was already accepted (or refused) earlier: same outcome, nothing new started.
 function replayStart(row: any, remaining: number) {
   if (row.status === "rejected" || row.status === "blocked") {
-    return json(422, { code: row.error === "photo_group" ? "photo_group" : row.error === "photo_noface" ? "photo_noface" : "photo_rejected", replay: true });
+    const e = String(row.error ?? "");
+    return json(422, { code: ["photo_group", "photo_noface", "adult_group", "adult_noface"].includes(e) ? e : e === "adult_moderation" ? "adult_rejected" : "photo_rejected", replay: true });
   }
   return json(200, { id: row.id, remaining, replay: true });
 }
 
+
+// ======================= private test lab (Nov 2026) =======================
+// Runs the exact customer pipeline on the synthetic test kids, without touching customer limits.
+// Protected by app_flags.cover_lab_token. Rows are saved with source "lab".
+async function labToken() {
+  const { data } = await sb.from("app_flags").select("value").eq("key", "cover_lab_token").maybeSingle();
+  return String(data?.value ?? "");
+}
+async function labBase(id: string, slug: string, lang: string, batch: string) {
+  const t0 = Date.now();
+  try {
+    const cover = await siteCover(slug, lang);
+    const fd = new FormData();
+    const extra = await storyExtra(`cover_base_extra_${slug}`).catch(() => "");
+    fd.append("model", "gpt-image-2"); fd.append("prompt", promptBaseGirl({ story_slug: slug, lang }) + (extra ? `\n\nEXTRA RULES:\n${extra}` : ""));
+    fd.append("image[]", new Blob([cover], { type: "image/jpeg" }), "cover.jpg");
+    fd.append("size", "1024x1024"); fd.append("quality", "high"); fd.append("n", "1");
+    fd.append("output_format", "jpeg"); fd.append("output_compression", "90");
+    const { j } = await openai("images/edits", { method: "POST", body: fd });
+    const path = `lab/results/${id}.jpg`;
+    await upload(path, b64ToBytes(j.data[0].b64_json));
+    await sb.from("cover_previews").update({ status: "ok", result_path: path, ms: Date.now() - t0, cost_usd: cost(j.usage), finished_at: new Date().toISOString() }).eq("id", id);
+  } catch (e: any) {
+    await sb.from("cover_previews").update({ status: "error", error: String(e?.message ?? e).slice(0, 500), finished_at: new Date().toISOString() }).eq("id", id);
+  }
+}
+async function labSheet(batch: string) {
+  const { data } = await sb.from("cover_previews").select("id,story_slug,lang,child_name,child_age,child_gender,status,variant,photo_path,adult_photo_path,result_path,qa,qa_status,error,review_notes,cost_usd")
+    .eq("source", "lab").eq("batch", batch).order("created_at");
+  const sign = async (p: string | null) => p ? (await sb.storage.from(BUCKET).createSignedUrl(p, 3600)).data?.signedUrl ?? "" : "";
+  const esc = (s: unknown) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" } as any)[c]);
+  let rows = "";
+  for (const r of data ?? []) {
+    const q = r.qa ?? {};
+    rows += `<div class="r"><div class="m"><b>${esc(r.child_name)}</b> ${esc(r.child_gender)} ${esc(r.child_age)} ${esc(r.lang)}<br>${esc(r.status)} qa=${esc(r.qa_status)}<br>like=${esc(q.likeness)} head=${esc(q.head_natural)} g=${esc(q.gender_look)} tone ${esc(q.skin_tone_photo)}→${esc(q.skin_tone_cover)} dad=${esc(q.adult_likeness)}/${esc(q.adult_ok)}<br>title: ${esc(q.title_read)}<br>${esc((q.issues ?? []).join("; "))}<br>${esc(r.error ?? "")} ${esc(r.review_notes ?? "")}</div>`
+      + (r.photo_path ? `<img src="${await sign(r.photo_path)}">` : "") + (r.adult_photo_path ? `<img src="${await sign(r.adult_photo_path)}">` : "") + (r.result_path ? `<img src="${await sign(r.result_path)}">` : "") + `</div>`;
+  }
+  return new Response(`<!doctype html><meta charset="utf-8"><style>body{font:12px sans-serif;margin:8px}.r{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}.m{width:260px}img{width:300px;height:300px;object-fit:cover}</style>${rows}`, { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+  if (req.method === "GET") {
+    const u = new URL(req.url); const tok = await labToken();
+    if (!tok || u.searchParams.get("t") !== tok || !u.searchParams.get("sheet")) return json(404, { error: "not found" });
+    return await labSheet(String(u.searchParams.get("sheet")));
+  }
   if (req.method !== "POST") return json(405, { error: "POST only" });
   const body = await req.json().catch(() => ({}));
+  if (typeof body.action === "string" && body.action.startsWith("lab-")) {
+    const tok = await labToken();
+    if (!tok || body.lab_token !== tok) return json(401, { error: "unauthorised" });
+    const slug = String(body.story_slug || ""); const lang = body.lang === "ar" ? "ar" : "en"; const batch = String(body.batch || "lab");
+    if (!COVERS[slug]) return json(400, { error: "story" });
+    const id = crypto.randomUUID();
+    if (body.action === "lab-synth") {
+      // A synthetic test photo (no real person), e.g. a father for covers with an adult.
+      const desc = String(body.description || "").slice(0, 400);
+      const fd = { model: "gpt-image-2", prompt: `A candid, realistic smartphone photo of ${desc}. Natural everyday family snapshot, head and shoulders clearly visible, only one person in the photo, ordinary phone camera quality, no text, no watermark.`, size: "1024x1024", quality: "medium", n: 1, output_format: "jpeg", output_compression: 80 };
+      const { j } = await openai("images/generations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(fd) });
+      const path = `lab/kids/${id}.jpg`;
+      await upload(path, b64ToBytes(j.data[0].b64_json));
+      return json(200, { path });
+    }
+    if (body.action === "lab-base") {
+      await sb.from("cover_previews").insert({ id, source: "lab", batch, story_slug: slug, lang, child_name: "base", child_age: 5, child_gender: "girl", model: "gpt-image-2", quality: "high", variant: "base", status: "running" });
+      EdgeRuntime.waitUntil(labBase(id, slug, lang, batch));
+      return json(202, { id });
+    }
+    if (body.action === "lab-run") {
+      const row = { id, source: "lab", batch, story_slug: slug, lang, child_name: String(body.child_name || ""), child_age: Math.round(Number(body.child_age)), child_gender: body.child_gender === "girl" ? "girl" : "boy",
+        model: "gpt-image-2", quality: "medium", variant: "v4r", photo_path: String(body.photo_path || ""),
+        adult_photo_path: body.adult_photo_path ? String(body.adult_photo_path) : null, adult_role: body.adult_photo_path ? (COVERS[slug].adult?.role ?? null) : null };
+      if (!/^lab\/kids\/[0-9a-f-]{36}\.jpg$/.test(row.photo_path)) return json(400, { error: "photo" });
+      if (row.adult_photo_path && !/^lab\/kids\/[0-9a-f-]{36}\.jpg$/.test(row.adult_photo_path)) return json(400, { error: "adult_photo" });
+      const { error } = await sb.from("cover_previews").insert({ ...row, status: "queued" });
+      if (error) return json(500, { error: error.message });
+      EdgeRuntime.waitUntil(processPreview(row));
+      return json(202, { id });
+    }
+    return json(400, { error: "action" });
+  }
   const f = await flags();
   const user = await userFrom(req, body);
   if (!user) return json(401, { code: "signin" });
@@ -566,6 +701,9 @@ Deno.serve(async (req) => {
     if (!gender) return json(400, { code: "gender" });
     const b64 = String(body.photo_b64 || "").replace(/^data:image\/\w+;base64,/, "");
     if (!b64 || b64.length > 3_500_000) return json(400, { code: "photo" });
+    // Optional photo of the adult on the cover (uae-national-day: Dad). Same checks and privacy as the child's photo.
+    const adultB64 = COVERS[slug].adult ? String(body.adult_photo_b64 || "").replace(/^data:image\/\w+;base64,/, "") : "";
+    if (adultB64.length > 3_500_000) return json(400, { code: "adult_photo" });
 
     const u = await usage(user.id, deviceId, ipHash);
     if ((u?.user_today ?? 0) >= f.perDay || (deviceId && (u?.device_today ?? 0) >= f.perDay) || (ipHash && (u?.ip_today ?? 0) >= f.perDay * 3)) return json(429, { code: "limit", remaining: 0 });
@@ -574,10 +712,13 @@ Deno.serve(async (req) => {
 
     let photo: Uint8Array;
     try { photo = b64ToBytes(b64); } catch { return json(400, { code: "photo" }); }
+    let adultPhoto: Uint8Array | null = null;
+    if (adultB64) { try { adultPhoto = b64ToBytes(adultB64); } catch { return json(400, { code: "adult_photo" }); } }
     const id = crypto.randomUUID();
     const photoPath = `site/photos/${id}.jpg`;
     // Safety check and people count run together, before the photo is stored or a free preview is used.
-    const [ok, people] = await Promise.all([moderate(photo), countPeople(photo)]);
+    const [ok, people, adultOk, adultPeople] = await Promise.all([moderate(photo), countPeople(photo),
+      adultPhoto ? moderate(adultPhoto) : Promise.resolve(true), adultPhoto ? countPeople(adultPhoto) : Promise.resolve(null)]);
     const base = { id, source: "site", user_id: user.id, email, device_id: deviceId || null, ip_hash: ipHash || null, request_id: rid || null,
       story_slug: slug, lang, child_name: name, child_age: age, child_gender: gender, model: "gpt-image-2", quality: "medium", variant: "v4r",
       consent_version: CONSENT_VERSION, consent_at: new Date().toISOString(), batch: "site-" + f.mode };
@@ -589,17 +730,22 @@ Deno.serve(async (req) => {
     if (!ok) return await refuse("photo_moderation", "photo_rejected");
     if (people && Math.max(people.people, people.faces) > 1) return await refuse("photo_group", "photo_group");
     if (people && Math.max(people.people, people.faces) === 0) return await refuse("photo_noface", "photo_noface");
+    if (adultPhoto && !adultOk) return await refuse("adult_moderation", "adult_rejected");
+    if (adultPhoto && adultPeople && Math.max(adultPeople.people, adultPeople.faces) !== 1) return await refuse(Math.max(adultPeople.people, adultPeople.faces) > 1 ? "adult_group" : "adult_noface", Math.max(adultPeople.people, adultPeople.faces) > 1 ? "adult_group" : "adult_noface");
     await upload(photoPath, photo);
-    const { error } = await sb.from("cover_previews").insert({ ...base, status: "queued", photo_path: photoPath });
+    const adultPath = adultPhoto ? `site/photos/${id}-adult.jpg` : null;
+    if (adultPhoto) await upload(adultPath!, adultPhoto);
+    const adultRole = adultPhoto ? COVERS[slug].adult!.role : null;
+    const { error } = await sb.from("cover_previews").insert({ ...base, status: "queued", photo_path: photoPath, adult_photo_path: adultPath, adult_role: adultRole });
     if (error) {
       // Two copies of the same submission arrived together: the first one won, answer with it.
       if (rid) {
         const prev = await rowByRequest(user.id, rid);
-        if (prev) { await sb.storage.from(BUCKET).remove([photoPath]).catch(() => {}); return replayStart(prev, remainingOf(f, await usage(user.id, deviceId, ipHash), deviceId)); }
+        if (prev) { await sb.storage.from(BUCKET).remove([photoPath, ...(adultPath ? [adultPath] : [])]).catch(() => {}); return replayStart(prev, remainingOf(f, await usage(user.id, deviceId, ipHash), deviceId)); }
       }
       return json(500, { code: "error" });
     }
-    EdgeRuntime.waitUntil(processPreview({ ...base, photo_path: photoPath }));
+    EdgeRuntime.waitUntil(processPreview({ ...base, photo_path: photoPath, adult_photo_path: adultPath, adult_role: adultRole }));
     return json(200, { id, remaining: Math.max(0, f.perDay - ((u?.user_today ?? 0) + 1)) });
   }
 
