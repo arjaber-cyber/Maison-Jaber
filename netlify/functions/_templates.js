@@ -40,6 +40,9 @@ const bookLangText = (l, lang) => (l === 'ar' ? tr(lang, 'Arabic book', 'كتا�
    The token is long and random, so only someone who received the email has it. */
 const invoiceUrl = o => o && o.tracking_token ? `${SITE_URL}invoice.html?t=${encodeURIComponent(o.tracking_token)}` : `${SITE_URL}track-order.html`;
 const trackUrl = o => `${SITE_URL}track-order.html${o && o.tracking_token ? '?t=' + encodeURIComponent(o.tracking_token) : ''}`;
+/* Private upload page for a book ordered without a photo, or when we ask for a clearer one (Nov 2026). */
+const photoUrl = o => o && o.tracking_token ? `${SITE_URL}add-photo.html?t=${encodeURIComponent(o.tracking_token)}` : null;
+const waitingPhotos = items => items.filter(i => i && i.photoLater && !(Array.isArray(i.photoPaths) && i.photoPaths.length));
 
 /* Story titles in Arabic, when the caller has the catalogue (slug -> title_ar). */
 function storyTitle(item, lang, arTitles) {
@@ -54,6 +57,19 @@ function itemsBlock(items, lang, arTitles, covers) {
     const msg = i.dedication ? `<br><span style="font-style:italic;">${tr(lang, 'Your message on the first page', 'رسالتك في الصفحة الأولى')}: “${esc(i.dedication)}”</span>` : '';
     return ui.storyCard(esc(storyTitle(i, lang, arTitles)), meta + msg, cover, lang);
   }).join('');
+}
+
+/* Books ordered without a photo: one clear step at the top of the confirmation email. */
+function photoBox(order, items, lang) {
+  const wait = waitingPhotos(items);
+  const url = photoUrl(order);
+  if (!wait.length || !url) return '';
+  const who = [...new Set(wait.map(i => i.childName).filter(Boolean))].map(esc).join(lang === 'ar' ? ' و' : ' &amp; ') || tr(lang, 'your child', 'طفلك');
+  return ui.box(
+    ui.p(tr(lang,
+      `<strong>One more step: add ${who}'s photo ✦</strong><br>You chose to add the photo after ordering. Upload one clear, front-facing photo from the private link below and we'll start illustrating straight away. Your book can't go into production until it arrives.`,
+      `<strong>خطوة أخيرة: أضف صورة ${who} ✦</strong><br>اخترت إضافة الصورة بعد الطلب، فارفع صورة واحدة واضحة من الأمام عبر الرابط الخاص أدناه وسنبدأ الرسم فورًا، ولا يمكن أن يبدأ إنتاج الكتاب قبل وصولها`), lang)
+    + ui.button(url, tr(lang, 'Add the photo now &rarr;', 'أضف الصورة الآن &larr;'), lang));
 }
 
 /* ---------------- Order confirmed (after payment, or a free order via code) ---------------- */
@@ -76,7 +92,10 @@ function orderConfirmed(order, arTitles, covers) {
   const address = [order.address, order.city].filter(Boolean).map(x => `<span dir="auto">${esc(x)}</span>`).join('<br>') + (order.country ? `<br>${esc(countryName(order.country, lang))}` : '');
 
   const hero = who || tr(lang, 'your little one', 'طفلك');
-  const subject = tr(lang,
+  const needPhoto = waitingPhotos(items).length > 0 && !!photoUrl(order);
+  const subject = needPhoto ? tr(lang,
+    `One more step: add ${who ? names[0] + "'s" : 'the'} photo ✦ Order ${order.order_number || ''}`,
+    `خطوة أخيرة: أضف ${who ? 'صورة ' + names[0] : 'الصورة'} ✦ طلب ${order.order_number || ''}`) : tr(lang,
     `${who ? names[0] + "'s" : 'Your'} story has begun ✦ Order ${order.order_number || ''}`,
     `بدأت ${who ? 'قصة ' + names[0] : 'قصتكم'} ✦ طلب ${order.order_number || ''}`);
   const preheader = tr(lang,
@@ -89,6 +108,7 @@ function orderConfirmed(order, arTitles, covers) {
     ui.p(tr(lang,
       `Your order is confirmed, and a little magic is already happening. Our team is now creating ${who ? `<strong>${who}</strong>'s` : 'their'} very own storybook, with ${who ? `<strong>${who}</strong>` : 'them'} as the hero on every page.`,
       `تم تأكيد طلبك وبدأ السحر بالفعل، ويعمل فريقنا الآن على كتاب خاص بـ${who ? `<strong>${who}</strong>` : 'طفلك'}، ليكون البطل في كل صفحة`), lang),
+    photoBox(order, items, lang),
     itemsBlock(items, lang, arTitles, covers),
     ui.rows([
       [tr(lang, 'Order number', 'رقم الطلب'), `<span dir="ltr">${no}</span>`],
@@ -157,6 +177,33 @@ function orderDelivered(order) {
   return {
     subject: tr(lang, `Delivered: your Hikaya book · ${order.order_number || ''}`, `تم التوصيل: كتاب حكاية · ${order.order_number || ''}`),
     html: emailShell(body, { lang, preheader: tr(lang, 'Their story has arrived.', 'وصلت قصتهم') }),
+  };
+}
+
+/* ---------------- "Email me a link to finish later" (photo step, Nov 2026) ----------------
+   savedProgress({ lang, childName, storyTitle, coverUrl, url }) -- sent once, straight away, only because
+   the parent asked for it. Photos are never saved, so the link reopens the page at the photo step. */
+function savedProgress(d) {
+  const lang = d.lang === 'ar' ? 'ar' : 'en';
+  const child = d.childName ? esc(d.childName) : '';
+  const title = d.storyTitle ? esc(d.storyTitle) : '';
+  const body = [
+    ui.eyebrow(tr(lang, '✦ Saved for you', '✦ محفوظ لك'), lang),
+    ui.h(tr(lang, `${child ? child + "'s" : 'Their'} story is waiting`, `قصة ${child || 'طفلك'} بانتظارك`), lang),
+    ui.p(tr(lang,
+      `Here's your private link to pick up where you left off. We've kept ${child ? `<strong>${child}</strong>'s` : 'the'} details${title ? ` for <strong>${title}</strong>` : ''}, so all that's left is a clear photo and a few taps.`,
+      `هذا رابطك الخاص لتكمل من حيث توقفت، فقد حفظنا بيانات ${child ? `<strong>${child}</strong>` : 'طفلك'}${title ? ` لقصة <strong>${title}</strong>` : ''}، ولم يبقَ إلا صورة واضحة وبضع خطوات`), lang),
+    title && d.coverUrl ? ui.storyCard(title, child, d.coverUrl, lang) : '',
+    ui.button(d.url, tr(lang, 'Finish their story &rarr;', 'أكمل قصتهم &larr;'), lang),
+    ui.p(tr(lang,
+      "No good photo right now? You can also order now and add the photo afterwards. For privacy, we never save photos until you order. This link works for 14 days.",
+      'ليس لديك صورة مناسبة الآن؟ يمكنك الطلب الآن وإضافة الصورة بعده، وحفاظًا على خصوصيتك لا نحفظ أي صورة قبل الطلب، ويعمل هذا الرابط لمدة 14 يومًا'), lang, true),
+    ui.p(tr(lang, "You're getting this email because you asked for this link. We won't send anything else.", 'وصلتك هذه الرسالة لأنك طلبت هذا الرابط، ولن نرسل لك أي شيء آخر'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, `Your saved Hikaya story${child ? ' for ' + d.childName : ''}`, `قصتك المحفوظة في حكاية${child ? ' لـ' + d.childName : ''}`),
+    html: emailShell(body, { lang, preheader: tr(lang, 'Your private link to finish ordering.', 'رابطك الخاص لإكمال الطلب') }),
   };
 }
 
@@ -346,13 +393,16 @@ function photoRequest(order, note) {
       `We've paused order <strong dir="ltr">${esc(order.order_number || '')}</strong> before printing because the photo${who ? ` of <strong>${who}</strong>` : ''} isn't clear enough for us to illustrate them well. We'd rather ask than print a book you're not happy with.`,
       `أوقفنا الطلب رقم <strong dir="ltr">${esc(order.order_number || '')}</strong> قبل الطباعة لأن صورة ${who ? `<strong>${who}</strong>` : 'طفلك'} ليست واضحة بما يكفي لنرسمه بشكل جميل، ونفضّل أن نسألك على أن نطبع كتابًا لا يرضيك`), lang),
     note ? ui.box(ui.p(`<strong>${tr(lang, 'From our team:', 'ملاحظة من فريقنا:')}</strong> ${esc(note)}`, lang).replace('margin:0 0 14px', 'margin:0')) : '',
-    ui.p(tr(lang, '<strong>Just reply to this email with a new photo.</strong> The best photos:', '<strong>ردّ على هذا البريد بصورة جديدة فقط</strong>، وأفضل الصور هي التي:'), lang),
+    photoUrl(order)
+      ? ui.p(tr(lang, '<strong>Upload a new photo from your private link, or simply reply to this email with it.</strong> The best photos:', '<strong>ارفع صورة جديدة من رابطك الخاص، أو ردّ على هذا البريد بها</strong>، وأفضل الصور هي التي:'), lang)
+      : ui.p(tr(lang, '<strong>Just reply to this email with a new photo.</strong> The best photos:', '<strong>ردّ على هذا البريد بصورة جديدة فقط</strong>، وأفضل الصور هي التي:'), lang),
     `<ul style="margin:0 0 16px; padding-${lang === 'ar' ? 'right' : 'left'}:20px; font-family:${lang === 'ar' ? 'Cairo,Tahoma,Arial,sans-serif' : 'Manrope,Arial,sans-serif'}; font-size:14px; line-height:1.55; color:#5E4A3D;">
       ${tip('Show their face clearly, looking toward the camera', 'يظهر فيها الوجه بوضوح وينظر نحو الكاميرا')}
       ${tip('Are well-lit, without harsh shadows', 'تكون الإضاءة فيها جيدة بلا ظلال قوية')}
       ${tip('Aren\'t blurry or taken from far away', 'لا تكون ضبابية أو ملتقطة من بعيد')}
       ${tip('Have nothing covering the face, and only your child in them', 'لا يغطي الوجه فيها شيء، ويظهر فيها طفلك وحده')}
     </ul>`,
+    photoUrl(order) ? ui.button(photoUrl(order), tr(lang, 'Upload a new photo &rarr;', 'ارفع صورة جديدة &larr;'), lang) : '',
     ui.p(tr(lang,
       'As soon as we have it we carry on, and we\'ll keep your delivery as close to the original date as we can. You can also send it on WhatsApp.',
       'سنكمل العمل فور وصولها، وسنحرص على أن يبقى موعد التوصيل قريبًا من الموعد الأصلي قدر الإمكان، ويمكنك أيضًا إرسالها عبر واتساب'), lang, true),
@@ -521,4 +571,4 @@ function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
   };
 }
 
-module.exports = { trackCode, photoRequest, delayNotice, reviewRequest, feedbackThanks, feedbackAlert, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };
+module.exports = { savedProgress, trackCode, photoRequest, delayNotice, reviewRequest, feedbackThanks, feedbackAlert, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };

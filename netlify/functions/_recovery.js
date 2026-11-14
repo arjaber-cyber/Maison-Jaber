@@ -53,6 +53,7 @@ function sanitizeItem(i) {
     childNameTyped: str(i.childNameTyped, 60),
     photoConsent: i.photoConsent === true,
     photoConsentAt: str(i.photoConsentAt, 40),
+    photoLater: i.photoLater === true,
     ageEdition: str(i.ageEdition, 10),
     childAge: str(i.childAge, 10),
     gender: str(i.gender, 20),

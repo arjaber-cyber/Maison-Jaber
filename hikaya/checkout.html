@@ -477,6 +477,11 @@
       <li><b data-i18n="lx.od_n2_t">We create and print their book</b><span data-i18n="lx.od_n2">Our team illustrates your child into the story and prints the hardcover. Need a change? Contact us quickly, before production starts.</span></li>
       <li><b data-i18n="lx.od_n3_t">Packed and delivered</b><span data-i18n="lx.od_n3">Gift-boxed and delivered to your door. Track progress any time with your order number and email.</span></li>
     </ol>
+    <div class="od-photo" id="od-photo" hidden>
+      <b id="od-photo-t"></b>
+      <p data-i18n="ph.od_d">We start illustrating as soon as it arrives. We've emailed you this link too.</p>
+      <a class="btn btn-primary" id="od-photo-btn" href="#" data-i18n="ph.od_btn">Add the photo now</a>
+    </div>
     <div class="od-ctas">
       <a class="btn btn-primary" href="track-order.html" id="od-track" data-i18n="pg.od_track">Track Your Order</a>
       <a class="btn btn-secondary" href="stories.html" data-i18n="pg.od_more">Explore More Stories</a>
@@ -1525,7 +1530,7 @@
       infoConfirmed: true,
       marketingOptIn: document.getElementById('marketing-optin').checked,
       paymentMethod: selectedPaymentMethod,
-      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childNameTyped: item.childNameTyped || item.childName, photoConsent: !!item.photoConsent, photoConsentAt: item.photoConsentAt || null, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', siteLang: (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0, supportingChoice: item.supportingChoice || null, supportingCharacters: item.supportingCharacters || [], supportingPhotoConsent: !!item.supportingPhotoConsent })),
+      items: cart.map(item => ({ story: item.story, slug: item.slug || null, childName: item.childName, childNameTyped: item.childNameTyped || item.childName, photoConsent: !!item.photoConsent, photoConsentAt: item.photoConsentAt || null, photoLater: !!item.photoLater, childAge: item.childAge || null, ageEdition: item.ageEdition, gender: item.gender, dedication: item.dedication, bookLanguage: item.bookLanguage || 'en', siteLang: (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en', photoPaths: item.photoPaths || [], extraCharacterPhotoPaths: item.extraCharacterPhotoPaths || [], extraCharacterName: item.extraCharacterName || null, extraCharacterFeeAed: item.extraCharacterFeeAed || 0, supportingChoice: item.supportingChoice || null, supportingCharacters: item.supportingCharacters || [], supportingPhotoConsent: !!item.supportingPhotoConsent })),
       bundleDiscountPct: finalPricing.bundlePct,
       promoCode: appliedPromo ? appliedPromo.code : null,
       amount: finalPricing.total,
@@ -1542,7 +1547,7 @@
     // Every book must have photo permission, and its name and message must be in the book's language.
     const AR_RE = /[\u0600-\u06FF]/, LATIN_RE = /[A-Za-z]/;
     const badItem = order.items.find(i => {
-      if (!i.photoConsent) return true;
+      if (!i.photoConsent && !i.photoLater) return true;
       const n = String(i.childName || '');
       return i.bookLanguage === 'ar' ? (!AR_RE.test(n) || LATIN_RE.test(n)) : (!LATIN_RE.test(n) || AR_RE.test(n));
     });
@@ -1730,6 +1735,14 @@ window.hkShowOrderDone = function (order, orderNumber, trackingToken) {
   document.getElementById('od-sub').textContent = who ? t('pg.od_sub', 'Thank you for creating a Hikaya story for {name}.').replace('{name}', who) : t('pg.od_sub_plain', 'Thank you for creating a Hikaya story.');
   document.getElementById('od-number').textContent = orderNumber || t('pg.od_number_email', 'Sent to your email');
   if (trackingToken) document.getElementById('od-track').href = 'track-order.html?t=' + encodeURIComponent(trackingToken);
+  /* Book ordered without a photo (Nov 2026): the upload link, right here and in the confirmation email. */
+  var later = (order.items || []).filter(function (i) { return i && i.photoLater; });
+  if (later.length && trackingToken) {
+    var ln = later.map(function (i) { return i.childName; }).filter(Boolean).join(' & ') || t('lx.st_child', 'your child');
+    document.getElementById('od-photo-t').textContent = t('ph.od_t', "One more step: add {name}'s photo").replace('{name}', ln);
+    document.getElementById('od-photo-btn').href = 'add-photo.html?t=' + encodeURIComponent(trackingToken);
+    document.getElementById('od-photo').hidden = false;
+  }
   /* Show only the confirmation inside <main> (the site header and footer stay). */
   var main = document.getElementById('main');
   Array.prototype.forEach.call(main.children, function (el) { if (el.id !== 'order-done') el.hidden = true; });

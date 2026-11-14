@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Add your child's photo — Hikaya by Maison Jaber</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="referrer" content="no-referrer" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;500;600;700&family=Amiri:wght@700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js" defer></script>
+<style>
+  :root { --page:#F3EADF; --card:#FFFCF7; --line:#EEE4D6; --ink:#261C17; --soft:#5E4A3D; --mute:#8E7A68; --btn:#573624; --ok:#3d5a26; --err:#B5563B; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--page); color:var(--ink); font-family:Manrope, 'Helvetica Neue', Arial, sans-serif; font-size:15px; line-height:1.6; }
+  html[dir=rtl] body { font-family:Cairo, Tahoma, Arial, sans-serif; }
+  .wrap { max-width:520px; margin:0 auto; padding:22px 16px 40px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px 20px; }
+  .logo { display:block; margin:0 auto 6px; width:104px; height:auto; }
+  .for { text-align:center; font-size:12.5px; color:var(--mute); margin:0 0 14px; }
+  h1 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:600; font-size:25px; line-height:1.2; margin:0 0 6px; text-align:center; }
+  html[dir=rtl] h1 { font-family:Amiri, serif; font-weight:700; font-size:23px; }
+  .lede { text-align:center; color:var(--soft); font-size:14px; margin:0 0 16px; }
+  .safe { background:#F6EFE4; border:1px solid #EADCC8; border-radius:12px; padding:12px 14px; font-size:13px; margin:0 0 16px; }
+  .safe b { display:block; font-size:14px; margin:0 0 4px; }
+  .safe ul { margin:0; padding:0; list-style:none; }
+  .safe li { position:relative; padding-inline-start:20px; margin:0 0 2px; font-weight:600; }
+  .safe li::before { content:'✓'; position:absolute; inset-inline-start:2px; color:var(--ok); font-weight:800; }
+  .book { border:1px solid var(--line); border-radius:14px; padding:14px; margin:0 0 12px; background:#fff; }
+  .book h2 { font-size:15.5px; margin:0 0 2px; }
+  .book .meta { font-size:12.5px; color:var(--mute); margin:0 0 10px; }
+  .book.done { background:#F3F7EE; border-color:#D5E3C8; }
+  .book.done .state { color:var(--ok); font-weight:700; font-size:14px; }
+  .pick { display:block; position:relative; border:2px dashed #D8C5B3; border-radius:12px; padding:18px 12px; text-align:center; cursor:pointer; background:var(--card); font-weight:700; }
+  .pick input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+  .pick small { display:block; font-weight:500; color:var(--mute); font-size:12px; margin-top:2px; }
+  .prev { display:flex; align-items:center; gap:10px; margin:10px 0 0; }
+  .prev img { width:64px; height:64px; object-fit:cover; border-radius:10px; }
+  .prev span { font-size:13px; font-weight:700; }
+  .prev span.bad { color:var(--err); }
+  .prev span.good { color:var(--ok); }
+  details { font-size:13px; margin:8px 0 0; color:var(--soft); }
+  details summary { cursor:pointer; font-weight:700; }
+  details ul { margin:6px 0 0; padding-inline-start:18px; }
+  .consent { display:flex; gap:8px; align-items:flex-start; font-size:12.5px; color:var(--soft); margin:12px 0 0; }
+  .consent input { margin-top:3px; flex:0 0 auto; width:17px; height:17px; }
+  .btn { display:block; width:100%; text-align:center; background:var(--btn); color:#FFFCF7; border:0; border-radius:999px; padding:13px; font:inherit; font-size:15px; font-weight:700; cursor:pointer; margin:12px 0 0; text-decoration:none; }
+  .btn[disabled] { opacity:.55; cursor:default; }
+  .btn.ghost { background:none; color:var(--btn); border:1.5px solid var(--btn); }
+  .err { color:var(--err); font-size:13px; font-weight:600; margin:8px 0 0; }
+  .bar { height:6px; background:var(--line); border-radius:6px; overflow:hidden; margin:10px 0 0; }
+  .bar span { display:block; height:100%; width:0; background:var(--ok); transition:width .2s; }
+  .small { font-size:12.5px; color:var(--mute); text-align:center; margin:10px 0 0; }
+  .center { text-align:center; }
+  .hide { display:none !important; }
+  .small a { color:var(--soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <a href="index.html"><img class="logo" src="images/logo-hikaya.png" alt="Hikaya by Maison Jaber" /></a>
+
+    <div id="loading" class="center small" style="padding:30px 0" data-t="loading">Loading…</div>
+
+    <div id="bad" class="hide center">
+      <h1 data-t="badTitle">This link isn't working</h1>
+      <p class="small" data-t="badText">Please open the link from your Hikaya email again, or send the photo to us on WhatsApp.</p>
+      <a class="btn" href="https://wa.me/971508011769" data-t="whatsapp">WhatsApp us</a>
+    </div>
+
+    <div id="closed" class="hide center">
+      <h1 data-t="closedTitle">Your book is already in production</h1>
+      <p class="small" data-t="closedText">This order can't take new photos any more. If something needs changing, message us on WhatsApp and we'll help.</p>
+      <a class="btn" href="https://wa.me/971508011769" data-t="whatsapp">WhatsApp us</a>
+    </div>
+
+    <div id="main" class="hide">
+      <p class="for" id="for"></p>
+      <h1 id="title"></h1>
+      <p class="lede" data-t="lede">One clear, front-facing photo is all we need. We start illustrating as soon as it arrives.</p>
+      <div class="safe">
+        <b data-t="safeT">Your child's photo is safe with us</b>
+        <ul>
+          <li data-t="safe1">Used only to illustrate their book, never for ads or anything else</li>
+          <li data-t="safe2">Stored privately, never made public or sold</li>
+          <li data-t="safe3">Deleted automatically within 15 days</li>
+        </ul>
+      </div>
+      <div id="books"></div>
+      <p class="small"><a href="privacy.html" data-t="privacy">Privacy policy</a> · <a href="https://wa.me/971508011769" data-t="help">Need help? WhatsApp us</a></p>
+    </div>
+
+    <div id="alldone" class="hide center">
+      <h1 data-t="doneTitle">Thank you, we've got it 💛</h1>
+      <p class="small" id="doneText"></p>
+      <a class="btn" id="trackBtn" href="track-order.html" data-t="track">Follow your story</a>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var T = {
+    en: {
+      loading: 'Loading…', badTitle: "This link isn't working", badText: 'Please open the link from your Hikaya email again, or send the photo to us on WhatsApp.', whatsapp: 'WhatsApp us',
+      closedTitle: 'Your book is already in production', closedText: "This order can't take new photos any more. If something needs changing, message us on WhatsApp and we'll help.",
+      forOrder: function (n) { return 'Order ' + n; },
+      title1: function (c) { return "Add " + (c || 'your child') + "'s photo"; }, titleN: 'Add the photos for your books',
+      lede: 'One clear, front-facing photo is all we need. We start illustrating as soon as it arrives.',
+      safeT: "Your child's photo is safe with us", safe1: 'Used only to illustrate their book, never for ads or anything else', safe2: 'Stored privately, never made public or sold', safe3: 'Deleted automatically within 15 days',
+      privacy: 'Privacy policy', help: 'Need help? WhatsApp us',
+      bookMeta: function (s, l) { return s + ' · ' + (l === 'ar' ? 'Arabic book' : 'English book'); },
+      pick: 'Tap to choose a photo', pickSub: 'JPG, PNG or WebP', change: 'Choose a different photo',
+      tips: 'What makes a great photo', tip1: 'Their face is clear, looking toward the camera', tip2: 'Good light, no harsh shadows', tip3: "Not blurry or taken from far away", tip4: 'Nothing covering the face, and only your child in it',
+      checking: 'Checking the photo…', good: 'Looks good ✓', noFace: "We couldn't find a clear face in this photo. Please try another.", blocked: "This photo can't be used. Please try a different one.",
+      consent: "I authorise Hikaya by Maison Jaber to use this photo only to create my child's personalised book. It will not be used for any other purpose, and it is automatically deleted from our records within 15 days.",
+      upload: function (c) { return 'Send ' + (c || 'the') + (c ? "'s" : '') + ' photo'; }, uploading: 'Saving securely…',
+      received: 'Photo received ✓', addAnother: 'Add a second photo (optional)', received2: 'Both photos received ✓',
+      errSize: 'That photo is too large. Please try a smaller one.', errType: 'Please choose a JPG, PNG or WebP photo.', errClosed: 'This order is already in production, so it can no longer take photos. Please WhatsApp us.', errServer: "We couldn't save the photo. Please check your connection and try again.",
+      doneTitle: "Thank you, we've got it 💛", doneText: function (c) { return 'Our team will now illustrate ' + (c || 'your child') + " into the story. We'll email you as your book moves along."; },
+      track: 'Follow your story'
+    },
+    ar: {
+      loading: 'جارٍ التحميل…', badTitle: 'هذا الرابط لا يعمل', badText: 'افتح الرابط من رسالة حكاية مرة أخرى، أو أرسل الصورة إلينا عبر واتساب', whatsapp: 'راسلنا على واتساب',
+      closedTitle: 'كتابك قيد الإنتاج بالفعل', closedText: 'لم يعد بالإمكان إضافة صور لهذا الطلب، وإذا احتجت إلى تعديل فراسلنا على واتساب وسنساعدك',
+      forOrder: function (n) { return 'الطلب ' + n; },
+      title1: function (c) { return 'أضف صورة ' + (c || 'طفلك'); }, titleN: 'أضف صور كتبك',
+      lede: 'كل ما نحتاجه صورة واحدة واضحة من الأمام، ونبدأ الرسم فور وصولها',
+      safeT: 'صورة طفلك في أمان معنا', safe1: 'نستخدمها فقط لرسم كتابه، ولا تُستخدم أبدًا في الإعلانات أو لأي غرض آخر', safe2: 'تُحفظ بشكل خاص، ولا تُنشر ولا تُباع أبدًا', safe3: 'تُحذف تلقائيًا خلال 15 يومًا',
+      privacy: 'سياسة الخصوصية', help: 'تحتاج مساعدة؟ راسلنا على واتساب',
+      bookMeta: function (s, l) { return s + ' · ' + (l === 'ar' ? 'كتاب بالعربية' : 'كتاب بالإنجليزية'); },
+      pick: 'اضغط لاختيار صورة', pickSub: 'JPG أو PNG أو WebP', change: 'اختر صورة أخرى',
+      tips: 'ما الذي يجعل الصورة مثالية', tip1: 'يظهر الوجه بوضوح وينظر نحو الكاميرا', tip2: 'إضاءة جيدة بلا ظلال قوية', tip3: 'ليست ضبابية أو ملتقطة من بعيد', tip4: 'لا يغطي الوجه شيء، ويظهر فيها طفلك وحده',
+      checking: 'نتحقق من الصورة…', good: 'الصورة مناسبة ✓', noFace: 'لم نجد وجهًا واضحًا في هذه الصورة، جرّب صورة أخرى', blocked: 'لا يمكن استخدام هذه الصورة، جرّب صورة مختلفة',
+      consent: 'أوافق على أن تستخدم حكاية من ميزون جابر هذه الصورة فقط لصنع كتاب طفلي المخصص، ولن تُستخدم لأي غرض آخر، وتُحذف تلقائيًا من سجلاتنا خلال 15 يومًا',
+      upload: function (c) { return 'أرسل صورة ' + (c || 'طفلك'); }, uploading: 'نحفظها بأمان…',
+      received: 'وصلت الصورة ✓', addAnother: 'أضف صورة ثانية (اختياري)', received2: 'وصلت الصورتان ✓',
+      errSize: 'الصورة كبيرة جدًا، جرّب صورة أصغر', errType: 'اختر صورة بصيغة JPG أو PNG أو WebP', errClosed: 'هذا الطلب قيد الإنتاج ولم يعد يقبل صورًا، راسلنا على واتساب', errServer: 'تعذّر حفظ الصورة، تحقق من الاتصال وحاول مرة أخرى',
+      doneTitle: 'شكرًا لك، وصلتنا الصورة 💛', doneText: function (c) { return 'سيرسم فريقنا الآن ' + (c || 'طفلك') + ' في القصة، وسنراسلك بالبريد مع كل مرحلة'; },
+      track: 'تابع رحلة الكتاب'
+    }
+  };
+  var qs = new URLSearchParams(location.search);
+  var token = qs.get('t') || '';
+  var lang = qs.get('lang') === 'ar' ? 'ar' : 'en';
+  var info = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var t = function (k) { return T[lang][k]; };
+  var esc = function (v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  function show(id) { ['loading', 'bad', 'closed', 'main', 'alldone'].forEach(function (x) { $(x).classList.toggle('hide', x !== id); }); }
+  function applyLang() {
+    var d = document.documentElement; d.lang = lang; d.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-t]').forEach(function (el) { var v = t(el.getAttribute('data-t')); if (typeof v === 'string') el.textContent = v; });
+    document.title = lang === 'ar' ? 'أضف صورة طفلك — حكاية' : "Add your child's photo — Hikaya by Maison Jaber";
+  }
+  function track(name, p) { try { if (window.gtag) window.gtag('event', name, p || {}); } catch (e) {} }
+
+  /* Free photo checks, same as the order page: a face is visible (in the browser) and the content check. */
+  var faceReady = null;
+  function loadFace() {
+    if (faceReady) return faceReady;
+    faceReady = new Promise(function (resolve) {
+      var tries = 0;
+      (function wait() {
+        if (window.faceapi) {
+          window.faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights').then(function () { resolve(true); }, function () { resolve(false); });
+        } else if (tries++ < 50) setTimeout(wait, 200); else resolve(false);
+      })();
+    });
+    return faceReady;
+  }
+  function hasFace(img) {
+    return loadFace().then(function (ok) {
+      if (!ok) return true; // fail open, never block a real parent over a loading problem
+      return window.faceapi.detectAllFaces(img, new window.faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.4 })).then(function (d) { return d.length > 0; }, function () { return true; });
+    });
+  }
+  function resize(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, 2400 / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { resolve({ blob: b || file, img: img, url: url }); }, 'image/jpeg', 0.9);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('read')); };
+      img.src = url;
+    });
+  }
+  function toB64(blob) { return new Promise(function (resolve, reject) { var r = new FileReader(); r.onload = function () { resolve(String(r.result).split(',')[1]); }; r.onerror = reject; r.readAsDataURL(blob); }); }
+  function moderate(b64) {
+    return fetch('/.netlify/functions/moderate-photo', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ base64Data: b64, mimeType: 'image/jpeg' }) })
+      .then(function (r) { return r.ok ? r.json() : {}; }).then(function (d) { return d.approved !== false; }, function () { return true; });
+  }
+
+  function renderBooks() {
+    var books = info.books || [];
+    var todo = books.filter(function (b) { return b.needsPhoto; });
+    var names = todo.map(function (b) { return b.childName; }).filter(Boolean);
+    $('for').textContent = t('forOrder')(info.orderNumber || '');
+    $('title').textContent = todo.length > 1 ? t('titleN') : t('title1')(names[0] || (books.length === 1 ? books[0].childName : ''));
+    // Show books still waiting first; with none waiting (e.g. a clearer photo was asked for), offer every open book.
+    var list = todo.length ? todo : books.filter(function (b) { return !b.full; });
+    $('books').innerHTML = '';
+    list.forEach(function (b) { $('books').appendChild(bookCard(b)); });
+    if (!list.length) finish();
+  }
+
+  function bookCard(b) {
+    var el = document.createElement('div'); el.className = 'book';
+    el.innerHTML = '<h2>' + esc(b.childName || '') + '</h2><p class="meta">' + esc(t('bookMeta')(b.story || '', b.bookLanguage)) + '</p>' +
+      '<label class="pick"><input type="file" accept="image/jpeg,image/png,image/webp,image/*" /><span class="pk">' + esc(t('pick')) + '</span><small>' + esc(t('pickSub')) + '</small></label>' +
+      '<details><summary>' + esc(t('tips')) + '</summary><ul><li>' + esc(t('tip1')) + '</li><li>' + esc(t('tip2')) + '</li><li>' + esc(t('tip3')) + '</li><li>' + esc(t('tip4')) + '</li></ul></details>' +
+      '<div class="prev hide"><img alt="" /><span></span></div>' +
+      '<label class="consent hide"><input type="checkbox" /><span>' + esc(t('consent')) + '</span></label>' +
+      '<div class="bar hide"><span></span></div><p class="err hide"></p>' +
+      '<button type="button" class="btn hide" disabled>' + esc(t('upload')(b.childName)) + '</button>';
+    var input = el.querySelector('input[type=file]'), prev = el.querySelector('.prev'), img = prev.querySelector('img'), state = prev.querySelector('span');
+    var consentBox = el.querySelector('.consent'), consent = consentBox.querySelector('input'), btn = el.querySelector('.btn'), err = el.querySelector('.err'), bar = el.querySelector('.bar'), fill = bar.querySelector('span');
+    var ready = null, sent = b.hasPhoto ? 1 : 0;
+    function setErr(m) { err.textContent = m || ''; err.classList.toggle('hide', !m); }
+    function sync() { btn.disabled = !(ready && consent.checked); }
+    consent.addEventListener('change', sync);
+    input.addEventListener('change', function () {
+      var f = input.files && input.files[0]; input.value = '';
+      if (!f) return;
+      setErr(''); ready = null; sync();
+      if (!/^image\//.test(f.type)) { setErr(t('errType')); return; }
+      prev.classList.remove('hide'); state.className = ''; state.textContent = t('checking');
+      el.querySelector('.pk').textContent = t('change');
+      resize(f).then(function (r) {
+        img.src = r.url;
+        return hasFace(r.img).then(function (face) {
+          if (!face) { state.className = 'bad'; state.textContent = t('noFace'); return; }
+          return toB64(r.blob).then(function (b64) {
+            return moderate(b64).then(function (ok) {
+              if (!ok) { state.className = 'bad'; state.textContent = t('blocked'); return; }
+              ready = b64; state.className = 'good'; state.textContent = t('good');
+              consentBox.classList.remove('hide'); btn.classList.remove('hide'); sync();
+            });
+          });
+        });
+      }).catch(function () { state.className = 'bad'; state.textContent = t('errType'); });
+    });
+    btn.addEventListener('click', function () {
+      if (!ready || !consent.checked) return;
+      btn.disabled = true; btn.textContent = t('uploading'); setErr('');
+      bar.classList.remove('hide'); fill.style.width = '0';
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/.netlify/functions/add-order-photo'); xhr.setRequestHeader('Content-Type', 'application/json'); xhr.timeout = 90000;
+      xhr.upload.onprogress = function (e) { if (e.lengthComputable) fill.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
+      xhr.onload = function () {
+        var d = {}; try { d = JSON.parse(xhr.responseText || '{}'); } catch (e) {}
+        if (xhr.status === 200 && d.ok) {
+          sent++; b.needsPhoto = false; b.hasPhoto = true; b.done = true;
+          track('photo_later_uploaded', { photos: sent });
+          el.className = 'book done';
+          el.innerHTML = '<h2>' + esc(b.childName || '') + '</h2><p class="meta">' + esc(t('bookMeta')(b.story || '', b.bookLanguage)) + '</p><p class="state">' + esc(sent >= 2 ? t('received2') : t('received')) + '</p>';
+          if (sent < 2) {
+            var more = document.createElement('button'); more.type = 'button'; more.className = 'btn ghost'; more.textContent = t('addAnother');
+            more.addEventListener('click', function () { b.hasPhoto = true; var fresh = bookCard(b); fresh.dataset.sent = sent; el.replaceWith(fresh); });
+            el.appendChild(more);
+          }
+          var waiting = (info.books || []).some(function (x) { return x.needsPhoto; });
+          if (!waiting) setTimeout(finish, 600);
+          return;
+        }
+        bar.classList.add('hide'); btn.disabled = false; btn.textContent = t('upload')(b.childName);
+        setErr(d.error === 'size' || xhr.status === 413 ? t('errSize') : d.error === 'type' ? t('errType') : d.error === 'closed' || d.error === 'full' ? t('errClosed') : t('errServer'));
+      };
+      xhr.onerror = xhr.ontimeout = function () { bar.classList.add('hide'); btn.disabled = false; btn.textContent = t('upload')(b.childName); setErr(t('errServer')); };
+      xhr.send(JSON.stringify({ t: token, i: b.i, base64Data: ready, mimeType: 'image/jpeg', consent: true }));
+    });
+    if (el.dataset) el.dataset.sent = sent;
+    return el;
+  }
+
+  var finished = false;
+  function finish() {
+    if (finished) return; finished = true;
+    var names = (info.books || []).map(function (b) { return b.childName; }).filter(Boolean);
+    $('doneText').textContent = t('doneText')(names.join(lang === 'ar' ? ' و' : ' & '));
+    $('trackBtn').href = 'track-order.html?t=' + encodeURIComponent(token);
+    show('alldone'); window.scrollTo(0, 0);
+  }
+
+  applyLang();
+  if (!token) { show('bad'); return; }
+  loadFace();
+  fetch('/.netlify/functions/add-order-photo?t=' + encodeURIComponent(token))
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      if (!j || j.status === 'not_found') { show('bad'); return; }
+      if (!qs.get('lang')) lang = j.lang === 'ar' ? 'ar' : 'en';
+      applyLang();
+      if (j.status === 'closed') { show('closed'); return; }
+      info = j; renderBooks(); if (!finished) show('main');
+    })
+    .catch(function () { show('bad'); });
+})();
+</script>
+</body>
+</html>

@@ -67,6 +67,8 @@ exports.handler = async (event) => {
     story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childNameTyped: String(i.childNameTyped || i.childName || '').slice(0, 60), photoConsent: i.photoConsent === true, photoConsentAt: i.photoConsentAt ? String(i.photoConsentAt).slice(0, 40) : null, childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
     gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
     photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
+    // Photo to be added after ordering (add-photo.html); only when no child photo came with the book.
+    photoLater: i.photoLater === true && !paths(i.photoPaths).length,
     supportingChoice: ['photos', 'avatar'].includes(i.supportingChoice) ? i.supportingChoice : null,
     supportingCharacters: (Array.isArray(i.supportingCharacters) ? i.supportingCharacters : [])
       .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother'].includes(c.role)).slice(0, 4)
@@ -92,7 +94,7 @@ exports.handler = async (event) => {
       unit_number: unitNumber || null, location_lat: coord(o.locationLat, 90), location_lng: coord(o.locationLng, 180),
       payment_method: 'tabby', amount: price.total, currency: price.currency, charged_aed: price.chargedAed,
       is_gift: false, gift_message: null,
-      marketing_opt_in: o.marketingOptIn === true, info_confirmed_at: nowIso, photo_consent_at: nowIso,
+      marketing_opt_in: o.marketingOptIn === true, info_confirmed_at: nowIso, photo_consent_at: cleanItems.some(i => i.photoConsent) ? nowIso : null,
       items: JSON.stringify(cleanItems), bundle_discount_pct: price.breakdown.bundleDiscountPct, promo_code: price.breakdown.promo,
       list_value_aed: price.listValueAed, promo_discount_aed: price.promoDiscountAed,
       order_type: 'sale', order_type_note: null,

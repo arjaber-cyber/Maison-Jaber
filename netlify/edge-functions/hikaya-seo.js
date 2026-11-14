@@ -391,7 +391,7 @@ function translateBodyAr(body) {
 // Internal links on Arabic pages keep ?lang=ar (story, age and other parameters are kept as they are).
 // Private and transactional pages (cart, checkout, account…) are left alone: they are not indexed
 // and already open in the visitor's chosen language.
-const PRIVATE_PAGES = /^(admin|account|login|checkout|personalize|cart|book-added|invoice|track-order|search|feedback|ziina-result)\.html$/;
+const PRIVATE_PAGES = /^(admin|account|login|checkout|personalize|cart|book-added|invoice|track-order|search|feedback|add-photo|ziina-result)\.html$/;
 function arHref(href, pageUrl) {
   const raw = href.replace(/&amp;/g, "&");
   if (!raw || /^(#|mailto:|tel:|javascript:|data:|sms:|whatsapp:)/i.test(raw)) return null;

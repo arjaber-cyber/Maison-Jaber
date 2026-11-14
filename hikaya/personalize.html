@@ -208,6 +208,27 @@
     display: inline-block; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 3px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .ph-safe { background:#F6EFE4; border:1px solid #EADCC8; border-radius:14px; padding:14px 16px; margin:0 0 14px; font-size:13.5px; color:var(--ink); }
+  .ph-safe-h { display:flex; align-items:center; gap:8px; margin:0 0 6px; font-size:14.5px; }
+  .ph-safe-h svg { width:22px; height:22px; stroke:#3d5a26; flex:0 0 22px; }
+  .ph-safe ul { margin:0 0 6px; padding:0; list-style:none; }
+  .ph-safe li { position:relative; padding-inline-start:20px; margin:0 0 3px; font-weight:600; }
+  .ph-safe li::before { content:'✓'; position:absolute; inset-inline-start:2px; color:#3d5a26; font-weight:800; }
+  .ph-safe a { font-size:12.5px; font-weight:700; color:var(--ink); }
+  .ph-later-link { background:none; border:0; padding:4px 0; margin:2px 0 10px; font:inherit; font-size:13px; font-weight:700; color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer; text-align:start; }
+  .ph-later { background:#FFFCF7; border:1.5px dashed #D8C5B3; border-radius:14px; padding:14px 16px; margin:0 0 12px; font-size:13.5px; }
+  .ph-later b { display:block; font-size:14.5px; margin:0 0 4px; }
+  .ph-later p { margin:0 0 4px; color:var(--ink); opacity:.85; }
+  .ph-save { margin:4px 0 12px; }
+  .ph-save-open { background:none; border:0; padding:4px 0; font:inherit; font-size:13px; font-weight:600; color:var(--ink); opacity:.8; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+  .ph-save-form { margin:8px 0 0; }
+  .ph-save-row { display:flex; gap:8px; }
+  .ph-save-row input { flex:1; min-width:0; border:1.5px solid #E2D5C3; border-radius:10px; padding:10px 12px; font:inherit; font-size:14px; background:#fff; }
+  .ph-save-row button { flex:0 0 auto; padding:10px 16px; border-radius:999px; font-size:14px; }
+  .ph-save-note { font-size:12px; opacity:.75; margin:6px 0 0; }
+  .ph-save-note.ok { opacity:1; color:#3d5a26; font-weight:700; }
+  .ph-save-note.err { opacity:1; color:var(--coral-deep, #b5563b); font-weight:700; }
+  .ph-resumed { background:#EEF3E6; border-radius:10px; padding:10px 12px; font-size:13.5px; font-weight:600; margin:0 0 12px; }
   .photo-retry-note { font-size: 12px; color: var(--coral-deep, #b5563b); font-weight: 700; margin-bottom: 10px; }
   .trust-note {
     display: flex; gap: 10px; align-items: flex-start; background: var(--bg-soft, #F3E8D8); border-radius: 12px;
@@ -458,9 +479,14 @@
       <!-- Step: Photo -->
       <div class="wizard-step" data-step="photo" id="wizard-step-photo">
         <label class="field-label" style="display:block; margin-bottom:8px;"><span data-i18n="personalize.photos_label">Photo(s) of your child</span><span class="req-mark">*</span></label>
-        <div class="trust-note">
-          <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-          <span data-i18n-html="personalize.photo_private_html">Your child’s photo is used only to create their personalised story. It is <a href="privacy.html">kept private</a> and is never used for advertising.</span>
+        <div class="ph-safe" id="ph-safe">
+          <div class="ph-safe-h"><svg viewBox="0 0 24 24" stroke-width="1.8" fill="none" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.8 12.2l2.2 2.2 4.2-4.4"/></svg><b data-i18n="ph.card_t">Your child's photo is safe with us</b></div>
+          <ul>
+            <li data-i18n="ph.c1">Used only to illustrate their book, never for ads or anything else</li>
+            <li data-i18n="ph.c2">Stored privately, never made public or sold</li>
+            <li data-i18n="ph.c3">Deleted automatically within 15 days</li>
+          </ul>
+          <a href="privacy.html" target="_blank" rel="noopener" data-i18n="ph.c_more">Read our privacy policy</a>
         </div>
         <p class="photo-helper" data-i18n="personalize.photo_helper">For the best result, use one clear, front-facing photo in good light.</p>
         <details class="photo-guidance">
@@ -473,6 +499,7 @@
             <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
           </ul>
         </details>
+        <div id="ph-now">
         <div class="cp-nudge" id="cp-nudge" hidden>
           <div><b data-i18n="cp.pz_t">Want to see them on the cover first?</b><span data-i18n="cp.pz_d">Try our free AI cover preview in about a minute.</span></div>
           <a href="cover-preview.html" id="cp-nudge-link" target="_blank" rel="noopener"><span data-i18n="cp.pz_btn">Try it free</span> ✨</a>
@@ -489,6 +516,21 @@
           <input type="checkbox" id="photo-consent" />
           <span data-i18n="bl.photo_consent">I authorise Hikaya by Maison Jaber to use the photo(s) I upload only to create my child's personalised book. They will not be used for any other purpose, and they are automatically deleted from our records within 15 days.</span>
         </label>
+        <button type="button" class="ph-later-link" id="ph-later-btn" data-i18n="ph.later_link">No good photo right now? Add it after ordering</button>
+        </div>
+        <div class="ph-later" id="ph-later" hidden>
+          <b data-i18n="ph.later_t">You'll add the photo after ordering</b>
+          <p id="ph-later-d"></p>
+          <button type="button" class="ph-later-link" id="ph-now-btn" data-i18n="ph.later_undo">Add the photo now instead</button>
+        </div>
+        <div class="ph-save" id="ph-save">
+          <button type="button" class="ph-save-open" id="ph-save-open" aria-expanded="false" aria-controls="ph-save-form"><span aria-hidden="true">✉</span> <span data-i18n="ph.save_link">Not ready yet? Email me a link to finish later</span></button>
+          <div class="ph-save-form" id="ph-save-form" hidden>
+            <div class="ph-save-row"><input type="email" id="ph-save-email" autocomplete="email" inputmode="email" dir="ltr" placeholder="Your email" data-i18n-placeholder="ph.save_ph" aria-label="Your email" data-i18n-aria="ph.save_ph" /><button type="button" class="btn-primary" id="ph-save-send" data-i18n="ph.save_btn">Send link</button></div>
+            <p class="ph-save-note" data-i18n="ph.save_note">We'll only use your email to send this link. Photos aren't saved.</p>
+            <p class="ph-save-note" id="ph-save-msg" role="status" aria-live="polite" hidden></p>
+          </div>
+        </div>
         <div class="wizard-nav">
           <button type="button" class="btn-back" data-step-back="photo">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
           <button type="button" class="btn-primary btn-next" data-step-btn="photo" id="photo-next-btn" disabled data-i18n="pg.next">Continue →</button>
@@ -627,6 +669,7 @@
   );
 
   let photoFiles = [];
+  let photoLater = false; // parent chose to add the photo after ordering (Nov 2026)
   let extraPhotoFiles = [];
   (function () { // keep the story column clear of the sticky site header
     const setH = () => { const h = document.querySelector('header, .site-header, #hk-head'); const v = h && getComputedStyle(h).position !== 'static' ? h.getBoundingClientRect().height : 0; document.documentElement.style.setProperty('--hk-head-h', Math.round(v) + 'px'); };
@@ -1442,10 +1485,75 @@
   });
 
   const continueBtn = document.getElementById('continue-order-btn');
+
+  /* ---------- Add the photo after ordering (Nov 2026) ----------
+     Parents who don't have a good photo to hand can still order. The book carries photoLater: true,
+     the confirmation email and thank-you screen give them a private upload link (add-photo.html),
+     and the admin dashboard flags the book until the photo arrives. Permission is asked on upload. */
+  function paintPhotoLater() {
+    const d = document.getElementById('ph-later-d'); if (!d) return;
+    const n = (nameInput && nameInput.value.trim()) || t('lx.st_child', 'your child');
+    d.textContent = t('ph.later_d', "Once your order is placed, we'll email you a private link to upload {name}'s photo. We start illustrating as soon as it arrives, so the sooner the better.").replace('{name}', n);
+  }
+  function setPhotoLater(on, quiet) {
+    photoLater = !!on;
+    document.getElementById('ph-now').hidden = photoLater;
+    document.getElementById('ph-later').hidden = !photoLater;
+    paintPhotoLater();
+    if (!quiet && window.hikayaTrackEvent) window.hikayaTrackEvent(photoLater ? 'photo_later_chosen' : 'photo_later_undone', {});
+    if (typeof checkDetailsComplete === 'function') checkDetailsComplete();
+  }
+  document.getElementById('ph-later-btn').addEventListener('click', () => setPhotoLater(true));
+  document.getElementById('ph-now-btn').addEventListener('click', () => { setPhotoLater(false); const i = document.getElementById('child-photos'); if (i) i.focus(); });
+
+  /* ---------- Save my progress by email (Nov 2026) ----------
+     Optional. Sends a private link that reopens this page with the story, name, age, pronouns, book
+     language and message filled in. Photos are never saved (they stay on this device until ordering). */
+  (function savedProgress() {
+    const openBtn = document.getElementById('ph-save-open'), form = document.getElementById('ph-save-form');
+    const email = document.getElementById('ph-save-email'), send = document.getElementById('ph-save-send'), msg = document.getElementById('ph-save-msg');
+    const say = (cls, key, fb) => { msg.hidden = false; msg.className = 'ph-save-note ' + cls; msg.textContent = t(key, fb); };
+    openBtn.addEventListener('click', () => {
+      const show = form.hidden; form.hidden = !show; openBtn.setAttribute('aria-expanded', show ? 'true' : 'false');
+      if (show) { email.focus(); if (window.hikayaTrackEvent) window.hikayaTrackEvent('save_progress_open', {}); }
+    });
+    email.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); send.click(); } });
+    let busy = false;
+    send.addEventListener('click', async () => {
+      if (busy) return;
+      const v = email.value.trim();
+      if (!/^[^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,}$/i.test(v)) { say('err', 'ph.save_err', "We couldn't send it. Please check the email and try again."); email.focus(); return; }
+      busy = true; send.disabled = true; say('', 'ph.save_sending', 'Sending…');
+      const storyKey = document.getElementById('story-input').value;
+      const info = STORY_CATALOG[storyKey] || {};
+      const draft = {
+        story: info.slug || storyKey || '',
+        storyTitle: storyDisplayName(storyKey) || '',
+        coverUrl: info.cover_image_url_en || info.cover_image_url || null,
+        childName: nameInput.value.trim(),
+        childAge: ageInputEl.value || '',
+        gender: document.getElementById('child-gender').value || '',
+        bookLanguage: document.getElementById('book-language').value || '',
+        dedication: document.getElementById('dedication').value.trim(),
+      };
+      try {
+        const res = await fetch('/.netlify/functions/save-progress', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: v, lang: (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en', country: window.hikayaRegionKey ? window.hikayaRegionKey() : null, draft }) });
+        const d = await res.json().catch(() => ({}));
+        if (!res.ok || !d.sent) throw new Error(d.error || 'failed');
+        say('ok', 'ph.save_ok', 'Sent! Check your inbox for a link to pick up where you left off.');
+        if (window.hikayaTrackEvent) window.hikayaTrackEvent('save_progress_sent', { story: draft.story });
+      } catch (_) {
+        say('err', 'ph.save_err', "We couldn't send it. Please check the email and try again.");
+      }
+      busy = false; send.disabled = false;
+    });
+  })();
+
   document.getElementById('photo-consent').addEventListener('change', e => { document.getElementById('photo-consent-box').classList.remove('need'); checkDetailsComplete(); });
   function checkDetailsComplete() {
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
-    const stillChecking = photoFiles.some(p => p.status === 'checking') || extraPhotoFiles.some(p => p.status === 'checking') || famChecking();
+    const stillChecking = (!photoLater && photoFiles.some(p => p.status === 'checking')) || extraPhotoFiles.some(p => p.status === 'checking') || famChecking();
 
     const storyChosen = document.getElementById('story-input').value;
     const storyInfo = STORY_CATALOG[storyChosen];
@@ -1466,7 +1574,8 @@
     const consentBox = document.getElementById('photo-consent-box');
     if (consentBox) consentBox.hidden = photoFiles.length === 0;
     const photoConsent = document.getElementById('photo-consent').checked;
-    if (photoNextBtn) photoNextBtn.disabled = !(hasVerifiedPhoto && photoConsent);
+    const photoOk = photoLater || (hasVerifiedPhoto && photoConsent);
+    if (photoNextBtn) photoNextBtn.disabled = !photoOk;
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
     const familyNextBtn = document.getElementById('family-next-btn');
@@ -1482,8 +1591,7 @@
     const ready = storyChosen
       && nameOk()
       && ageOk
-      && hasVerifiedPhoto
-      && photoConsent
+      && photoOk
       && extraCharOk
       && famOk()
       && langState().ok;
@@ -1535,7 +1643,7 @@
     switch (step) {
       case 'story': return !!storyChosen;
       case 'details': return nameOk() && ageState().ok;
-      case 'photo': return photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked;
+      case 'photo': return photoLater || (photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked);
       case 'family': return famOk();
       case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && extraPhotoFiles.some(p => p.status === 'verified')));
       default: return false;
@@ -1554,6 +1662,7 @@
       const g = document.querySelector('.gender-btn.selected span');
       return [nameInput.value.trim(), ageInputEl.value ? t('personalize.summary_age_label', 'Age') + ' ' + ageInputEl.value : '', g ? g.textContent.trim() : ''].filter(Boolean).join(' · ');
     }
+    if (step === 'photo' && photoLater) return '✓ ' + t('ph.later_sum', 'Photo after ordering');
     if (step === 'photo') { const n = photoFiles.filter(p => p.status === 'verified').length; return n ? '✓ ' + t('personalize.summary_photos', 'Photos') + ': ' + n : ''; }
     if (step === 'family') { if (!famChoice) return ''; const tx = famText(); return famChoice === 'photos' ? tx.rowPhoto : tx.rowAvatar; }
     if (step === 'extra' && info && extraCharChoice) return extraCharChoice === 'yes' ? t('personalize.summary_extra_yes', 'Real photo (+fee)') : t('personalize.summary_extra_no', 'Generated for you');
@@ -1629,6 +1738,7 @@
       document.getElementById('summary-story-title').textContent = t('personalize.summary_no_story', 'No story chosen yet');
     }
     renderAge(false);
+    paintPhotoLater();
     renderStepHeading(currentStepName);
     renderWizardProgress();
     if (currentStepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
@@ -1716,8 +1826,8 @@
       { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
       { label: t('personalize.summary_name', "Child's name"), value: (bookName() && bookName() !== name ? bookName() + ' (' + name + ')' : name) || '—', step: 'details' },
       { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
-      { label: t('personalize.summary_photos', 'Photos'), value: photoCount, step: 'photo' },
-      { label: t('bl.photo_ok_row', 'Photo use'), value: t('bl.photo_ok_val', 'Authorised for this book only, deleted within 15 days'), step: 'photo' },
+      { label: t('personalize.summary_photos', 'Photos'), value: photoLater ? t('ph.later_row', 'Added after ordering') : photoCount, step: 'photo' },
+      { label: t('bl.photo_ok_row', 'Photo use'), value: photoLater ? t('ph.later_use', 'Asked when you upload it') : t('bl.photo_ok_val', 'Authorised for this book only, deleted within 15 days'), step: 'photo' },
     ];
     if (storyInfo && storyInfo.has_extra_character) {
       const extraVal = extraCharChoice === 'yes'
@@ -1779,6 +1889,33 @@
     if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
   })();
 
+  // Back from a "finish later" email (?resume=<private token>): fill in what they saved, then open the photo step.
+  (function resumeSavedProgress() {
+    const tok = new URLSearchParams(location.search).get('resume');
+    if (!tok || !/^[A-Za-z0-9_-]{40,60}$/.test(tok)) return;
+    fetch('/.netlify/functions/save-progress?t=' + encodeURIComponent(tok)).then(r => r.json()).then(d => {
+      if (!d || d.status !== 'ok' || !d.draft) return;
+      const c = d.draft;
+      const fire = (el, ev) => el && el.dispatchEvent(new Event(ev, { bubbles: true }));
+      const langEl = document.getElementById('book-language');
+      if (langEl && c.bookLanguage && [...langEl.options].some(o => o.value === c.bookLanguage)) { langEl.value = c.bookLanguage; langEl.dataset.touched = '1'; fire(langEl, 'change'); }
+      const nameEl = document.getElementById('child-name');
+      if (nameEl && c.childName && !nameEl.value) { nameEl.value = c.childName; fire(nameEl, 'input'); }
+      const ageEl = document.getElementById('child-age');
+      if (ageEl && c.childAge && !ageEl.value) { ageEl.value = String(c.childAge); fire(ageEl, 'input'); fire(ageEl, 'change'); }
+      const gBtn = c.gender && document.querySelector('.gender-btn[data-value="' + c.gender + '"]');
+      if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
+      const ded = document.getElementById('dedication');
+      if (ded && c.dedication && !ded.value) { ded.value = c.dedication; fire(ded, 'input'); if (window.hkMsgSync) window.hkMsgSync(); }
+      const note = document.createElement('p'); note.className = 'ph-resumed'; note.setAttribute('role', 'status');
+      note.setAttribute('data-i18n', 'ph.resumed'); note.textContent = t('ph.resumed', "Welcome back! We've filled in what you saved. Add the photo to continue.");
+      const safe = document.getElementById('ph-safe'); if (safe) safe.parentNode.insertBefore(note, safe);
+      if (window.hikayaTrackEvent) window.hikayaTrackEvent('save_progress_resumed', { story: c.story || '' });
+      const go = () => { if (stepComplete('details') && (storyLocked ? true : stepComplete('story'))) showWizardStep('photo'); };
+      setTimeout(go, 300);
+    }).catch(() => {});
+  })();
+
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
     const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
@@ -1791,14 +1928,15 @@
       theme: STORY_THEMES[document.getElementById('story-input').value] || 'courage',
       childName: bookName(), // the name exactly as printed, in the book language
       childNameTyped: nameInput.value.trim(),
-      photoConsent: document.getElementById('photo-consent').checked,
-      photoConsentAt: new Date().toISOString(),
+      photoConsent: photoLater ? false : document.getElementById('photo-consent').checked,
+      photoConsentAt: photoLater ? null : new Date().toISOString(),
+      photoLater: photoLater, // the photo is uploaded after ordering, from a private link in the confirmation email
       ageEdition: document.getElementById('age-input').value,
       childAge: ageInputEl.value,
       gender: document.getElementById('child-gender').value,
       dedication: document.getElementById('dedication').value.trim(),
       bookLanguage: document.getElementById('book-language').value || 'en',
-      photoCount: photoFiles.filter(p => p.status === 'verified').length,
+      photoCount: photoLater ? 0 : photoFiles.filter(p => p.status === 'verified').length,
       extraCharacterName: hasExtra ? storyInfo.extra_character_name : null,
       extraCharacterFeeAed: hasExtra ? storyInfo.extra_character_fee_aed : 0,
       extraCharacterPhotoCount: hasExtra ? extraPhotoFiles.filter(p => p.status === 'verified').length : 0,
@@ -1832,6 +1970,7 @@
     ageTouched = false; renderAge(false);
     photoFiles = [];
     renderThumbs(photoFiles, photoThumbs, photoRetryNote, true);
+    setPhotoLater(false, true);
     extraPhotoFiles = [];
     extraCharChoice = null;
     resetFam();
@@ -1885,7 +2024,7 @@
     if (saving || continueBtn.disabled || storyPending || !document.getElementById('story-input').value) return;
     if (!langState().ok) { langCheck(); ensureBookName(); return; }
     saving = true; continueBtn.disabled = true; continueBtn.setAttribute('aria-busy', 'true');
-    const verifiedPhotos = photoFiles.filter(p => p.status === 'verified');
+    const verifiedPhotos = photoLater ? [] : photoFiles.filter(p => p.status === 'verified');
     const item = buildCartItemFromForm();
     const verifiedExtraPhotos = item.extraCharacterName ? extraPhotoFiles.filter(p => p.status === 'verified') : [];
     // Family photos, tagged with whose they are, go up with the child's.
@@ -1894,9 +2033,9 @@
     try {
       const blobs = await Promise.all(all.map(e => resizePhoto(e.file, 2400, 0.9)));
       const done = new Array(blobs.length).fill(0);
-      showUpload(0);
+      if (blobs.length) showUpload(0);
       const paths = await Promise.all(blobs.map((b, i) => uploadOne(b, f => { done[i] = f; showUpload(done.reduce((a, x) => a + x, 0) / blobs.length); })));
-      showUpload(1);
+      if (blobs.length) showUpload(1);
       item.photoPaths = paths.slice(0, verifiedPhotos.length);
       item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length, verifiedPhotos.length + verifiedExtraPhotos.length);
       const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length);

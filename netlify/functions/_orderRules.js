@@ -3,7 +3,8 @@
 // Rules every order must pass on the server (the checkout page checks the same things,
 // but the server is the one that cannot be skipped):
 //  - the customer confirmed the information they shared is correct
-//  - every book has photo permission (use for this book only, deleted within 15 days)
+//  - every book has photo permission (use for this book only, deleted within 15 days), unless the
+//    parent chose to add the photo after ordering (photoLater): permission is then asked on upload
 //  - the name printed in the book and the first-page message are in the book's language:
 //    an Arabic book is never accepted with an English name or an English message, and vice versa
 
@@ -16,7 +17,7 @@ function checkOrderRules(o) {
   }
   const items = Array.isArray(o.items) ? o.items : [];
   for (const i of items) {
-    if (i.photoConsent !== true) {
+    if (i.photoConsent !== true && i.photoLater !== true) {
       return { error: 'Please give permission to use the photo for each book. Remove the book from your cart and add it again.', reason: 'photo_consent' };
     }
     const name = String(i.childName || '');

@@ -980,6 +980,10 @@ body[data-flow] .photo-thumb .status-badge { font-size: 11px; padding: 4px 0; }
 .summary-eta { margin: 12px 0 0; font-size: 13px; color: var(--ink-soft); }
 .summary-trust { list-style: none; margin: 12px 0 0; padding: 12px 0 0; border-top: 1px solid rgba(216,197,179,.7); display: grid; gap: 4px; font-size: 13px; color: var(--ink-soft); }
 .summary-trust a { color: inherit; text-underline-offset: 3px; }
+.od-photo { margin: 22px auto 0; max-width: 640px; background: #FFFCF7; border: 1.5px dashed #D8C5B3; border-radius: 16px; padding: 16px 18px; text-align: center; }
+.od-photo b { display: block; font-size: 16px; margin: 0 0 4px; }
+.od-photo p { margin: 0 0 12px; font-size: 14px; color: var(--ink-soft); }
+.od-photo .btn { width: auto !important; min-width: 200px; }
 .od-next { list-style: none; counter-reset: od; margin: 26px 0 0; padding: 0; display: grid; gap: 14px; max-width: 640px; }
 .od-next li { counter-increment: od; position: relative; padding-inline-start: 44px; display: grid; gap: 2px; }
 .od-next li::before { content: counter(od); position: absolute; inset-inline-start: 0; top: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
