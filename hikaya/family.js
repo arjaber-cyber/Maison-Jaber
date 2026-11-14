@@ -17,6 +17,7 @@
     'the-christmas-list': ['mother', 'grandmother'],
     'the-last-box': ['mother'],
     'just-one-more': ['mother', 'father'],
+    'uae-national-day': ['father'],
   };
 
   const ROLES = {

@@ -5,6 +5,20 @@
    dashboard, update or remove its entry here: text is only used when the image file names match.
    Transcribed from the sample pages (the sample child's name appears as printed). */
 window.HIKAYA_PREVIEW_TEXT = {
+ "uae-national-day": {
+  "en": [
+   "One of Jack's favorite places is Dubai. He stands with his father, staring up at the tall, shiny buildings that reach for the blue sky.",
+   "Jack collects shells and laughs as the gentle waves tickle his feet. Each Emirate has something wonderful to discover.",
+   "He watches a big parade. People march with UAE flags, and children sing songs about their love for the country.",
+   "As the sun begins to set, Jack and his dad find a cozy spot to watch a wonderful firework show above the city."
+  ],
+  "ar": [
+   "دبي من الأماكن المفضلة لدى جاك. يقف مع والده ويتأمل المباني العالية اللامعة التي تعانق السماء الزرقاء.",
+   "يجمع جاك الأصداف ويضحك حين تدغدغ الأمواج اللطيفة قدميه. في كل إمارة شيء رائع ينتظر أن يكتشفه.",
+   "يشاهد موكبًا كبيرًا. يسير الناس حاملين أعلام الإمارات، ويغني الأطفال أغاني تعبر عن حبهم للوطن.",
+   "حين تبدأ الشمس بالغروب، يجد جاك وبابا مكانًا مريحًا لمشاهدة عرض رائع للألعاب النارية فوق المدينة."
+  ]
+ },
  "christmas-star": {
   "en": [
    "Leen hurried into a warm winter coat, boots, and mittens. Outside, beneath the pine tree, sat a tiny golden star. It had five glowing points and a light that kept flickering. “Are you the Christmas Star?” asked Leen. “I was,” said the star. “Until I fell out of the sky.” “That must have hurt!” “Mostly my pride,” replied the star.",

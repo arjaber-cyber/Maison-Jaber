@@ -80,6 +80,7 @@
     ],
     justbecause: [ // broadly joyful, imaginative, evergreen
       R('storm-above-the-city', 'A big, funny superhero adventure', 'مغامرة بطولية كبيرة ومضحكة'),
+      R('uae-national-day', 'A joyful UAE National Day adventure with Dad', 'مغامرة مبهجة مع بابا في اليوم الوطني الإماراتي'),
       R('to-the-rescue', 'A cheerful everyday-hero story', 'قصة مبهجة عن بطل في الحياة اليومية'),
       R('grandpas-wild-safari', 'A warm safari adventure with Grandpa', 'مغامرة سفاري دافئة مع الجد'),
       R('door-of-a-thousand-stars', 'A magical adventure beyond the clouds', 'مغامرة سحرية فوق الغيوم'),
