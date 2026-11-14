@@ -527,8 +527,8 @@
   "ar": "1- قصة يكون الطفل بطلها"
  },
  "natday_s0_b": {
-  "en": "<p>A personalised book with their name and illustrated face, and your National Day message on the first page, in Arabic or English. It is a gift they keep long after the celebrations. <a href=\"personalised-books-uae.html\">See personalised books in the UAE</a>.</p>",
-  "ar": "<p>كتاب مخصص باسم الطفل وملامحه المرسومة، مع تهنئتك بعيد الاتحاد في الصفحة الأولى، بالعربية أو الإنجليزية، هدية يحتفظ بها بعد انتهاء الاحتفالات بوقت طويل <a href=\"personalised-books-uae.html\">اكتشف الكتب المخصصة في الإمارات</a></p>"
+  "en": "<p>A personalised book with their name and illustrated face, and your National Day message on the first page, in Arabic or English. Our story <a href=\"story.html?s=uae-national-day\">Celebrating UAE National Day</a> (ages 2 to 6) takes them across the Emirates with Dad, from Dubai to Ras Al Khaimah, ending with flags, a parade and fireworks. It is a gift they keep long after the celebrations. <a href=\"personalised-books-uae.html\">See personalised books in the UAE</a>.</p>",
+  "ar": "<p>كتاب مخصص باسم الطفل وملامحه المرسومة، مع تهنئتك بعيد الاتحاد في الصفحة الأولى، بالعربية أو الإنجليزية، وقصتنا <a href=\"story.html?s=uae-national-day\">الاحتفال باليوم الوطني الإماراتي</a> (من 2 إلى 6 سنوات) تأخذه في رحلة عبر الإمارات مع بابا، من دبي إلى رأس الخيمة، وتنتهي بالأعلام والموكب والألعاب النارية، هدية يحتفظ بها بعد انتهاء الاحتفالات بوقت طويل <a href=\"personalised-books-uae.html\">اكتشف الكتب المخصصة في الإمارات</a></p>"
  },
  "natday_s1_h": {
   "en": "2. An outfit in the flag colours",

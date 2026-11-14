@@ -21,6 +21,61 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 // Mirrors the active stories in the dashboard (Oct 2026); only used if the database cannot be reached.
 const BUILT_IN_STORIES = [
   {
+    "slug": "uae-national-day",
+    "title": "Celebrating UAE National Day",
+    "title_ar": "الاحتفال باليوم الوطني الإماراتي",
+    "theme": "adventure",
+    "collection": "Family, Adventure, Belonging, UAE National Day",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "family",
+      "adventure"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Dubai's shining towers, the calm beaches of Ras Al Khaimah and the wide roads of Abu Dhabi! A joyful journey across the Emirates with Dad that ends with flags, a big parade and fireworks over the city. A warm story about family, belonging and celebrating the country we call home.",
+    "premise": {
+      "en": "Dubai's shining towers, the calm beaches of Ras Al Khaimah and the wide roads of Abu Dhabi! A joyful journey across the Emirates with Dad that ends with flags, a big parade and fireworks over the city. A warm story about family, belonging and celebrating the country we call home.",
+      "ar": "أبراج دبي اللامعة، وشواطئ رأس الخيمة الهادئة، وطرق أبوظبي الواسعة! رحلة مبهجة عبر الإمارات مع بابا تنتهي بالأعلام والموكب الكبير والألعاب النارية فوق المدينة، قصة دافئة عن العائلة والانتماء والاحتفال بالوطن الذي نحبه"
+    },
+    "card_note": {
+      "en": "A gift for UAE National Day",
+      "ar": "هدية لليوم الوطني الإماراتي"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/uae-national-day/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/uae-national-day/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/uae-national-day/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/uae-national-day/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/uae-national-day/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/uae-national-day/l1.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l2.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l3.jpg",
+      "https://maison-jaber.com/story-assets/uae-national-day/l4.jpg"
+    ],
+    "sort_order": 0,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
     "slug": "christmas-star",
     "title": "The Christmas Star That Went Missing",
     "title_ar": "نجمة الميلاد التي ضاعت",
