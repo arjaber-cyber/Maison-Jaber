@@ -226,7 +226,10 @@
 <script src="cp-handoff.js"></script>
 
 <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const SB_URL_EARLY = 'https://zxzlarlpoctpnnnvzced.supabase.co';
+  const SB_ANON_EARLY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
+  // Speed (Nov 2026): the sign-in library is fetched in the background, so it never holds up the form.
+  const supabaseReady = import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm').then(m => m.createClient(SB_URL_EARLY, SB_ANON_EARLY)).catch(() => null);
   const SB_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
   const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
   const FN = SB_URL + '/functions/v1/cover-preview-live';
@@ -237,7 +240,6 @@
   const ADULT = { 'uae-national-day': 'father' };
   const EN_RE = /^[A-Za-z][A-Za-z' -]{0,19}$/;
   const AR_RE = /^[ء-ي٠-٩ٰ-ۓ ]{1,20}$/;
-  const supabase = createClient(SB_URL, SB_ANON);
 
   const $ = (id) => document.getElementById(id);
   const T = (k, vars) => { let s = (window.hikayaT && window.hikayaT('cp.' + k)) || k; if (vars) for (const v in vars) s = s.replace('{' + v + '}', vars[v]); return s; };
@@ -276,7 +278,7 @@
   async function getSessionSoon() {
     // getSession() can stall on iPhones (auth lock after the tab was in the background); never let it block a check.
     try {
-      const res = await Promise.race([supabase.auth.getSession(), sleep(3000).then(() => null)]);
+      const res = await Promise.race([supabaseReady.then(c => c ? c.auth.getSession() : null), sleep(3000).then(() => null)]);
       if (res) { const d = res.data && res.data.session; session = d && !d.user.is_anonymous ? d : null; }
     } catch (e) {}
     return session;
@@ -665,29 +667,35 @@
     syncLang(); syncAdult();
   }
   async function start() {
-    /* Nov 2026: a first request can be lost (phone network, the server waking up). Try up to 4 times with short
-       pauses while the spinner shows; "Coming very soon" only when the server really says the preview is closed. */
-    let q = null;
-    for (let i = 0; i < 4; i++) {
-      if (i) await new Promise(r => setTimeout(r, [0, 1200, 2500, 4000][i]));
-      try { q = await call({ action: 'quota' }, 12000); } catch (e) { q = null; }
-      if (q && (q.http === 200 || q.http === 401)) break;
-    }
-    if (q && q.http === 401) { show('v-signin'); return; }
-    if (!q || q.http !== 200) { show('v-neterr'); return; }
-    if (!q.enabled) { show('v-closed'); return; }
-    setLeft(q.remaining);
-    // Arriving from the order form: carry over what the parent already typed there (kept in this session, not the URL).
+    /* Speed (Nov 2026): the form opens straight away. The free-preview count is checked in the background and only
+       changes the page if the preview is closed or needs sign-in; starting a preview is always checked on the server.
+       A first request can be lost (phone network, the server waking up), so the check is tried up to 4 times. */
     applyChild(carried);
     syncLang();
     loadStories();
-    // The photo checker (face-api.js) loads once the parent starts filling in the form, not here (mobile speed).
+    show('v-form');
+    const quota = (async () => {
+      let q = null;
+      for (let i = 0; i < 4; i++) {
+        if (i) await new Promise(r => setTimeout(r, [0, 1200, 2500, 4000][i]));
+        try { q = await call({ action: 'quota' }, 12000); } catch (e) { q = null; }
+        if (q && (q.http === 200 || q.http === 401)) break;
+      }
+      return q;
+    })();
     // A preview that was still being made when the page was refreshed, timed out or closed: pick it up again.
     // Checking its status is free; it never starts (or charges) a new preview.
+    await getSessionSoon();
     const p = pendingGet();
-    if (p && (!p.uid || p.uid === ownerId())) { waitFor(p, true); return; }
-    if (p) pendingClear();
-    show('v-form');
+    if (p && (!p.uid || p.uid === ownerId())) waitFor(p, true);
+    else if (p) pendingClear();
+    const q = await quota;
+    if (q && q.http === 401) { show('v-signin'); return; }
+    if (q && q.http === 200) {
+      if (!q.enabled) { show('v-closed'); return; }
+      setLeft(q.remaining);
+    }
+    // No answer at all: keep the form open; starting a preview will retry and explain if the connection is down.
   }
   document.addEventListener('hikaya:langchange', () => { if (!$('v-form').hidden) syncLang(); });
   $('net-retry').addEventListener('click', () => { show('v-loading'); start(); });
