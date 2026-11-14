@@ -46,6 +46,17 @@
     boy: { en: 'Boy', ar: 'ولد' },
     girl: { en: 'Girl', ar: 'بنت' },
     photo_btn: { en: 'Choose a photo', ar: 'اختر صورة' },
+    // Optional parent photo (Nov 2026, UAE National Day cover shows Dad)
+    dad_t: { en: "4. Add Dad's photo (optional)", ar: '4- أضف صورة الأب (اختياري)' },
+    dad_d: { en: 'Dad is on this cover too. Add his photo to see him on it as well, or skip this step and we keep the illustrated dad.', ar: 'يظهر الأب على هذا الغلاف أيضًا، أضف صورته لتراه عليه، أو تخطَّ هذه الخطوة ونُبقي رسمة الأب كما هي' },
+    dad_btn: { en: "Add Dad's photo", ar: 'أضف صورة الأب' },
+    dad_remove: { en: 'Remove', ar: 'إزالة' },
+    dad_tips: { en: 'Best results: only Dad in the photo, face clearly visible, good light, no sunglasses.', ar: 'لأفضل نتيجة: الأب وحده في الصورة، والوجه واضح، وإضاءة جيدة، ومن دون نظارة شمسية' },
+    dad_ok: { en: "Great, Dad's photo is ready", ar: 'رائع، صورة الأب جاهزة' },
+    dad_nocheck: { en: "Photo added. We couldn't check it automatically, so please make sure it shows only Dad.", ar: 'أُضيفت الصورة، ولم نتمكن من فحصها تلقائيًا، فتأكد أنها تُظهر الأب وحده' },
+    dad_noface: { en: "We couldn't find a clear face in Dad's photo. Please choose one where his face is clearly visible, or remove it.", ar: 'لم نجد وجهًا واضحًا في صورة الأب، اختر صورة يظهر فيها وجهه بوضوح أو أزلها' },
+    dad_many: { en: "Dad's photo shows more than one person. Please choose a photo showing only him, or remove it.", ar: 'يظهر في صورة الأب أكثر من شخص، اختر صورة يظهر فيها وحده أو أزلها' },
+    dad_rejected: { en: "Dad's photo can't be used. Please choose a different one, or remove it.", ar: 'لا يمكن استخدام صورة الأب، اختر صورة أخرى أو أزلها' },
     photo_change: { en: 'Change photo', ar: 'غيّر الصورة' },
     photo_tips: { en: 'Best results: one child, face clearly visible and looking at the camera, good light, nothing on the head (caps and hats are removed in the preview), no sunglasses.', ar: 'لأفضل نتيجة: طفل واحد، والوجه واضح وينظر إلى الكاميرا، وإضاءة جيدة، ولا شيء على الرأس (تُزال القبعات في المعاينة)، وبدون نظارات شمسية' },
     photo_checking: { en: 'Checking the photo…', ar: 'جارٍ فحص الصورة…' },
@@ -57,6 +68,7 @@
 
     // Short consent (Nov 2026): the full points (parent/guardian, AI-generated, watermarked, personal use) stay in the linked terms.
     consent: { en: 'I allow Hikaya to use this photo for the preview. <a href="terms.html#cover-preview" target="_blank" rel="noopener">Terms</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">Privacy</a>', ar: 'أسمح لحكاية باستخدام هذه الصورة للمعاينة · <a href="terms.html#cover-preview" target="_blank" rel="noopener">الشروط</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">الخصوصية</a>' },
+    consent_both: { en: 'I allow Hikaya to use these photos for the preview. <a href="terms.html#cover-preview" target="_blank" rel="noopener">Terms</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">Privacy</a>', ar: 'أسمح لحكاية باستخدام هذه الصور للمعاينة · <a href="terms.html#cover-preview" target="_blank" rel="noopener">الشروط</a> · <a href="privacy.html#cover-preview" target="_blank" rel="noopener">الخصوصية</a>' },
     privacy_note: { en: 'Your photo is used only to make this preview. It is never shared, never used to train AI, and is deleted automatically within 48 hours.', ar: 'تُستخدم صورتك لإنشاء هذه المعاينة فقط، ولا تُشارك أبدًا ولا تُستخدم لتدريب الذكاء الاصطناعي، وتُحذف تلقائيًا خلال 48 ساعة' },
     go: { en: 'Create my free preview', ar: 'أنشئ معاينتي المجانية' },
     left: { en: '{n} free previews left today', ar: 'متبقٍ لك اليوم {n} من المعاينات المجانية' },

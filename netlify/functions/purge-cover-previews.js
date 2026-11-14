@@ -5,7 +5,7 @@
 // preview are deleted within 48 hours. Runs on rows from the website only
 // (source = 'site'); the lab test images are not touched.
 // For every site preview older than 46 hours that has not been purged yet:
-//   - deletes site/photos/<id>.jpg, site/results/<id>.jpg, site/results/<id>-2.jpg, site/previews/<id>.jpg
+//   - deletes site/photos/<id>.jpg (and <id>-adult.jpg, the optional parent photo), site/results/<id>.jpg, site/results/<id>-2.jpg, site/previews/<id>.jpg
 //   - deletes the cached written description of the photo (cover_photo_analysis)
 //   - clears the file paths on the row and sets purged_at (the short record stays for limits and abuse checks)
 // Env: SUPABASE_SERVICE_ROLE_KEY.
@@ -31,7 +31,7 @@ exports.handler = async () => {
       if (!list.length) break;
       const ids = list.map(r => r.id);
       const paths = [];
-      for (const id of ids) paths.push(`site/photos/${id}.jpg`, `site/results/${id}.jpg`, `site/results/${id}-2.jpg`, `site/previews/${id}.jpg`);
+      for (const id of ids) paths.push(`site/photos/${id}.jpg`, `site/photos/${id}-adult.jpg`, `site/results/${id}.jpg`, `site/results/${id}-2.jpg`, `site/previews/${id}.jpg`);
       const del = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}`, { method: 'DELETE', headers: h(key), body: JSON.stringify({ prefixes: paths }) });
       if (!del.ok) throw new Error(`delete files ${del.status}`);
       try { const gone = await del.json(); files += Array.isArray(gone) ? gone.length : 0; } catch (_) {}
@@ -43,7 +43,7 @@ exports.handler = async () => {
       }
       const upd = await fetch(`${SUPABASE_URL}/rest/v1/cover_previews?id=in.(${ids.join(',')})`, {
         method: 'PATCH', headers: h(key, { Prefer: 'return=minimal' }),
-        body: JSON.stringify({ purged_at: new Date().toISOString(), photo_path: null, result_path: null, preview_path: null }),
+        body: JSON.stringify({ purged_at: new Date().toISOString(), photo_path: null, adult_photo_path: null, result_path: null, preview_path: null }),
       });
       if (!upd.ok) throw new Error(`update rows ${upd.status}`);
       rows += ids.length;

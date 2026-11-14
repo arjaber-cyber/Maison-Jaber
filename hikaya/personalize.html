@@ -1958,7 +1958,7 @@
 (function(){try{
   var H=window.hikayaCpHandoff, c=H&&(H.fromLegacyUrl()||H.read()); if(c&&/^(preview|legacy-url)$/.test(c.from||''))return;
   var q=new URLSearchParams(location.search);
-  var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","why-is-baby-looking-at-me"];
+  var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","uae-national-day","why-is-baby-looking-at-me"];
   var box=document.getElementById('cp-nudge'),a=document.getElementById('cp-nudge-link'); if(!box||!a)return; box.hidden=false;
   a.addEventListener('click',function(ev){try{
     var slug=q.get('story')||''; var cat=window.STORY_CATALOG||{}; var si=document.getElementById('story-input'); var info=si&&cat[si.value]; if(info&&info.slug)slug=info.slug;

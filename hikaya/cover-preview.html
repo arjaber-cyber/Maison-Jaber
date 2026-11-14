@@ -52,6 +52,8 @@
   .cp-pstat.ok { color: #2F6B3A; }
   .cp-pstat.bad { color: #A23B2A; font-weight: 600; }
   .cp-thumb.bad { outline: 3px solid #A23B2A; outline-offset: 2px; opacity: .55; }
+  .cp-adult-d { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; line-height: 1.5; }
+  .cp-linkbtn { background: none; border: 0; padding: 4px 2px; color: var(--ink-soft); text-decoration: underline; font: inherit; font-size: 13.5px; cursor: pointer; }
   .cp-need { text-align: center; font-size: 13px; color: #A23B2A; margin: 10px 0 0; }
   .cp-recon { display: inline-block; font-size: 13px; font-weight: 600; color: #8A5A12; background: #FBF1DC; border-radius: 20px; padding: 6px 14px; margin: 0 0 10px; }
   .cp-slow-t { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; margin: 14px 0 6px; color: var(--ink); }
@@ -154,8 +156,22 @@
       <p class="cp-tips" data-i18n="cp.photo_tips">Best results: one child, face clearly visible.</p>
     </div>
 
+    <!-- Stories with a parent on the cover (Nov 2026: UAE National Day, Dad): an optional photo of that parent. -->
+    <div class="cp-card" id="adult-card" hidden>
+      <h2 data-i18n="cp.dad_t">4. Add Dad's photo (optional)</h2>
+      <p class="cp-adult-d" data-i18n="cp.dad_d">Dad is on this cover too. Add his photo to see him on it as well, or skip this step and we keep the illustrated dad.</p>
+      <div class="cp-photo">
+        <img class="cp-thumb" id="athumb" alt="" />
+        <label class="btn btn-secondary" for="cp-afile" id="afile-lbl"><span data-i18n="cp.dad_btn">Add Dad's photo</span></label>
+        <input type="file" id="cp-afile" accept="image/*" hidden />
+        <button type="button" class="cp-linkbtn" id="a-remove" hidden data-i18n="cp.dad_remove">Remove</button>
+      </div>
+      <p class="cp-pstat" id="apstat" hidden></p>
+      <p class="cp-tips" data-i18n="cp.dad_tips">Best results: only Dad in the photo, face clearly visible, good light, no sunglasses.</p>
+    </div>
+
     <div class="cp-card">
-      <label class="cp-consent"><input type="checkbox" id="cp-consent" /><span data-i18n-html="cp.consent">I agree to the free preview terms.</span></label>
+      <label class="cp-consent"><input type="checkbox" id="cp-consent" /><span id="consent-txt" data-i18n-html="cp.consent">I agree to the free preview terms.</span></label>
       <p class="cp-priv" data-i18n="cp.privacy_note">Your photo is used only to make this preview.</p>
       <button type="submit" class="btn btn-primary cp-go" id="go" data-i18n="cp.go">Create my free preview</button>
       <p class="cp-need" id="need" hidden data-i18n="cp.photo_need">Add a photo showing only your child to continue.</p>
@@ -216,7 +232,9 @@
   const FN = SB_URL + '/functions/v1/cover-preview-live';
   const CONSENT_VERSION = 'cp-2026-11-07';
   // Stories the preview engine knows (each has its cover facts on the server).
-  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','why-is-baby-looking-at-me'];
+  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','uae-national-day','why-is-baby-looking-at-me'];
+  // Covers that also show a parent, who can be personalised from an optional photo (the server knows the same list).
+  const ADULT = { 'uae-national-day': 'father' };
   const EN_RE = /^[A-Za-z][A-Za-z' -]{0,19}$/;
   const AR_RE = /^[ء-ي٠-٩ٰ-ۓ ]{1,20}$/;
   const supabase = createClient(SB_URL, SB_ANON);
@@ -246,7 +264,7 @@
   let pendingSlug = params.get('s') || (carried && carried.story) || '';
   try { if (!pendingSlug) pendingSlug = localStorage.getItem('hk_cp_story') || ''; if (params.get('s')) localStorage.setItem('hk_cp_story', params.get('s')); } catch (e) {}
 
-  const state = { slug: SUPPORTED.includes(pendingSlug) ? pendingSlug : '', lang: uiLang() === 'ar' ? 'ar' : 'en', gender: '', photo: '', photoTried: false, checking: false, busy: false, remaining: null, stories: [] };
+  const state = { slug: SUPPORTED.includes(pendingSlug) ? pendingSlug : '', lang: uiLang() === 'ar' ? 'ar' : 'en', gender: '', photo: '', photoTried: false, checking: false, adult: '', adultChecking: false, busy: false, remaining: null, stories: [] };
   let session = null;
 
   // Nov 2026: on some phones the connection to the Supabase server drops mid-wait while maison-jaber.com still works,
@@ -294,7 +312,7 @@
   // Generate stays off until there is a photo that passed the check (and a free preview left).
   function updateGo() {
     const noneLeft = state.remaining !== null && state.remaining <= 0;
-    $('go').disabled = noneLeft || state.checking || !state.photo || state.busy;
+    $('go').disabled = noneLeft || state.checking || state.adultChecking || !state.photo || state.busy;
     $('need').hidden = noneLeft || state.checking || !!state.photo || !state.photoTried;
   }
 
@@ -329,7 +347,7 @@
       const img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.src = storyCover(s);
       const sp = document.createElement('span'); sp.textContent = storyTitle(s);
       b.append(img, sp);
-      b.addEventListener('click', () => { state.slug = s.slug; try { localStorage.setItem('hk_cp_story', s.slug); } catch (e) {} renderStories(); });
+      b.addEventListener('click', () => { state.slug = s.slug; try { localStorage.setItem('hk_cp_story', s.slug); } catch (e) {} renderStories(); syncAdult(); });
       box.appendChild(b);
     });
     const sel = box.querySelector('[aria-pressed="true"]');
@@ -340,7 +358,7 @@
     try { const r = await fetch('/.netlify/functions/get-stories', { headers: { Accept: 'application/json' } }); const j = await r.json(); list = (j.stories || []).filter(s => SUPPORTED.includes(s.slug) && s.active !== false); } catch (e) {}
     if (!list.length) list = SUPPORTED.map(slug => ({ slug, title: slug.replace(/-/g, ' ') }));
     if (state.slug) list.sort((a, b) => (b.slug === state.slug) - (a.slug === state.slug));
-    state.stories = list; renderStories();
+    state.stories = list; renderStories(); syncAdult();
   }
 
   // ---------- child ----------
@@ -429,11 +447,60 @@
     finally { if (seq === photoSeq) { state.checking = false; updateGo(); } }
   });
 
+  // ---------- optional parent photo (e.g. Dad on the National Day cover) ----------
+  function consentText() {
+    const k = ADULT[state.slug] && state.adult ? 'cp.consent_both' : 'cp.consent';
+    const el = $('consent-txt'); el.setAttribute('data-i18n-html', k);
+    const v = window.hikayaT && window.hikayaT(k); if (v) el.innerHTML = v;
+  }
+  function apstat(kind, txt) { const p = $('apstat'); p.hidden = !txt; p.className = 'cp-pstat ' + kind; p.textContent = txt || ''; }
+  function clearAdult() {
+    adultSeq++; state.adult = ''; state.adultChecking = false;
+    $('athumb').style.display = 'none'; $('athumb').classList.remove('bad'); $('a-remove').hidden = true;
+    $('afile-lbl').querySelector('span').textContent = T('dad_btn'); apstat('', '');
+    consentText(); updateGo();
+  }
+  function syncAdult() {
+    const on = !!ADULT[state.slug];
+    $('adult-card').hidden = !on;
+    if (!on && (state.adult || state.adultChecking)) clearAdult(); else consentText();
+  }
+  let adultSeq = 0;
+  $('cp-afile').addEventListener('change', async (e) => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    const seq = ++adultSeq;
+    state.adult = ''; state.adultChecking = true; updateGo();
+    $('athumb').classList.remove('bad'); apstat('', T('photo_checking'));
+    try {
+      const bmp = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
+      const max = 1024, sc = Math.min(1, max / Math.max(bmp.naturalWidth, bmp.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.naturalWidth * sc); c.height = Math.round(bmp.naturalHeight * sc);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      const dataUrl = c.toDataURL('image/jpeg', 0.9);
+      if (seq !== adultSeq) return;
+      $('athumb').src = dataUrl; $('athumb').style.display = 'block'; $('a-remove').hidden = false;
+      $('afile-lbl').querySelector('span').textContent = T('photo_change');
+      const faces = await countFaces(c);
+      if (seq !== adultSeq) return;
+      if (faces === 0) { $('athumb').classList.add('bad'); apstat('bad', T('dad_noface')); track('cover_preview_adult_photo', { result: 'no_face' }); return; }
+      if (faces > 1) { $('athumb').classList.add('bad'); apstat('bad', T('dad_many')); track('cover_preview_adult_photo', { result: 'group' }); return; }
+      state.adult = dataUrl;
+      apstat(faces === 1 ? 'ok' : '', T(faces === 1 ? 'dad_ok' : 'dad_nocheck'));
+      track('cover_preview_adult_photo', { result: faces === 1 ? 'ok' : 'unchecked' });
+    } catch (er) { if (seq === adultSeq) { $('athumb').classList.add('bad'); apstat('bad', T('e_generic')); } }
+    finally { if (seq === adultSeq) { state.adultChecking = false; consentText(); updateGo(); } }
+  });
+  $('a-remove').addEventListener('click', clearAdult);
+  // The server refused Dad's photo: clear it (the child's photo stays) so they can change it or go on without it.
+  function rejectAdult(k) { clearAdult(); $('athumb').style.display = 'none'; apstat('bad', T(k)); }
+
   // ---------- submit ----------
   function err(k) { const m = $('msg'); m.hidden = !k; m.textContent = k ? T(k) : ''; if (k) setTimeout(() => m.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400); }
   $('v-form').addEventListener('submit', async (e) => {
     e.preventDefault(); err('');
-    if (state.busy || state.checking) return;
+    if (state.busy || state.checking || state.adultChecking) return;
     const photo = state.photo; // the photo that passed the check, captured now
     const nameOk = checkName(true);
     if (!photo) { state.photoTried = true; updateGo(); return; }
@@ -451,6 +518,7 @@
     const p = { rid: newRid(), t: Date.now(), uid: ownerId() };
     pendingSet(p);
     const req = { action: 'start', request_id: p.rid, story_slug: state.slug, lang: state.lang, child_name: name, child_age: child.age, child_gender: state.gender, photo_b64: photo, consent: true, consent_version: CONSENT_VERSION };
+    if (ADULT[state.slug] && state.adult) req.adult_photo_b64 = state.adult;
     let r = null;
     for (let attempt = 0; attempt < 3 && !r; attempt++) {
       try {
@@ -471,6 +539,10 @@
       p.id = r.id; pendingSet(p); setLeft(r.remaining); waitFor(p, false, child); return;
     }
     pendingClear();
+    if (r.code === 'adult_group' || r.code === 'adult_noface' || r.code === 'adult_rejected') {
+      const k = r.code === 'adult_group' ? 'dad_many' : r.code === 'adult_noface' ? 'dad_noface' : 'dad_rejected';
+      rejectAdult(k); show('v-form'); err(k); updateGo(); return;
+    }
     if (r.code === 'photo_group' || r.code === 'photo_noface') { rejectPhoto(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); show('v-form'); err(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); updateGo(); return; }
     const map = { limit: 'e_limit', busy: 'e_busy', photo_rejected: 'e_rejected', name: state.lang === 'ar' ? 'name_err_ar' : 'name_err_en', not_open: 'closed_d', off: 'closed_d' };
     if (r.code === 'limit') setLeft(0);
@@ -590,7 +662,7 @@
     if (c.gender === 'boy' || c.gender === 'girl') { state.gender = c.gender; $('gender-seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === c.gender))); }
     const a = Number(c.age); if (a >= 1 && a <= 12) $('cp-age').value = String(Math.round(a));
     if (c.name && !$('cp-name').value) $('cp-name').value = String(c.name).slice(0, 20);
-    syncLang();
+    syncLang(); syncAdult();
   }
   async function start() {
     /* Nov 2026: a first request can be lost (phone network, the server waking up). Try up to 4 times with short
