@@ -21,6 +21,62 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 // Mirrors the active stories in the dashboard (Oct 2026); only used if the database cannot be reached.
 const BUILT_IN_STORIES = [
   {
+    "slug": "leave-it-to-me",
+    "title": "Leave It to Me!",
+    "title_ar": "الفطور عليّ!",
+    "theme": "adventure",
+    "collection": "Family, Growing up, Confidence",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "family",
+      "growing",
+      "confidence"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "This morning, the little chef is in charge of breakfast! Toast for Mum, a very important job for a banana and a bowl of runaway blueberries. A sweet, funny story about helping, little mistakes and a love that is always there, even when everything spills.",
+    "premise": {
+      "en": "This morning, the little chef is in charge of breakfast! Toast for Mum, a very important job for a banana and a bowl of runaway blueberries. A sweet, funny story about helping, little mistakes and a love that is always there, even when everything spills.",
+      "ar": "هذا الصباح، الطاهي الصغير هو المسؤول عن الفطور! خبز محمّص لماما، ومهمة خاصة جدًا للموزة، وحبّات توت تتدحرج في كل مكان، قصة لطيفة ومضحكة عن المساعدة والأخطاء الصغيرة والحب الذي يبقى دائمًا حتى حين ينسكب كل شيء"
+    },
+    "card_note": {
+      "en": "A breakfast surprise for Mum",
+      "ar": "مفاجأة فطور لماما"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/leave-it-to-me/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/leave-it-to-me/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/leave-it-to-me/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/leave-it-to-me/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l1.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l2.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l3.jpg",
+      "https://maison-jaber.com/story-assets/leave-it-to-me/l4.jpg"
+    ],
+    "sort_order": 0,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
     "slug": "uae-national-day",
     "title": "Celebrating UAE National Day",
     "title_ar": "الاحتفال باليوم الوطني الإماراتي",

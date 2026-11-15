@@ -18,6 +18,7 @@
     'the-last-box': ['mother'],
     'just-one-more': ['mother', 'father'],
     'uae-national-day': ['father'],
+    'leave-it-to-me': ['mother'],
   };
 
   const ROLES = {

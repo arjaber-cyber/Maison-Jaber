@@ -5,6 +5,20 @@
    dashboard, update or remove its entry here: text is only used when the image file names match.
    Transcribed from the sample pages (the sample child's name appears as printed). */
 window.HIKAYA_PREVIEW_TEXT = {
+ "leave-it-to-me": {
+  "en": [
+   "Mommy's apron covered Mariam's eyes. And her toes. Kitty patted the hem. “Meow?” “It's me in here!”",
+   "Mariam spread banana on the toast and added three blueberry buttons. “One, two, three. Your toast is dressed!”",
+   "Plop! The last berry dropped out of the slipper. Mariam giggled. “Next time, ask for a plate!”",
+   "“Tomorrow, will you teach me to make breakfast?” asked Mommy. Mariam touched her nose to Mommy's. “First, wake me up and tell me to go back to sleep.”"
+  ],
+  "ar": [
+   "غطّت مريلة ماما عيني مريم، وغطّت أصابع قدميها أيضًا! لمست القطة طرف المريلة. «مياو؟» «أنا هنا، في الداخل!»",
+   "دهنت مريم الخبز بالموز وزيّنته بثلاث حبّات توت كالأزرار. «زرّ، زرّان، ثلاثة... ها هو فطورك يرتدي ثيابه!»",
+   "طُبّ! سقطت آخر حبّة توت من الخفّ في الوعاء. ضحكت مريم. «في المرّة المقبلة، اطلب طبقًا!»",
+   "«هل تعلّمينني غدًا كيف أعدّ الفطور؟» سألت ماما. ألصقت مريم أنفها بأنف ماما. «أوّلًا توقظينني، ثمّ تقولين لي: عودي إلى النوم!»"
+  ]
+ },
  "uae-national-day": {
   "en": [
    "One of Jack's favorite places is Dubai. He stands with his father, staring up at the tall, shiny buildings that reach for the blue sky.",

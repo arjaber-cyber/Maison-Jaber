@@ -77,10 +77,12 @@
       R('the-cracked-blue-vase', 'Owning up to little mistakes, gently', 'عن الاعتراف بالأخطاء الصغيرة بلطف'),
       R('teddys-night-adventure', 'For little ones afraid of the dark', 'للصغار الذين يخافون الظلام'),
       R('house-of-missing-things', 'Growing responsibility, with a smile', 'تعلّم المسؤولية بابتسامة'),
+      R('leave-it-to-me', 'Little mistakes are okay, Mum\'s love is always there', 'الأخطاء الصغيرة لا بأس بها، وحب ماما باقٍ دائمًا'),
     ],
     justbecause: [ // broadly joyful, imaginative, evergreen
       R('storm-above-the-city', 'A big, funny superhero adventure', 'مغامرة بطولية كبيرة ومضحكة'),
       R('uae-national-day', 'A joyful UAE National Day adventure with Dad', 'مغامرة مبهجة مع بابا في اليوم الوطني الإماراتي'),
+      R('leave-it-to-me', 'A sweet, funny breakfast surprise for Mum', 'مفاجأة فطور لطيفة ومضحكة لماما'),
       R('to-the-rescue', 'A cheerful everyday-hero story', 'قصة مبهجة عن بطل في الحياة اليومية'),
       R('grandpas-wild-safari', 'A warm safari adventure with Grandpa', 'مغامرة سفاري دافئة مع الجد'),
       R('door-of-a-thousand-stars', 'A magical adventure beyond the clouds', 'مغامرة سحرية فوق الغيوم'),
