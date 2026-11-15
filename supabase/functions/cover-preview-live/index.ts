@@ -80,6 +80,7 @@ const COVERS: Record<string, { en: string; ar: string; who: string; keep?: strin
   "to-the-rescue": { en: "Kabir", ar: "كبير", who: "the boy running in the centre in the green jacket", keep: "the girl in overalls, the grandfather in the hat, the woman, and all the animals, unchanged", titleEn: "{N} to the Rescue!", titleAr: "{N} إلى الإنقاذ!" },
   "uae-national-day": { en: "Jack", ar: "جاك", who: "the young boy sitting on the man's lap, smiling up at him and holding a small UAE flag", keep: "the father (the adult man with the beard, grey polo shirt and UAE-flag scarf) exactly as he is: same face, beard, hair, skin and pose", titleEn: "{N} Celebrates UAE National Day", titleAr: "{N} يحتفل باليوم الوطني الإماراتي", titleArGirl: "{N} تحتفل باليوم الوطني الإماراتي", arVerb: ["يحتفل", "تحتفل"], adult: { role: "father", who: "the father (the adult man with the beard sitting behind the child, holding the child on his lap)", outfit: "the same grey polo shirt and red, green, white and black UAE-flag scarf" } },
   "leave-it-to-me": { en: "Mariam", ar: "مريم", who: "the little girl on the left in the pink long-sleeved top and beige linen apron, holding out the plate of toast and smiling up at the woman", keep: "the mother (the woman with long dark curly hair and the sage-green cardigan) exactly as she is: same face, hair, skin and pose", titleEn: "Leave It to {N}!", titleAr: "الفطور على {N}", adult: { role: "mother", female: true, who: "the mother (the woman with long dark curly hair in the sage-green cardigan, sitting beside the child and smiling at her)", outfit: "the same sage-green knitted cardigan over the cream top" } },
+  "my-dad-my-hero": { en: "Maya", ar: "مايا", who: "the little girl on the left in the mustard-yellow cardigan and light-blue dress, standing on the cobblestones and holding the superhero's hand", keep: "the father (the tall man with short dark hair in the dark navy superhero suit with the gold star and the red cape) exactly as he is: same face, hair, skin and pose", titleEn: "My Dad, My Hero", titleAr: "أبي بطلي", adult: { role: "father", who: "the father (the tall man in the dark navy superhero suit with the gold star and the long red cape, standing beside the child and holding her hand)", outfit: "the same dark navy superhero suit with the gold star on the chest, the long red cape and the dark boots" } },
   "why-is-baby-looking-at-me": { en: "Eva", ar: "ايفا", who: "the older child lying on the rug in the red top", keep: "the baby, unchanged", titleEn: "{N} Why Is Baby Looking at Me?", titleAr: "{N} لماذا ينظر إليّ المولود الصغير؟" },
 };
 
@@ -100,9 +101,12 @@ const ORIG: Record<string, { g: "girl" | "boy"; boyOutfit?: string; girlOutfit?:
   "to-the-rescue": { g: "boy" },
   "uae-national-day": { g: "boy", girlOutfit: "the same light-blue short-sleeved T-shirt in a girl's cut and the same khaki shorts, the same backpack straps; neat and simple, nothing boyish about the styling" },
   "leave-it-to-me": { g: "girl", boyOutfit: "a plain sage-green long-sleeved crew-neck top and plain trousers (nothing pink) under the same beige linen apron" },
+  "my-dad-my-hero": { g: "girl", boyOutfit: "a plain mustard-yellow zip-up jacket in a boy's cut over a plain light-blue T-shirt, with straight light-grey trousers and the same white trainers (no dress, no skirt)" },
   "why-is-baby-looking-at-me": { g: "girl", boyOutfit: "a plain red crew-neck T-shirt in the same red (no ruffles, no dress), with trousers where visible" },
 };
 
+// Does the title carry the child's name? ("My Dad, My Hero" does not.)
+const hasName = (c: any) => !!c && (c.titleEn.includes("{N}") || c.titleAr.includes("{N}"));
 // The full title for this child (Arabic titles with a verb use the feminine form for a girl, e.g. "تحتفل").
 const isGirl = (job: any) => /girl|female/i.test(job?.child_gender ?? job?.gender ?? "");
 function titleFor(c: any, job: any) {
@@ -188,6 +192,8 @@ function promptV3(job: any) {
   const headRule = girl
     ? `If the girl in image 2 wears a hijab, paint a simple, neat hijab in a soft colour that suits the cover. Remove every other kind of headwear (caps, hats, hoods, headbands, hair clips that hide the hair, sunglasses on the head) and show her natural hair as in the photo.`
     : `Remove everything the boy wears on his head in image 2 (cap, hat, ghutra, agal, kufi, hood, headband, sunglasses on the head). Show his natural hair: where the photo hides it, paint short, neat hair matching his visible hair colour, eyebrows and skin tone.`;
+  // Titles without the child's name (e.g. "My Dad, My Hero"): every word stays exactly as it is.
+  const titleBlock = c && !hasName(c) ? `TITLE TEXT: The title "${title}" does not contain a name. Keep the title, the Hikaya logo and every other text exactly as they are: same words, spelling, lettering, colour, size and position. Do not add the child's name or any other text anywhere.` : null;
   return `TASK: personalise a children's storybook cover. Image 1 = the finished cover. Image 2 = a real photo of the customer's child, a ${job.child_age}-year-old ${job.child_gender}. Image 2 is ONLY a reference for this child's identity (face, skin tone, hair).${adult ? ` Image 3 = a real photo of the child's ${c!.adult!.role}.` : ""}
 
 WHO TO CHANGE: ${adult ? "" : "only "}${c ? c.who : "the main child character"}${adult ? `, and the ${c!.adult!.role} (see below)` : ""}. ${keepLine} Everything else in image 1 stays exactly the same: composition, framing, background, objects, colours, lighting, the Hikaya logo and the painterly illustration style.
@@ -206,9 +212,9 @@ ${outfitRule(job)}
 
 HEAD: ${headRule}${adultBlock}
 
-TITLE TEXT: The title currently contains the name "${oldName}". Erase "${oldName}" completely and write "${job.child_name}" in its place, in exactly the same lettering style, colour, size, effect and position. ${ar ? `Arabic letters, right-to-left, spelled exactly: ${job.child_name} (letter by letter: ${[...job.child_name].join(" ")}).` : `Spelled exactly: ${job.child_name}, in plain letters with no accents, dots, umlauts, stars or decorative marks on or above any letter.`} After the change the full title must read: "${title}".${verbRule} The name "${oldName}" must not appear anywhere. Do not change, move or misspell any other word, the Hikaya logo or any small text.
+${titleBlock ?? `TITLE TEXT: The title currently contains the name "${oldName}". Erase "${oldName}" completely and write "${job.child_name}" in its place, in exactly the same lettering style, colour, size, effect and position. ${ar ? `Arabic letters, right-to-left, spelled exactly: ${job.child_name} (letter by letter: ${[...job.child_name].join(" ")}).` : `Spelled exactly: ${job.child_name}, in plain letters with no accents, dots, umlauts, stars or decorative marks on or above any letter.`} After the change the full title must read: "${title}".${verbRule} The name "${oldName}" must not appear anywhere. Do not change, move or misspell any other word, the Hikaya logo or any small text.`}
 
-OUTPUT: one square image, same as image 1 except the child${adult ? `, the ${c!.adult!.role}` : ""} and the name.`;
+OUTPUT: one square image, same as image 1 except the child${adult ? `, the ${c!.adult!.role}` : ""}${titleBlock ? "" : " and the name"}.`;
 }
 
 // ---------- v4: read the photo first, then paint with an exact description ----------
@@ -330,7 +336,7 @@ async function qaJob(job: any, coverBytes?: Uint8Array, adultPhoto?: Uint8Array 
     const text = `You are a strict quality checker for a personalised children's storybook cover. Image A = the original cover template. Image B = a photo of the customer's child (${job.child_age}-year-old ${job.child_gender}). Image C = the generated personalised cover.${adult ? ` Image D = a photo of the child's ${c!.adult!.role}; in C, ${c!.adult!.who} should now look like the ${fem ? "woman" : "man"} in D (same pose as in A; judge ${fem ? "her face, skin and hair (or hijab if she wears one in D)" : "his face, beard, skin and hair"}, not ${fem ? "her" : "his"} clothes).` : ""}
 Check image C and reply with JSON only:
 {"title_read": "<transcribe the big main title of C exactly as it is painted, letter by letter, in its original script. Copy mistakes exactly; do NOT correct spelling, do NOT add words that are not there. Leave out the small subtitle/tagline and the Hikaya logo>",
- "name_correct": <true if the child's name in C is exactly "${job.child_name}" with correct spelling>,
+ "name_correct": <${hasName(c) ? `true if the child's name in C is exactly "${job.child_name}" with correct spelling` : "true (this title has no name)"}>,
  "old_name_visible": <true if the old name "${oldName}" still appears anywhere in C>,
  "title_ok": <true if the whole title of C reads exactly "${expected}" (ignore line breaks and spacing around "و"), with no extra, missing, moved or misspelled words>,
  "likeness": <1-5, would a parent instantly recognise the child in B as the character in C: face shape, eyes, nose, mouth, skin tone, hair>,
@@ -370,6 +376,7 @@ Check image C and reply with JSON only:
     const raw = (q.title_read ?? "").normalize("NFKC").replace(/[ً-ْٰـ]/g, "");
     const nm = String(job.child_name ?? "").normalize("NFKC");
     q.name_separate = new RegExp(`(^|[\\s\\n])${nm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([\\s\\n!?,.:؟]|$)`, "u").test(raw);
+    if (!hasName(c)) { q.name_separate = true; q.old_name_in_title = false; q.old_name_visible = false; q.name_correct = true; }
     q.tone_diff = (q.skin_tone_photo != null && q.skin_tone_cover != null) ? Math.abs(q.skin_tone_photo - q.skin_tone_cover) : null;
     q.pass = !!(q.title_match && q.name_separate && !q.old_name_in_title && !q.old_name_visible && q.likeness >= 4 && q.head_natural >= 4 && q.headwear_ok && q.outfit_ok && q.others_ok && q.gender_ok !== false && !q.artifacts
       && (q.gender_look == null || q.gender_look >= 4) && (q.tone_diff == null || q.tone_diff <= 1) && q.hair_match !== false && q.age_ok !== false
@@ -722,7 +729,7 @@ Deno.serve(async (req) => {
     if (!gender) return json(400, { code: "gender" });
     const b64 = String(body.photo_b64 || "").replace(/^data:image\/\w+;base64,/, "");
     if (!b64 || b64.length > 3_500_000) return json(400, { code: "photo" });
-    // Optional photo of the adult on the cover (uae-national-day: Dad; leave-it-to-me: Mum). Same checks and privacy as the child's photo.
+    // Optional photo of the adult on the cover (uae-national-day, my-dad-my-hero: Dad; leave-it-to-me: Mum). Same checks and privacy as the child's photo.
     const adultB64 = COVERS[slug].adult ? String(body.adult_photo_b64 || "").replace(/^data:image\/\w+;base64,/, "") : "";
     if (adultB64.length > 3_500_000) return json(400, { code: "adult_photo" });
 

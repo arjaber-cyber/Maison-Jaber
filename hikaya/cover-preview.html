@@ -235,9 +235,9 @@
   const FN = SB_URL + '/functions/v1/cover-preview-live';
   const CONSENT_VERSION = 'cp-2026-11-07';
   // Stories the preview engine knows (each has its cover facts on the server).
-  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','uae-national-day','leave-it-to-me','why-is-baby-looking-at-me'];
+  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','uae-national-day','leave-it-to-me','my-dad-my-hero','why-is-baby-looking-at-me'];
   // Covers that also show a parent, who can be personalised from an optional photo (the server knows the same list).
-  const ADULT = { 'uae-national-day': 'father', 'leave-it-to-me': 'mother' };
+  const ADULT = { 'uae-national-day': 'father', 'leave-it-to-me': 'mother', 'my-dad-my-hero': 'father' };
   // Text keys for the parent card: Dad's wording, or Mum's for covers that show the mother.
   const AK = (k) => ADULT[state.slug] === 'mother' ? k.replace(/^dad_/, 'mum_') : k;
   const EN_RE = /^[A-Za-z][A-Za-z' -]{0,19}$/;

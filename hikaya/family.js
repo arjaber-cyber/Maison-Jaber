@@ -19,6 +19,7 @@
     'just-one-more': ['mother', 'father'],
     'uae-national-day': ['father'],
     'leave-it-to-me': ['mother'],
+    'my-dad-my-hero': ['father'],
   };
 
   const ROLES = {

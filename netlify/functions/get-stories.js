@@ -21,6 +21,62 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 // Mirrors the active stories in the dashboard (Oct 2026); only used if the database cannot be reached.
 const BUILT_IN_STORIES = [
   {
+    "slug": "my-dad-my-hero",
+    "title": "My Dad, My Hero",
+    "title_ar": "أبي بطلي",
+    "theme": "adventure",
+    "collection": "Family, Imagination, Emotions",
+    "age_ranges": "2-4,4-6",
+    "age_bands": [
+      "2-4",
+      "4-6"
+    ],
+    "moments": [
+      "family",
+      "imagination",
+      "emotions"
+    ],
+    "occasions": [
+      "birthday",
+      "eid",
+      "justbecause"
+    ],
+    "description": "Our little one is sure Dad has superpowers! He drives across town, fixes the favourite toy train and, in a big imagination, flies above the rooftops. But when a wheel rolls away and Dad needs a rest, they discover something even better than magic: a dad who loves them just as they are, and is loved right back. A warm, funny story about everyday heroes.",
+    "premise": {
+      "en": "Our little one is sure Dad has superpowers! He drives across town, fixes the favourite toy train and, in a big imagination, flies above the rooftops. But when a wheel rolls away and Dad needs a rest, they discover something even better than magic: a dad who loves them just as they are, and is loved right back. A warm, funny story about everyday heroes.",
+      "ar": "صغيرنا متأكد أن بابا يملك قوى خارقة! يقود السيارة عبر المدينة، ويصلح القطار المفضل، ويطير في الخيال فوق أسطح البيوت، لكن حين تتدحرج عجلة ويحتاج بابا إلى الراحة، يكتشف شيئًا أجمل من السحر: أبًا يحبه كما هو، ويبادله الحب بكل قلبه، قصة دافئة ومضحكة عن أبطال الحياة اليومية"
+    },
+    "card_note": {
+      "en": "A love letter to Dad",
+      "ar": "رسالة حب إلى بابا"
+    },
+    "cover_gradient": "adventure",
+    "cover_image_url": "https://maison-jaber.com/story-assets/my-dad-my-hero/cover.jpg",
+    "back_cover_url": "https://maison-jaber.com/story-assets/my-dad-my-hero/back.jpg",
+    "cover_image_url_ar": "https://maison-jaber.com/story-assets/my-dad-my-hero/cover-ar.jpg",
+    "back_cover_url_ar": "https://maison-jaber.com/story-assets/my-dad-my-hero/back-ar.jpg",
+    "preview_images_ar": [
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l1-ar.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l2-ar.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l3-ar.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l4-ar.jpg"
+    ],
+    "preview_images": [
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l1.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l2.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l3.jpg",
+      "https://maison-jaber.com/story-assets/my-dad-my-hero/l4.jpg"
+    ],
+    "sort_order": 0,
+    "featured": false,
+    "active": true,
+    "built_in": false,
+    "has_extra_character": false,
+    "extra_character_name": null,
+    "extra_character_fee_aed": 0,
+    "detail_url": null
+  },
+  {
     "slug": "leave-it-to-me",
     "title": "Leave It to Me!",
     "title_ar": "الفطور عليّ!",
