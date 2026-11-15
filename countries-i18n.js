@@ -88,7 +88,7 @@
  },
  "o_gift_birthday": {
   "en": "Birthday",
-  "ar": "عيد الميلاد"
+  "ar": "عيد ميلاد الطفل"
  },
  "o_gift_eid_ramadan": {
   "en": "Eid & Ramadan",
@@ -183,8 +183,8 @@
   "ar": "كم يستغرق التوصيل إلى السعودية؟"
  },
  "saudi_a0": {
-  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least two weeks ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوعين على الأقل"
  },
  "saudi_q1": {
   "en": "How much is delivery?",
@@ -239,8 +239,8 @@
   "ar": "كم يستغرق التوصيل إلى قطر؟"
  },
  "qatar_a0": {
-  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least two weeks ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوعين على الأقل"
  },
  "qatar_q1": {
   "en": "How much is delivery?",
@@ -295,8 +295,8 @@
   "ar": "كم يستغرق التوصيل إلى الكويت؟"
  },
  "kuwait_a0": {
-  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least two weeks ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوعين على الأقل"
  },
  "kuwait_q1": {
   "en": "How much is delivery?",
@@ -351,8 +351,8 @@
   "ar": "كم يستغرق التوصيل إلى البحرين؟"
  },
  "bahrain_a0": {
-  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least two weeks ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوعين على الأقل"
  },
  "bahrain_q1": {
   "en": "How much is delivery?",
@@ -407,8 +407,8 @@
   "ar": "كم يستغرق التوصيل إلى عُمان؟"
  },
  "oman_a0": {
-  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least a week ahead.",
-  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوع على الأقل"
+  "en": "About 7 working days from your order. Each book is made to order, so for birthdays and Eid we suggest ordering at least two weeks ahead.",
+  "ar": "نحو 7 أيام عمل من تاريخ الطلب، وكل كتاب يُصنع حسب الطلب، لذلك ننصح بالطلب قبل أعياد الميلاد والعيد بأسبوعين على الأقل"
  },
  "oman_q1": {
   "en": "How much is delivery?",

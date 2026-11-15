@@ -136,7 +136,7 @@
  },
  "o_birthday": {
   "en": "Birthday",
-  "ar": "عيد الميلاد"
+  "ar": "عيد ميلاد الطفل"
  },
  "o_eid": {
   "en": "Eid & Ramadan",
@@ -184,7 +184,7 @@
  },
  "birthday_shelf": {
   "en": "Birthday stories",
-  "ar": "قصص لعيد الميلاد"
+  "ar": "قصص لعيد ميلاد الطفل"
  },
  "eid_h1": {
   "en": "Personalised Eid and Ramadan gifts for kids",

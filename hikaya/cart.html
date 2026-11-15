@@ -283,7 +283,7 @@
       <div class="summary-box">
         <h3>${t('cart.order_summary', 'Order Summary')}</h3>
         <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.perBookFull * pricing.itemCount, region)}</span></div>
-        ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')}</span><span>-${pricing.tier.discountPct}%</span></div>` : ''}
+        ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')} (${pricing.tier.discountPct}%)</span><span>−${fmt(Math.round((pricing.perBookFull - pricing.perBookDiscounted) * pricing.itemCount * 100) / 100, region)}</span></div>` : ''}
         ${pricing.extraCharacterFee > 0 ? `<div class="summary-row"><span>${t('cart.extra_character_fee', 'Extra character photo')}</span><span>${fmt(pricing.extraCharacterFee, region)}</span></div>` : ''}
         <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${(pricing.tier.freeDelivery || !pricing.deliveryFee) ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>
         <p class="summary-eta">${window.Hikaya ? window.Hikaya.etaText() : ''}</p>

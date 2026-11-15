@@ -12,6 +12,9 @@
     if (!shelf || !all) return;
     let list = occ ? all.filter(s => H.inOccasion(s, occ)) : all.slice();
     if (!list.length) list = all.slice();
+    // QA 15 Nov 2026: on another GCC country's page, the UAE National Day story goes to the end of the shelf.
+    const ctry = document.body.dataset.country || '';
+    if (ctry && ctry !== 'UAE') list = list.filter(s => !/national-day/.test(s.slug || '')).concat(list.filter(s => /national-day/.test(s.slug || '')));
     shelf.innerHTML = list.slice(0, occ || document.body.dataset.country ? 8 : 24).map(s => H.cardHtml(s)).join('');
     shelf.removeAttribute('aria-busy');
   }

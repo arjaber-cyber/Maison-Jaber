@@ -215,6 +215,12 @@
   .ph-safe li { position:relative; padding-inline-start:20px; margin:0 0 3px; font-weight:600; }
   .ph-safe li::before { content:'✓'; position:absolute; inset-inline-start:2px; color:#3d5a26; font-weight:800; }
   .ph-safe a { font-size:12.5px; font-weight:700; color:var(--ink); }
+  .ph-later-btn { display:block; width:100%; margin:10px 0 12px; padding:12px 14px; border:1.5px solid var(--line, #E5DACB); border-radius:12px; background:#fff; font:inherit; font-size:14px; font-weight:700; color:var(--ink); cursor:pointer; text-align:center; }
+  .ph-later-btn:hover { border-color: var(--coral, #8A5638); }
+  .ph-later-btn:focus-visible { outline: 3px solid var(--coral-deep, #563622); outline-offset: 2px; }
+  .btn-primary.is-incomplete, body[data-flow] .btn-primary.is-incomplete { background: #E7DED2; color: var(--ink-soft); box-shadow: none; }
+  .step-err { margin: 10px 0 0; }
+  .age-alt { display:inline-block; margin-top:4px; font-weight:700; color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
   .ph-later-link { background:none; border:0; padding:4px 0; margin:2px 0 10px; font:inherit; font-size:13px; font-weight:700; color:var(--ink); text-decoration:underline; text-underline-offset:3px; cursor:pointer; text-align:start; }
   .ph-later { background:#FFFCF7; border:1.5px dashed #D8C5B3; border-radius:14px; padding:14px 16px; margin:0 0 12px; font-size:13.5px; }
   .ph-later b { display:block; font-size:14.5px; margin:0 0 4px; }
@@ -303,7 +309,8 @@
   .review-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line-soft, #ece1d1); font-size: 13.5px; }
   .review-row span:first-child { color: var(--ink-soft, #7d6a5a); font-weight: 600; }
   .review-row span:last-child { font-weight: 700; text-align: right; max-width: 60%; }
-  .book-lang { margin: 16px 0 14px; }
+  .book-lang { margin: 0 0 4px; }
+  .book-lang .field-hint { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-soft); font-weight: 600; }
   .book-name-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); font-size: 13px; font-weight: 600; }
   .book-name-line bdi { font-weight: 800; color: var(--coral-deep); }
   .consent-box { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 4px 0 12px; font-size: 12.5px; font-weight: 600; line-height: 1.5; cursor: pointer; }
@@ -394,7 +401,7 @@
 <div class="page-head wrap">
   <h1 data-i18n="personalize.page_title">Let's create their story</h1>
   <p data-i18n="personalize.page_sub_v2">Add their name, age, and photo &mdash; we'll take it from there.</p>
-  <ul class="hk-offer hk-offer-quiet" data-hk-offer="box delivery eta privacy"><li>Gift packaging included</li><li>Free UAE delivery</li><li>Delivered in about 5 working days</li><li><a href="privacy.html" data-photo-privacy>Your child's photo stays private</a></li></ul>
+  <ul class="hk-offer hk-offer-quiet" data-hk-offer="box delivery eta privacy"><li>Luxury gift box included</li><li>Free UAE delivery</li><li>Delivered in about 5 working days</li><li><a href="privacy.html" data-photo-privacy>Your child's photo stays private</a></li></ul>
 </div>
 
 <div class="wizard-progress wrap" id="wizard-progress" aria-hidden="true"></div>
@@ -420,7 +427,7 @@
       <div class="summary-row"><span data-i18n="personalize.summary_name">Child's name</span><span id="summary-name">&mdash;</span></div>
       <div class="summary-row"><span data-i18n="personalize.summary_photos">Photos</span><span id="summary-photos">0</span></div>
       <div class="summary-row total"><span data-i18n="personalize.price">Price</span><span data-hikaya-price><strong><bdi>AED 169</bdi></strong></span></div>
-      <p class="summary-incl" data-i18n="pg.incl_box">Includes our signature gift packaging</p>
+      <p class="summary-incl" data-i18n="pg.incl_box">Includes our luxury gift box</p>
       <p class="summary-incl" data-hk-eta>Delivery to UAE: about 5 working days</p>
       <p class="sib-hint" id="sib-hint" hidden></p>
       </div>
@@ -453,10 +460,19 @@
       <div class="wizard-step" data-step="details" id="wizard-step-details">
         <div class="req-note"><span class="req-mark">*</span> <span data-i18n="personalize.required_note">Required</span></div>
         <div class="form-grid">
+          <div class="field full book-lang" id="book-lang-field">
+            <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
+            <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
+            <p class="field-hint" data-i18n="qa.lang_hint">Their name and the first-page message are printed in this language.</p>
+            <div class="book-name-line" id="book-name-line" hidden>
+              <span><span data-i18n="bl.name_in_book">Name printed in the book:</span> <bdi id="book-name-shown" data-i18n-skip></bdi></span>
+              <button type="button" class="review-edit" id="book-name-change" data-i18n="bl.change">Change</button>
+            </div>
+          </div>
           <div class="field full"><label class="field-label" for="child-name"><span data-i18n="personalize.child_name">Child's first name</span><span class="req-mark">*</span></label><input type="text" id="child-name" name="child_name" placeholder="e.g. Adam" required maxlength="20" autocomplete="off" aria-describedby="child-name-error" data-i18n-placeholder="personalize.child_name_ph" /><p class="field-error" id="child-name-error" role="alert" hidden></p></div>
           <div class="field"><label class="field-label" for="child-age"><span data-i18n="personalize.child_age">Child's age</span><span class="req-mark">*</span></label><input type="number" id="child-age" name="child_age" min="2" max="10" step="1" inputmode="numeric" placeholder="e.g. 5" data-i18n-placeholder="personalize.child_age_ph" aria-describedby="child-age-error" /><p class="field-error" id="child-age-error" role="alert" hidden></p></div>
           <div class="field">
-            <span class="field-label" id="gender-label" data-i18n="personalize.gender_label">Which pronouns should we use?</span>
+            <span class="field-label" id="gender-label"><span data-i18n="personalize.gender_label">Who's the hero?</span><span class="req-mark">*</span></span>
             <div class="gender-toggle" role="group" aria-labelledby="gender-label">
               <button type="button" class="gender-btn" data-value="boy" aria-pressed="false">
                 <svg viewBox="0 0 24 24" stroke-width="1.8" fill="none"><circle cx="12" cy="8" r="4.5"/><path d="M5 21c1.2-4.2 4-6.5 7-6.5s5.8 2.3 7 6.5"/></svg>
@@ -468,6 +484,7 @@
               </button>
             </div>
             <input type="hidden" id="child-gender" name="child_gender" />
+            <p class="field-error" id="child-gender-error" role="alert" hidden></p>
           </div>
         </div>
         <div class="wizard-nav">
@@ -488,6 +505,20 @@
           </ul>
           <a href="privacy.html" target="_blank" rel="noopener" data-i18n="ph.c_more">Read our privacy policy</a>
         </div>
+        <div id="ph-now">
+        <div class="photo-upload" id="photo-upload">
+          <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" data-i18n-aria="a11y.child_photo" />
+          <svg class="up-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>
+          <div class="hint-main" data-i18n="lx.photo_tap">Tap to add a photo</div>
+          <div class="hint-sub" data-i18n="lx.photo_more">One clear photo is enough. You can add a second for a better likeness.</div>
+        </div>
+        <button type="button" class="ph-later-btn" id="ph-later-btn"><span data-i18n="ph.later_link">No good photo right now? Add it after ordering</span></button>
+        <div class="photo-thumbs" id="photo-thumbs"></div>
+        <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
+        <label class="consent-box" id="photo-consent-box" hidden>
+          <input type="checkbox" id="photo-consent" />
+          <span data-i18n="bl.photo_consent">I authorise Hikaya by Maison Jaber to use the photo(s) I upload only to create my child's personalised book. They will not be used for any other purpose, and they are automatically deleted from our records within 15 days.</span>
+        </label>
         <p class="photo-helper" data-i18n="personalize.photo_helper">For the best result, use one clear, front-facing photo in good light.</p>
         <details class="photo-guidance">
           <summary data-i18n="personalize.photo_more_tips">More photo tips</summary>
@@ -499,24 +530,10 @@
             <li data-i18n="personalize.photo_g5">Isn't a group photo &mdash; just your child</li>
           </ul>
         </details>
-        <div id="ph-now">
         <div class="cp-nudge" id="cp-nudge" hidden>
           <div><b data-i18n="cp.pz_t">Want to see them on the cover first?</b><span data-i18n="cp.pz_d">Try our free AI cover preview in about a minute.</span></div>
           <a href="cover-preview.html" id="cp-nudge-link" target="_blank" rel="noopener"><span data-i18n="cp.pz_btn">Try it free</span> ✨</a>
         </div>
-        <div class="photo-upload" id="photo-upload">
-          <input type="file" id="child-photos" accept="image/*" multiple aria-label="Add a photo of your child" data-i18n-aria="a11y.child_photo" />
-          <svg class="up-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8.5 6l1.5-2h4l1.5 2"/></svg>
-          <div class="hint-main" data-i18n="lx.photo_tap">Tap to add a photo</div>
-          <div class="hint-sub" data-i18n="lx.photo_more">One clear photo is enough. You can add a second for a better likeness.</div>
-        </div>
-        <div class="photo-thumbs" id="photo-thumbs"></div>
-        <div class="photo-retry-note" id="photo-retry-note" style="display:none;"></div>
-        <label class="consent-box" id="photo-consent-box" hidden>
-          <input type="checkbox" id="photo-consent" />
-          <span data-i18n="bl.photo_consent">I authorise Hikaya by Maison Jaber to use the photo(s) I upload only to create my child's personalised book. They will not be used for any other purpose, and they are automatically deleted from our records within 15 days.</span>
-        </label>
-        <button type="button" class="ph-later-link" id="ph-later-btn" data-i18n="ph.later_link">No good photo right now? Add it after ordering</button>
         </div>
         <div class="ph-later" id="ph-later" hidden>
           <b data-i18n="ph.later_t">You'll add the photo after ordering</b>
@@ -594,14 +611,6 @@
       <!-- Step: Review -->
       <div class="wizard-step" data-step="review" id="wizard-step-review">
         <div id="review-summary"></div>
-        <div class="field full book-lang">
-          <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
-          <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
-          <div class="book-name-line" id="book-name-line" hidden>
-            <span><span data-i18n="bl.name_in_book">Name printed in the book:</span> <bdi id="book-name-shown" data-i18n-skip></bdi></span>
-            <button type="button" class="review-edit" id="book-name-change" data-i18n="bl.change">Change</button>
-          </div>
-        </div>
         <section class="msg-card" id="msg-card" aria-labelledby="msg-title">
           <div class="msg-head">
             <span class="msg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg></span>
@@ -623,7 +632,7 @@
         <div class="next-box" aria-labelledby="nx-title">
           <h3 id="nx-title" data-i18n="lx.nx_t">What happens next</h3>
           <ol>
-            <li data-i18n="lx.nx1">Checkout: pay securely by card, Apple Pay or Google Pay. Your order is confirmed once payment goes through.</li>
+            <li data-i18n="lx.nx1">Checkout: pay securely by card, Apple Pay or Google Pay, or in 4 payments with Tabby or Tamara (UAE). Your order is confirmed once payment goes through.</li>
             <li id="nx2">We create and print: our team illustrates your child into the story and prints the hardcover.</li>
             <li id="nx3">Delivered gift-boxed: about 5 working days.</li>
           </ol>
@@ -728,6 +737,13 @@
     document.getElementById('summary-age').textContent = st.ok ? (window.Hikaya ? window.Hikaya.rangeText(...st.edition.split('-')) : 'Ages ' + st.edition) : '—';
     const show = !st.ok && !st.empty && (showError || ageTouched);
     errEl.hidden = !show; errEl.textContent = show ? ageErrorText(st.lim) : '';
+    // QA 15 Nov 2026: an age this story doesn't print for gets a way forward, not a dead end.
+    if (show && Number.isInteger(st.years) && st.years >= 2 && st.years <= 8) {
+      const band = st.years >= 6 ? '6-8' : st.years >= 4 ? '4-6' : '2-4';
+      const a = document.createElement('a'); a.className = 'age-alt'; a.href = 'stories.html?age=' + band;
+      a.textContent = t('qa.age_alt', 'See our stories for ages {band}').replace('{band}', band.replace('-', '–'));
+      errEl.appendChild(document.createElement('br')); errEl.appendChild(a);
+    }
     if (show) ageInputEl.setAttribute('aria-invalid', 'true'); else ageInputEl.removeAttribute('aria-invalid');
     return st;
   }
@@ -1052,7 +1068,7 @@
     hint: document.getElementById('name-modal-hint'), err: document.getElementById('name-modal-error'),
     ok: document.getElementById('name-modal-ok'), cancel: document.getElementById('name-modal-cancel'),
   };
-  let nmReq = 0, nmReturnFocus = null;
+  let nmReq = 0, nmReturnFocus = null, pendingAdvance = null;
   const langName = l => l === 'ar' ? t('lx.lang_ar', 'Arabic') : t('lx.lang_en', 'English');
   async function openNameModal() {
     const typed = typedName(); if (!typed) return;
@@ -1069,8 +1085,17 @@
     const req = ++nmReq;
     nm.hint.textContent = t('bl.nm_loading', 'Suggesting a spelling…');
     try {
-      const r = await fetch('/.netlify/functions/translate-name', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: typed, to }) });
-      const d = await r.json().catch(() => ({}));
+      // QA 15 Nov 2026: wait up to 8s per try and retry once before asking them to type it.
+      const ask = async () => {
+        const ctl = window.AbortController ? new AbortController() : null;
+        const tm = ctl ? setTimeout(() => ctl.abort(), 8000) : null;
+        try {
+          const r = await fetch('/.netlify/functions/translate-name', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: typed, to }), signal: ctl ? ctl.signal : undefined });
+          return await r.json().catch(() => ({}));
+        } catch (_) { return {}; } finally { if (tm) clearTimeout(tm); }
+      };
+      let d = await ask();
+      if (!d.name && req === nmReq && !nm.wrap.hidden) d = await ask();
       if (req !== nmReq || nm.wrap.hidden) return;
       if (d.name && !nm.input.value.trim()) { nm.input.value = d.name; nm.input.select(); }
       nm.hint.textContent = d.name ? t('bl.nm_suggested', 'Suggested spelling. You can change it.') : t('bl.nm_type', 'Please type the name in {lang}.').replace('{lang}', langName(to));
@@ -1091,16 +1116,18 @@
     bookNameConfirmed = { typed: typedName(), lang: to, name: v };
     closeNameModal(); langCheck();
     if (currentStepName === 'review') renderReviewSummary();
+    if (pendingAdvance) { const st = pendingAdvance; pendingAdvance = null; goNext(st); }
   });
   nm.input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.ok.click(); } });
   nm.cancel.addEventListener('click', () => {
     // Switch the book back to the language the name was typed in.
     const typed = typedName(); const s = scriptOf(typed);
-    if (s === 'ar' || s === 'en') bookLangSel.value = s;
+    if (s === 'ar' || s === 'en') { bookLangSel.value = s; bookLangSel.dataset.touched = '1'; }
     closeNameModal(); langCheck();
     if (currentStepName === 'review') renderReviewSummary();
+    if (pendingAdvance) { const st = pendingAdvance; pendingAdvance = null; goNext(st); }
   });
-  nm.wrap.addEventListener('keydown', e => { if (e.key === 'Escape') nm.cancel.click(); });
+  nm.wrap.addEventListener('keydown', e => { if (e.key === 'Escape') { pendingAdvance = null; nm.cancel.click(); } });
   function ensureBookName() { if (currentStepName === 'review' && typedName() && !bookName()) openNameModal(); }
   document.getElementById('book-name-change').addEventListener('click', () => { openNameModal(); });
   bookLangSel.addEventListener('change', e => { e.target.dataset.touched = '1'; langCheck(); if (currentStepName === 'review') renderReviewSummary(); ensureBookName(); });
@@ -1162,6 +1189,8 @@
       document.querySelectorAll('.gender-btn').forEach(b => { b.classList.remove('selected'); b.setAttribute('aria-pressed', 'false'); });
       btn.classList.add('selected'); btn.setAttribute('aria-pressed', 'true');
       document.getElementById('child-gender').value = btn.dataset.value;
+      const ge = document.getElementById('child-gender-error'); if (ge) { ge.hidden = true; ge.textContent = ''; }
+      if (typeof checkDetailsComplete === 'function') checkDetailsComplete();
       if (accReady) renderWizardProgress();
     });
   });
@@ -1470,6 +1499,12 @@
   // Letters from any language, plus spaces, hyphens and apostrophes (it is printed on every page).
   const NAME_RE = /^[\p{L}\p{M}][\p{L}\p{M}' \-]{0,19}$/u;
   const nameOk = () => NAME_RE.test(nameInput.value.trim());
+  // QA 15 Nov 2026: Boy / Girl is required (pronouns are printed through the whole book).
+  const genderOk = () => /^(boy|girl)$/.test(document.getElementById('child-gender').value);
+  function showGenderError(on) {
+    const el = document.getElementById('child-gender-error'); if (!el) return;
+    el.hidden = !on; el.textContent = on ? t('qa.gender_err', 'Please choose boy or girl so the story uses the right words for them.') : '';
+  }
   function showNameError() {
     const el = document.getElementById('child-name-error'); if (!el) return;
     const v = nameInput.value.trim(); const bad = !!v && !nameOk();
@@ -1565,21 +1600,25 @@
 
     // Per-step Next button gating.
     const changeLink = document.getElementById('summary-change-story'); if (changeLink) changeLink.hidden = !storyChosen;
+    /* QA 15 Nov 2026: Continue is never a silent dead button. It stays tappable, looks muted while the
+       step is incomplete, and on tap says exactly what is missing (see stepProblem / goNext). */
+    const gate = (btn, ok) => { if (!btn) return; btn.disabled = false; btn.classList.toggle('is-incomplete', !ok); };
     const storyNextBtn = document.getElementById('story-next-btn');
-    if (storyNextBtn) storyNextBtn.disabled = !storyChosen;
+    gate(storyNextBtn, !!storyChosen);
     const detailsNextBtn = document.getElementById('details-next-btn');
     const ageOk = ageState().ok;
-    if (detailsNextBtn) detailsNextBtn.disabled = !(nameOk() && ageOk);
+    gate(detailsNextBtn, nameOk() && ageOk && genderOk());
     const photoNextBtn = document.getElementById('photo-next-btn');
     const consentBox = document.getElementById('photo-consent-box');
     if (consentBox) consentBox.hidden = photoFiles.length === 0;
     const photoConsent = document.getElementById('photo-consent').checked;
     const photoOk = photoLater || (hasVerifiedPhoto && photoConsent);
-    if (photoNextBtn) photoNextBtn.disabled = !photoOk;
+    gate(photoNextBtn, photoOk);
+    const laterBtn = document.getElementById('ph-later-btn'); if (laterBtn) laterBtn.hidden = photoFiles.length > 0;
     const extraNextBtn = document.getElementById('extra-next-btn');
-    if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
+    gate(extraNextBtn, extraCharOk);
     const familyNextBtn = document.getElementById('family-next-btn');
-    if (familyNextBtn) familyNextBtn.disabled = !famOk();
+    gate(familyNextBtn, famOk());
     const famConsentBox = document.getElementById('fam-consent-box');
     if (famConsentBox) famConsentBox.hidden = !(famChoice === 'photos' && Object.values(famFiles).some(l => l.length));
     const famNeed = document.getElementById('fam-need');
@@ -1591,6 +1630,7 @@
     const ready = storyChosen
       && nameOk()
       && ageOk
+      && genderOk()
       && photoOk
       && extraCharOk
       && famOk()
@@ -1642,7 +1682,7 @@
     const info = STORY_CATALOG[storyChosen];
     switch (step) {
       case 'story': return !!storyChosen;
-      case 'details': return nameOk() && ageState().ok;
+      case 'details': return nameOk() && ageState().ok && genderOk();
       case 'photo': return photoLater || (photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked);
       case 'family': return famOk();
       case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && extraPhotoFiles.some(p => p.status === 'verified')));
@@ -1728,7 +1768,12 @@
   /* QA005: everything this page draws itself is redrawn whenever the language changes
      (and once all translation files have loaded). Entered name, age, story, pronouns,
      photos and dedication live in the form fields and are never touched here. */
+  function defaultBookLang() {
+    const langSel = document.getElementById('book-language');
+    if (langSel && !langSel.dataset.touched) langSel.value = (window.hikayaLang && window.hikayaLang() === 'ar') ? 'ar' : 'en';
+  }
   function renderAll() {
+    defaultBookLang();
     document.querySelectorAll('#story-grid .story-pick').forEach(renderCardText);
     const cur = document.getElementById('story-input').value;
     if (cur) selectStory(cur, { keepGrid: document.getElementById('story-grid').style.display !== 'none' });
@@ -1766,14 +1811,35 @@
     });
   }
 
+  function stepMsg(step, text) {
+    const wrap = document.getElementById('wizard-step-' + step); if (!wrap) return;
+    let el = wrap.querySelector(':scope > .step-err');
+    if (!el) { el = document.createElement('p'); el.className = 'field-error step-err'; el.setAttribute('role', 'alert'); const nav = wrap.querySelector(':scope > .wizard-nav'); wrap.insertBefore(el, nav); }
+    el.hidden = !text; el.textContent = text || '';
+  }
   function goNext(fromStep) {
+    stepMsg(fromStep, '');
     if (fromStep === 'details') {
       // Belt and braces: never leave this step with an invalid age, even if Next was somehow enabled.
+      if (!nameInput.value.trim()) { const el = document.getElementById('child-name-error'); el.hidden = false; el.textContent = t('qa.name_need', "Please type your child's first name."); nameInput.setAttribute('aria-invalid', 'true'); nameInput.focus(); return; }
       if (!nameOk()) { showNameError(); nameInput.focus(); return; }
+      if (!String(ageInputEl.value).trim()) { const el = document.getElementById('child-age-error'); el.hidden = false; el.textContent = t('qa.age_need', "Please enter your child's age."); ageInputEl.focus(); return; }
       const st = renderAge(true);
       if (!st.ok) { ageTouched = true; ageInputEl.focus(); return; }
+      if (!genderOk()) { showGenderError(true); const b = document.querySelector('.gender-btn'); if (b) b.focus(); return; }
+      // The book language is chosen in this step now: confirm the printed name before moving on.
+      if (typedName() && !bookName()) { pendingAdvance = 'details'; openNameModal(); return; }
     }
-    if (fromStep === 'story' && !document.getElementById('story-input').value) return;
+    if (fromStep === 'story' && !document.getElementById('story-input').value) { stepMsg('story', t('qa.story_need', 'Please choose a story to continue.')); return; }
+    if (fromStep === 'photo' && !stepComplete('photo')) {
+      const has = photoFiles.some(p => p.status === 'verified');
+      const checking = photoFiles.some(p => p.status === 'checking');
+      stepMsg('photo', checking ? t('qa.photo_wait', "We're still checking the photo, it only takes a moment.")
+        : has ? t('qa.photo_consent_need', 'Please tick the box to allow us to use the photo for this book.')
+        : t('qa.photo_need', 'Please add a photo, or choose "Add it after ordering".'));
+      return;
+    }
+    if ((fromStep === 'family' || fromStep === 'extra') && !stepComplete(fromStep)) { stepMsg(fromStep, t('qa.choice_need', 'Please choose one of the options above to continue.')); return; }
     const steps = activeSteps();
     const idx = steps.indexOf(fromStep);
     if (idx > -1 && idx < steps.length - 1) {
@@ -1826,6 +1892,8 @@
       { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
       { label: t('personalize.summary_name', "Child's name"), value: (bookName() && bookName() !== name ? bookName() + ' (' + name + ')' : name) || '—', step: 'details' },
       { label: t('personalize.summary_age_label', 'Age'), value: age || '—', step: 'details' },
+      { label: t('qa.hero_row', 'Hero'), value: (document.querySelector('.gender-btn.selected span') || {}).textContent || '—', step: 'details' },
+      { label: t('lx.book_lang', 'Book language'), value: langName(bookLang()), step: 'details' },
       { label: t('personalize.summary_photos', 'Photos'), value: photoLater ? t('ph.later_row', 'Added after ordering') : photoCount, step: 'photo' },
       { label: t('bl.photo_ok_row', 'Photo use'), value: photoLater ? t('ph.later_use', 'Asked when you upload it') : t('bl.photo_ok_val', 'Authorised for this book only, deleted within 15 days'), step: 'photo' },
     ];
@@ -1845,7 +1913,7 @@
 
     rows.push({ label: t('qa.msg_row', 'First-page message'), value: reviewMsgValue(), step: 'msg' });
 
-    document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', name || t('lx.st_child', 'your child'));
+    document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', bookName() || name || t('lx.st_child', 'your child'));
     const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
     document.getElementById('nx3').textContent = t('lx.nx3', 'Delivered gift-boxed: {eta}.').replace('{eta}', eta.charAt(0).toLowerCase() === eta.charAt(0) ? eta : eta.charAt(0).toLowerCase() + eta.slice(1));
     document.getElementById('review-summary').innerHTML = rows.map(r => `

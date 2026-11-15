@@ -5,6 +5,8 @@
   T.cp = {
     eyebrow: { en: 'Free preview', ar: 'معاينة مجانية' },
     title: { en: 'See your child on the cover', ar: 'شاهد طفلك على غلاف القصة' },
+    terms_note: { en: 'Free, no card needed · Watermarked preview · A few free tries per day · Photo deleted within 48 hours', ar: 'مجانًا ودون بطاقة · معاينة بعلامة مائية · بضع محاولات مجانية يوميًا · تُحذف الصورة خلال 48 ساعة' },
+    doc_title: { en: 'See your child on the cover, free | Hikaya by Maison Jaber', ar: 'شاهد طفلك على غلاف القصة مجانًا | حكاية من ميزون جابر' },
     sub: { en: 'Upload one photo and see your little one as the hero of a Hikaya story, free, in about a minute.', ar: 'ارفع صورة واحدة وشاهد طفلك بطلًا لقصة من حكاية، مجانًا وخلال دقيقة تقريبًا' },
     cta_short: { en: 'Free: see your child on the cover', ar: 'مجانًا: شاهد طفلك على الغلاف' },
     cta_story: { en: 'Try it free: see them on this cover', ar: 'جرّبها مجانًا: شاهد طفلك على هذا الغلاف' },

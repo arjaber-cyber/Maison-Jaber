@@ -5,11 +5,6 @@ Allow: /
 # can only obey a noindex it is allowed to read. Blocking them here would let their addresses (e.g. old links that
 # carried a child's name) show up in Google as "indexed, though blocked by robots.txt".
 # Covers the free cover preview flow (cover-preview.html), the order form, cart, checkout, account and order pages.
-Disallow: /hikaya/admin.html
-Disallow: /test/
-Disallow: /test2/
-Disallow: /test3/
-Disallow: /test4/
 Disallow: /go/
 
 Sitemap: https://maison-jaber.com/sitemap.xml

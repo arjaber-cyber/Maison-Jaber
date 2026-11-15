@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
-<style>html.i18n-wait body{visibility:hidden}</style>
+<style>html.i18n-wait body{visibility:hidden}
+  .bundle-nudge { margin: 10px 0 0; font-size: 13.5px; font-weight: 700; color: var(--coral-deep, #563622); text-align: center; }
+</style>
 <meta name="description" content="Your personalised Hikaya storybook is saved in your cart. Add another child's story or continue to checkout." />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Added to Your Cart — Hikaya by Maison Jaber</title>
@@ -151,6 +153,7 @@
       <button type="button" class="btn-secondary" id="add-another-btn" data-i18n="personalize.add_another_btn">+ Add Another Book</button>
       <a class="btn-primary" href="checkout.html" id="checkout-link">Continue to Checkout &rarr;</a>
     </div>
+    <p class="bundle-nudge" id="bundle-nudge" hidden></p>
     <div class="added-links">
       <a href="cart.html" id="view-cart-link">View cart</a>
       <span aria-hidden="true">·</span>
@@ -194,6 +197,9 @@
       document.getElementById('view-cart-link').textContent = ar ? 'عرض السلة' : 'View cart';
       const n = cart.length, cl = document.getElementById('checkout-link');
       cl.textContent = (n > 1 ? tt('personalize.go_to_checkout_n', 'Continue to Checkout ({count})').replace('{count}', n) : tt('personalize.go_to_checkout_btn', 'Continue to Checkout')) + (ar ? ' ←' : ' →');
+      // QA 15 Nov 2026: tell them about the bundle saving right next to "Add Another Book".
+      const bn = document.getElementById('bundle-nudge');
+      if (bn) { const msg = n === 1 ? tt('qa.bn_1', 'Add a second book and save 10% on both, plus free delivery.') : n === 2 ? tt('qa.bn_2', 'Add a third book and save 15% on all three.') : ''; bn.textContent = msg; bn.hidden = !msg; }
       document.getElementById('cart-count-note').textContent = n > 1 ? tt('personalize.cart_count_label', 'You have {count} books in your cart.').replace('{count}', n) : '';
     };
     setSmall();

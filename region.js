@@ -202,6 +202,15 @@ window.hikayaAedHtml = function (total, region) {
       if (key) localStorage.setItem(REGION_KEY, key);
     }
   } catch (e) { /* storage blocked: the normal detection runs */ }
+  /* QA 15 Nov 2026: a country page (personalised-books-saudi-arabia.html etc.) shows that country's prices,
+     unless the visitor has picked a country themselves. Auto-detected regions are marked hikaya_region_auto. */
+  try {
+    const b = document.body;
+    const pc = b && b.dataset.page === 'country' ? b.dataset.country : '';
+    if (pc && window.HIKAYA_REGIONS[pc] && (!localStorage.getItem(REGION_KEY) || localStorage.getItem('hikaya_region_auto') === '1')) {
+      localStorage.setItem(REGION_KEY, pc); localStorage.setItem('hikaya_region_auto', '1');
+    }
+  } catch (e) {}
   function getStoredRegionKey() {
     return localStorage.getItem(REGION_KEY);
   }
@@ -251,11 +260,17 @@ window.hikayaAedHtml = function (total, region) {
     // Manual picks always win over IP detection.
     if (getStoredRegionKey()) { applyToPage(); return; }
     try {
-      const res = await fetch('https://ipapi.co/json/');
-      if (!res.ok) return;
-      const data = await res.json();
+      // Our own host's country lookup first (QA 15 Nov 2026); ipapi.co only as a fallback.
+      let data = null;
+      try { const r0 = await fetch('/api/geo', { cache: 'no-store' }); if (r0.ok) data = await r0.json(); } catch (_) {}
+      if (!data || !/^[A-Z]{2}$/.test(data.country_code || '')) {
+        const res = await fetch('https://ipapi.co/json/');
+        if (!res.ok) return;
+        data = await res.json();
+      }
       const key = regionKeyForCountryCode(data.country_code);
       setStoredRegionKey(key);
+      try { localStorage.setItem('hikaya_region_auto', '1'); } catch (_) {}
       applyToPage();
     } catch {
       // No network / blocked — the UAE (AED) default stays in place.
@@ -264,6 +279,7 @@ window.hikayaAedHtml = function (total, region) {
 
   function pickRegion(regionKey) {
     setStoredRegionKey(regionKey);
+    try { localStorage.removeItem('hikaya_region_auto'); } catch (_) {}
     applyToPage();
   }
 

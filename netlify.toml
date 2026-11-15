@@ -53,6 +53,15 @@
 [functions."cover-preview-report"]
   schedule = "0 2 * * *"
 
+# QA 15 Nov 2026: basic security headers on every page. nosniff stops browsers guessing file types; SAMEORIGIN
+# stops other sites showing the shop inside a frame (clickjacking). A full Content-Security-Policy is not set yet
+# because the shop loads several payment, analytics and map services; add one only after testing each of them.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+
 # Speed (Nov 2026): let browsers and Netlify's CDN reuse shop images instead of
 # re-checking them on every page view. One day fresh, then up to a week served
 # from cache while the new copy is fetched, so a replaced image shows within a day.
@@ -162,6 +171,29 @@
   from = "/contact.html"
   to = "/hikaya/"
   status = 301
+  force = true
+
+# QA 15 Nov 2026: the old prototype copies (/test/ to /test4/) stay in the repo for reference but are no longer
+# served: anyone opening them gets the shop's "page not found" page with a real 404.
+[[redirects]]
+  from = "/test/*"
+  to = "/hikaya/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/test2/*"
+  to = "/hikaya/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/test3/*"
+  to = "/hikaya/404.html"
+  status = 404
+  force = true
+[[redirects]]
+  from = "/test4/*"
+  to = "/hikaya/404.html"
+  status = 404
   force = true
 
 # Server code and database scripts kept in the repo (supabase/) are not part of the website (Nov 2026).

@@ -48,7 +48,7 @@
 
     // Story detail
     crumbs_stories: { en: 'Stories', ar: 'القصص' },
-    incl_box: { en: 'Includes our signature gift packaging', ar: 'يشمل تغليف الهدايا المميز' },
+    incl_box: { en: 'Includes our luxury gift box', ar: 'يشمل علبة الهدية الفاخرة' },
     create_this: { en: 'Create This Story', ar: 'أنشئ هذه القصة' },
     bundle: { en: 'Ordering for siblings? 2 books get 10% off each and free delivery. 3 or more get 15% off.', ar: 'تطلب للإخوة؟ كتابان بخصم 10% لكل كتاب وتوصيل مجاني، و3 كتب أو أكثر بخصم 15%' },
     happens: { en: 'What happens in this story?', ar: 'ماذا يحدث في هذه القصة؟' },
@@ -173,7 +173,7 @@
     ct_other: { en: "Other ways to reach us", ar: "طرق أخرى للتواصل" },
     ct_email_l: { en: "Email", ar: "البريد الإلكتروني" },
     ct_resp: { en: "Response time", ar: "وقت الرد" },
-    ct_resp_v: { en: "Usually within a day", ar: "عادة خلال يوم" },
+    ct_resp_v: { en: "WhatsApp: usually within a few hours · Email: usually within a day", ar: "واتساب: عادةً خلال ساعات قليلة · البريد: عادةً خلال يوم" },
     ct_based: { en: "Based in", ar: "مقرّنا" },
     ct_based_v: { en: "United Arab Emirates", ar: "الإمارات العربية المتحدة" },
     ct_track: { en: "Checking on an order?", ar: "تتابع طلبًا؟" },
@@ -418,8 +418,8 @@
     was: { en: 'Was', ar: 'كان' },
     now: { en: 'now', ar: 'الآن' },
     personalise: { en: 'Personalise this story', ar: 'خصّص هذه القصة' },
-    see_inside: { en: 'See inside', ar: 'نظرة إلى الداخل' },
-    price_line: { en: 'Personalised hardcover · {price} · Gift packaging included', ar: 'كتاب مخصّص بغلاف مقوّى · {price} · يشمل تغليف الهدية' },
+    see_inside: { en: 'Look inside', ar: 'تصفّح الكتاب' },
+    price_line: { en: 'Personalised hardcover · {price} · Luxury gift box included', ar: 'كتاب مخصّص بغلاف مقوّى · {price} · علبة هدية فاخرة مشمولة' },
     eta: { en: 'Delivery to {country}: about {n} working days', ar: 'التوصيل إلى {country}: نحو {n} أيام عمل' },
     eta_short: { en: 'About {n} working days', ar: 'نحو {n} أيام عمل' },
     offer_eta: { en: 'Delivered in about {n} working days', ar: 'يصلك خلال نحو {n} أيام عمل' },
@@ -434,7 +434,7 @@
     tr_book: { en: 'Personalised hardcover', ar: 'كتاب مخصّص بغلاف مقوّى' },
     tr_private: { en: "Your child's photo stays private", ar: 'صورة طفلك تبقى خاصة' },
     tr_secure: { en: 'Secure payment', ar: 'دفع آمن' },
-    tr_box: { en: 'Gift packaging included', ar: 'تغليف الهدية مشمول' },
+    tr_box: { en: 'Luxury gift box included', ar: 'علبة هدية فاخرة مشمولة' },
     tr_gcc: { en: 'Delivered across the UAE & GCC', ar: 'توصيل إلى الإمارات ودول الخليج' },
     tr_team: { en: 'Support from a real UAE-based team', ar: 'دعم من فريق حقيقي في الإمارات' },
     tr_uae: { en: 'Personalised children’s books in the UAE', ar: 'كتب أطفال مخصّصة في الإمارات' },
@@ -475,7 +475,7 @@
     cont: { en: 'Continue', ar: 'متابعة' },
     add_cart: { en: 'Add to cart · {price}', ar: 'أضف إلى السلة · {price}' },
     nx_t: { en: 'What happens next', ar: 'ماذا يحدث بعد ذلك' },
-    nx1: { en: 'Checkout: pay securely by card, Apple Pay or Google Pay. Your order is confirmed once payment goes through.', ar: 'الدفع: ادفع بأمان بالبطاقة أو Apple Pay أو Google Pay، ويتأكد طلبك فور نجاح الدفع' },
+    nx1: { en: 'Checkout: pay securely by card, Apple Pay or Google Pay, or in 4 payments with Tabby or Tamara (UAE). Your order is confirmed once payment goes through.', ar: 'الدفع: ادفع بأمان بالبطاقة أو Apple Pay أو Google Pay، أو على 4 دفعات مع تابي أو تمارا (في الإمارات)، ويتأكد طلبك فور نجاح الدفع' },
     nx2: { en: 'We create and print: our team illustrates {name} into the story and prints the hardcover.', ar: 'الصنع والطباعة: يرسم فريقنا {name} داخل القصة ويطبع الكتاب بغلاف مقوّى' },
     nx3: { en: 'Delivered gift-boxed: {eta}.', ar: 'التوصيل في علبة هدايا: {eta}' },
     check_note: { en: 'You can preview the cover before ordering. Once you order, we create and print the full book, so please check the name, age and photo now. Need a change after ordering? Contact us quickly and we will update it if production has not started.', ar: 'يمكنك معاينة الغلاف قبل الطلب، وبعد الطلب نُنشئ الكتاب كاملًا ونطبعه، لذا تأكد من الاسم والعمر والصورة الآن، وإن احتجت إلى تعديل بعد الطلب فتواصل معنا سريعًا وسنعدّله إن لم يبدأ الإنتاج' },
@@ -579,8 +579,8 @@
   "ar": "ما مقاس الكتاب؟"
  },
  "a9": {
-  "en": "Hikaya books are square, sized to share together at bedtime and keep on the shelf for years. If you need exact measurements for a gift, just ask us.",
-  "ar": "كتب حكاية مربّعة الشكل، بحجم مناسب للقراءة معًا قبل النوم والاحتفاظ بها على الرف لسنوات، وإن احتجت إلى المقاس الدقيق لهدية فاسألنا"
+  "en": "Every Hikaya book is a 21 × 21 cm square hardcover with 20 pages, sized to share together at bedtime and keep on the shelf for years.",
+  "ar": "كل كتاب من حكاية بغلاف مقوّى مربّع مقاسه 21 × 21 سم ويضم 20 صفحة، بحجم مناسب للقراءة معًا قبل النوم والاحتفاظ به على الرف لسنوات"
  },
  "q10": {
   "en": "How much does a book cost?",
@@ -667,8 +667,8 @@
   "ar": "كيف أتواصل معكم؟"
  },
  "a19": {
-  "en": "Email <a href=\"mailto:hello@maison-jaber.com\" dir=\"ltr\">hello@maison-jaber.com</a> or use our <a href=\"contact.html\">contact form</a>. We're a real team based in the UAE and usually reply within a day.",
-  "ar": "راسلنا على <a href=\"mailto:hello@maison-jaber.com\" dir=\"ltr\">hello@maison-jaber.com</a> أو استخدم <a href=\"contact.html\">نموذج التواصل</a>، فنحن فريق حقيقي في الإمارات ونردّ عادةً خلال يوم"
+  "en": "Email <a href=\"mailto:hello@maison-jaber.com\" dir=\"ltr\">hello@maison-jaber.com</a>, message us on WhatsApp at <a href=\"https://wa.me/971508011769\" dir=\"ltr\">+971 50 801 1769</a>, or use our <a href=\"contact.html\">contact form</a>. We're a real team based in the UAE: WhatsApp usually gets a reply within a few hours, email and the form within a day.",
+  "ar": "راسلنا على <a href=\"mailto:hello@maison-jaber.com\" dir=\"ltr\">hello@maison-jaber.com</a> أو تواصل معنا عبر واتساب على <a href=\"https://wa.me/971508011769\" dir=\"ltr\">+971 50 801 1769</a>، أو استخدم <a href=\"contact.html\">نموذج التواصل</a>، فنحن فريق حقيقي في الإمارات، ونردّ على واتساب عادةً خلال ساعات قليلة، وعلى البريد والنموذج خلال يوم"
  },
  "g_privacy": {
   "en": "Your child's photo and privacy",
@@ -740,6 +740,11 @@
     co_empty_create: { en: 'Create a Book', ar: 'اصنع كتابًا' },
     err_email: { en: 'Please enter a valid email address.', ar: 'يرجى إدخال بريد إلكتروني صحيح' },
     phone_ph: { en: 'e.g. +971 50 123 4567', ar: '+971 50 123 4567' },
+    phone_eg: { en: 'e.g. {n}', ar: 'مثال: {n}' },
+    co_mtotal: { en: 'Order total', ar: 'إجمالي الطلب' },
+    co_mview: { en: 'View summary', ar: 'عرض الملخص' },
+    bn_1: { en: 'Add a second book and save 10% on both, plus free delivery.', ar: 'أضف كتابًا ثانيًا ووفّر 10% على الكتابين مع توصيل مجاني' },
+    bn_2: { en: 'Add a third book and save 15% on all three.', ar: 'أضف كتابًا ثالثًا ووفّر 15% على الكتب الثلاثة' },
     gift_note: { en: 'Sending it straight to them? Add their name and phone, and put their address in the address fields above', ar: 'هل ترسله إليهم مباشرة؟ أضف اسمهم ورقم هاتفهم، واكتب عنوانهم في حقول العنوان أعلاه' },
     recipient_name: { en: "Recipient's name", ar: 'اسم المستلم' },
     recipient_phone: { en: "Recipient's phone", ar: 'رقم هاتف المستلم' },
@@ -781,6 +786,18 @@
     news_ok: { en: "You're on the list. Check your inbox for a welcome note.", ar: 'تم تسجيلك، ستجد رسالة ترحيب في بريدك' },
     news_err: { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ ما، يرجى المحاولة مرة أخرى' },
     name_err: { en: 'Please use letters only (no numbers or symbols), up to 20 characters.', ar: 'يرجى استخدام الحروف فقط (بدون أرقام أو رموز) وبحد أقصى 20 حرفًا' },
+    // QA 15 Nov 2026: say what is missing instead of a silent, disabled Continue button
+    name_need: { en: "Please type your child's first name.", ar: 'يرجى كتابة الاسم الأول لطفلك' },
+    age_need: { en: "Please enter your child's age.", ar: 'يرجى إدخال عمر طفلك' },
+    gender_err: { en: 'Please choose boy or girl so the story uses the right words for them.', ar: 'يرجى اختيار ولد أو بنت لتُكتب القصة بالصيغة الصحيحة' },
+    story_need: { en: 'Please choose a story to continue.', ar: 'يرجى اختيار قصة للمتابعة' },
+    photo_need: { en: 'Please add a photo, or choose "Add it after ordering".', ar: 'يرجى إضافة صورة، أو اختيار إضافتها بعد الطلب' },
+    photo_consent_need: { en: 'Please tick the box to allow us to use the photo for this book.', ar: 'يرجى تحديد المربع للسماح لنا باستخدام الصورة لهذا الكتاب' },
+    photo_wait: { en: "We're still checking the photo, it only takes a moment.", ar: 'ما زلنا نتحقق من الصورة، لن يستغرق ذلك إلا لحظة' },
+    choice_need: { en: 'Please choose one of the options above to continue.', ar: 'يرجى اختيار أحد الخيارات أعلاه للمتابعة' },
+    age_alt: { en: 'See our stories for ages {band}', ar: 'تصفّح قصصنا للأعمار {band}' },
+    hero_row: { en: 'Hero', ar: 'البطل' },
+    lang_hint: { en: 'Their name and the first-page message are printed in this language.', ar: 'يُطبع الاسم ورسالة الصفحة الأولى بهذه اللغة' },
   };
   /* Book-language rules, photo permission, checkout confirmations and one-box order tracking (Oct 2026) */
   T.bl = {

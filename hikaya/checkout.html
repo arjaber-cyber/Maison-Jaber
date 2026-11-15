@@ -88,7 +88,13 @@
   .progress-step.active { color: var(--ink, #2E2018); }
   .progress-step.done { color: var(--coral-deep, #563622); }
   .progress-line { width: 40px; height: 1px; background: var(--line-soft, #ece1d1); }
-  @media (max-width: 560px) { .progress-step span:last-child { display: none; } .progress-line { width: 20px; } }
+  @media (max-width: 560px) { .progress-step span:last-child { display: none; } .progress-step.active span:last-child { display: inline; } .progress-line { width: 20px; } }
+  .co-mtotal { display: none; }
+  @media (max-width: 900px) {
+    .co-mtotal { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 12px 16px; background: #fff; border: 1px solid var(--line-soft); border-radius: 12px; font-size: 14px; color: var(--ink); text-decoration: none; }
+    .co-mtotal b { font-size: 15px; }
+    .co-mtotal-link { margin-inline-start: auto; font-size: 12.5px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+  }
 
   .checkout-locked-note {
     max-width: 1080px; margin: 0 auto; padding: 8px 32px 40px; text-align: center;
@@ -336,9 +342,9 @@
       <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
     </div>
     <div class="signin-buttons">
+      <button class="btn-primary" id="guest-continue" style="padding: 9px 18px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
       <button class="btn-secondary" id="google-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
       <a class="btn-secondary" id="email-signin" href="login.html?redirect=checkout.html" style="padding: 9px 16px; font-size: 12.5px; text-decoration: none;" data-i18n="checkout.email_signin">Continue with email</a>
-      <button class="btn-secondary" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
     </div>
   </div>
 </div>
@@ -363,6 +369,7 @@
 
 <div class="checkout-layout" id="checkout-layout">
   <div class="checkout-col">
+    <a class="co-mtotal" id="co-mtotal" href="#co-summary-card"><span data-i18n="qa.co_mtotal">Order total</span> <b id="co-mtotal-v">—</b><span class="co-mtotal-link" data-i18n="qa.co_mview">View summary</span></a>
     <div class="form-block">
       <h2><span class="step-num">1</span> <span data-i18n="checkout.delivery_title">Delivery details</span></h2>
       <div class="req-note"><span class="req-mark">*</span> <span data-i18n="checkout.required_note">Required</span></div>
@@ -398,7 +405,7 @@
           </div>
           <div class="map-hint" id="map-hint" data-i18n="checkout.map_hint">Pick your address from the list, or tap the map / drag the pin to your building — the address fills in automatically.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" required aria-required="true" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-placeholder="qa.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" required aria-required="true" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" /></div>
       </div>
     </div>
 
@@ -434,7 +441,7 @@
   </div>
 
   <div>
-    <div class="summary-card">
+    <div class="summary-card" id="co-summary-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <h2 style="font-size:16px;" data-i18n="cart.order_summary">Order Summary</h2>
         <a href="cart.html" style="font-size:12px; font-weight:700; text-decoration:underline; color:var(--text-on-light-soft);" data-i18n="checkout.edit_cart">Edit cart</a>
@@ -457,7 +464,7 @@
       <ul class="summary-trust">
         <li data-i18n="lx.tr_secure">Secure payment</li>
         <li><a href="privacy.html" data-photo-privacy data-i18n="lx.tr_private">Your child's photo stays private</a></li>
-        <li data-i18n="lx.tr_box">Gift packaging included</li>
+        <li data-i18n="lx.tr_box">Luxury gift box included</li>
       </ul>
     </div>
   </div>
@@ -510,6 +517,8 @@
   const checkoutLockedNote = document.getElementById('checkout-locked-note');
   // ?guest=1 = arrived from the sign-in page's "Continue as guest"
   let continuedAsGuest = new URLSearchParams(location.search).get('guest') === '1';
+  // QA 15 Nov 2026: a reload in the same tab remembers "Continue as Guest".
+  try { if (sessionStorage.getItem('hk_co_guest') === '1') continuedAsGuest = true; } catch (_) {}
 
   /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
   const coEmpty = document.getElementById('co-empty');
@@ -655,6 +664,7 @@
   document.getElementById('guest-continue').addEventListener('click', () => {
     if (applyEmptyGuard()) return;
     continuedAsGuest = true;
+    try { sessionStorage.setItem('hk_co_guest', '1'); } catch (_) {}
     accountStep.style.display = 'none';
     unlockCheckoutLayout();
     checkoutLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -662,6 +672,7 @@
   document.getElementById('sign-out-checkout').addEventListener('click', async () => {
     await supabase.auth.signOut();
     continuedAsGuest = false;
+    try { sessionStorage.removeItem('hk_co_guest'); } catch (_) {}
     refreshAuthUI();
   });
 
@@ -850,7 +861,8 @@
       } else promoNotBetter = true;
     }
     const total = Math.round((booksTotal + deliveryFee + extraFee) * 100) / 100;
-    return { ...pricing, extraCharacterFee: extraFee, deliveryFee, booksTotal, bundlePct, total, promoApplied, promoNotBetter };
+    const bundleAmount = bundlePct > 0 ? Math.round((fullBooks - booksTotal) * 100) / 100 : 0;
+    return { ...pricing, extraCharacterFee: extraFee, deliveryFee, booksTotal, bundlePct, bundleAmount, total, promoApplied, promoNotBetter };
   }
 
   function renderCartSummary() {
@@ -899,7 +911,7 @@
     const discountRow = document.getElementById('bundle-discount-row');
     if (final.bundlePct > 0) {
       discountRow.style.display = 'flex';
-      document.getElementById('bundle-discount-note').textContent = `-${final.bundlePct}%`;
+      document.getElementById('bundle-discount-note').textContent = final.bundleAmount > 0 ? `−${fmt(final.bundleAmount)} (${final.bundlePct}%)` : `-${final.bundlePct}%`;
     } else {
       discountRow.style.display = 'none';
     }
@@ -922,6 +934,7 @@
 
     document.getElementById('price-delivery').textContent = final.deliveryFee === 0 ? t('checkout.free', 'Free') : fmt(final.deliveryFee);
     document.getElementById('price-total').textContent = fmt(final.total);
+    { const mt = document.getElementById('co-mtotal-v'); if (mt) mt.textContent = fmt(final.total); }
     { const slot = document.getElementById('pay-aed-slot'); if (slot && window.hikayaAedHtml) slot.innerHTML = final.total > 0 ? window.hikayaAedHtml(final.total, region) : ''; }
     if (placeOrderBtnEl) placeOrderBtnEl.disabled = false;
     // Keep the payment box in step when the total becomes (or stops being) free.
@@ -936,7 +949,7 @@
   const paymentArea = document.getElementById('payment-area');
   const placeOrderBtn = document.getElementById('place-order');
   let selectedPaymentMethod = null;
-  let paymentChosen = false; // rows start closed; the panel opens once the customer picks one
+  let paymentChosen = true; // QA 15 Nov 2026: the first method (Pay by card) starts selected; customers can switch
 
   const METHOD_META = {
     ziina: { icon: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg>', label: () => t('pg.pay_ziina', 'Pay by card') },
@@ -1120,6 +1133,12 @@
     });
   }
 
+  // QA 15 Nov 2026: phone example follows the delivery country.
+  const PHONE_PH = { UAE: '+971 50 123 4567', Saudi: '+966 50 123 4567', Qatar: '+974 3312 3456', Kuwait: '+965 5012 3456', Bahrain: '+973 3612 3456', Oman: '+968 9212 3456' };
+  function paintPhonePh() { const el = document.getElementById('phone'); const ex = PHONE_PH[countrySelect.value]; if (el && ex) el.placeholder = t('qa.phone_eg', 'e.g. {n}').replace('{n}', ex); }
+  countrySelect.addEventListener('change', paintPhonePh);
+  document.addEventListener('hikaya:langchange', () => setTimeout(paintPhonePh, 0));
+  setTimeout(paintPhonePh, 0);
   countrySelect.addEventListener('change', () => {
     // Use the shared picker so the header label and delivery estimate update too.
     if (window.hikayaPickRegion) window.hikayaPickRegion(countrySelect.value);

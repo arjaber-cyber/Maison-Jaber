@@ -36,7 +36,7 @@
 <a class="skip" href="#main" data-i18n="home6.skip">Skip to content</a>
 <div class="hk-welcome-bar" data-hk-welcome="bar" role="region" aria-label="Welcome offer" hidden></div>
 <div class="utility" role="region" aria-label="Delivery and region" data-i18n-aria="a11y.utility"><div class="wrap">
-  <p class="msg">${ICON.truck}<span id="delivery-msg"><span class="dl-full">Free delivery across the UAE</span><span class="dl-short">Free UAE delivery</span></span></p>
+  <p class="msg">${ICON.truck}<button type="button" class="util-promo" id="util-promo" hidden></button><span id="delivery-msg"><span class="dl-full">Free delivery across the UAE</span><span class="dl-short">Free UAE delivery</span></span></p>
   <div class="controls">
     <div class="region">
       <button class="util-btn" id="region-btn" aria-haspopup="true" aria-expanded="false" aria-controls="region-menu" data-i18n-aria="a11y.region">${ICON.globe}<span id="region-label">UAE (AED)</span>${ICON.chev}</button>
@@ -62,6 +62,8 @@
 <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" data-i18n-aria="a11y.mobile_nav" hidden><ul>
   ${li}
   <li><a href="help.html" data-i18n="home6.nav_faq">FAQs</a></li>
+  <li><a href="track-order.html" data-i18n="home6.foot_track">Track your order</a></li>
+  <li><a href="contact.html" data-i18n="home6.foot_contact">Contact us</a></li>
   <li><a href="search.html" data-i18n="home6.foot_search">Search</a></li>
   <li><a href="account.html" data-i18n="home6.nav_account">Account</a></li>
   <li><a class="btn btn-primary" href="personalize.html"><span data-i18n="home6.cta_create">Create Their Story</span> ${ARR}</a></li>
@@ -124,7 +126,7 @@
     <span class="powered" data-i18n="pg.powered">Powered by Maison Jaber FZ-LLC</span>
     <span><a href="privacy.html" data-i18n="home6.foot_privacy">Privacy</a> &nbsp;·&nbsp; <a href="terms.html" data-i18n="home6.foot_terms">Terms</a> &nbsp;·&nbsp; <a href="#" data-cookie-settings data-i18n="home6.foot_cookies">Cookie settings</a></span>
   </div>
-  <p class="foot-entity" lang="en" dir="ltr">Hikaya by Maison Jaber FZ-LLC &middot; UAE</p>
+  <p class="foot-entity" lang="en" dir="ltr">Hikaya by Maison Jaber FZ-LLC &middot; RAKEZ e-commerce licence no. 45039210 &middot; Compass Building, Al Hulaila Industrial Zone-FZ, Ras Al Khaimah, United Arab Emirates</p>
 </div></footer>`;
   }
 
@@ -171,7 +173,7 @@
       const del = (k || regionKey()) === 'UAE' ? t('home6.del_uae_short', 'Free UAE delivery') : deliveryText(k);
       const parts = {
         price: `<li class="o-price">${priceHtml()}</li>`,
-        box: `<li>${esc(t('lx.tr_box', 'Gift packaging included'))}</li>`,
+        box: `<li>${esc(t('lx.tr_box', 'Luxury gift box included'))}</li>`,
         delivery: `<li>${esc(del)}</li>`,
         eta: `<li>${esc(t('lx.offer_eta', 'Delivered in about {n} working days').replace('{n}', etaDays(k)))}</li>`,
         privacy: `<li><a href="privacy.html" data-photo-privacy>${esc(t('lx.tr_private', "Your child's photo stays private"))}</a></li>`,
@@ -205,7 +207,7 @@
       if (tm) { const want = `https://cdn.tamara.co/assets/svg/tamara-logo-badge-${lang() === 'ar' ? 'ar' : 'en'}.svg`; if (tm.getAttribute('src') !== want) tm.setAttribute('src', want); }
       const or = el.querySelector('.hx-or'); if (or) or.hidden = !(on.tabby && on.tamara);
     });
-    document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Gift packaging included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
+    document.querySelectorAll('[data-hk-price-line]').forEach(el => { const parts = t('lx.price_line', 'Personalised hardcover · {price} · Luxury gift box included').split('{price}'); el.innerHTML = parts.map(esc).join(priceHtml()); });
     const menu = document.getElementById('region-menu');
     const regionWrap = document.querySelector('.utility .region');
     const available = GCC_KEYS.filter(key => regionObj(key));
@@ -223,7 +225,7 @@
     menu.addEventListener('click', e => {
       const item = e.target.closest('[data-region]'); if (!item) return;
       if (window.hikayaPickRegion) window.hikayaPickRegion(item.dataset.region);
-      else { try { localStorage.setItem('hikaya_region', item.dataset.region); } catch (_) {} renderRegion(); document.dispatchEvent(new CustomEvent('hikaya:regionchange')); }
+      else { try { localStorage.setItem('hikaya_region', item.dataset.region); localStorage.removeItem('hikaya_region_auto'); } catch (_) {} renderRegion(); document.dispatchEvent(new CustomEvent('hikaya:regionchange')); }
       close(); btn.focus();
     });
     menu.addEventListener('keydown', e => {
@@ -433,7 +435,8 @@
   }
   function coverHtml(s, extraClass, opts) {
     opts = opts || {};
-    const alt = opts.alt ? esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) })) : '';
+    // QA 15 Nov 2026: every cover image carries its title as alt text (image search and screen readers), unless a caller opts out.
+    const alt = opts.alt === false ? '' : esc(tpl(t('lx.cover_alt', 'Cover of {title}'), { title: titlePlain(s) }));
     /* QA-09: cards use the 600px cover (cover-600.jpg) when it exists next to the full-size file.
        Speed (Nov 2026): every shop cover also has a 900px WebP (cover-900.webp, ~80 KB instead of ~250 KB),
        so phones with sharp screens and the story page's main cover no longer download the 1200px JPG.
@@ -478,7 +481,7 @@
       <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}${familyCopy(s.slug) ? `<span class="hk-special">${esc(familyCopy(s.slug).badge)}</span>` : ''}</div>
       ${line ? `<p class="line">${esc(line)}</p>` : ''}
       <p class="card-price" data-hk-price-now>${priceHtml()}</p>
-      <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'See inside'))}</a></div>
+      <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'Look inside'))}</a></div>
       </div></${tag}>`;
   }
   function skeletonHtml(n, tag) { tag = tag || 'li'; return Array.from({ length: n }, () => `<${tag} class="story-card is-skeleton" aria-hidden="true"><div class="cover"></div><div class="body"><span class="sk sk-t"></span><span class="sk sk-m"></span><span class="sk sk-l"></span></div></${tag}>`).join(''); }
@@ -667,14 +670,14 @@
   const WELCOME = { on: true, code: 'FIRSTORDER', aed: 20 };
   const WTXT = {
     en: {
-      bar: 'Welcome gift: {amt} off your first story with code {code}', barShort: '{amt} off your first story · {code}', copy: 'Copy', copied: 'Copied',
+      bar: 'Welcome gift: {amt} off your first story with code {code}', barShort: '{amt} off your first story · {code}', util: '{amt} off · {code}', copy: 'Copy', copied: 'Copied',
       line: 'First order? Use {code} for {amt} off',
       card1: 'First story? Pay {price}', card2: 'with code {code} at checkout',
       cart1: 'First order gift', cart2: '{code} · {amt} off', cartBtn: 'Apply at checkout',
       aria: 'Welcome offer',
     },
     ar: {
-      bar: 'هدية ترحيب: خصم {amt} على أول قصة مع الكود {code}', barShort: 'خصم {amt} على أول قصة · {code}', copy: 'نسخ', copied: 'تم النسخ',
+      bar: 'هدية ترحيب: خصم {amt} على أول قصة مع الكود {code}', barShort: 'خصم {amt} على أول قصة · {code}', util: 'خصم {amt} · {code}', copy: 'نسخ', copied: 'تم النسخ',
       line: 'أول طلب؟ استخدم {code} لخصم {amt}',
       card1: 'أول قصة؟ ادفع {price}', card2: 'مع الكود {code} عند الدفع',
       cart1: 'هدية أول طلب', cart2: '{code} · خصم {amt}', cartBtn: 'تطبيق عند الدفع',
@@ -693,6 +696,17 @@
   function copyBtn(w, cls) {
     return `<button type="button" class="${cls}" data-hk-copy="${esc(WELCOME.code)}" data-copied="${esc(w.copied)}" data-label="${esc(w.copy)}">${esc(w.copy)}</button>`;
   }
+  /* QA 15 Nov 2026: on phones the welcome offer moves into the dark utility row (tap to copy the code),
+     so there are two header rows instead of three. Desktop keeps the separate welcome bar. */
+  function paintUtilPromo(w, r) {
+    const b = document.getElementById('util-promo'); if (!b) return;
+    if (!w) { b.hidden = true; b.textContent = ''; document.documentElement.classList.remove('hk-w-merged'); return; }
+    const plain = (welcomeFill(w.util || w.barShort, r).replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
+    b.hidden = false; b.textContent = plain;
+    b.setAttribute('data-hk-copy', WELCOME.code); b.dataset.label = plain; b.dataset.copied = w.copied + ' ✓';
+    b.setAttribute('aria-label', plain + ' (' + w.copy + ')');
+    document.documentElement.classList.add('hk-w-merged');
+  }
   function renderWelcome() {
     const els = document.querySelectorAll('[data-hk-welcome]');
     if (!els.length) return;
@@ -700,16 +714,20 @@
     const r = regionObj(regionKey());
     els.forEach(el => {
       const kind = el.getAttribute('data-hk-welcome');
-      if (!WELCOME.on || (kind === 'bar' && PAGE === 'checkout')) { el.hidden = true; el.innerHTML = ''; return; }
+      if (!WELCOME.on || (kind === 'bar' && PAGE === 'checkout')) { el.hidden = true; el.innerHTML = ''; if (kind === 'bar') paintUtilPromo(null); return; }
       el.hidden = false;
       if (kind === 'bar') {
         el.setAttribute('aria-label', w.aria);
         el.innerHTML = `<div class="wrap">${SPARK}<span class="hk-w-full">${welcomeFill(w.bar, r)}</span><span class="hk-w-short">${welcomeFill(w.barShort, r)}</span>${copyBtn(w, 'hk-w-copy')}</div>`;
+        paintUtilPromo(w, r);
       } else if (kind === 'line') {
         el.innerHTML = `<span class="hk-w-rule" aria-hidden="true"></span><span>${welcomeFill(w.line, r)}</span><span class="hk-w-rule" aria-hidden="true"></span>`;
       } else if (kind === 'card') {
         el.innerHTML = `<div class="hk-w-text"><span class="hk-w-t1">${welcomeFill(w.card1, r)}</span><span class="hk-w-t2">${welcomeFill(w.card2, r)}</span></div>${copyBtn(w, 'hk-w-btn')}`;
       } else if (kind === 'cart') {
+        // QA 15 Nov 2026: with 2+ books the bundle saving is bigger and only one discount applies, so don't offer the code.
+        const n = (window.hikayaCart && window.hikayaCart.getCart) ? window.hikayaCart.getCart().length : 0;
+        if (n >= 2) { el.hidden = true; el.innerHTML = ''; return; }
         el.innerHTML = `<div class="hk-w-text"><span class="hk-w-t1">${SPARK} ${esc(w.cart1)}</span><span class="hk-w-t2">${welcomeFill(w.cart2, r)}</span></div><a class="hk-w-btn hk-w-solid" href="checkout.html?code=${encodeURIComponent(WELCOME.code)}">${esc(w.cartBtn)}</a>`;
       }
     });

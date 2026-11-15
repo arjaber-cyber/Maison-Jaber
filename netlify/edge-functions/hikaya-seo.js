@@ -221,7 +221,7 @@ export const PAGES = {
 // the page, and the real footer replaces them as soon as the page script runs.
 const SITE_LINKS = [
   ["index.html", "Home", "الرئيسية"], ["stories.html", "All stories", "جميع القصص"], ["age-groups.html", "Stories by age", "القصص حسب العمر"],
-  ["gifts.html", "Personalised gifts", "هدايا مخصصة"], ["free-cover-preview.html", "Free cover preview", "معاينة الغلاف المجانية"], ["gift-birthday.html", "Birthday gifts", "هدايا عيد الميلاد"], ["gift-eid-ramadan.html", "Eid & Ramadan gifts", "هدايا العيد ورمضان"],
+  ["gifts.html", "Personalised gifts", "هدايا مخصصة"], ["free-cover-preview.html", "Free cover preview", "معاينة الغلاف المجانية"], ["gift-birthday.html", "Birthday gifts", "هدايا عيد ميلاد الطفل"], ["gift-eid-ramadan.html", "Eid & Ramadan gifts", "هدايا العيد ورمضان"],
   ["gift-christmas.html", "Christmas gifts", "هدايا الكريسماس"], ["gift-new-sibling.html", "New sibling gifts", "هدايا المولود الجديد"], ["gift-first-day-of-school.html", "First day of school", "أول يوم في المدرسة"],
   ["guides.html", "Gift guides", "أدلة الهدايا"], ["personalised-books-uae.html", "UAE", "الإمارات"], ["personalised-books-saudi-arabia.html", "Saudi Arabia", "السعودية"],
   ["personalised-books-qatar.html", "Qatar", "قطر"], ["personalised-books-kuwait.html", "Kuwait", "الكويت"], ["personalised-books-bahrain.html", "Bahrain", "البحرين"],
@@ -609,6 +609,13 @@ async function seoPage(request, context, state) {
     const slug = url.searchParams.get("s") || url.searchParams.get("story") || "";
     const s = slug ? await loadStory(slug) : undefined;
     if (s === null) noindex = true;
+    // QA 15 Nov 2026: a story address that doesn't exist is a real "page not found" (404), not an empty story page.
+    if (s === null) {
+      try {
+        const nf = await fetch(new URL("/hikaya/404.html", url));
+        if (nf.ok) return new Response(request.method === "HEAD" ? null : await nf.text(), { status: 404, headers: { "content-type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=0, must-revalidate", "X-Robots-Tag": "noindex" } });
+      } catch (_) { /* fall through: the page still carries noindex */ }
+    }
     canonEn = slug ? `${BASE}story.html?s=${encodeURIComponent(slug)}` : BASE + "stories.html";
     if (s) {
       storyRow = s;

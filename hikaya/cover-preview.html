@@ -81,6 +81,7 @@
   .cp-disc { font-size: 12.5px; color: var(--ink-soft); max-width: 520px; margin: 14px auto 0; line-height: 1.55; }
   .cp-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
   @media (max-width: 560px) { .cp-row { grid-template-columns: 1fr; } }
+  .cp-terms-note { font-size: 12.5px; color: var(--ink-soft); font-weight: 600; margin: 8px 0 0; }
 </style>
 </head>
 <body data-page="cover-preview">
@@ -92,6 +93,7 @@
     <p class="eyebrow-line" data-i18n="cp.eyebrow">Free preview</p>
     <h1 data-i18n="cp.title">See your child on the cover</h1>
     <p data-i18n="cp.sub">Upload one photo and see your little one as the hero of a Hikaya story, free, in about a minute.</p>
+    <p class="cp-terms-note" data-i18n="cp.terms_note">Free, no card needed · Watermarked preview · A few free tries per day · Photo deleted within 48 hours</p>
   </header>
 
   <div id="v-loading" class="cp-card cp-center"><div class="cp-spin" aria-hidden="true"></div></div>
@@ -364,7 +366,7 @@
   }
 
   // ---------- child ----------
-  for (let a = 1; a <= 12; a++) { const o = document.createElement('option'); o.value = a; o.textContent = a; if (a === 5) o.selected = true; $('cp-age').appendChild(o); }
+  for (let a = 2; a <= 8; a++) { /* QA 15 Nov 2026: our books are for ages 2 to 8 */ const o = document.createElement('option'); o.value = a; o.textContent = a; if (a === 5) o.selected = true; $('cp-age').appendChild(o); }
   function seg(id, key, cb) {
     $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
       state[key] = b.dataset.v;
@@ -662,7 +664,7 @@
     if (!c) return;
     if (c.lang === 'en' || c.lang === 'ar') state.lang = c.lang;
     if (c.gender === 'boy' || c.gender === 'girl') { state.gender = c.gender; $('gender-seg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === c.gender))); }
-    const a = Number(c.age); if (a >= 1 && a <= 12) $('cp-age').value = String(Math.round(a));
+    const a = Number(c.age); if (a >= 2 && a <= 8) $('cp-age').value = String(Math.round(a));
     if (c.name && !$('cp-name').value) $('cp-name').value = String(c.name).slice(0, 20);
     syncLang(); syncAdult();
   }
@@ -698,6 +700,9 @@
     // No answer at all: keep the form open; starting a preview will retry and explain if the connection is down.
   }
   document.addEventListener('hikaya:langchange', () => { if (!$('v-form').hidden) syncLang(); });
+  // QA 15 Nov 2026: the browser tab title follows the site language.
+  const paintDocTitle = () => { const v = window.hikayaT && window.hikayaT('cp.doc_title'); if (v && v !== 'cp.doc_title') document.title = v; };
+  document.addEventListener('hikaya:langchange', paintDocTitle); window.addEventListener('load', paintDocTitle); setTimeout(paintDocTitle, 1500);
   $('net-retry').addEventListener('click', () => { show('v-loading'); start(); });
   if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(start, 0); else document.addEventListener('DOMContentLoaded', start);
 </script>

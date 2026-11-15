@@ -152,7 +152,7 @@
  },
  "birthday_intro": {
   "en": "When a child already has a room full of toys, the best birthday gifts are the ones that make them feel seen: something about them, something to do together, or something they'll still have in ten years.",
-  "ar": "عندما تمتلئ غرفة الطفل بالألعاب، تكون أفضل هدايا عيد الميلاد تلك التي تجعله يشعر بأنه مرئي: شيء عنه هو، أو شيء تفعلونه معًا، أو شيء سيبقى معه بعد عشر سنوات"
+  "ar": "عندما تمتلئ غرفة الطفل بالألعاب، تكون أفضل هدايا عيد ميلاده تلك التي تجعله يشعر بأنه مرئي: شيء عنه هو، أو شيء تفعلونه معًا، أو شيء سيبقى معه بعد عشر سنوات"
  },
  "birthday_desc": {
   "en": "Out of toy ideas? Thoughtful birthday gifts for children aged 2 to 8, from keepsakes and experiences to a personalised storybook, with tips by age.",
