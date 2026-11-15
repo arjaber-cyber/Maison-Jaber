@@ -31,7 +31,7 @@
 window.HIKAYA_ANALYTICS_CONFIG = {
   GA_MEASUREMENT_ID: 'G-5L1750Y0YL',   // GA4: Hikaya - maison-jaber.com
   CLARITY_PROJECT_ID: 'yu5qjkitji',    // Microsoft Clarity: Hikaya - maison-jaber.com
-  META_PIXEL_ID: '000000000000000',    // <-- replace with your real Pixel ID
+  META_PIXEL_ID: '895656836906917',    // Meta Pixel: dataset "Hikaya Website" (Events Manager)
   TIKTOK_PIXEL_ID: '',                 // <-- TikTok Pixel ID (Events Manager); empty = TikTok Pixel off
 };
 
