@@ -235,9 +235,11 @@
   const FN = SB_URL + '/functions/v1/cover-preview-live';
   const CONSENT_VERSION = 'cp-2026-11-07';
   // Stories the preview engine knows (each has its cover facts on the server).
-  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','uae-national-day','why-is-baby-looking-at-me'];
+  const SUPPORTED = ['christmas-star','christmas-tree-door','door-of-a-thousand-stars','grandpas-wild-safari','house-of-missing-things','just-one-more','silver-wing-mission','storm-above-the-city','teddys-night-adventure','the-christmas-list','the-cracked-blue-vase','the-last-box','to-the-rescue','uae-national-day','leave-it-to-me','why-is-baby-looking-at-me'];
   // Covers that also show a parent, who can be personalised from an optional photo (the server knows the same list).
-  const ADULT = { 'uae-national-day': 'father' };
+  const ADULT = { 'uae-national-day': 'father', 'leave-it-to-me': 'mother' };
+  // Text keys for the parent card: Dad's wording, or Mum's for covers that show the mother.
+  const AK = (k) => ADULT[state.slug] === 'mother' ? k.replace(/^dad_/, 'mum_') : k;
   const EN_RE = /^[A-Za-z][A-Za-z' -]{0,19}$/;
   const AR_RE = /^[ء-ي٠-٩ٰ-ۓ ]{1,20}$/;
 
@@ -459,12 +461,17 @@
   function clearAdult() {
     adultSeq++; state.adult = ''; state.adultChecking = false;
     $('athumb').style.display = 'none'; $('athumb').classList.remove('bad'); $('a-remove').hidden = true;
-    $('afile-lbl').querySelector('span').textContent = T('dad_btn'); apstat('', '');
+    $('afile-lbl').querySelector('span').textContent = T(AK('dad_btn')); apstat('', '');
     consentText(); updateGo();
   }
   function syncAdult() {
     const on = !!ADULT[state.slug];
     $('adult-card').hidden = !on;
+    if (on) $('adult-card').querySelectorAll('[data-i18n^="cp.dad_"],[data-i18n^="cp.mum_"]').forEach((el) => {
+      const k = AK('dad_' + el.getAttribute('data-i18n').replace(/^cp\.(dad|mum)_/, ''));
+      el.setAttribute('data-i18n', 'cp.' + k);
+      if (!(el.id === 'afile-lbl' || el.closest('#afile-lbl')) || !state.adult) el.textContent = T(k);
+    });
     if (!on && (state.adult || state.adultChecking)) clearAdult(); else consentText();
   }
   let adultSeq = 0;
@@ -486,10 +493,10 @@
       $('afile-lbl').querySelector('span').textContent = T('photo_change');
       const faces = await countFaces(c);
       if (seq !== adultSeq) return;
-      if (faces === 0) { $('athumb').classList.add('bad'); apstat('bad', T('dad_noface')); track('cover_preview_adult_photo', { result: 'no_face' }); return; }
-      if (faces > 1) { $('athumb').classList.add('bad'); apstat('bad', T('dad_many')); track('cover_preview_adult_photo', { result: 'group' }); return; }
+      if (faces === 0) { $('athumb').classList.add('bad'); apstat('bad', T(AK('dad_noface'))); track('cover_preview_adult_photo', { result: 'no_face' }); return; }
+      if (faces > 1) { $('athumb').classList.add('bad'); apstat('bad', T(AK('dad_many'))); track('cover_preview_adult_photo', { result: 'group' }); return; }
       state.adult = dataUrl;
-      apstat(faces === 1 ? 'ok' : '', T(faces === 1 ? 'dad_ok' : 'dad_nocheck'));
+      apstat(faces === 1 ? 'ok' : '', T(AK(faces === 1 ? 'dad_ok' : 'dad_nocheck')));
       track('cover_preview_adult_photo', { result: faces === 1 ? 'ok' : 'unchecked' });
     } catch (er) { if (seq === adultSeq) { $('athumb').classList.add('bad'); apstat('bad', T('e_generic')); } }
     finally { if (seq === adultSeq) { state.adultChecking = false; consentText(); updateGo(); } }
@@ -542,7 +549,7 @@
     }
     pendingClear();
     if (r.code === 'adult_group' || r.code === 'adult_noface' || r.code === 'adult_rejected') {
-      const k = r.code === 'adult_group' ? 'dad_many' : r.code === 'adult_noface' ? 'dad_noface' : 'dad_rejected';
+      const k = AK(r.code === 'adult_group' ? 'dad_many' : r.code === 'adult_noface' ? 'dad_noface' : 'dad_rejected');
       rejectAdult(k); show('v-form'); err(k); updateGo(); return;
     }
     if (r.code === 'photo_group' || r.code === 'photo_noface') { rejectPhoto(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); show('v-form'); err(r.code === 'photo_group' ? 'photo_many' : 'photo_noface'); updateGo(); return; }
