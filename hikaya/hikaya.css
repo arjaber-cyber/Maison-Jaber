@@ -1617,6 +1617,7 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
   html.hk-w-merged .utility .msg { flex: 0 1 auto; flex-basis: auto; min-width: 0; font-size: 11.5px; overflow: hidden; }
   html.hk-w-merged .util-promo:not([hidden]) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
   html.hk-w-merged .utility .controls { flex: 0 0 auto; flex-wrap: nowrap; margin-inline-start: auto; }
+  html.hk-w-merged .utility .rl-name { display: none; }
   .foot-deliver a { display: inline-block; padding: 10px 6px; }
 }
 /* QA 15 Nov 2026: on the checkout page (phones) the WhatsApp button shrinks to its icon so it covers less of the form. */

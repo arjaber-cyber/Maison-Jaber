@@ -744,6 +744,7 @@
     co_mtotal: { en: 'Order total', ar: 'إجمالي الطلب' },
     co_mview: { en: 'View summary', ar: 'عرض الملخص' },
     bn_1: { en: 'Add a second book and save 10% on both, plus free delivery.', ar: 'أضف كتابًا ثانيًا ووفّر 10% على الكتابين مع توصيل مجاني' },
+    bn_1_uae: { en: 'Add a second book and save 10% on both.', ar: 'أضف كتابًا ثانيًا ووفّر 10% على الكتابين' },
     bn_2: { en: 'Add a third book and save 15% on all three.', ar: 'أضف كتابًا ثالثًا ووفّر 15% على الكتب الثلاثة' },
     gift_note: { en: 'Sending it straight to them? Add their name and phone, and put their address in the address fields above', ar: 'هل ترسله إليهم مباشرة؟ أضف اسمهم ورقم هاتفهم، واكتب عنوانهم في حقول العنوان أعلاه' },
     recipient_name: { en: "Recipient's name", ar: 'اسم المستلم' },

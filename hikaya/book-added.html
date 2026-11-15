@@ -199,7 +199,8 @@
       cl.textContent = (n > 1 ? tt('personalize.go_to_checkout_n', 'Continue to Checkout ({count})').replace('{count}', n) : tt('personalize.go_to_checkout_btn', 'Continue to Checkout')) + (ar ? ' ←' : ' →');
       // QA 15 Nov 2026: tell them about the bundle saving right next to "Add Another Book".
       const bn = document.getElementById('bundle-nudge');
-      if (bn) { const msg = n === 1 ? tt('qa.bn_1', 'Add a second book and save 10% on both, plus free delivery.') : n === 2 ? tt('qa.bn_2', 'Add a third book and save 15% on all three.') : ''; bn.textContent = msg; bn.hidden = !msg; }
+      if (bn) { const uae = !window.hikayaRegionKey || window.hikayaRegionKey() === 'UAE';
+      const msg = n === 1 ? (uae ? tt('qa.bn_1_uae', 'Add a second book and save 10% on both.') : tt('qa.bn_1', 'Add a second book and save 10% on both, plus free delivery.')) : n === 2 ? tt('qa.bn_2', 'Add a third book and save 15% on all three.') : ''; bn.textContent = msg; bn.hidden = !msg; }
       document.getElementById('cart-count-note').textContent = n > 1 ? tt('personalize.cart_count_label', 'You have {count} books in your cart.').replace('{count}', n) : '';
     };
     setSmall();

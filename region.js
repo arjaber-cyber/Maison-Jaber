@@ -207,8 +207,12 @@ window.hikayaAedHtml = function (total, region) {
   try {
     const b = document.body;
     const pc = b && b.dataset.page === 'country' ? b.dataset.country : '';
-    if (pc && window.HIKAYA_REGIONS[pc] && (!localStorage.getItem(REGION_KEY) || localStorage.getItem('hikaya_region_auto') === '1')) {
-      localStorage.setItem(REGION_KEY, pc); localStorage.setItem('hikaya_region_auto', '1');
+    const auto = localStorage.getItem('hikaya_region_auto');
+    if (pc && window.HIKAYA_REGIONS[pc] && (!localStorage.getItem(REGION_KEY) || auto === '1' || auto === 'page')) {
+      localStorage.setItem(REGION_KEY, pc); localStorage.setItem('hikaya_region_auto', 'page');
+    } else if (!pc && auto === 'page') {
+      // Left the country page: go back to the visitor's own (detected) country.
+      localStorage.removeItem(REGION_KEY); localStorage.removeItem('hikaya_region_auto');
     }
   } catch (e) {}
   function getStoredRegionKey() {

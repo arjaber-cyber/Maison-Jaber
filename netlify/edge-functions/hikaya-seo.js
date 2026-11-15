@@ -268,7 +268,7 @@ async function loadStories() {
     });
     if (!r.ok) return STORIES; // keep the last good copy, if any
     const rows = await r.json();
-    if (Array.isArray(rows)) { STORIES = rows; STORIES_AT = Date.now(); }
+    if (Array.isArray(rows) && rows.length) { STORIES = rows; STORIES_AT = Date.now(); } // an empty list is treated as unknown, never as "no stories"
     return STORIES;
   } catch (_) {
     return STORIES;

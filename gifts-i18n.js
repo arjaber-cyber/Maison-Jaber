@@ -67,8 +67,8 @@
   "ar": "متى يجب أن أطلب؟"
  },
  "a_time": {
-  "en": "Each book is made to order. Delivery takes about 5 working days in the UAE and about 7 in the rest of the GCC, so order at least a week before the day.",
-  "ar": "كل كتاب يُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، لذلك اطلب قبل المناسبة بأسبوع على الأقل"
+  "en": "Each book is made to order. Delivery takes about 5 working days in the UAE and about 7 in the rest of the GCC, so order at least a week before the day in the UAE, or two weeks before elsewhere in the GCC.",
+  "ar": "كل كتاب يُصنع حسب الطلب، ويستغرق التوصيل نحو 5 أيام عمل في الإمارات ونحو 7 أيام في باقي دول الخليج، لذلك اطلب قبل المناسبة بأسبوع على الأقل في الإمارات، وبأسبوعين في باقي دول الخليج"
  },
  "q_photo": {
   "en": "What do you need from me?",
@@ -164,7 +164,7 @@
  },
  "hub_intro": {
   "en": "Looking for a meaningful gift for a child in the UAE or GCC? Hikaya by Maison Jaber turns any of our stories into a book about them: their name, their age and an illustrated version of their face, printed in hardcover and gift-boxed. It's a present for birthdays, Eid, Ramadan, Christmas, a new sibling, a first day of school, or no reason at all, and it lasts long after the wrapping paper.",
-  "ar": "تبحث عن هدية مميزة لطفل في الإمارات أو دول الخليج؟ حكاية من ميزون جابر تحوّل أي قصة من قصصنا إلى كتاب عنه هو، باسمه وعمره وملامحه المرسومة، مطبوعًا بغلاف مقوّى وفي علبة هدية، هدية لعيد الميلاد والعيد ورمضان والكريسماس وقدوم مولود جديد وأول يوم في المدرسة أو بلا مناسبة، وتبقى بعد أن يُنسى ورق التغليف"
+  "ar": "تبحث عن هدية مميزة لطفل في الإمارات أو دول الخليج؟ حكاية من ميزون جابر تحوّل أي قصة من قصصنا إلى كتاب عنه هو، باسمه وعمره وملامحه المرسومة، مطبوعًا بغلاف مقوّى وفي علبة هدية، هدية لأعياد ميلاد الأطفال والعيد ورمضان والكريسماس وقدوم مولود جديد وأول يوم في المدرسة أو بلا مناسبة، وتبقى بعد أن يُنسى ورق التغليف"
  },
  "hub_shelf": {
   "en": "All personalised stories",

@@ -164,7 +164,7 @@
  },
  "birthday_s0_b": {
   "en": "<ul><li><strong>A personalised storybook.</strong> Their name, age and illustrated face, with your birthday message on the first page. <a href=\"gift-birthday.html\">Browse birthday stories</a>.</li><li><strong>A growth chart</strong> they can mark every birthday.</li><li><strong>A letter to open at 18</strong>, sealed and kept with their birthday things.</li></ul>",
-  "ar": "<ul><li><strong>قصة مخصصة</strong> باسمه وعمره وملامحه المرسومة، مع رسالة عيد ميلادك في الصفحة الأولى <a href=\"gift-birthday.html\">تصفّح قصص عيد الميلاد</a></li><li><strong>مقياس طول</strong> يضع عليه علامة في كل عيد ميلاد</li><li><strong>رسالة تُفتح في عمر 18</strong> مختومة ومحفوظة مع أغراض عيد ميلاده</li></ul>"
+  "ar": "<ul><li><strong>قصة مخصصة</strong> باسمه وعمره وملامحه المرسومة، مع رسالة عيد ميلادك في الصفحة الأولى <a href=\"gift-birthday.html\">تصفّح قصص أعياد الميلاد للأطفال</a></li><li><strong>مقياس طول</strong> يضع عليه علامة في كل عيد ميلاد</li><li><strong>رسالة تُفتح في عمر 18</strong> مختومة ومحفوظة مع أغراض عيد ميلاده</li></ul>"
  },
  "birthday_s1_h": {
   "en": "Gifts to do together",

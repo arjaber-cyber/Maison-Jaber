@@ -157,7 +157,7 @@
   function renderRegion() {
     const k = regionKey(); const r = regionObj(k);
     const label = document.getElementById('region-label');
-    if (label) label.textContent = `${countryName(k)} (${r ? r.currency : 'AED'})`;
+    if (label) label.innerHTML = `<span class="rl-name">${esc(countryName(k))} (</span>${esc(r ? r.currency : 'AED')}<span class="rl-name">)</span>`;
     const rb = document.getElementById('region-btn'); if (rb) rb.setAttribute('aria-label', `${t('a11y.region', 'Choose your country and currency')}: ${countryName(k)} (${r ? r.currency : 'AED'})`); // QA-07: the accessible name keeps the current country, in the page language
     const msg = document.getElementById('delivery-msg');
     /* Phones show a short version so the message and the country/language buttons fit on one row (UAE only; GCC text wraps as before). */
