@@ -5,6 +5,34 @@
    dashboard, update or remove its entry here: text is only used when the image file names match.
    Transcribed from the sample pages (the sample child's name appears as printed). */
 window.HIKAYA_PREVIEW_TEXT = {
+ "my-dad-my-hero": {
+  "en": [
+   "In Maya's imagination, his ordinary shirt became a superhero suit. A red cape streamed behind him as he flew above the rooftops. Whoooosh!",
+   "In her imagination, his screwdriver became a shining wand. With one little wave, broken things floated through the air and fitted themselves together. Ta-da!",
+   "“Dad,” she asked, climbing beside him, “can you fly?” He shook his head. “Not even a tiny bit?” “Not even over that cushion.”",
+   "Maya slipped off the sofa and fetched her soft blanket. She tucked it around his knees. “Then you can rest,” she said. “I love you, too.”"
+  ],
+  "ar": [
+   "في خيال مايا، تحول قميصه العادي إلى زي بطل خارق. ورفرف خلفه رداء أحمر وهو يطير فوق أسطح البيوت. وووش!",
+   "في خيالها، تحول مفكه إلى عصا لامعة. وبحركة صغيرة، راحت الأشياء المكسورة تطفو في الهواء، وتعود أجزاؤها إلى أماكنها. تا دا!",
+   "صعدت مايا وجلست بجانبه، ثم سألته: «بابا، هل تستطيع الطيران؟» هز رأسه نافيًا. «ولا قليلًا؟» «ولا حتى فوق تلك الوسادة!»",
+   "نزلت مايا عن الأريكة وأحضرت بطانيتها الناعمة. غطت بها ركبتيه بعناية. قالت: «إذن يمكنك أن ترتاح. وأنا أحبك أيضًا.»"
+  ]
+ },
+ "leave-it-to-me": {
+  "en": [
+   "Mommy's apron covered Mariam's eyes. And her toes. Kitty patted the hem. “Meow?” “It's me in here!”",
+   "Mariam spread banana on the toast and added three blueberry buttons. “One, two, three. Your toast is dressed!”",
+   "Plop! The last berry dropped out of the slipper. Mariam giggled. “Next time, ask for a plate!”",
+   "“Tomorrow, will you teach me to make breakfast?” asked Mommy. Mariam touched her nose to Mommy's. “First, wake me up and tell me to go back to sleep.”"
+  ],
+  "ar": [
+   "غطّت مريلة ماما عيني مريم، وغطّت أصابع قدميها أيضًا! لمست القطة طرف المريلة. «مياو؟» «أنا هنا، في الداخل!»",
+   "دهنت مريم الخبز بالموز وزيّنته بثلاث حبّات توت كالأزرار. «زرّ، زرّان، ثلاثة... ها هو فطورك يرتدي ثيابه!»",
+   "طُبّ! سقطت آخر حبّة توت من الخفّ في الوعاء. ضحكت مريم. «في المرّة المقبلة، اطلب طبقًا!»",
+   "«هل تعلّمينني غدًا كيف أعدّ الفطور؟» سألت ماما. ألصقت مريم أنفها بأنف ماما. «أوّلًا توقظينني، ثمّ تقولين لي: عودي إلى النوم!»"
+  ]
+ },
  "uae-national-day": {
   "en": [
    "One of Jack's favorite places is Dubai. He stands with his father, staring up at the tall, shiny buildings that reach for the blue sky.",
