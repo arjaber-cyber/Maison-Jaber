@@ -1640,7 +1640,7 @@
           ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
           : t('personalize.continue_btn', 'Fill in the details above to continue');
       }
-      if (EDIT && ready) continueBtn.textContent = L2('Save changes', 'حفظ التعديلات');
+      if (EDIT && ready) continueBtn.textContent = L2('Save & place the order →', 'احفظ وأكمل الطلب ←');
     }
   }
   checkDetailsComplete();
@@ -1977,7 +1977,7 @@
     const title = document.getElementById('wizard-title');
     if (title) {
       const b = document.createElement('div'); b.className = 'edit-banner'; b.setAttribute('role', 'status');
-      const sp = document.createElement('span'); sp.textContent = L2("You're editing a book in your cart. Change anything, then tap Save changes.", 'أنتم تعدّلون كتاباً في سلتكم، غيّروا ما تريدون ثم اضغطوا حفظ التعديلات');
+      const sp = document.createElement('span'); sp.textContent = L2("You're editing a book in your cart. Check or change anything, then tap Save & place the order.", 'أنتم تعدّلون كتاباً في سلتكم، راجعوا أو غيّروا ما تريدون ثم اضغطوا احفظ وأكمل الطلب');
       const a = document.createElement('a'); a.href = 'cart.html'; a.textContent = L2('← Back to cart', '→ العودة إلى السلة');
       b.append(sp, a); title.before(b);
     }
@@ -2142,7 +2142,7 @@
       try { window.hikayaCart.updateItem(EDIT.id, Object.assign(item, { id: EDIT.id, photoLater: !!item.photoLater })); }
       catch (_) { showUpload(0, true); saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete(); return; }
       if (window.hikayaTrackEvent) window.hikayaTrackEvent('cart_item_edited', { story: item.slug || item.story });
-      window.location.href = 'cart.html';
+      window.location.href = 'checkout.html';
       return;
     }
     try {
