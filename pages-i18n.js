@@ -926,4 +926,9 @@
     od_btn: { en: 'Add the photo now', ar: 'أضف الصورة الآن' },
     cart_meta: { en: "Photo: you'll add it after ordering", ar: 'الصورة: تضيفها بعد الطلب' },
   };
+  /* Cart: reopen a book to change its details (Nov 2026). */
+  T.ce = {
+    edit: { en: 'Edit details', ar: 'تعديل التفاصيل' },
+    edit_aria: { en: 'Edit this book', ar: 'تعديل هذا الكتاب' },
+  };
 })();

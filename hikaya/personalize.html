@@ -10,6 +10,9 @@
 <meta name="description" content="Choose their age, pick a story, add their details, and send us your request." />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+  .edit-banner { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; justify-content:space-between; background:#f3ebe0; border:1px solid #e3d5c3; border-radius:12px; padding:10px 14px; margin:0 0 14px; font-size:13.5px; font-weight:600; color:var(--ink, #3b2a20); }
+  .edit-banner a { color:inherit; font-weight:700; text-decoration:underline; text-underline-offset:3px; white-space:nowrap; }
+  .ph-kept { margin:8px 0; font-size:13.5px; font-weight:600; color:#4c7a4f; }
 
   :root {
     --ink: #2E2018; --ink-soft: #7d6a5a; --line: #DFC9AE; --line-soft: #ece1d1;
@@ -671,6 +674,28 @@
   let photoFiles = [];
   let photoLater = false; // parent chose to add the photo after ordering (Nov 2026)
   let extraPhotoFiles = [];
+  /* ---------- Editing a book that is already in the cart (Nov 2026) ----------
+     cart.html links here with ?edit=<cart item id>. The page opens with everything filled in.
+     Photos already saved for that book are kept (we only hold their private storage paths),
+     unless the parent uploads a new one to replace them. Saving updates the same cart item. */
+  const EDIT = (function () {
+    try {
+      const id = new URLSearchParams(location.search).get('edit');
+      if (!id || !window.hikayaCart) return null;
+      const item = window.hikayaCart.getCart().find(i => i.id === id);
+      if (!item) return null;
+      const fam = {};
+      (item.supportingCharacters || []).forEach(c => { if (c && c.role && (c.photoPaths || []).length) fam[c.role] = c.photoPaths.slice(); });
+      return { id, item, slug: item.slug || null, photos: (item.photoPaths || []).slice(), fam, extra: (item.extraCharacterPhotoPaths || []).slice() };
+    } catch (_) { return null; }
+  })();
+  const L2 = (en, ar) => (document.documentElement.lang === 'ar' ? ar : en);
+  const editSameStory = () => !!EDIT && (STORY_CATALOG[document.getElementById('story-input').value] || {}).slug === EDIT.slug;
+  // The child's saved photo still counts while no new photo has been added.
+  const keptPhotoActive = () => !!EDIT && EDIT.photos.length > 0 && !photoLater && photoFiles.length === 0;
+  const keptFamFor = role => (editSameStory() && famChoice === 'photos' && !(famFiles[role] || []).length) ? (EDIT.fam[role] || []) : [];
+  const keptFamAny = () => editSameStory() && Object.keys(EDIT.fam).length > 0 && !Object.values(famFiles).some(l => l.length);
+  const keptExtraActive = () => editSameStory() && EDIT.extra.length > 0 && extraPhotoFiles.length === 0;
   (function () { // keep the story column clear of the sticky site header
     const setH = () => { const h = document.querySelector('header, .site-header, #hk-head'); const v = h && getComputedStyle(h).position !== 'static' ? h.getBoundingClientRect().height : 0; document.documentElement.style.setProperty('--hk-head-h', Math.round(v) + 'px'); };
     setH(); window.addEventListener('load', setH); window.addEventListener('resize', setH); setTimeout(setH, 1500);
@@ -1305,6 +1330,7 @@
     if (!famRoles().length) return true;
     if (famChoice === 'avatar') return true;
     if (famChoice !== 'photos') return false;
+    if (keptFamAny()) return true;
     return famVerified() && !famChecking() && document.getElementById('fam-consent').checked;
   }
 
@@ -1402,6 +1428,11 @@
       box.querySelector('h5').textContent = tx.slotTitle(role);
       box.querySelector('.fam-hint').textContent = tx.slotHint(role);
       box.querySelector('.hint-main').textContent = tx.tap;
+      if (EDIT && (EDIT.fam[role] || []).length && editSameStory() && !(famFiles[role] || []).length) {
+        const kn = document.createElement('p'); kn.className = 'ph-kept';
+        kn.textContent = L2('✓ Photo already saved. Add a new one only if you want to replace it.', '✓ الصورة محفوظة، أضيفوا صورة جديدة فقط إذا أردتم استبدالها');
+        box.querySelector('.photo-upload').before(kn);
+      }
       const input = box.querySelector('input'); input.setAttribute('aria-label', tx.slotTitle(role));
       const thumbs = box.querySelector('.photo-thumbs'), retry = box.querySelector('.photo-retry-note');
       input.addEventListener('change', () => {
@@ -1560,7 +1591,7 @@
     let extraCharOk = true;
     if (storyInfo && storyInfo.has_extra_character) {
       if (!extraCharChoice) extraCharOk = false;
-      else if (extraCharChoice === 'yes' && !extraPhotoFiles.some(p => p.status === 'verified')) extraCharOk = false;
+      else if (extraCharChoice === 'yes' && !extraPhotoFiles.some(p => p.status === 'verified') && !keptExtraActive()) extraCharOk = false;
     }
 
     // Per-step Next button gating.
@@ -1574,7 +1605,8 @@
     const consentBox = document.getElementById('photo-consent-box');
     if (consentBox) consentBox.hidden = photoFiles.length === 0;
     const photoConsent = document.getElementById('photo-consent').checked;
-    const photoOk = photoLater || (hasVerifiedPhoto && photoConsent);
+    const photoOk = photoLater || keptPhotoActive() || (hasVerifiedPhoto && photoConsent);
+    const keptNote = document.getElementById('ph-kept'); if (keptNote) keptNote.hidden = !keptPhotoActive();
     if (photoNextBtn) photoNextBtn.disabled = !photoOk;
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
@@ -1584,7 +1616,7 @@
     if (famConsentBox) famConsentBox.hidden = !(famChoice === 'photos' && Object.values(famFiles).some(l => l.length));
     const famNeed = document.getElementById('fam-need');
     if (famNeed) {
-      const empty = famChoice === 'photos' && !Object.values(famFiles).some(l => l.length);
+      const empty = famChoice === 'photos' && !Object.values(famFiles).some(l => l.length) && !keptFamAny();
       famNeed.hidden = !empty; if (empty) famNeed.textContent = famText().need;
     }
 
@@ -1608,6 +1640,7 @@
           ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
           : t('personalize.continue_btn', 'Fill in the details above to continue');
       }
+      if (EDIT && ready) continueBtn.textContent = L2('Save changes', 'حفظ التعديلات');
     }
   }
   checkDetailsComplete();
@@ -1643,9 +1676,9 @@
     switch (step) {
       case 'story': return !!storyChosen;
       case 'details': return nameOk() && ageState().ok;
-      case 'photo': return photoLater || (photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked);
+      case 'photo': return photoLater || keptPhotoActive() || (photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked);
       case 'family': return famOk();
-      case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && extraPhotoFiles.some(p => p.status === 'verified')));
+      case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && (keptExtraActive() || extraPhotoFiles.some(p => p.status === 'verified'))));
       default: return false;
     }
   }
@@ -1663,6 +1696,7 @@
       return [nameInput.value.trim(), ageInputEl.value ? t('personalize.summary_age_label', 'Age') + ' ' + ageInputEl.value : '', g ? g.textContent.trim() : ''].filter(Boolean).join(' · ');
     }
     if (step === 'photo' && photoLater) return '✓ ' + t('ph.later_sum', 'Photo after ordering');
+    if (step === 'photo' && keptPhotoActive()) return '✓ ' + L2('Saved photo', 'الصورة محفوظة');
     if (step === 'photo') { const n = photoFiles.filter(p => p.status === 'verified').length; return n ? '✓ ' + t('personalize.summary_photos', 'Photos') + ': ' + n : ''; }
     if (step === 'family') { if (!famChoice) return ''; const tx = famText(); return famChoice === 'photos' ? tx.rowPhoto : tx.rowAvatar; }
     if (step === 'extra' && info && extraCharChoice) return extraCharChoice === 'yes' ? t('personalize.summary_extra_yes', 'Real photo (+fee)') : t('personalize.summary_extra_no', 'Generated for you');
@@ -1821,7 +1855,7 @@
     const age = ageInputEl.value;
     const dedication = document.getElementById('dedication').value.trim();
     if (window.hkMsgSync) window.hkMsgSync();
-    const photoCount = photoFiles.filter(p => p.status === 'verified').length;
+    const photoCount = keptPhotoActive() ? EDIT.photos.length : photoFiles.filter(p => p.status === 'verified').length;
     const rows = [
       { label: t('personalize.summary_story_label', 'Story'), value: storyDisplayName(storyName) || '—', step: 'story' },
       { label: t('personalize.summary_name', "Child's name"), value: (bookName() && bookName() !== name ? bookName() + ' (' + name + ')' : name) || '—', step: 'details' },
@@ -1838,7 +1872,7 @@
     if (famRoles().length) {
       const tx = famText();
       famRoles().forEach(role => {
-        const has = famChoice === 'photos' && (famFiles[role] || []).some(p => p.status === 'verified');
+        const has = famChoice === 'photos' && ((famFiles[role] || []).some(p => p.status === 'verified') || keptFamFor(role).length > 0);
         rows.push({ label: FAM().label(role, famLang()), value: has ? tx.rowPhoto : tx.rowAvatar, step: 'family' });
       });
     }
@@ -1875,7 +1909,7 @@
   // Arrived from the free cover preview: carry over what the parent already typed there.
   // The details come from this browser session (cp-handoff.js), never from the URL, so the page link is safe to share.
   (function prefillFromCoverPreview() {
-    const H = window.hikayaCpHandoff; if (!H) return;
+    const H = window.hikayaCpHandoff; if (!H || EDIT) return;
     const c = H.fromLegacyUrl() || H.read();
     if (!c || !/^(preview|legacy-url)$/.test(c.from || '')) return; // only details from a finished preview
     const fire = (el, ev) => el && el.dispatchEvent(new Event(ev, { bubbles: true }));
@@ -1914,6 +1948,56 @@
       const go = () => { if (stepComplete('details') && (storyLocked ? true : stepComplete('story'))) showWizardStep('photo'); };
       setTimeout(go, 300);
     }).catch(() => {});
+  })();
+
+  // Editing a book from the cart: fill in everything it was ordered with, then open the review step.
+  (function prefillFromCartItem() {
+    if (!EDIT) return;
+    const c = EDIT.item;
+    const fire = (el, ev) => el && el.dispatchEvent(new Event(ev, { bubbles: true }));
+    const langEl = document.getElementById('book-language');
+    if (langEl && c.bookLanguage && [...langEl.options].some(o => o.value === c.bookLanguage)) { langEl.value = c.bookLanguage; langEl.dataset.touched = '1'; }
+    const typed = c.childNameTyped || c.childName || '';
+    if (typed) { nameInput.value = typed; fire(nameInput, 'input'); }
+    if (c.childName && typed && c.childName !== typed) bookNameConfirmed = { typed, lang: c.bookLanguage === 'ar' ? 'ar' : 'en', name: c.childName };
+    if (c.childAge) { ageInputEl.value = String(c.childAge); fire(ageInputEl, 'input'); fire(ageInputEl, 'change'); }
+    const gBtn = c.gender && document.querySelector('.gender-btn[data-value="' + c.gender + '"]');
+    if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
+    const ded = document.getElementById('dedication');
+    if (ded && c.dedication) { ded.value = c.dedication; fire(ded, 'input'); if (window.hkMsgSync) window.hkMsgSync(); }
+    if (c.photoLater) setPhotoLater(true, true);
+    // Note in the photo step: the photo they already gave us is kept.
+    const thumbs = document.getElementById('photo-thumbs');
+    if (thumbs && EDIT.photos.length) {
+      const kn = document.createElement('p'); kn.id = 'ph-kept'; kn.className = 'ph-kept';
+      kn.textContent = L2('✓ Your photo is already saved. Add a new one only if you want to replace it.', '✓ صورة طفلكم محفوظة، أضيفوا صورة جديدة فقط إذا أردتم استبدالها');
+      thumbs.before(kn);
+    }
+    // Banner at the top of the form, with a way back to the cart.
+    const title = document.getElementById('wizard-title');
+    if (title) {
+      const b = document.createElement('div'); b.className = 'edit-banner'; b.setAttribute('role', 'status');
+      const sp = document.createElement('span'); sp.textContent = L2("You're editing a book in your cart. Change anything, then tap Save changes.", 'أنتم تعدّلون كتاباً في سلتكم، غيّروا ما تريدون ثم اضغطوا حفظ التعديلات');
+      const a = document.createElement('a'); a.href = 'cart.html'; a.textContent = L2('← Back to cart', '→ العودة إلى السلة');
+      b.append(sp, a); title.before(b);
+    }
+    // Story-dependent choices (family / extra character) once the story is loaded, then jump to the review.
+    let tries = 0;
+    (function whenStoryReady() {
+      if (storyPending || !document.getElementById('story-input').value || (EDIT.slug && !(STORY_CATALOG[document.getElementById('story-input').value] || {}).slug)) { if (++tries < 60) setTimeout(whenStoryReady, 200); return; }
+      if (editSameStory()) {
+        if (famRoles().length && c.supportingChoice) setFamChoice(c.supportingChoice === 'photos' && Object.keys(EDIT.fam).length ? 'photos' : 'avatar');
+        const info = STORY_CATALOG[document.getElementById('story-input').value];
+        if (info && info.has_extra_character) {
+          extraCharChoice = c.extraCharacterName ? 'yes' : 'no';
+          document.querySelectorAll('.extra-char-btn').forEach(b => { const on = b.dataset.value === extraCharChoice; b.classList.toggle('selected', on); b.setAttribute('aria-pressed', String(on)); });
+        }
+      }
+      checkDetailsComplete();
+      const steps = activeSteps();
+      const firstOpen = steps.find(st => st !== 'review' && !stepComplete(st));
+      showWizardStep(firstOpen || 'review');
+    })();
   })();
 
   // ---------- Cart flow ----------
@@ -2040,11 +2124,25 @@
       item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length, verifiedPhotos.length + verifiedExtraPhotos.length);
       const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length);
       famUploads.forEach((x, k) => { const c = item.supportingCharacters.find(sc => sc.role === x.role); if (c && famPaths[k]) c.photoPaths.push(famPaths[k]); });
+      if (EDIT) {
+        // Keep the photos already saved for this book where nothing new replaced them.
+        if (keptPhotoActive()) { item.photoPaths = EDIT.photos.slice(); item.photoCount = EDIT.photos.length; item.photoConsent = EDIT.item.photoConsent; item.photoConsentAt = EDIT.item.photoConsentAt; }
+        item.supportingCharacters.forEach(sc => { if (!sc.photoPaths.length) { const k = keptFamFor(sc.role); if (k.length) sc.photoPaths = k.slice(); } });
+        if (item.supportingCharacters.some(sc => sc.photoPaths.length) && !famVerified()) item.supportingPhotoConsent = EDIT.item.supportingPhotoConsent;
+        if (item.extraCharacterName && !(item.extraCharacterPhotoPaths || []).length && keptExtraActive()) { item.extraCharacterPhotoPaths = EDIT.extra.slice(); item.extraCharacterPhotoCount = EDIT.extra.length; }
+      }
       if (item.supportingCharacters.length && !item.supportingCharacters.some(c => c.photoPaths.length)) item.supportingChoice = 'avatar';
       // Privacy (Nov 2026): no copy of the child's photo is kept in this browser; the cart holds only the private storage path.
     } catch (err) {
       showUpload(0, true);
       saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete();
+      return;
+    }
+    if (EDIT) {
+      try { window.hikayaCart.updateItem(EDIT.id, Object.assign(item, { id: EDIT.id, photoLater: !!item.photoLater })); }
+      catch (_) { showUpload(0, true); saving = false; continueBtn.removeAttribute('aria-busy'); checkDetailsComplete(); return; }
+      if (window.hikayaTrackEvent) window.hikayaTrackEvent('cart_item_edited', { story: item.slug || item.story });
+      window.location.href = 'cart.html';
       return;
     }
     try {

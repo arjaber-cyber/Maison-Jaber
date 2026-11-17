@@ -62,6 +62,11 @@
   .cart-msg-edit .count { margin-inline-start: auto; color: var(--ink-soft); font-size: 12px; }
   .cart-item .price { font-weight: 800; font-size: 15px; white-space: nowrap; text-align: end; }
   .cart-item .price .hk-was { display: block; font-size: 12.5px; }
+  .cart-item a.cover { display:block; }
+  .cart-item .item-edit-title { color:inherit; text-decoration:none; }
+  .cart-item .item-actions { display:flex; gap:6px 16px; align-items:center; flex-wrap:wrap; margin-top:8px; }
+  .cart-item .item-actions .remove-btn { margin-top:0; }
+  .cart-item .edit-btn { font-size:13px; font-weight:700; color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
   .cart-item .remove-btn {
     background: none; border: none; cursor: pointer; color: var(--ink-soft); font-size: 12px; font-weight: 700;
     text-decoration: underline; margin-top: 6px; padding: 0;
@@ -208,6 +213,11 @@
     const clr = box.querySelector('.clear');
     if (clr) clr.addEventListener('click', () => { window.hikayaCart.updateItem(id, { dedication: '' }); msgOpenId = msgDraft = null; render(); });
   }
+  // Tapping a book (cover, title or "Edit details") reopens it in the personalise page, filled in, to change anything.
+  function editHref(item) {
+    const story = item.slug || item.story || '';
+    return 'personalize.html?' + (story ? 'story=' + encodeURIComponent(story) + '&' : '') + 'edit=' + encodeURIComponent(item.id);
+  }
   function wireMessages(root) {
     root.querySelectorAll('[data-msg-open]').forEach(b => b.addEventListener('click', () => openMsgEditor(b.dataset.msgOpen)));
   }
@@ -253,15 +263,15 @@
 
     itemsWrap.innerHTML = cart.map(item => `
       <div class="cart-item" data-id="${item.id}" data-clarity-mask="true">
-        <div class="cover ${item.theme}" data-item-id="${item.id}"></div>
+        <a class="cover ${item.theme}" data-item-id="${item.id}" href="${editHref(item)}" aria-label="${escH(t('ce.edit_aria', 'Edit this book'))}"></a>
         <div class="info">
-          <h3>${item.story}</h3>
+          <h3><a class="item-edit-title" href="${editHref(item)}">${item.story}</a></h3>
           <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}</div>
           ${msgHtml(item)}
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           ${item.photoLater ? `<div class="meta">📷 ${t('ph.cart_meta', "Photo: you'll add it after ordering")}</div>` : ''}
           ${window.HikayaFamily && window.HikayaFamily.summary(item) ? `<div class="meta">👪 ${window.HikayaFamily.summary(item)}</div>` : ''}
-          <button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button>
+          <div class="item-actions"><a class="edit-btn" href="${editHref(item)}">${escH(t('ce.edit', 'Edit details'))}</a><button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button></div>
         </div>
         <div class="price">${region.bookWas > pricing.perBookDiscounted ? `<s class="hk-was">${fmt(region.bookWas, region)}</s>` : ''}${fmt(pricing.perBookDiscounted, region)}</div>
       </div>
