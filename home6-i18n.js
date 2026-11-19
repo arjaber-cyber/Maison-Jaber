@@ -276,6 +276,11 @@
     l4_t: { en: 'Luxury Hikaya gift box', ar: 'علبة هدية حكاية الفاخرة' },
     l4_d: { en: 'Tissue-wrapped and sealed, ready to give', ar: 'مغلّفة بورق ناعم ومختومة، جاهزة للإهداء' },
     all_for: { en: 'All of this, for', ar: 'كل هذا مقابل' },
+    incl: { en: 'Everything included: hardcover, gift box and wrapping', ar: 'كل شيء مشمول: غلاف مقوّى وعلبة هدية وتغليف' },
+    arrive_long: { en: 'Order today, estimated delivery {date}', ar: 'اطلب اليوم، والتوصيل المتوقع {date}' },
+    arrive_short: { en: 'Estimated delivery {date} if you order today', ar: 'التوصيل المتوقع {date} إذا طلبت اليوم' },
+    sib: { en: 'Two little ones?', ar: 'عندك طفلان؟' },
+    sib_link: { en: '2 books 10% off + free delivery', ar: 'كتابان بخصم 10% مع توصيل مجاني' },
     or_cover: { en: 'or try their cover free first', ar: 'أو جرّب غلاف طفلك مجانًا أولًا' },
   };
 })();

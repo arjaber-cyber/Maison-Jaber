@@ -1644,3 +1644,9 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
   .vx-box { padding: 72px 0; }
   .vx-box-grid { grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
 }
+.vx-incl { margin: 2px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+.vx-arrive { margin: 12px 0 0; font-size: 13.5px; font-weight: 600; color: var(--brand-dark); }
+.vx-arrive::before { content: "✦"; color: var(--gold); margin-inline-end: 6px; }
+.vx-sib { margin: 10px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+.vx-sib a { color: var(--brand-dark); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 767px) { .vx-incl { font-size: 12px; } }

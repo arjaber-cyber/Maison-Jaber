@@ -130,3 +130,25 @@
   });
 })();
 
+/* Delivery date (Nov 2026): "Order today, estimated delivery Tue 25 Nov". Counts working days from today
+   (UAE weekend Sat–Sun, other GCC countries Fri–Sat), using the same 5 / 7 working days as the rest of the site. */
+(function () {
+  function render() {
+    const H = window.Hikaya; if (!H || !H.etaDays) return;
+    const k = H.regionKey(), n = H.etaDays(k), off = k === 'UAE' ? [0, 6] : [5, 6];
+    const d = new Date(); let c = 0;
+    while (c < n) { d.setDate(d.getDate() + 1); if (off.indexOf(d.getDay()) === -1) c++; }
+    const ar = H.lang() === 'ar';
+    const date = d.toLocaleDateString(ar ? 'ar-AE-u-nu-latn' : 'en-GB', { weekday: ar ? 'long' : 'short', day: 'numeric', month: ar ? 'long' : 'short' }).replace(',', '');
+    document.querySelectorAll('[data-hk-arrive]').forEach(el => {
+      const key = el.getAttribute('data-hk-arrive') === 'long' ? 'vx.arrive_long' : 'vx.arrive_short';
+      el.textContent = H.t(key, '').replace('{date}', date) || el.textContent;
+      el.hidden = false;
+    });
+  }
+  const go = () => setTimeout(render, 0);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+  document.addEventListener('hikaya:regionchange', go);
+  document.addEventListener('hikaya:langchange', go);
+})();
+

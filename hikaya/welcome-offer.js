@@ -4,7 +4,9 @@
    When it shows
    - Only on shop pages that load this file (home, stories, story page), never on guides,
      country pages, gift landing pages, cart, checkout or personalise.
-   - After 12 seconds on the site (counted across pages in this visit), never on arrival.
+   - After 12 seconds for visitors from Instagram/Facebook/TikTok, 25 seconds for everyone else (counted across
+     pages in this visit), never on arrival. On desktop it can come a little earlier (after 8 seconds) when the
+     mouse heads for the tab bar to leave.
    - NOT for visitors who came from Google/Bing/other search without an ad click (SEO-safe:
      organic search visitors never see it during that visit), and never for bots.
    - Not again for 14 days after "No thanks", and never again after signing up or ordering.
@@ -13,7 +15,7 @@
    Preview it straight away with ?welcome=1 (ignores all the rules above). */
 (function () {
   'use strict';
-  const CODE = 'FIRSTORDER', AED = 20, DELAY_MS = 12000, SNOOZE_DAYS = 14;
+  const CODE = 'FIRSTORDER', AED = 20, DELAY_SOCIAL = 12000, DELAY_OTHER = 25000, SNOOZE_DAYS = 14;
   const K_STATE = 'hk_wo', K_CODE = 'hk_welcome_code', K_START = 'hk_wo_start', K_ORGANIC = 'hk_wo_organic';
   const force = /[?&]welcome=1(&|$)/.test(location.search);
 
@@ -235,8 +237,16 @@
     if (store.get(K_CODE)) return; // already has the code from an earlier sign-up
     let start = 0;
     try { start = Number(sessionStorage.getItem(K_START)) || 0; if (!start) { start = Date.now(); sessionStorage.setItem(K_START, String(start)); } } catch (e) { start = Date.now(); }
-    const wait = Math.max(1500, DELAY_MS - (Date.now() - start));
+    let social = false;
+    try { const hv = window.hkHero || JSON.parse(localStorage.getItem('hikaya_hero_v') || 'null'); social = !!(hv && hv.ch === 'social'); } catch (e) {}
+    const wait = Math.max(1500, (social ? DELAY_SOCIAL : DELAY_OTHER) - (Date.now() - start));
+    // Desktop: leaving towards the tab bar after 8 seconds opens it a little earlier.
+    if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      const onOut = e => { if (!e.relatedTarget && e.clientY <= 0 && Date.now() - start > 8000) { document.removeEventListener('mouseout', onOut); tryOpen(); } };
+      document.addEventListener('mouseout', onOut);
+    }
     const tryOpen = () => {
+      if (root || blockedByState()) return;
       if (document.visibilityState === 'hidden') { document.addEventListener('visibilitychange', tryOpen, { once: true }); return; }
       if (otherDialogOpen()) { setTimeout(tryOpen, 5000); return; }
       open();
