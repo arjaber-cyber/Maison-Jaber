@@ -137,15 +137,22 @@
       const show = (i, from) => {
         galIdx = (i + gal.length) % gal.length;
         const img = main.querySelector('.st-gal-img');
-        img.src = gal[galIdx]; img.alt = altOf(galIdx);
+        const u = gal[galIdx];
+        if (OWN.test(u)) img.setAttribute('srcset', `${u.replace(/\.webp$/, '-600.webp')} 600w, ${u} 1000w`); else img.removeAttribute('srcset');
+        img.src = u; img.alt = altOf(galIdx);
         const c = main.querySelector('.st-gal-count'); if (c) c.textContent = `${galIdx + 1} / ${gal.length}`;
         thumbs.querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', k === galIdx ? 'true' : 'false'));
         try { window.hikayaTrackEvent && window.hikayaTrackEvent('story_photo_view', { story: s.slug, photo: galIdx + 1, via: from || 'thumb' }); } catch (_) {}
       };
-      main.innerHTML = `<div class="st-gal"><img class="st-gal-img" src="${esc(gal[galIdx])}" alt="${esc(altOf(galIdx))}" width="1000" height="1000" fetchpriority="high" decoding="async" />`
+      /* Our own photos (/story-assets/<story>/photo-N[-ar].webp) also come in 600px and 300px sizes: phones load
+         the 600px one, thumbnails the 300px one. Photos uploaded from the admin are used as they are. */
+      const OWN = /\/story-assets\/[^/]+\/photo-\d(-ar)?\.webp$/;
+      const sizedAttrs = u => OWN.test(u) ? ` srcset="${esc(u.replace(/\.webp$/, '-600.webp'))} 600w, ${esc(u)} 1000w" sizes="(max-width: 767px) 100vw, 46vw" onerror="this.onerror=null;this.removeAttribute('srcset')"` : '';
+      const thumbOf = u => OWN.test(u) ? u.replace(/\.webp$/, '-300.webp') : u;
+      main.innerHTML = `<div class="st-gal"><img class="st-gal-img" src="${esc(gal[galIdx])}"${sizedAttrs(gal[galIdx])} alt="${esc(altOf(galIdx))}" width="1000" height="1000" fetchpriority="high" decoding="async" />`
         + (gal.length > 1 ? `<span class="st-gal-count" aria-hidden="true" dir="ltr">${galIdx + 1} / ${gal.length}</span>` : '') + `</div>`;
       thumbs.hidden = gal.length < 2;
-      thumbs.innerHTML = gal.length < 2 ? '' : gal.map((u, i) => `<li><button type="button" aria-pressed="${i === galIdx}" aria-label="${esc(tpl(t('lx.photo_show', 'Show photo {n}'), { n: i + 1 }))}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async" width="200" height="200" /></button></li>`).join('');
+      thumbs.innerHTML = gal.length < 2 ? '' : gal.map((u, i) => `<li><button type="button" aria-pressed="${i === galIdx}" aria-label="${esc(tpl(t('lx.photo_show', 'Show photo {n}'), { n: i + 1 }))}"><img src="${esc(thumbOf(u))}" alt="" loading="lazy" decoding="async" width="200" height="200" onerror="this.onerror=null;this.src='${esc(u)}'" /></button></li>`).join('');
       thumbs.querySelectorAll('button').forEach((b, i) => {
         b.onclick = () => show(i, 'thumb');
         b.onkeydown = e => {
@@ -154,7 +161,8 @@
         };
       });
       // Warm the other photos once the page has settled, so tapping a thumbnail is instant.
-      setTimeout(() => gal.slice(1).forEach(u => { const im = new Image(); im.decoding = 'async'; im.src = u; }), 1500);
+      const small = window.innerWidth < 768;
+      setTimeout(() => gal.slice(1).forEach(u => { const im = new Image(); im.decoding = 'async'; im.src = OWN.test(u) && small ? u.replace(/\.webp$/, '-600.webp') : u; }), 1500);
       if (gal.length > 1 && !galSwipeBound) {
         galSwipeBound = true;
         let x0 = null, y0 = null;
