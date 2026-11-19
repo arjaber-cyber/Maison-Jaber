@@ -13,15 +13,28 @@ const unesc = s => s.replace(/&amp;/g, '&').replace(/&#x2F;/gi, '/').replace(/&#
 const fail = (why) => ({ statusCode: 404, headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'public, max-age=300' }, body: why });
 
 exports.handler = async (event) => {
-  const c = (event.queryStringParameters || {}).c || '';
+  const q = event.queryStringParameters || {};
+  const c = q.c || '';
   if (!CODE.test(c)) return fail('bad code');
   try {
-    const page = await fetch(`https://www.instagram.com/p/${c}/embed/`, { headers: { 'User-Agent': UA, 'Accept-Language': 'en' } });
-    if (!page.ok) return fail('embed ' + page.status);
-    const html = await page.text();
-    const m = html.match(/class="EmbeddedMediaImage"[^>]*?\ssrc="([^"]+)"/) || html.match(/<img[^>]+src="([^"]+)"[^>]*class="EmbeddedMediaImage"/);
-    if (!m) return fail('no image');
-    const img = await fetch(unesc(m[1]), { headers: { 'User-Agent': UA, Referer: 'https://www.instagram.com/' } });
+    // 1) Instagram's public "media" link redirects straight to the cover picture.
+    let src = null;
+    const media = await fetch(`https://www.instagram.com/p/${c}/media/?size=l`, { headers: { 'User-Agent': UA }, redirect: 'manual' });
+    const loc = media.headers.get('location') || '';
+    if (/^https:\/\/[^/]*(cdninstagram|fbcdn)\.(com|net)\//.test(loc)) src = loc;
+    // 2) Otherwise the embed page (same page as Instagram's "Embed" button).
+    let html = '', status = 0;
+    if (!src) {
+      const page = await fetch(`https://www.instagram.com/p/${c}/embed/captioned/`, { headers: { 'User-Agent': UA, 'Accept-Language': 'en', Accept: 'text/html' } });
+      status = page.status; html = await page.text();
+      const m = html.match(/class="EmbeddedMediaImage"[^>]*?\ssrc="([^"]+)"/) || html.match(/<img[^>]+src="([^"]+)"[^>]*class="EmbeddedMediaImage"/)
+        || html.match(/\\?"display_url\\?":\\?"(https:[^"\\]+(?:\\\/[^"\\]+)*)/) || html.match(/property="og:image" content="([^"]+)"/);
+      if (m) src = unesc(m[1]).replace(/\\\//g, '/').replace(/\\u0026/g, '&');
+    }
+    if (q.debug === '1') return { statusCode: 200, headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' },
+      body: `media ${media.status} loc=${loc.slice(0, 80)}\nembed ${status} len=${html.length} src=${src ? src.slice(0, 80) : 'none'}\n` + html.replace(/\s+/g, ' ').slice(0, 600) };
+    if (!src) return fail('no image');
+    const img = await fetch(src, { headers: { 'User-Agent': UA, Referer: 'https://www.instagram.com/' } });
     if (!img.ok) return fail('image ' + img.status);
     const buf = Buffer.from(await img.arrayBuffer());
     return {
