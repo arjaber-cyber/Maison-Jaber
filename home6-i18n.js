@@ -256,4 +256,26 @@
   T.home6.bnpl_pre = { en: 'Or 4 payments of', ar: 'أو 4 دفعات بقيمة' };
   T.home6.bnpl_with = { en: 'with', ar: 'مع' };
   T.home6.bnpl_or = { en: 'or', ar: 'أو' };
+
+  // --- Value-first homepage (Nov 2026): hero value lines + "Everything that arrives at your door" price card ---
+  T.vx = {
+    h1: { en: '<b>20 illustrated pages</b> in a keepsake hardcover, with your child as the hero', ar: '<b>20 صفحة مرسومة</b> بغلاف مقوّى يبقى ذكرى، وطفلك بطل كل صفحة' },
+    h2: { en: '<b>Your own message</b> to them on the very first page', ar: '<b>رسالتك الخاصة</b> له في أول صفحة من القصة' },
+    h3: { en: 'Arrives in our <b>luxury gift box</b>, wrapped and ready to give', ar: 'تصل في <b>علبة هدية فاخرة</b>، مغلّفة وجاهزة للإهداء' },
+    see_box: { en: 'See what’s inside the box', ar: 'شاهد ما في العلبة' },
+    pay_from: { en: 'Pay in 4 from', ar: 'ادفع على 4 دفعات تبدأ من' },
+    kicker: { en: 'Everything that arrives at your door', ar: 'كل ما يصل إلى بابك' },
+    title: { en: 'Made for one child.<br>Wrapped like a treasure.', ar: 'صُنعت لطفل واحد<br>وغُلّفت ككنز' },
+    img_alt: { en: 'An open Hikaya gift box with cream tissue and a gold star seal', ar: 'علبة هدية حكاية مفتوحة بورق كريمي وختم نجمة ذهبي' },
+    l1_t: { en: '20 carefully illustrated pages', ar: '20 صفحة مرسومة بعناية' },
+    l1_d: { en: 'Your child is the hero on every single page', ar: 'طفلك هو البطل في كل صفحة' },
+    l2_t: { en: 'Your own message to them', ar: 'رسالتك الخاصة له' },
+    l2_d: { en: 'The story opens with your words on the first page, or we write it for you', ar: 'تبدأ القصة بكلماتك في الصفحة الأولى، أو نكتبها نحن لك' },
+    l3_t: { en: 'Premium square hardcover', ar: 'غلاف مقوّى مربّع فاخر' },
+    l3_d: { en: '21×21 cm, in Arabic or English, made to be read again and again', ar: 'بمقاس 21×21 سم، بالعربية أو الإنجليزية، ليُقرأ مرة بعد مرة' },
+    l4_t: { en: 'Luxury Hikaya gift box', ar: 'علبة هدية حكاية الفاخرة' },
+    l4_d: { en: 'Tissue-wrapped and sealed, ready to give', ar: 'مغلّفة بورق ناعم ومختومة، جاهزة للإهداء' },
+    all_for: { en: 'All of this, for', ar: 'كل هذا مقابل' },
+    or_cover: { en: 'or try their cover free first', ar: 'أو جرّب غلاف طفلك مجانًا أولًا' },
+  };
 })();

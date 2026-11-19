@@ -86,7 +86,7 @@
     const run = () => {
       raf = 0;
       if (!mq.matches) { hero.style.removeProperty('--hx-top'); hero.style.removeProperty('--hx-below'); return; }
-      const copy = hero.querySelector('.hero-copy'), ctas = hero.querySelector('.hx-ctas'), facts = hero.querySelector('.hx-facts');
+      const copy = hero.querySelector('.hero-copy'), ctas = hero.querySelector('.hx-ctas'), facts = hero.querySelector('.vx-pay:not([hidden])') || hero.querySelector('.hx-facts');
       if (!copy || !ctas) return;
       const top = Math.round(hero.getBoundingClientRect().top + window.scrollY);
       const c = copy.getBoundingClientRect(), padB = parseFloat(getComputedStyle(copy).paddingBottom) || 0;
@@ -117,3 +117,16 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   document.addEventListener('hikaya:langchange', () => { render(); renderOccasions(); renderSiblings(); });
 })();
+
+/* Hero by channel (Nov 2026): which first screen this visitor got (set in the <head> of index.html),
+   sent once per visit plus every tap on the hero / price-card buttons, so the versions can be compared. */
+(function () {
+  const h = window.hkHero; if (!h || !window.hikayaTrackEvent) return;
+  const base = { hero_variant: h.v, hero_channel: h.ch };
+  try { if (!sessionStorage.getItem('hk_hero_seen')) { sessionStorage.setItem('hk_hero_seen', '1'); window.hikayaTrackEvent('hero_view', base); } } catch (e) {}
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-hero-cta]'); if (!a) return;
+    window.hikayaTrackEvent('hero_cta', Object.assign({ cta: a.getAttribute('data-hero-cta') }, base));
+  });
+})();
+

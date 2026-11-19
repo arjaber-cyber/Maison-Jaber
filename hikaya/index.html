@@ -7,6 +7,20 @@
 <!-- Robots: indexable public page (open to search engines since the 1 Nov 2026 launch). -->
 <script>/* set language before first paint: no English flash for Arabic visitors */(function(){try{var q=/[?&]lang=(ar|en)(?:&|#|$)/.exec(location.search);if(q)localStorage.setItem("hikaya_lang",q[1]);if(localStorage.getItem("hikaya_lang")==="ar"){var d=document.documentElement;d.lang="ar";d.dir="rtl";d.className+=" i18n-wait";setTimeout(function(){d.classList.remove("i18n-wait")},2500)}}catch(e){}})();</script>
 <style>html.i18n-wait body{visibility:hidden}</style>
+<script>/* Hero by channel (Nov 2026): visitors from Instagram/Facebook/TikTok/Snapchat ads or links are split 50/50
+   between the value-first first screen ("value", price shown on the next scroll) and the price-first one ("price_ad").
+   Everyone else (Google, direct, friends) gets "price". Kept 30 days so a returning ad visitor sees the same version.
+   Preview: ?hero=value or ?hero=price. Change SPLIT to 1 to give all social visitors the value-first screen. */
+(function(){try{var SPLIT=0.5,K="hikaya_hero_v",d=document.documentElement,q=location.search,ref=document.referrer||"",ua=navigator.userAgent||"",now=Date.now(),s=null;
+try{s=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}if(s&&now-(s.t||0)>2592e6)s=null;
+var social=/[?&](fbclid|ttclid|igshid|sccid)=/.test(q)||/[?&]utm_source=(ig|instagram|fb|facebook|meta|tiktok|snapchat|snap)(&|$)/i.test(q)||/[?&]utm_medium=(paid_?social|social)(&|$)/i.test(q)||/(instagram|facebook|tiktok|snapchat)\.com/i.test(ref)||/Instagram|FBAN|FBAV|musical_ly|TikTok|Snapchat/.test(ua);
+var f=/[?&]hero=(value|price)(&|$)/.exec(q),v;
+if(f){v=f[1]==="value"?"value":(social?"price_ad":"price");s={ch:social?"social":"preview",v:v,t:now}}
+else if(social){v=(s&&s.ch==="social")?s.v:(Math.random()<SPLIT?"value":"price_ad");s={ch:"social",v:v,t:(s&&s.ch==="social")?s.t:now}}
+else if(s&&s.ch==="social"){v=s.v}
+else{v="price";s={ch:"other",v:v,t:now}}
+localStorage.setItem(K,JSON.stringify(s));window.hkHero={ch:s.ch,v:v};if(v==="value")d.className+=" vx-value"}catch(e){}})();</script>
+
 <link rel="canonical" href="https://maison-jaber.com/hikaya/" />
 <meta property="og:url" content="https://maison-jaber.com/hikaya/" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -57,19 +71,21 @@
     <div class="hero-copy">
       <h1 id="hero-title" data-i18n-html="home6.hero_h1"><span class="hx-l hx-l1">Their name.</span> <span class="hx-l hx-l2">Their story.</span> <span class="hx-l hx-l3">A memory they'll keep.</span></h1>
       <p class="lede" data-i18n="home6.hero_sub">Personalised children’s storybooks starring your child, in Arabic or English. Hardcover, gift-boxed and delivered across the UAE &amp; GCC.</p>
+      <!-- Value first (Nov 2026): what they get, then the price. On phones the "value" group (html.vx-value) hides the
+           price here and meets it in "Everything that arrives at your door" below; Google and other visitors see it here. -->
+      <ul class="vx-hero-value">
+        <li data-i18n-html="vx.h1"><b>20 illustrated pages</b> in a keepsake hardcover, with your child as the hero</li>
+        <li data-i18n-html="vx.h2"><b>Your own message</b> to them on the very first page</li>
+        <li data-i18n-html="vx.h3">Arrives in our <b>luxury gift box</b>, wrapped and ready to give</li>
+      </ul>
       <div class="hx-buy">
-        <p class="hx-price" data-hk-price-now><s class="hk-was"><span class="sr-only">Was </span><bdi>AED 199</bdi></s> <span class="hk-now"><span class="sr-only">now </span><bdi>AED 169</bdi></span></p>
-        <p class="hx-bnpl" data-hk-bnpl><span data-i18n="home6.bnpl_pre">Or 4 payments of</span> <bdi class="hx-bnpl-amt" dir="ltr">AED 42.25</bdi> <span data-i18n="home6.bnpl_with">with</span> <span class="hx-bnpl-logos"><span class="hx-chip-tabby" data-bnpl="tabby" role="img" aria-label="Tabby"><img src="images/pay/tabby-wordmark.svg" width="209" height="57" alt="" /></span><span class="hx-or" data-i18n="home6.bnpl_or">or</span><img class="hx-logo hx-logo-tamara" data-bnpl="tamara" src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-en.svg" height="22" alt="Tamara" onerror="this.onerror=null;this.src='images/pay/tamara.svg';this.classList.remove('hx-logo-tamara')" /></span></p>
+        <p class="hx-price vx-hero-price" data-hk-price-now><s class="hk-was"><span class="sr-only">Was </span><bdi>AED 199</bdi></s> <span class="hk-now"><span class="sr-only">now </span><bdi>AED 169</bdi></span></p>
       </div>
       <div class="hx-ctas">
-        <a class="btn btn-primary hx-cta-primary" href="cover-preview.html" data-cp-entry="home_hero"><span data-i18n="home6.cta_cover_free">Try Your Child’s Cover FREE</span> <span class="arr" aria-hidden="true">→</span></a>
-        <a class="btn btn-secondary hx-cta-secondary" href="stories.html" data-i18n="home6.cta_explore_ours">Explore Our Stories</a>
+        <a class="btn btn-primary hx-cta-primary" href="cover-preview.html" data-cp-entry="home_hero" data-hero-cta="cover"><span data-i18n="home6.cta_cover_free">Try Your Child’s Cover FREE</span> <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn btn-secondary hx-cta-secondary" href="#inside-the-box" data-hero-cta="box" data-i18n="vx.see_box">See what’s inside the box</a>
       </div>
-      <ul class="hx-facts">
-        <li data-i18n="lx.tr_book">Personalised hardcover</li>
-        <li data-i18n="home6.fact_luxbox">Luxury gift box included</li>
-        <li data-hk-delivery-short>Free UAE delivery</li>
-      </ul>
+      <p class="hx-bnpl vx-pay" data-hk-bnpl><span data-i18n="vx.pay_from">Pay in 4 from</span> <bdi class="hx-bnpl-amt" dir="ltr">AED 42.25</bdi> <span data-i18n="home6.bnpl_with">with</span> <span class="hx-bnpl-logos"><span class="hx-chip-tabby" data-bnpl="tabby" role="img" aria-label="Tabby"><img src="images/pay/tabby-wordmark.svg" width="209" height="57" alt="" /></span><span class="hx-or" data-i18n="home6.bnpl_or">or</span><img class="hx-logo hx-logo-tamara" data-bnpl="tamara" src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-en.svg" height="22" alt="Tamara" onerror="this.onerror=null;this.src='images/pay/tamara.svg';this.classList.remove('hx-logo-tamara')" /></span></p>
       <span class="hand" data-i18n="home6.hero_hand">Little stories. Big memories.</span>
     </div>
   </div>
@@ -99,6 +115,37 @@
         <input class="rvl-range" type="range" min="0" max="100" value="50" step="1" aria-label="Compare the photo with the illustrated page" data-i18n-aria="rvl.slider" />
         <figcaption><span class="rvl-hint"><span data-i18n="rvl.hint">Drag to reveal</span> · </span><span data-i18n="rvl.note">Example shown with a sample photo</span></figcaption>
       </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 01c EVERYTHING THAT ARRIVES (Nov 2026): the value, then the price card ("All of this, for"). Price, delivery,
+     timing, installments and the first-order amount follow the shopper's country (chrome.js). -->
+<section class="vx-box" id="inside-the-box" aria-labelledby="vx-box-t">
+  <div class="wrap">
+    <div class="vx-box-head">
+      <p class="kicker" data-i18n="vx.kicker">Everything that arrives at your door</p>
+      <h2 id="vx-box-t" data-i18n-html="vx.title">Made for one child.<br>Wrapped like a treasure.</h2>
+    </div>
+    <div class="vx-box-grid">
+      <figure class="vx-box-img"><img src="images/hom-box-01.webp" width="490" height="490" loading="lazy" alt="An open Hikaya gift box with cream tissue and a gold star seal" data-i18n-alt="vx.img_alt" /></figure>
+      <div class="vx-box-body">
+        <ul class="vx-list">
+          <li><span class="vx-ic" aria-hidden="true">✦</span><div><b data-i18n="vx.l1_t">20 carefully illustrated pages</b><span data-i18n="vx.l1_d">Your child is the hero on every single page</span></div></li>
+          <li><span class="vx-ic" aria-hidden="true">✦</span><div><b data-i18n="vx.l2_t">Your own message to them</b><span data-i18n="vx.l2_d">The story opens with your words on the first page, or we write it for you</span></div></li>
+          <li><span class="vx-ic" aria-hidden="true">✦</span><div><b data-i18n="vx.l3_t">Premium square hardcover</b><span data-i18n="vx.l3_d">21×21 cm, in Arabic or English, made to be read again and again</span></div></li>
+          <li><span class="vx-ic" aria-hidden="true">✦</span><div><b data-i18n="vx.l4_t">Luxury Hikaya gift box</b><span data-i18n="vx.l4_d">Tissue-wrapped and sealed, ready to give</span></div></li>
+          <li><span class="vx-ic" aria-hidden="true">✦</span><div><b data-hk-delivery-short>Free UAE delivery</b><span data-hk-eta-short>About 5 working days</span></div></li>
+        </ul>
+        <div class="vx-price-card">
+          <p class="vx-all" data-i18n="vx.all_for">All of this, for</p>
+          <p class="hx-price vx-price" data-hk-price-now><s class="hk-was"><span class="sr-only">Was </span><bdi>AED 199</bdi></s> <span class="hk-now"><span class="sr-only">now </span><bdi>AED 169</bdi></span></p>
+          <p class="hx-bnpl vx-pay vx-pay-in" data-hk-bnpl><span data-i18n="home6.bnpl_pre">Or 4 payments of</span> <bdi class="hx-bnpl-amt" dir="ltr">AED 42.25</bdi> <span data-i18n="home6.bnpl_with">with</span> <span class="hx-bnpl-logos"><span class="hx-chip-tabby" data-bnpl="tabby" role="img" aria-label="Tabby"><img src="images/pay/tabby-wordmark.svg" width="209" height="57" alt="" /></span><span class="hx-or" data-i18n="home6.bnpl_or">or</span><img class="hx-logo hx-logo-tamara" data-bnpl="tamara" src="https://cdn.tamara.co/assets/svg/tamara-logo-badge-en.svg" height="22" alt="Tamara" onerror="this.onerror=null;this.src='images/pay/tamara.svg';this.classList.remove('hx-logo-tamara')" /></span></p>
+          <div class="hk-welcome-card vx-code" data-hk-welcome="card" hidden></div>
+          <a class="btn btn-primary vx-cta" href="personalize.html" data-hero-cta="box_create"><span data-i18n="home6.cta_create">Create Their Story</span> <span class="arr" aria-hidden="true">→</span></a>
+          <a class="vx-sub" href="cover-preview.html" data-cp-entry="home_box" data-hero-cta="box_cover" data-i18n="vx.or_cover">or try their cover free first</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>

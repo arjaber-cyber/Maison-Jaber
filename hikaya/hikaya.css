@@ -1606,3 +1606,41 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
 @media (max-width: 767px) {
   .hero.hx .hx-chip-tabby, .hero.hx .hx-logo.hx-logo-tamara { height: 20px; }
 }
+
+/* ---------- Value-first homepage (Nov 2026) ---------- */
+.vx-hero-value { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 6px; font-size: 15px; line-height: 1.4; color: var(--ink-soft); max-width: 460px; }
+.vx-hero-value li { position: relative; padding-inline-start: 22px; }
+.vx-hero-value li::before { content: "✦"; position: absolute; inset-inline-start: 0; top: 1px; color: var(--gold); font-size: 12px; }
+.vx-hero-value b { color: var(--ink); font-weight: 700; }
+.hero.hx .hx-buy { margin-top: 16px; }
+.vx-pay { margin-top: 12px; }
+@media (max-width: 767px) {
+  .vx-hero-value { margin: 0; width: 100%; max-width: 360px; gap: 3px; font-size: 13.5px; text-align: start; }
+  .hero.hx .hx-buy { margin-top: 8px; }
+  html.vx-value .hero.hx .hx-buy { display: none; }
+  .hero.hx .vx-pay { justify-content: center; margin-top: 4px; }
+}
+.vx-box { padding: 44px 0 40px; background: linear-gradient(180deg, var(--ivory), var(--sand)); scroll-margin-top: 70px; }
+.vx-box-head { text-align: center; margin-bottom: 20px; }
+.vx-box .kicker { font-family: var(--hand); font-size: 1.45rem; color: var(--brand); margin: 0 0 4px; letter-spacing: 0; text-transform: none; }
+.vx-box h2 { font-family: var(--serif); font-size: clamp(1.85rem, 3.4vw, 2.6rem); line-height: 1.12; margin: 0; color: var(--ink); }
+.vx-box-grid { display: grid; gap: 20px; max-width: 1040px; margin: 0 auto; }
+.vx-box-img { margin: 0; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); background: var(--card); }
+.vx-box-img img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; }
+.vx-list { list-style: none; margin: 0 0 20px; padding: 0; display: grid; gap: 12px; }
+.vx-list li { display: flex; gap: 12px; align-items: flex-start; }
+.vx-ic { flex: 0 0 30px; height: 30px; border-radius: 50%; background: var(--white); border: 1px solid var(--taupe); display: grid; place-items: center; color: var(--gold); font-size: 13px; }
+.vx-list b { display: block; font-size: 15px; color: var(--ink); }
+.vx-list div > span { display: block; font-size: 13.5px; color: var(--ink-soft); line-height: 1.4; }
+.vx-price-card { background: var(--white); border: 1px solid var(--taupe); border-radius: 18px; padding: 20px 18px 16px; text-align: center; box-shadow: var(--shadow); }
+.vx-all { margin: 0; font-family: var(--hand); font-size: 1.4rem; color: var(--brand); }
+.vx-price .hk-now { font-size: 2.2rem; font-weight: 700; }
+.vx-price .hk-was { font-size: 1.1rem; opacity: .6; margin-inline-end: 8px; }
+.vx-pay-in { justify-content: center; }
+.vx-code { text-align: start; }
+.vx-cta { width: 100%; min-height: 52px; font-size: 16px; margin-top: 12px; }
+.vx-sub { display: inline-block; margin-top: 10px; font-size: 14px; color: var(--brand-dark); text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 900px) {
+  .vx-box { padding: 72px 0; }
+  .vx-box-grid { grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+}

@@ -142,6 +142,9 @@ window.HIKAYA_ANALYTICS_CONFIG = {
        referral: report our own checkout as the referrer so the original source is kept. */
     if (isPaymentReturn()) gaCfg.page_referrer = location.origin + '/hikaya/checkout.html';
     window.gtag('config', cfg.GA_MEASUREMENT_ID, gaCfg);
+    /* Homepage hero test (Nov 2026): every GA4 event carries the first-screen version this visitor got
+       (value / price_ad / price), so orders can be compared by version. Set on the homepage, kept 30 days. */
+    try { const hv = JSON.parse(localStorage.getItem('hikaya_hero_v') || 'null'); if (hv && hv.v) window.gtag('set', { hero_variant: hv.v, hero_channel: hv.ch }); } catch (e) {}
     // Shop steps that happened before the visitor accepted cookies.
     earlyEvents.forEach(function (ev) { window.gtag('event', ev[0], ev[1]); });
     earlyEvents.length = 0;
@@ -160,6 +163,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
     /* eslint-enable */
     window.clarity('consent'); // visitor accepted analytics in our banner
     try { window.clarity('set', 'site_language', localStorage.getItem('hikaya_lang') || 'en'); } catch (e) {}
+    try { const hv = JSON.parse(localStorage.getItem('hikaya_hero_v') || 'null'); if (hv && hv.v) window.clarity('set', 'hero_variant', hv.v); } catch (e) {}
     try {
       const a = readAttr();
       const t = a && a.last;
