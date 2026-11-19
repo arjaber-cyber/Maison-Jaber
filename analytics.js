@@ -31,7 +31,7 @@
 window.HIKAYA_ANALYTICS_CONFIG = {
   GA_MEASUREMENT_ID: 'G-5L1750Y0YL',   // GA4: Hikaya - maison-jaber.com
   CLARITY_PROJECT_ID: 'yu5qjkitji',    // Microsoft Clarity: Hikaya - maison-jaber.com
-  META_PIXEL_ID: '1429282066035245',   // Meta Pixel: dataset "Hikaya Pixel" (Maison Jaber business)
+  META_PIXEL_ID: '1930982764729279',   // Meta Pixel: dataset "Hikaya Website Pixel" (hikaya.mj portfolio, linked to ad account 1122959500180477)
   TIKTOK_PIXEL_ID: '',                 // <-- TikTok Pixel ID (Events Manager); empty = TikTok Pixel off
 };
 
