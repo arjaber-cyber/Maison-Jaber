@@ -426,13 +426,14 @@
     } catch (er) { return -1; }
   }
   let photoSeq = 0;
+  let submitted = { hi: '', lo: '' };
   $('cp-file').addEventListener('change', async (e) => {
     const f = e.target.files && e.target.files[0];
     e.target.value = ''; // so choosing the same file again still triggers a fresh check
     if (!f) return;
     const seq = ++photoSeq;
     // A new choice always replaces the previous photo: nothing earlier can be submitted while this one is checked or after it is rejected.
-    state.photo = ''; state.photoTried = true; state.checking = true; updateGo();
+    state.photo = ''; state.photoHi = ''; state.photoTried = true; state.checking = true; updateGo();
     $('thumb').classList.remove('bad'); pstat('', T('photo_checking'));
     try {
       const bmp = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
@@ -448,6 +449,12 @@
       if (faces === 0) { $('thumb').classList.add('bad'); pstat('bad', T('photo_noface')); track('cover_preview_photo', { result: 'no_face' }); return; }
       if (faces > 1) { $('thumb').classList.add('bad'); pstat('bad', T('photo_many')); track('cover_preview_photo', { result: 'group' }); return; }
       state.photo = dataUrl;
+      // Order-quality copy (same 2400px limit the order form uses) for the hand-off if they go on to order.
+      try {
+        const hs = Math.min(1, 2400 / Math.max(bmp.naturalWidth, bmp.naturalHeight));
+        if (hs === sc) state.photoHi = dataUrl;
+        else { const h = document.createElement('canvas'); h.width = Math.round(bmp.naturalWidth * hs); h.height = Math.round(bmp.naturalHeight * hs); h.getContext('2d').drawImage(bmp, 0, 0, h.width, h.height); state.photoHi = h.toDataURL('image/jpeg', 0.9); }
+      } catch (e2) { state.photoHi = dataUrl; }
       if (faces === 1) pstat('ok', T('photo_ok')); else pstat('', T('photo_nocheck'));
       track('cover_preview_photo', { result: faces === 1 ? 'ok' : 'unchecked' });
     } catch (er) { if (seq === photoSeq) { $('thumb').classList.add('bad'); pstat('bad', T('e_generic')); } }
@@ -514,6 +521,7 @@
     e.preventDefault(); err('');
     if (state.busy || state.checking || state.adultChecking) return;
     const photo = state.photo; // the photo that passed the check, captured now
+    submitted = { hi: state.photoHi || photo, lo: photo }; // for the order-form hand-off once this cover is ready
     const nameOk = checkName(true);
     if (!photo) { state.photoTried = true; updateGo(); return; }
     if (!state.slug || !nameOk || !state.gender || !$('cp-consent').checked) { err('missing'); return; }
@@ -563,7 +571,7 @@
   });
   // The server found a problem the browser check missed (or could not check): the photo is cleared and must be replaced.
   function rejectPhoto(k) {
-    photoSeq++; state.photo = ''; state.photoTried = true; state.checking = false;
+    photoSeq++; state.photo = ''; state.photoHi = ''; state.photoTried = true; state.checking = false;
     $('thumb').classList.add('bad'); pstat('bad', T(k)); updateGo();
     track('cover_preview_photo', { result: k === 'photo_many' ? 'group_server' : 'no_face_server' });
   }
@@ -657,6 +665,8 @@
     fr.setAttribute('aria-label', T('r_label'));
     // The order form gets the child's details privately for this browser session; the link itself carries only the story.
     HK.save(child, 'preview');
+    // The photo goes too (this tab only), when this cover was made from a photo chosen on this page.
+    if (submitted.hi && HK.savePhoto && !HK.savePhoto(submitted.hi) && submitted.lo !== submitted.hi) HK.savePhoto(submitted.lo);
     $('r-order').href = 'personalize.html' + (child.story ? '?story=' + encodeURIComponent(child.story) : '');
     show('v-result');
   }

@@ -21,7 +21,9 @@ const SECRET = process.env.VISIT_HASH_SECRET || SUPABASE_KEY || 'hikaya';
 
 const EVENTS = new Set(['pageview', 'view_item', 'personalize_step', 'add_to_cart', 'view_cart', 'begin_checkout', 'add_payment_info', 'purchase', 'complimentary_order_complete', 'whatsapp_click', 'newsletter_signup',
   // Campaign attribution (Nov 2026): free cover preview funnel + seconds on screen per page.
-  'cover_preview_started', 'cover_preview_ok', 'page_time']);
+  'cover_preview_started', 'cover_preview_ok', 'page_time',
+  // 19 Nov 2026: confirmed paid order from a device that made a free cover (free cover → purchase rate).
+  'cover_preview_to_purchase']);
 const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|meta-externalagent|headless|lighthouse|pagespeed|python|curl|wget|httpclient|axios|node-fetch|go-http|java\/|scrapy|phantom|selenium|puppeteer|playwright/i;
 const OWN_HOSTS = /(^|\.)maison-jaber\.com$|netlify\.app$/i;
 

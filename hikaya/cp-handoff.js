@@ -47,7 +47,18 @@
     return c;
   }
 
-  function clear() { try { sessionStorage.removeItem(SKEY); } catch (e) {} }
+  /* Preview → order (19 Nov 2026): the photo used for a finished free cover also travels to the order form, so the
+     parent does not upload it twice. Same rules as the details: this tab's sessionStorage only, never the URL or
+     persistent storage, removed once the book is in the cart. The order form still runs its own photo checks and
+     still asks for photo consent. */
+  var PKEY = 'hk_cp_photo';
+  function savePhoto(dataUrl) {
+    if (!dataUrl || !/^data:image\/(jpeg|png|webp);base64,/.test(dataUrl)) return false;
+    try { sessionStorage.setItem(PKEY, dataUrl); return true; } catch (e) { try { sessionStorage.removeItem(PKEY); } catch (_) {} return false; }
+  }
+  function readPhoto() { try { return sessionStorage.getItem(PKEY) || ''; } catch (e) { return ''; } }
+
+  function clear() { try { sessionStorage.removeItem(SKEY); sessionStorage.removeItem(PKEY); } catch (e) {} }
 
   // Open a page in a new tab that starts with a copy of this tab's session (falls back to this tab if blocked).
   function openWithSession(url) {
@@ -56,5 +67,5 @@
     return w;
   }
 
-  window.hikayaCpHandoff = { save: save, read: read, fromLegacyUrl: fromLegacyUrl, clear: clear, openWithSession: openWithSession };
+  window.hikayaCpHandoff = { save: save, read: read, fromLegacyUrl: fromLegacyUrl, clear: clear, openWithSession: openWithSession, savePhoto: savePhoto, readPhoto: readPhoto };
 })();

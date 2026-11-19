@@ -59,7 +59,7 @@
       const a = ageSel.value, th = themeSel.value, so = sortSel.value, oc = occSel ? occSel.value : '';
       let list = all.filter(s => H.inBand(s, a) && inGroup(s, th) && H.inOccasion(s, oc));
       renderOccBanner(oc);
-      if (so === 'featured') list = sortFeatured(list);
+      if (so === 'featured') { list = sortFeatured(list); if (oc && H.occasionRank) list = H.occasionRank(list, oc); } // other seasons last (19 Nov 2026)
       if (so === 'newest') list = [...list].sort((x, y) => String(y.created_at || '').localeCompare(String(x.created_at || '')) || (y.sort_order || 0) - (x.sort_order || 0));
       if (so === 'az') list = [...list].sort((x, y) => H.titlePlain(x).localeCompare(H.titlePlain(y), H.lang()));
       grid.innerHTML = list.map(s => H.cardHtml(s)).join('');

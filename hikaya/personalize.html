@@ -609,7 +609,7 @@
           <div class="msg-head">
             <span class="msg-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg></span>
             <div>
-              <h3 id="msg-title"><span data-i18n="qa.msg_t1">A message to</span> <span id="msg-name" data-i18n-skip></span> <span data-i18n="qa.msg_t2">on the first page</span></h3>
+              <h3 id="msg-title"><span id="msg-generic" data-i18n="qa.msg_t0">A special message on the first page</span><span id="msg-named" hidden><span data-i18n="qa.msg_t1">A message to</span> <span id="msg-name" data-i18n-skip></span> <span data-i18n="qa.msg_t2">on the first page</span></span></h3>
               <p data-i18n="qa.msg_d">Every Hikaya story opens with a short, warm message to your child. Would you like it to come from you?</p>
             </div>
           </div>
@@ -1055,7 +1055,7 @@
     // Only worth showing when the printed name differs from what they typed.
     line.hidden = !n || n === typedName();
     document.getElementById('book-name-shown').textContent = n;
-    const msgName = document.getElementById('msg-name'); if (msgName) msgName.textContent = n || typedName() || t('lx.st_child', 'your child');
+    paintMsgTitle(n || typedName());
   }
   function langCheck() {
     paintBookName();
@@ -1151,7 +1151,8 @@
       if (open) setTimeout(() => ta.focus(), 30);
     };
     const update = () => { count.textContent = `${ta.value.length}/${MAX}`; count.classList.toggle('over', ta.value.length >= MAX); };
-    const paintName = () => { const n = childName(); document.getElementById('msg-name').textContent = n || t('lx.st_child', 'your child'); };
+    // Confirmed book name first; otherwise the typed name, but only when it is already in the book's script.
+    const paintName = () => { const tn = typedName(); paintMsgTitle(childName() || (tn && (bookLang() === 'ar' ? !LATIN_RE.test(tn) : !AR_RE.test(tn)) ? tn : '')); };
     toggle.addEventListener('click', () => setOpen(true));
     document.getElementById('msg-cancel').addEventListener('click', () => { ta.value = ''; update(); setOpen(false); toggle.focus(); });
     document.getElementById('msg-inspire').addEventListener('click', () => {
@@ -1197,6 +1198,13 @@
   // needed for this part); (2) a content-policy check via OpenAI's free
   // moderation endpoint. Only photos that pass both count toward "at
   // least one photo" and get included in the order.
+  /* Dedication heading (19 Nov 2026): "A message to Noura on the first page" once the name is known, and
+     "A special message on the first page" until then (it used to read "A message to  on the first page"). */
+  function paintMsgTitle(n) {
+    const named = document.getElementById('msg-named'), generic = document.getElementById('msg-generic'), el = document.getElementById('msg-name');
+    if (!named || !generic || !el) return;
+    n = (n || '').trim(); el.textContent = n; named.hidden = !n; generic.hidden = !!n;
+  }
   const photoInput = document.getElementById('child-photos');
   const photoThumbs = document.getElementById('photo-thumbs');
   const photoRetryNote = document.getElementById('photo-retry-note');
@@ -1921,6 +1929,24 @@
     if (ageEl && c.age && !ageEl.value) { ageEl.value = String(Math.min(10, Math.max(2, c.age))); fire(ageEl, 'input'); fire(ageEl, 'change'); }
     const gBtn = c.gender && document.querySelector('.gender-btn[data-value="' + c.gender + '"]');
     if (gBtn && !gBtn.classList.contains('selected')) gBtn.click();
+    /* 19 Nov 2026: the photo from the free cover comes too, so the parent doesn't upload it twice. It goes through
+       the same face + content checks as any upload, and the photo-consent box still has to be ticked. */
+    const du = H.readPhoto ? H.readPhoto() : '';
+    if (du && photoFiles.length === 0) {
+      try {
+        const m = du.match(/^data:(image\/[a-z]+);base64,(.*)$/); if (!m) return;
+        const bin = atob(m[2]), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+        const file = new File([u8], 'free-cover-photo.jpg', { type: m[1] });
+        const entry = { file, status: 'checking', reason: null, fromPreview: true };
+        photoFiles.push(entry);
+        checkPhoto(entry, () => { renderThumbs(photoFiles, photoThumbs, photoRetryNote, true); checkDetailsComplete(); });
+        renderThumbs(photoFiles, photoThumbs, photoRetryNote, true); checkDetailsComplete();
+        const note = document.createElement('p'); note.className = 'ph-resumed'; note.setAttribute('role', 'status');
+        note.setAttribute('data-i18n', 'ph.from_preview'); note.textContent = t('ph.from_preview', "We've added the photo you used for the free cover. You can change it if you like.");
+        const safe = document.getElementById('ph-safe'); if (safe) safe.parentNode.insertBefore(note, safe);
+        if (window.hikayaTrackEvent) window.hikayaTrackEvent('preview_photo_carried', { story: c.story || '' });
+      } catch (_) {}
+    }
   })();
 
   // Back from a "finish later" email (?resume=<private token>): fill in what they saved, then open the photo step.

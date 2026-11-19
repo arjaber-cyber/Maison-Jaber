@@ -12,6 +12,7 @@
     if (!shelf || !all) return;
     let list = occ ? all.filter(s => H.inOccasion(s, occ)) : all.slice();
     if (!list.length) list = all.slice();
+    if (occ && H.occasionRank) list = H.occasionRank(list, occ); // other seasons' stories go to the back
     shelf.innerHTML = list.slice(0, occ || document.body.dataset.country ? 8 : 24).map(s => H.cardHtml(s)).join('');
     shelf.removeAttribute('aria-busy');
   }

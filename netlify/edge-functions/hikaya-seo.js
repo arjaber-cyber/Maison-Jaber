@@ -291,6 +291,13 @@ function inOccasion(s, k) {
   if (o.slugs) return o.slugs.includes(s.slug);
   return !o.moments || (s.moments || []).some(m => o.moments.includes(m));
 }
+// Occasion merchandising, same rule as the shop (chrome.js occasionRank): other seasons' stories go to the back.
+const SEASONS = { christmas: s => (s.occasions || []).includes("christmas") || /christmas/i.test(s.slug || ""), nationalday: s => /national-day/i.test(s.slug || "") };
+function occasionRank(list, k) {
+  if (!k) return list;
+  const other = s => Object.keys(SEASONS).some(season => season !== k && SEASONS[season](s));
+  return list.map((s, i) => ({ s, i, w: other(s) ? 1 : 0 })).sort((a, b) => a.w - b.w || a.i - b.i).map(x => x.s);
+}
 const storyTitle = (s, l) => plainTitle(l === "ar" ? s.title_ar || s.title : s.title, l);
 const storyPremise = (s, l) => (l === "ar" ? arNoStops(localized(s.premise, "ar") || s.description_ar || localized(s.card_note, "ar") || "") : localized(s.premise, "en") || s.description || localized(s.card_note, "en") || "");
 const firstLine = (s, l) => { const p = storyPremise(s, l); const m = p.match(/^.+?[.!?؟](?=\s|$)/); return (m ? m[0] : p).trim(); };
@@ -698,6 +705,7 @@ async function seoPage(request, context, state) {
         const occ = GIFT_OCC[file];
         let list = occ ? all.filter(s => inOccasion(s, occ)) : all.slice();
         if (!list.length) list = all.slice();
+        list = occasionRank(list, occ);
         html = html.replace('<ul class="sgrid" id="gift-shelf" aria-busy="true"></ul>', `<ul class="sgrid" id="gift-shelf" aria-busy="true">${cardsHtml(list.slice(0, occ || isCountry ? 8 : 24), lang)}</ul>`);
       }
     }

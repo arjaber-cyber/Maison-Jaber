@@ -358,6 +358,20 @@ window.HIKAYA_ANALYTICS_CONFIG = {
         payment_status: s.payment_status || (built.ev === 'purchase' ? 'paid' : 'waived'),
       });
       if (clarityLoaded && window.clarity) window.clarity('event', built.ev);
+      /* Free cover → purchase (19 Nov 2026): a confirmed paid order from a device that made a free cover in the
+         last 30 days. Same once-per-order guard as the purchase itself; it is a reporting event, not a conversion,
+         so Google Ads keeps optimising on purchase only. */
+      if (built.ev === 'purchase') {
+        try {
+          const cp = JSON.parse(localStorage.getItem('hk_cp_done') || 'null');
+          if (cp && cp.t && Date.now() - cp.t < 30 * 864e5) {
+            const pp = { transaction_id: id, value: built.p.value, currency: built.p.currency, story: cp.story || '', days_after_preview: Math.floor((Date.now() - cp.t) / 864e5) };
+            window.hikayaTrackEvent('cover_preview_to_purchase', pp);
+            countEvent('cover_preview_to_purchase', { value: pp.value, order_number: id, currency: pp.currency || null });
+            if (clarityLoaded && window.clarity) window.clarity('event', 'cover_preview_to_purchase');
+          }
+        } catch (e) {}
+      }
     }
     flushPurchases();
     return true;
@@ -430,7 +444,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
      anonymous daily hash. Page views + shop steps only. */
   /* Campaign attribution (Nov 2026): cover_preview_started / cover_preview_ok (free cover preview funnel)
      and page_time (seconds the page was actually on screen, for engagement) are counted too. */
-  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, add_payment_info: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1, cover_preview_started: 1, cover_preview_ok: 1, page_time: 1 };
+  const COUNTED = { pageview: 1, view_item: 1, personalize_step: 1, add_to_cart: 1, view_cart: 1, begin_checkout: 1, add_payment_info: 1, purchase: 1, complimentary_order_complete: 1, whatsapp_click: 1, newsletter_signup: 1, cover_preview_started: 1, cover_preview_ok: 1, page_time: 1, cover_preview_to_purchase: 1 };
   let noCount = false;
   try { noCount = localStorage.getItem('hikaya_nocount') === '1'; } catch (e) {}
   function firstTouchForCount() {
