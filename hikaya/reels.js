@@ -102,5 +102,8 @@
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { io.disconnect(); load(); } }, { rootMargin: '800px 0px' });
     io.observe(document.getElementById('hk-reels-anchor') || sec.parentNode);
+    // Backup (Nov 2026): some in-app/embedded browsers never fire the observer; load anyway after 6s.
+    // Only the small JSON list loads; tile pictures stay lazy (loading="lazy").
+    setTimeout(load, 6000);
   } else load();
 })();
