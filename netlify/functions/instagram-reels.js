@@ -26,6 +26,23 @@
 // 3 hours only (one Instagram call per 3 hours, not one per visitor).
 
 const LIMIT = 8;
+
+// HAND-PICKED VIDEOS (Nov 2026): shown while no Instagram token is set (IG_ACCESS_TOKEN), or if
+// Instagram fails. Order = order on the site. To change them, edit this list (post or reel links,
+// any account). Cover pictures come from ig-thumb.js; tapping plays them in Instagram's own player.
+const PICKED = [
+  'https://www.instagram.com/p/Dfo0TDTtJ_X/',
+  'https://www.instagram.com/reel/Df61tbegf_r/',
+  'https://www.instagram.com/p/Df4kShkKiKP/',
+  'https://www.instagram.com/p/Df2J5kmOusE/',
+  'https://www.instagram.com/p/DfeD87zIAQg/',
+  'https://www.instagram.com/p/DfkRTkJstnX/',
+];
+function picked(reason) {
+  const items = PICKED.map(u => (u.match(/\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/) || [])[1]).filter(Boolean)
+    .map(c => ({ id: c, thumb: `/.netlify/functions/ig-thumb?c=${c}`, video: null, caption: '', permalink: `https://www.instagram.com/p/${c}/`, ts: null }));
+  return json(200, { items, source: 'picked', reason }, true);
+}
 const TAG = /#hikayamoments\b/i;
 const json = (code, body, cache) => ({
   statusCode: code,
@@ -46,12 +63,12 @@ function cleanCaption(c) {
 
 exports.handler = async () => {
   const id = process.env.IG_USER_ID, token = process.env.IG_ACCESS_TOKEN;
-  if (!id || !token) return json(200, { items: [], reason: 'not_configured' }, false);
+  if (!id || !token) return picked('not_configured');
   const host = /^IG/.test(token) ? 'https://graph.instagram.com' : 'https://graph.facebook.com/v21.0';
   const fields = 'id,media_type,media_product_type,media_url,thumbnail_url,permalink,caption,timestamp';
   try {
     const res = await fetch(`${host}/${encodeURIComponent(id)}/media?fields=${fields}&limit=30&access_token=${encodeURIComponent(token)}`);
-    if (!res.ok) { console.warn('instagram-reels: Instagram said', res.status, (await res.text()).slice(0, 300)); return json(200, { items: [], reason: 'instagram_error' }, false); }
+    if (!res.ok) { console.warn('instagram-reels: Instagram said', res.status, (await res.text()).slice(0, 300)); return picked('instagram_error'); }
     const data = (await res.json()).data || [];
     const videos = data.filter(m => m.media_type === 'VIDEO' && m.thumbnail_url && m.permalink);
     const tagged = videos.filter(m => TAG.test(m.caption || ''));
@@ -61,6 +78,6 @@ exports.handler = async () => {
     return json(200, { items }, true);
   } catch (e) {
     console.warn('instagram-reels failed', e);
-    return json(200, { items: [], reason: 'error' }, false);
+    return picked('error');
   }
 };
