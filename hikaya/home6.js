@@ -152,3 +152,17 @@
   document.addEventListener('hikaya:langchange', go);
 })();
 
+/* WhatsApp help line under the price card (Nov 2026): message in the page language, click tracked. */
+(function () {
+  function set() {
+    const H = window.Hikaya; if (!H) return;
+    document.querySelectorAll('a[data-hk-wa]').forEach(a => { a.href = 'https://wa.me/971508011769?text=' + encodeURIComponent(H.t('vx.wa_msg', 'Hi Hikaya, I have a question before I order')); });
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[data-hk-wa]'); if (!a) return;
+    try { window.hikayaTrackEvent && window.hikayaTrackEvent('whatsapp_click', { page: a.getAttribute('data-hk-wa') }); } catch (_) {}
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(set, 0)); else setTimeout(set, 0);
+  document.addEventListener('hikaya:langchange', set);
+})();
+

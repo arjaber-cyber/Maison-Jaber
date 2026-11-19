@@ -281,6 +281,12 @@
     arrive_short: { en: 'Estimated delivery {date} if you order today', ar: 'التوصيل المتوقع {date} إذا طلبت اليوم' },
     sib: { en: 'Two little ones?', ar: 'عندك طفلان؟' },
     sib_link: { en: '2 books 10% off + free delivery', ar: 'كتابان بخصم 10% مع توصيل مجاني' },
+    help_q: { en: 'Questions before you order?', ar: 'عندك سؤال قبل الطلب؟' },
+    help_wa: { en: 'We reply on WhatsApp within a few hours', ar: 'نرد عليك على واتساب خلال ساعات قليلة' },
+    wa_msg: { en: 'Hi Hikaya, I have a question before I order', ar: 'مرحبًا حكاية، عندي سؤال قبل الطلب' },
+    family: { en: '✦ A UAE-based family business, every book made with love', ar: '✦ مشروع عائلي من الإمارات، كل كتاب نصنعه بحب' },
+    free: { en: 'FREE', ar: 'مجانًا' },
+    cp_story_sub: { en: 'Upload one photo and see your child on this cover. No payment needed.', ar: 'ارفع صورة واحدة وشاهد طفلك على هذا الغلاف، بدون أي دفع' },
     or_cover: { en: 'or try their cover free first', ar: 'أو جرّب غلاف طفلك مجانًا أولًا' },
   };
   T.reels = {

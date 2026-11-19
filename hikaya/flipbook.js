@@ -161,8 +161,22 @@
     return viewer;
   }
 
+  /* Speed (Nov 2026): the page-turn engine (~44 KB) loads only when someone opens "Look inside". */
+  let pfLoading = null;
+  function loadEngine() {
+    if (window.St && window.St.PageFlip) return Promise.resolve();
+    if (!pfLoading) pfLoading = new Promise((res, rej) => {
+      const sc = document.createElement('script'); sc.src = 'vendor/page-flip.browser.js'; sc.async = true;
+      sc.onload = res; sc.onerror = () => { pfLoading = null; rej(); }; document.head.appendChild(sc);
+    });
+    return pfLoading;
+  }
+  // Warm it up when the visitor is idle, so the first tap is still instant.
+  if ('requestIdleCallback' in window) requestIdleCallback(() => { loadEngine().catch(() => {}); }, { timeout: 6000 });
+  else setTimeout(() => { loadEngine().catch(() => {}); }, 4000);
+
   function open(o) {
-    if (!window.St || !window.St.PageFlip) return;
+    if (!window.St || !window.St.PageFlip) { loadEngine().then(() => open(o)).catch(() => {}); return; }
     opts = Object.assign({ t: (k, f) => f, pages: [] }, o);
     if (!opts.cover) return;
     ensureViewer();
