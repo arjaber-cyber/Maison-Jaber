@@ -805,6 +805,14 @@
       checkCode(urlCode);
     }
   } catch {}
+  // Welcome pop-up sign-up (Nov 2026): the saved first-order code is filled in and checked automatically.
+  try {
+    const wc = JSON.parse(localStorage.getItem('hk_welcome_code') || 'null');
+    if (wc && /^[A-Z0-9_-]{2,40}$/.test(wc.code || '') && !new URLSearchParams(location.search).get('code') && !sessionStorage.getItem('hk_pending_code') && !promoInput.value) {
+      promoInput.value = wc.code;
+      checkCode(wc.code);
+    }
+  } catch {}
   // Back from signing in to use a code: put the code back and check it again.
   try {
     const pending = sessionStorage.getItem('hk_pending_code');

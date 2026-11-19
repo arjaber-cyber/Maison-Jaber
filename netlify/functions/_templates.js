@@ -571,4 +571,28 @@ function teamDigest({ late, unpaid, messages, reviewsSent, adminUrl }) {
   };
 }
 
-module.exports = { savedProgress, trackCode, photoRequest, delayNotice, reviewRequest, feedbackThanks, feedbackAlert, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };
+/* ---------------- Welcome pop-up: first-order code (Nov 2026) ---------------- */
+function welcomeOffer(lang, amount) {
+  lang = lang === 'ar' ? 'ar' : 'en';
+  const amt = esc(amount || 'AED 20');
+  const big = `<p style="margin:2px 0 12px; font-family:Manrope,Arial,sans-serif; font-size:24px; font-weight:700; letter-spacing:.2em; color:#573624;" dir="ltr">FIRSTORDER</p>`;
+  const body = [
+    ui.eyebrow(tr(lang, 'Your welcome gift', 'هدية الترحيب'), lang),
+    ui.h(tr(lang, `${amt} off your child's first story`, `خصم <bdi dir="ltr">${amt}</bdi> على أول قصة لطفلك`), lang),
+    ui.p(tr(lang,
+      "Welcome to the Hikaya family. Here's your code. It's also saved on the site, so it's added automatically at checkout on the same device.",
+      'أهلًا بك في عائلة حكاية، هذا كودك، وهو محفوظ أيضًا في الموقع فيُضاف تلقائيًا عند الدفع من نفس الجهاز'), lang),
+    big,
+    ui.button(`${SITE_URL}stories.html`, tr(lang, 'Choose their story &rarr;', 'اختر قصتهم &larr;'), lang),
+    ui.p(tr(lang,
+      'For new customers, on the first order. You\'ll also hear about new stories and seasonal editions now and then. Reply "unsubscribe" anytime.',
+      'للعملاء الجدد على أول طلب، وستصلك أخبار القصص الجديدة وإصدارات المواسم من حين لآخر، ويمكنك الرد بكلمة "إلغاء الاشتراك" في أي وقت'), lang, true),
+    ui.sign(lang),
+  ].join('');
+  return {
+    subject: tr(lang, 'Your Hikaya welcome gift inside', 'هدية الترحيب من حكاية'),
+    html: emailShell(body, { lang, preheader: tr(lang, `Your code for ${amt} off your first story`, 'كود الخصم على أول قصة') }),
+  };
+}
+
+module.exports = { welcomeOffer, savedProgress, trackCode, photoRequest, delayNotice, reviewRequest, feedbackThanks, feedbackAlert, newsletterWelcome, teamDigest, welcome, paymentNotCompleted, orderPrinting, orderCancelled, orderConfirmed, orderShipped, orderDelivered, cartReminder, contactReceived, orderLang, parseItems, countryName };

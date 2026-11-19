@@ -10,7 +10,7 @@
 //   email text primary key, subscribed_at timestamptz
 
 const { sendEmail } = require('./_email');
-const { newsletterWelcome } = require('./_templates');
+const { newsletterWelcome, welcomeOffer } = require('./_templates');
 
 const SUPABASE_URL = 'https://zxzlarlpoctpnnnvzced.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4emxhcmxwb2N0cG5ubnZ6Y2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NTIwODUsImV4cCI6MjEwNDAyODA4NX0.NURv-OB9GIU23fsMAlsMFD59oxuKqc1hDHNuoUHQ21E';
@@ -37,6 +37,10 @@ exports.handler = async (event) => {
   }
 
   const lang = payload.lang === 'ar' ? 'ar' : 'en';
+  // Welcome pop-up (Nov 2026): source is recorded and the email carries the first-order code.
+  const source = payload.source === 'welcome_popup' ? 'welcome_popup' : 'newsletter';
+  const amount = /^[A-Z]{3} \d{1,4}(\.\d{1,2})?$/.test(String(payload.amount || '')) ? String(payload.amount) : 'AED 20';
+  const country = /^[A-Z]{2,12}$/.test(String(payload.country || '')) ? String(payload.country) : null;
   try {
     // Already subscribed? Then don't send the welcome note again.
     let isNew = true;
@@ -52,10 +56,20 @@ exports.handler = async (event) => {
         Authorization: `Bearer ${SUPABASE_KEY}`,
         Prefer: 'resolution=merge-duplicates',
       },
-      body: JSON.stringify(isNew ? { email, lang, subscribed_at: new Date().toISOString() } : { email, lang }),
+      body: JSON.stringify(Object.assign(isNew ? { email, lang, subscribed_at: new Date().toISOString() } : { email, lang }, isNew ? { source, country } : {})),
     });
-    if (!res.ok) {
+    let saved = res.ok;
+    if (!saved && isNew) { // source/country columns not added yet (supabase/2026-11-welcome-popup.sql): save the email anyway
+      const r2 = await fetch(`${SUPABASE_URL}/rest/v1/newsletter_subscribers?on_conflict=email`, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, Prefer: 'resolution=merge-duplicates' }, body: JSON.stringify({ email, lang, subscribed_at: new Date().toISOString() }) });
+      saved = r2.ok;
+    }
+    if (!saved) {
       console.warn('newsletter_subscribers insert failed (table may not exist yet):', await res.text());
+    }
+    else if (source === 'welcome_popup') {
+      // Always (re)send the code to pop-up sign-ups: they were promised it by email.
+      const m = welcomeOffer(lang, amount);
+      await sendEmail({ to: email, subject: m.subject, html: m.html }).catch(e => console.warn('welcome offer email failed', e));
     }
     else if (isNew) {
       const m = newsletterWelcome(lang);

@@ -340,6 +340,8 @@ window.HIKAYA_ANALYTICS_CONFIG = {
   }
 
   window.hikayaTrackPurchase = function (s) {
+    /* A placed order ends the welcome offer: no more pop-up, saved welcome code cleared (Nov 2026). */
+    try { const w = JSON.parse(localStorage.getItem('hk_wo') || '{}') || {}; w.ordered = Date.now(); localStorage.setItem('hk_wo', JSON.stringify(w)); localStorage.removeItem('hk_welcome_code'); } catch (e) {}
     if (untracked || !s || !s.transaction_id || !ORDER_RE.test(String(s.transaction_id))) return false;
     const id = String(s.transaction_id);
     if (s.kind === 'none') return false;                         // sandbox / owner test order: nothing at all
