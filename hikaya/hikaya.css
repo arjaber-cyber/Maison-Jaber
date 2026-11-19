@@ -1073,7 +1073,24 @@ body[data-flow] .cart-layout > div, body[data-flow] .checkout-layout > div, body
   .hk-wa { width: 52px; height: 52px; padding: 0; justify-content: center; inset-inline-end: 14px; }
   .hk-wa .hk-wa-txt { display: none; }
   body:has(.sticky-cta.show) .hk-wa { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+  /* UI polish (19 Nov 2026): while the sticky bar is up, WhatsApp lives inside it instead of floating over the text. */
+  .sticky-cta { gap: 10px; align-items: center; }
+  .sticky-cta .btn { flex: 1 1 auto; width: auto; min-width: 0; }
+  .sticky-wa { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; background: #fff; color: #1DA851; border: 1px solid var(--taupe); text-decoration: none; }
+  .sticky-wa svg { width: 24px; height: 24px; }
+  /* Story pages: with the WhatsApp button beside it, the bar keeps the current price only so the label fits. */
+  .sticky-cta .btn .hk-was { display: none; }
+  .sticky-cta .btn { padding-inline: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 379px) { .sticky-cta .btn { font-size: 14px; padding-inline: 10px; } .sticky-wa { width: 46px; height: 46px; } }
+  @media (max-width: 340px) { .sticky-cta .btn { font-size: 13px; padding-inline: 8px; } .sticky-cta { gap: 8px; padding-inline: 12px; } }
+  .sticky-wa:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  body:has(.sticky-cta.show) .hk-wa { opacity: 0; visibility: hidden; pointer-events: none; }
+  /* Pages with the sticky bar (home, story): no floating bubble at all on phones, it sat on the text whenever the
+     bar stepped aside. Pages without the bar keep the floating button. */
+  body:has(#sticky-cta) .hk-wa { display: none; }
 }
+.sticky-wa { display: none; }
+@media (max-width: 767px) { .sticky-wa { display: inline-flex; } }
 
 /* Footer newsletter sign-up — scoped tightly so checkout/cart form styles can't override it */
 .foot-news { display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: center; justify-content: space-between; margin-top: 28px; padding: 26px 28px; border: 1px solid rgba(230,214,194,.22); border-radius: 18px; background: rgba(255,248,238,.05); }
@@ -1255,6 +1272,11 @@ html.lx-lock #hikaya-consent-banner { display: none !important; } /* back as soo
 #hk-top { display: block; min-height: 113px; }
 @media (min-width: 768px) { #hk-top { min-height: 127px; } }
 @media (min-width: 1024px) { #hk-top { min-height: 121px; } }
+/* CLS fix (19 Nov 2026): the welcome-code strip now shows on every page except checkout, so the reserved space
+   includes it (phones 35px, larger screens 37px). Without it the whole page jumped down once the header drew in. */
+body:not([data-flow="checkout"]) #hk-top { min-height: 148px; }
+@media (min-width: 768px) { body:not([data-flow="checkout"]) #hk-top { min-height: 164px; } }
+@media (min-width: 1024px) { body:not([data-flow="checkout"]) #hk-top { min-height: 158px; } }
 
 /* Footer social links (Instagram, TikTok) */
 .site-footer .foot-social { margin-top: 20px; }
@@ -1540,7 +1562,7 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
 
 @media (max-width: 767px) {
   /* Compact top bars on the homepage only (welcome code bar, country/language bar, logo bar). */
-  body.hk-home #hk-top { min-height: 110px; }
+  body.hk-home #hk-top { min-height: 130px; } /* compact bars incl. the welcome strip (CLS fix 19 Nov 2026) */
   .hk-home .hk-welcome-bar .wrap { min-height: 30px; padding-block: 3px; }
   .hk-home .utility .wrap { min-height: 32px; }
   .hk-home .utility .msg { padding-block: 4px; }
@@ -1548,6 +1570,12 @@ html[lang="ar"] .btn.cp-gold::after { content: "مجانًا"; font-family: "Cai
   .hk-home .site-header .wordmark.logo { padding-block: 4px; }
   .hk-home .site-header .wordmark.logo img { height: 42px; }
 
+  /* CLS fix (19 Nov 2026): first-paint values = what home6.js measures on today's hero (bars 130px incl. the
+     welcome strip; content under the photo per language and hero version), so the photo no longer resizes on load. */
+  .hero.hx { --hx-top: 130px; --hx-below: 325px; }
+  html[lang="ar"] .hero.hx { --hx-below: 306px; }
+  html.vx-value .hero.hx { --hx-below: 263px; }
+  html.vx-value[lang="ar"] .hero.hx { --hx-below: 244px; }
   .hero.hx .hero-media { aspect-ratio: auto; width: auto;
     height: clamp(180px, calc(100vh - var(--hx-top, 110px) - var(--hx-below, 196px)), 125vw); }
   @supports (height: 100svh) {

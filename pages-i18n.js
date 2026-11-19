@@ -325,6 +325,7 @@
     checkout: { en: 'Checkout | Hikaya', ar: 'إتمام الطلب | حكاية' },
     book_added: { en: 'Added to your cart | Hikaya', ar: 'أُضيف إلى السلة | حكاية' },
     personalize: { en: 'Create their story | Hikaya', ar: 'اصنع حكاية طفلك | حكاية' },
+    cover_preview: { en: 'See your child on the cover, free | Hikaya', ar: 'شاهد طفلك على الغلاف مجانًا | حكاية' },
     track_order: { en: 'Track your order | Hikaya', ar: 'تتبّع طلبك | حكاية' },
     privacy: { en: 'Privacy Policy | Hikaya', ar: 'سياسة الخصوصية | حكاية' },
     terms: { en: 'Terms of Service | Hikaya', ar: 'شروط الخدمة | حكاية' },
@@ -581,8 +582,8 @@
   "ar": "ما مقاس الكتاب؟"
  },
  "a9": {
-  "en": "Hikaya books are square, sized to share together at bedtime and keep on the shelf for years. If you need exact measurements for a gift, just ask us.",
-  "ar": "كتب حكاية مربّعة الشكل، بحجم مناسب للقراءة معًا قبل النوم والاحتفاظ بها على الرف لسنوات، وإن احتجت إلى المقاس الدقيق لهدية فاسألنا"
+  "en": "Each Hikaya book is a 21 × 21 cm personalised hardcover with 20 illustrated pages, sized to share together at bedtime and keep on the shelf for years.",
+  "ar": "كل كتاب من حكاية كتاب مخصّص بغلاف مقوّى بمقاس 21 × 21 سم، فيه 20 صفحة مرسومة، بحجم مناسب للقراءة معًا قبل النوم والاحتفاظ به على الرف لسنوات"
  },
  "q10": {
   "en": "How much does a book cost?",
@@ -749,6 +750,7 @@
     book_en: { en: 'English book', ar: 'كتاب بالإنجليزية' },
     book_ar: { en: 'Arabic book', ar: 'كتاب بالعربية' },
     upsell_1_free: { en: 'Add one more book and save 10% on each.', ar: 'أضف كتابًا آخر ووفّر 10% على كل كتاب' },
+    msg_t0: { en: 'A special message on the first page', ar: 'رسالة خاصة في الصفحة الأولى' },
     msg_t1: { en: 'A message to', ar: 'رسالة إلى' },
     msg_t2: { en: 'on the first page', ar: 'في الصفحة الأولى' },
     msg_d: { en: 'Every Hikaya story opens with a short, warm message to your child. Would you like it to come from you?', ar: 'تبدأ كل قصة من حكاية برسالة قصيرة ودافئة لطفلك، هل تحب أن تكون الرسالة منك؟' },
@@ -923,6 +925,7 @@
     save_err: { en: "We couldn't send it. Please check the email and try again.", ar: 'تعذّر الإرسال، تحقق من البريد وحاول مرة أخرى' },
     save_sending: { en: 'Sending…', ar: 'جارٍ الإرسال…' },
     resumed: { en: "Welcome back! We've filled in what you saved. Add the photo to continue.", ar: 'أهلًا بعودتك، أكملنا ما حفظته، أضف الصورة لتكمل' },
+    from_preview: { en: "We've added the photo you used for the free cover. You can change it if you like.", ar: 'أضفنا الصورة التي استخدمتها للغلاف المجاني، ويمكنك تغييرها إن أردت' },
     od_t: { en: "One more step: add {name}'s photo", ar: 'خطوة أخيرة: أضف صورة {name}' },
     od_d: { en: "We start illustrating as soon as it arrives. We've emailed you this link too.", ar: 'نبدأ الرسم فور وصولها، وأرسلنا لك هذا الرابط بالبريد أيضًا' },
     od_btn: { en: 'Add the photo now', ar: 'أضف الصورة الآن' },

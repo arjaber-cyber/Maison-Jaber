@@ -278,9 +278,15 @@
     const bar = document.getElementById('sticky-cta'); if (!bar || !('IntersectionObserver' in window)) return;
     const start = document.querySelector('[data-sticky-after]'); const end = document.querySelector('[data-sticky-hide]');
     const seen = { a: !!start, b: false };
-    const update = () => bar.classList.toggle('show', !seen.a && !seen.b);
+    /* UI polish (19 Nov 2026): the bar also steps away while one of the page's own main buttons is on screen,
+       so phones never show two "Create Their Story" buttons stacked on top of each other. */
+    const inline = new Set();
+    const update = () => bar.classList.toggle('show', !seen.a && !seen.b && inline.size === 0);
     if (start) new IntersectionObserver(([e]) => { seen.a = e.isIntersecting; update(); }).observe(start);
     if (end) new IntersectionObserver(([e]) => { seen.b = e.isIntersecting; update(); }).observe(end);
+    const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) inline.add(e.target); else inline.delete(e.target); }); update(); }, { rootMargin: '0px 0px -90px 0px' });
+    const watch = () => document.querySelectorAll('main .btn-primary').forEach(el => { if (!el.closest('#sticky-cta') && !el.__hkSticky) { el.__hkSticky = 1; io.observe(el); } });
+    watch(); setTimeout(watch, 1500); // some sections render their buttons a moment later
     update();
   }
 
@@ -545,6 +551,15 @@
     if (o.slugs) return o.slugs.includes(s.slug);
     return !o.moments || (s.moments || []).some(m => o.moments.includes(m));
   }
+  /* Occasion merchandising (19 Nov 2026): every story is tagged for birthdays, so the birthday shelf opened with
+     UAE National Day and Christmas books. Tags stay as they are (nothing leaves the catalogue); on an occasion page,
+     stories tied to a different season simply move to the back. KEEP IN SYNC with netlify/edge-functions/hikaya-seo.js. */
+  const SEASONS = { christmas: s => (s.occasions || []).includes('christmas') || /christmas/i.test(s.slug || ''), nationalday: s => /national-day/i.test(s.slug || '') };
+  function occasionRank(list, k) {
+    if (!k) return list;
+    const other = s => Object.keys(SEASONS).some(season => season !== k && SEASONS[season](s));
+    return list.map((s, i) => ({ s, i, w: other(s) ? 1 : 0 })).sort((a, b) => a.w - b.w || a.i - b.i).map(x => x.s);
+  }
   const occIcon = o => `<span class="occ-ico" aria-hidden="true"><svg viewBox="0 0 24 24">${o.icon}</svg></span>`;
 
   /* ---------------- WhatsApp help ---------------- */
@@ -570,7 +585,9 @@
       document.body.appendChild(a);
       /* QA-01: step the floating button aside while the footer's legal row (Privacy · Terms) is on screen,
          so it never covers those links; WhatsApp stays reachable from the footer contact line. */
-      const legal = document.querySelector('.site-footer .foot-bottom');
+      /* UI polish (19 Nov 2026): steps aside for the whole footer, not only the legal row — on desktop it sat on the
+         mailing-list Subscribe button. The footer has its own WhatsApp line, so help is still one tap away. */
+      const legal = document.querySelector('.site-footer .foot-news, .site-footer .foot-bottom');
       if (legal && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => a.classList.toggle('is-docked', e.isIntersecting), { rootMargin: '0px 0px 40px 0px' }).observe(legal);
       /* Mobile UX (Nov 2026): the button also steps aside while a photo-upload area, a step's Continue
          button or the checkout payment controls pass through the bottom of the screen, so it never
@@ -600,6 +617,18 @@
     }
     const footWa = document.getElementById('hk-wa-foot');
     if (footWa) { footWa.hidden = false; footWa.querySelector('a').href = waHref(); footWa.querySelector('a').textContent = WHATSAPP_DISPLAY; footWa.querySelector('.wl').textContent = t('wa.label', 'WhatsApp'); }
+    /* UI polish (19 Nov 2026): on phones the floating bubble covered text while the sticky button bar was up.
+       The bar now carries a small WhatsApp button of its own and the bubble hides while the bar shows (CSS). */
+    const bar = document.getElementById('sticky-cta');
+    if (bar) {
+      let sw = bar.querySelector('.sticky-wa');
+      if (!sw) {
+        sw = document.createElement('a'); sw.className = 'sticky-wa'; sw.target = '_blank'; sw.rel = 'noopener';
+        sw.addEventListener('click', () => { try { window.hikayaTrackEvent && window.hikayaTrackEvent('whatsapp_click', { page: PAGE, where: 'sticky' }); } catch (_) {} });
+        bar.appendChild(sw);
+      }
+      sw.href = waHref(); sw.setAttribute('aria-label', t('wa.btn', 'Chat on WhatsApp')); sw.innerHTML = WA_SVG;
+    }
     a.href = waHref(); a.setAttribute('aria-label', t('wa.btn', 'Chat on WhatsApp'));
     a.innerHTML = `${WA_SVG}<span class="hk-wa-txt">${esc(t('wa.short', 'Need help?'))}</span>`;
     /* Pages can also offer it inline (e.g. Contact us): <div data-hk-whatsapp hidden>…</div> */
@@ -614,7 +643,7 @@
     if (lang() === 'ar' && SEO_LANG) { const p = new URLSearchParams(q); p.set('lang', 'ar'); q = '?' + p.toString(); }
     if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {}
   }
-  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occIcon };
+  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occasionRank, occIcon };
 
   /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
      The /hikaya/ shop is served from the /test5/ files. Relative links already stay inside
