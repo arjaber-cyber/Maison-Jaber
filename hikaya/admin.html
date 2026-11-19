@@ -1037,14 +1037,29 @@
           <div class="story-actions">
             <button type="button" data-act="edit">Edit</button>
             <button type="button" data-act="photo">${s.cover_image_url ? 'Change photo' : 'Add photo'}</button>
-            <button type="button" data-act="previews">Inside photos (${(s.preview_images || []).length + (s.open_book_image_url ? 1 : 0) + (s.back_cover_url ? 1 : 0)})</button>
-            <button type="button" data-act="arabic" lang="ar" title="Arabic cover, inside pages and back cover, shown when the site is in Arabic">Arabic artwork · العربية (${(s.cover_image_url_ar ? 1 : 0) + (s.preview_images_ar || []).length + (s.back_cover_url_ar ? 1 : 0)})</button>
+            <button type="button" data-act="previews">Photos &amp; inside pages (${(s.gallery_images || []).length + (s.preview_images || []).length + (s.open_book_image_url ? 1 : 0) + (s.back_cover_url ? 1 : 0)})</button>
+            <button type="button" data-act="arabic" lang="ar" title="Arabic cover, inside pages and back cover, shown when the site is in Arabic">Arabic artwork · العربية (${(s.cover_image_url_ar ? 1 : 0) + (s.gallery_images_ar || []).length + (s.preview_images_ar || []).length + (s.back_cover_url_ar ? 1 : 0)})</button>
             ${s.cover_image_url ? '<button type="button" data-act="nophoto">Remove photo</button>' : ''}
             <button type="button" class="danger" data-act="delete">Delete</button>
             <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" data-file>
           </div>
           <div class="story-status" data-status></div>
           <div class="preview-panel" data-previews style="display:${openPreviewSlugs.has(s.slug) ? 'block' : 'none'};">
+            <div class="size-hint"><strong>Story page photos (max 4)</strong>. Your designed product photos for the story page, in order: e.g. 1 the cover with a background, 2 the book on a table, 3 the book in the gift box. They replace the flat cover at the top of the story page (cards and "Look inside" keep using the cover). Empty = the flat cover, as before. <strong>Square, at least 1000 × 1000 px</strong>.</div>
+            <div class="preview-thumbs">${(s.gallery_images || []).map((u, i, arr) => `
+              <div class="preview-thumb">
+                <img src="${stEsc(u)}" alt="Photo ${i + 1}" loading="lazy">
+                <div class="pt-actions">
+                  <button type="button" data-gl="left" data-url="${stEsc(u)}" ${i === 0 ? 'disabled' : ''} title="Move earlier">&#8592;</button>
+                  <button type="button" data-gl="right" data-url="${stEsc(u)}" ${i === arr.length - 1 ? 'disabled' : ''} title="Move later">&#8594;</button>
+                  <button type="button" data-gl="remove" data-url="${stEsc(u)}" class="danger" title="Remove">Remove</button>
+                </div>
+              </div>`).join('') || '<span style="font-size:12px; color:var(--ink-soft);">No photos yet (the flat cover is shown).</span>'}</div>
+            ${(s.gallery_images || []).length >= 4
+              ? '<p style="font-size:12px; color:var(--ink-soft); margin-top:10px;">4 of 4 photos added. Remove one to add another.</p>'
+              : `<button type="button" class="upload-btn" data-gl="add" style="margin-top:10px;">+ Add story page photos (${(s.gallery_images || []).length} of 4)</button>`}
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-gl-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
             <div class="size-hint"><strong>Open book photo</strong> — a photo of the printed book lying open, showing 2 pages. It's shown wide at the top of "Inside the book" on the story page and as the 2nd gallery image. Best: <strong>landscape, about 2400 × 1200 px</strong> (2:1).</div>
             <div class="open-book-slot">${s.open_book_image_url
               ? `<div class="preview-thumb open-book-thumb"><img src="${stEsc(s.open_book_image_url)}" alt="Open book" loading="lazy">
@@ -1076,6 +1091,22 @@
           </div>
           <div class="preview-panel" data-ar-panel style="display:${openArSlugs.has(s.slug) ? 'block' : 'none'};">
             <div class="size-hint"><strong>Arabic artwork</strong>: shown instead of the English images when a visitor uses the site in Arabic (story cards, story page, "Look inside", cart and Arabic-book order emails). Anything left empty falls back to the English image.</div>
+            <div style="height:10px"></div>
+            <div class="size-hint"><strong>Arabic story page photos (max 4)</strong>. Shown on the Arabic site instead of the English photos (use the Arabic cover in them). Empty = the English photos are shown. <strong>Square, at least 1000 × 1000 px</strong>.</div>
+            <div class="preview-thumbs">${(s.gallery_images_ar || []).map((u, i, arr) => `
+              <div class="preview-thumb">
+                <img src="${stEsc(u)}" alt="Photo ${i + 1}" loading="lazy">
+                <div class="pt-actions">
+                  <button type="button" data-argl="left" data-url="${stEsc(u)}" ${i === 0 ? 'disabled' : ''} title="Move earlier">&#8592;</button>
+                  <button type="button" data-argl="right" data-url="${stEsc(u)}" ${i === arr.length - 1 ? 'disabled' : ''} title="Move later">&#8594;</button>
+                  <button type="button" data-argl="remove" data-url="${stEsc(u)}" class="danger" title="Remove">Remove</button>
+                </div>
+              </div>`).join('') || '<span style="font-size:12px; color:var(--ink-soft);">No photos yet (the English photos are shown).</span>'}</div>
+            ${(s.gallery_images_ar || []).length >= 4
+              ? '<p style="font-size:12px; color:var(--ink-soft); margin-top:10px;">4 of 4 photos added. Remove one to add another.</p>'
+              : `<button type="button" class="upload-btn" data-argl="add" style="margin-top:10px;">+ Add Arabic story page photos (${(s.gallery_images_ar || []).length} of 4)</button>`}
+            <input type="file" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-argl-file>
+            <hr style="border:none; border-top:1px solid var(--line, #eee); margin:14px 0;">
             <div class="size-hint" style="margin-top:10px;"><strong>Arabic front cover</strong>. Square, at least <strong>1200 × 1200 px</strong>.</div>
             <div class="open-book-slot">${s.cover_image_url_ar
               ? `<div class="preview-thumb"><img src="${stEsc(s.cover_image_url_ar)}" alt="Arabic cover" loading="lazy">
@@ -1207,6 +1238,39 @@
           arPanel.style.display = open ? 'block' : 'none';
           if (open) openArSlugs.add(slug); else openArSlugs.delete(slug);
         };
+        /* ---- Story page photos (gallery), English in the photos panel, Arabic in the Arabic panel ---- */
+        const bindGallery = (box, k, ar, done) => {
+          const gFile = box.querySelector(`[data-${k}-file]`);
+          const gAdd = box.querySelector(`[data-${k}="add"]`);
+          if (gAdd) gAdd.onclick = () => gFile.click();
+          gFile.onchange = async () => {
+            const files = [...gFile.files]; if (!files.length) return;
+            for (let n = 0; n < files.length; n++) {
+              status.textContent = `Uploading photo ${n + 1} of ${files.length}…`;
+              try {
+                const d = await imageSize(files[n]);
+                if (d && Math.abs(d.w - d.h) > 4 && !confirm(`"${files[n].name}" is not square (${d.w} × ${d.h}). The story page shows square photos, so it will be cropped. Upload it anyway?`)) continue;
+                if (d && d.w < 1000 && !confirm(`"${files[n].name}" is only ${d.w} px wide, so it may look blurry. Upload it anyway?`)) continue;
+                const img = await resizeImage(files[n], 1200);
+                const r = await storyPreviewAction({ slug, kind: 'gallery', lang: ar ? 'ar' : undefined, action: 'add', base64Data: img.base64Data, mimeType: img.mimeType });
+                if (r.error) { status.textContent = r.error; return; }
+              } catch (e) { status.textContent = e.message; return; }
+            }
+            done('Photos saved');
+          };
+          box.querySelectorAll(`[data-${k}="left"],[data-${k}="right"],[data-${k}="remove"]`).forEach(b => b.onclick = async () => {
+            const act = b.getAttribute(`data-${k}`);
+            if (act === 'remove' && !confirm('Remove this photo?')) return;
+            status.textContent = 'Saving…';
+            const r = await storyPreviewAction(act === 'remove'
+              ? { slug, kind: 'gallery', lang: ar ? 'ar' : undefined, action: 'remove', url: b.dataset.url }
+              : { slug, kind: 'gallery', lang: ar ? 'ar' : undefined, action: 'move', url: b.dataset.url, dir: act === 'left' ? -1 : 1 });
+            if (r.error) { status.textContent = r.error; return; }
+            done();
+          });
+        };
+        bindGallery(panel, 'gl', false, (msg) => { openPreviewSlugs.add(slug); if (msg) status.textContent = msg; loadStories(adminPassword); });
+        bindGallery(arPanel, 'argl', true, arDone);
         const arcFile = arPanel.querySelector('[data-arc-file]');
         arPanel.querySelectorAll('[data-arc="add"],[data-arc="replace"]').forEach(b => b.onclick = () => arcFile.click());
         arcFile.onchange = async () => {

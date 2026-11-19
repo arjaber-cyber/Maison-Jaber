@@ -11,13 +11,13 @@
    between the value-first first screen ("value", price shown on the next scroll) and the price-first one ("price_ad").
    Everyone else (Google, direct, friends) gets "price". Kept 30 days so a returning ad visitor sees the same version.
    Preview: ?hero=value or ?hero=price. Change SPLIT to 1 to give all social visitors the value-first screen. */
-(function(){try{var SPLIT=0.5,K="hikaya_hero_v",d=document.documentElement,q=location.search,ref=document.referrer||"",ua=navigator.userAgent||"",now=Date.now(),s=null;
+(function(){try{var SPLIT=1,K="hikaya_hero_v",d=document.documentElement,q=location.search,ref=document.referrer||"",ua=navigator.userAgent||"",now=Date.now(),s=null;
 try{s=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}if(s&&now-(s.t||0)>2592e6)s=null;
 var social=/[?&](fbclid|ttclid|igshid|sccid)=/.test(q)||/[?&]utm_source=(ig|instagram|fb|facebook|meta|tiktok|snapchat|snap)(&|$)/i.test(q)||/[?&]utm_medium=(paid_?social|social)(&|$)/i.test(q)||/(instagram|facebook|tiktok|snapchat)\.com/i.test(ref)||/Instagram|FBAN|FBAV|musical_ly|TikTok|Snapchat/.test(ua);
 var f=/[?&]hero=(value|price)(&|$)/.exec(q),v;
 if(f){v=f[1]==="value"?"value":(social?"price_ad":"price");s={ch:social?"social":"preview",v:v,t:now}}
-else if(social){v=(s&&s.ch==="social")?s.v:(Math.random()<SPLIT?"value":"price_ad");s={ch:"social",v:v,t:(s&&s.ch==="social")?s.t:now}}
-else if(s&&s.ch==="social"){v=s.v}
+else if(social){v=(s&&s.ch==="social"&&s.v==="value")?s.v:(Math.random()<SPLIT?"value":"price_ad");s={ch:"social",v:v,t:(s&&s.ch==="social")?s.t:now}}
+else if(s&&s.ch==="social"){v=SPLIT>=1?"value":s.v;s.v=v}
 else{v="price";s={ch:"other",v:v,t:now}}
 localStorage.setItem(K,JSON.stringify(s));window.hkHero={ch:s.ch,v:v};if(v==="value")d.className+=" vx-value"}catch(e){}})();</script>
 

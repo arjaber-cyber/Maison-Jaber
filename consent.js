@@ -186,8 +186,14 @@
     const show = () => {
       if (shown) return; shown = true;
       window.removeEventListener('scroll', onScroll); clearTimeout(timer);
-      if (!getConsent() && !document.getElementById('hikaya-consent-banner')) buildBanner();
+      if (!getConsent() && !document.getElementById('hikaya-consent-banner')) whenNoPopup(buildBanner);
     };
+    /* The welcome pop-up and this banner never share the screen (Nov 2026): if the pop-up is open, the banner
+       comes once it is closed. (The pop-up likewise waits while the banner is up.) */
+    function whenNoPopup(fn) {
+      if (!document.getElementById('hk-wo')) { fn(); return; }
+      const iv = setInterval(() => { if (!document.getElementById('hk-wo')) { clearInterval(iv); setTimeout(() => { if (!getConsent()) fn(); }, 800); } }, 700);
+    }
     const onScroll = () => { if (window.scrollY > 120) show(); };
     window.addEventListener('scroll', onScroll, { passive: true });
     const timer = setTimeout(show, 15000);

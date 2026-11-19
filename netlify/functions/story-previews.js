@@ -9,6 +9,8 @@
 //   { slug, action: 'remove-open-book' }             -> removes the open book photo
 //   { slug, action: 'set-back-cover', base64Data, mimeType } -> sets the back cover (last page of "Look inside")
 //   { slug, action: 'remove-back-cover' }            -> removes the back cover
+// Add kind: 'gallery' to add / remove / move to manage the story page photos instead
+// (stories.gallery_images / gallery_images_ar, max 4, bucket folder stories/gallery/).
 // Add lang: 'ar' to any action to manage the Arabic inside pages / back cover
 // (stories.preview_images_ar, back_cover_url_ar) shown on the Arabic site. The open-book photo is shared.
 // Images live in the public "site-photos" bucket under stories/previews/.
@@ -23,6 +25,7 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || SUPABASE_ANON_KEY;
 const BUCKET = 'site-photos';
 const TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 const MAX_PREVIEWS = 6;
+const MAX_GALLERY = 4;
 
 const json = (statusCode, body) => ({ statusCode, body: JSON.stringify(body) });
 
@@ -34,7 +37,9 @@ exports.handler = async (event) => {
   try { p = JSON.parse(event.body); } catch { return json(400, { error: 'Invalid request.' }); }
   const { slug, action } = p;
   const AR = p.lang === 'ar';
-  const PV = AR ? 'preview_images_ar' : 'preview_images';
+  const GAL = p.kind === 'gallery';
+  const PV = GAL ? (AR ? 'gallery_images_ar' : 'gallery_images') : (AR ? 'preview_images_ar' : 'preview_images');
+  const MAX = GAL ? MAX_GALLERY : MAX_PREVIEWS;
   const BC = AR ? 'back_cover_url_ar' : 'back_cover_url';
   if (!slug || !/^[a-z0-9-]{1,120}$/.test(slug)) return json(400, { error: 'Invalid story.' });
 
@@ -67,7 +72,7 @@ exports.handler = async (event) => {
     'set-back-cover': { field: BC, dir: AR ? 'back-cover/ar' : 'back-cover', old: backCover, key: 'backCoverUrl' },
     'remove-back-cover': { field: BC, old: backCover, key: 'backCoverUrl' },
   };
-  if (SINGLE[action]) {
+  if (SINGLE[action] && !GAL) {
     const cfg = SINGLE[action];
     let url = null;
     if (cfg.dir) {
@@ -95,10 +100,10 @@ exports.handler = async (event) => {
   if (action === 'add') {
     const { base64Data, mimeType } = p;
     if (!base64Data || !TYPES[mimeType]) return json(400, { error: 'Please choose a JPG, PNG or WebP image.' });
-    if (list.length >= MAX_PREVIEWS) return json(400, { error: `"Look inside" shows up to ${MAX_PREVIEWS} pages. Remove one first.` });
+    if (list.length >= MAX) return json(400, { error: GAL ? `The story page shows up to ${MAX} photos. Remove one first.` : `"Look inside" shows up to ${MAX} pages. Remove one first.` });
     const buf = Buffer.from(base64Data, 'base64');
     if (!buf.length || buf.length > 5 * 1024 * 1024) return json(400, { error: 'Image must be under 5 MB.' });
-    const path = `stories/previews/${AR ? 'ar/' : ''}${slug}-${Date.now()}-${Math.floor(Math.random() * 1e4)}.${TYPES[mimeType]}`;
+    const path = `stories/${GAL ? 'gallery' : 'previews'}/${AR ? 'ar/' : ''}${slug}-${Date.now()}-${Math.floor(Math.random() * 1e4)}.${TYPES[mimeType]}`;
     const up = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${path}`, {
       method: 'POST', headers: { ...headers, 'Content-Type': mimeType, 'x-upsert': 'true' }, body: buf,
     });
@@ -132,5 +137,5 @@ exports.handler = async (event) => {
       }).catch(() => {});
     }
   }
-  return json(200, { success: true, previewImages: list });
+  return json(200, { success: true, previewImages: list, galleryImages: GAL ? list : undefined });
 };

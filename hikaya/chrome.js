@@ -383,10 +383,10 @@
   function localizeStory(s) {
     if (!s || s.__localized) return s;
     const o = { ...s, cover_image_url_en: s.cover_image_url || null };
-    const en = { cover_image_url: s.cover_image_url || null, back_cover_url: s.back_cover_url || null, preview_images: Array.isArray(s.preview_images) ? s.preview_images : [] };
-    const ar = { cover_image_url: s.cover_image_url_ar || null, back_cover_url: s.back_cover_url_ar || null, preview_images: Array.isArray(s.preview_images_ar) ? s.preview_images_ar.filter(Boolean) : [] };
+    const en = { cover_image_url: s.cover_image_url || null, back_cover_url: s.back_cover_url || null, preview_images: Array.isArray(s.preview_images) ? s.preview_images : [], gallery_images: Array.isArray(s.gallery_images) ? s.gallery_images.filter(Boolean) : [] };
+    const ar = { cover_image_url: s.cover_image_url_ar || null, back_cover_url: s.back_cover_url_ar || null, preview_images: Array.isArray(s.preview_images_ar) ? s.preview_images_ar.filter(Boolean) : [], gallery_images: Array.isArray(s.gallery_images_ar) ? s.gallery_images_ar.filter(Boolean) : [] };
     const pick = k => (lang() === 'ar' && (Array.isArray(ar[k]) ? ar[k].length : ar[k])) ? ar[k] : en[k];
-    ['cover_image_url', 'back_cover_url', 'preview_images'].forEach(k => Object.defineProperty(o, k, { get: () => pick(k), enumerable: true, configurable: true }));
+    ['cover_image_url', 'back_cover_url', 'preview_images', 'gallery_images'].forEach(k => Object.defineProperty(o, k, { get: () => pick(k), enumerable: true, configurable: true }));
     Object.defineProperty(o, 'cover', { get: () => pick('cover_image_url'), enumerable: true, configurable: true });
     Object.defineProperty(o, '__localized', { value: true });
     return o;
@@ -580,7 +580,7 @@
         let io = null; const hits = new Set();
         /* Watch the strip of screen the button actually sits in (it moves up while the cookie banner is open). */
         const setup = () => {
-          if (io) io.disconnect(); hits.clear(); a.classList.remove('is-near-ctl');
+          if (io) io.disconnect(); hits.clear(); // keep the current state until the new observer reports (no flicker)
           const r = a.getBoundingClientRect(); if (!r.height) return;
           const top = Math.max(0, Math.round(r.top - 14)), bottom = Math.max(0, Math.round(window.innerHeight - r.bottom - 14));
           io = new IntersectionObserver(entries => {
@@ -589,7 +589,9 @@
           }, { rootMargin: `-${top}px 0px -${bottom}px 0px` });
           document.querySelectorAll(CTL).forEach(el => io.observe(el));
         };
-        let tm = null; const later = () => { clearTimeout(tm); tm = setTimeout(setup, 350); };
+        /* Re-measure at most every 350 ms. (It used to restart the wait on every change, so on the busy
+           homepage it could keep waiting and leave the button over the Tabby/Tamara line.) */
+        let tm = null; const later = () => { if (!tm) tm = setTimeout(() => { tm = null; setup(); }, 350); };
         setTimeout(setup, 400);
         window.addEventListener('resize', later);
         new MutationObserver(later).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); // cookie banner opened / closed

@@ -128,6 +128,48 @@
       const pv = Array.isArray(s.preview_images) ? s.preview_images.filter(Boolean) : [];
       return s.open_book_image_url ? [s.open_book_image_url].concat(pv) : pv;
     }
+    /* Story page photo gallery: one main photo, a thumbnail per photo, swipe on phones, arrow keys on the
+       thumbnails. Only the first photo loads straight away; the rest load when needed. */
+    let galIdx = 0, galSwipeBound = false;
+    function renderGallery(main, thumbs, gal, plain) {
+      if (galIdx >= gal.length) galIdx = 0;
+      const altOf = i => tpl(t('lx.photo_alt', '{title}, photo {n} of {total}'), { title: plain, n: i + 1, total: gal.length });
+      const show = (i, from) => {
+        galIdx = (i + gal.length) % gal.length;
+        const img = main.querySelector('.st-gal-img');
+        img.src = gal[galIdx]; img.alt = altOf(galIdx);
+        const c = main.querySelector('.st-gal-count'); if (c) c.textContent = `${galIdx + 1} / ${gal.length}`;
+        thumbs.querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', k === galIdx ? 'true' : 'false'));
+        try { window.hikayaTrackEvent && window.hikayaTrackEvent('story_photo_view', { story: s.slug, photo: galIdx + 1, via: from || 'thumb' }); } catch (_) {}
+      };
+      main.innerHTML = `<div class="st-gal"><img class="st-gal-img" src="${esc(gal[galIdx])}" alt="${esc(altOf(galIdx))}" width="1000" height="1000" fetchpriority="high" decoding="async" />`
+        + (gal.length > 1 ? `<span class="st-gal-count" aria-hidden="true" dir="ltr">${galIdx + 1} / ${gal.length}</span>` : '') + `</div>`;
+      thumbs.hidden = gal.length < 2;
+      thumbs.innerHTML = gal.length < 2 ? '' : gal.map((u, i) => `<li><button type="button" aria-pressed="${i === galIdx}" aria-label="${esc(tpl(t('lx.photo_show', 'Show photo {n}'), { n: i + 1 }))}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async" width="200" height="200" /></button></li>`).join('');
+      thumbs.querySelectorAll('button').forEach((b, i) => {
+        b.onclick = () => show(i, 'thumb');
+        b.onkeydown = e => {
+          const step = (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0) * (H.isRTL && H.isRTL() ? -1 : 1);
+          if (!step) return; e.preventDefault(); show(galIdx + step, 'key'); thumbs.querySelectorAll('button')[galIdx].focus();
+        };
+      });
+      // Warm the other photos once the page has settled, so tapping a thumbnail is instant.
+      setTimeout(() => gal.slice(1).forEach(u => { const im = new Image(); im.decoding = 'async'; im.src = u; }), 1500);
+      if (gal.length > 1 && !galSwipeBound) {
+        galSwipeBound = true;
+        let x0 = null, y0 = null;
+        main.addEventListener('touchstart', e => { if (!main.querySelector('.st-gal')) return; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+        main.addEventListener('touchend', e => {
+          if (x0 === null || !main.querySelector('.st-gal')) return;
+          const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+          if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+          if (!main.__galShow || (main.__galLen || 1) < 2) return;
+          const fwd = (dx < 0) !== !!(H.isRTL && H.isRTL()); // RTL: swipe the other way
+          main.__galShow(galIdx + (fwd ? 1 : -1), 'swipe');
+        }, { passive: true });
+      }
+      main.__galLen = gal.length; main.__galShow = show;
+    }
     function render() {
       const plain = H.titlePlain(s);
       if (H.seoLang() !== H.lang()) document.title = `${plain} | ${H.lang() === 'ar' ? 'حكاية' : 'Hikaya'}`;
@@ -150,11 +192,20 @@
       renderPrice();
       document.getElementById('st-cta').href = H.personaliseHref(s);
       document.querySelectorAll('[data-st-cta]').forEach(a => { a.href = H.personaliseHref(s); });
-      // gallery: the front cover only. Inside pages are shown in the "Look inside" book, not as photos.
+      /* Gallery (Nov 2026): when the story has its designed product photos (admin: "Story page photos",
+         e.g. the cover with a background, on a table, in the gift box) they are shown here with thumbnails,
+         in the visitor's language (Arabic photos fall back to the English ones). Without them: the flat front
+         cover only, as before. Inside pages are shown in the "Look inside" book, never as photos. */
       const main = document.getElementById('st-main');
-      main.innerHTML = H.coverHtml(s, '', { alt: true, eager: true });
-      document.getElementById('st-thumbs').hidden = true;
-      document.getElementById('st-thumbs').innerHTML = '';
+      const thumbs = document.getElementById('st-thumbs');
+      const gal = (s.gallery_images || []).slice(0, 4);
+      if (gal.length) renderGallery(main, thumbs, gal, plain);
+      else {
+        main.innerHTML = H.coverHtml(s, '', { alt: true, eager: true });
+        main.__galLen = 0; main.__galShow = null;
+        thumbs.hidden = true;
+        thumbs.innerHTML = '';
+      }
       // what happens
       /* QA005: the admin "description" is English-only, so Arabic shows the Arabic synopsis instead of mixing languages. */
       const arMode = H.lang() === 'ar';

@@ -10,7 +10,9 @@
    - NOT for visitors who came from Google/Bing/other search without an ad click (SEO-safe:
      organic search visitors never see it during that visit), and never for bots.
    - Not again for 14 days after "No thanks", and never again after signing up or ordering.
-   - Not while another dialog is open (cover preview, menus, cookie options).
+   - Not while another dialog is open (cover preview, menus, cookie options), and not while the cookie banner
+     is still on screen (it waits until the visitor has answered it).
+   - Social visitors are recognised on every page here (ad links, referrer, in-app browser), not only the homepage.
 
    Preview it straight away with ?welcome=1 (ignores all the rules above). */
 (function () {
@@ -27,18 +29,50 @@
   /* ---------- Should it show at all? ---------- */
   const SEARCH = /(^|\.)(google\.[a-z.]+|bing\.com|yahoo\.com|duckduckgo\.com|yandex\.[a-z]+|ecosia\.org|baidu\.com|search\.brave\.com|startpage\.com)$/i;
   const AD_PARAMS = /[?&](gclid|gbraid|wbraid|gad_source|gad_campaignid|msclkid|fbclid|ttclid|utm_source|utm_medium|hk)=/i;
+  function lastTouch() {
+    // The latest visit source analytics.js saved (refreshed on every new ad click or outside link), kept 30 days.
+    try { const a = JSON.parse(localStorage.getItem('hikaya_attr_v1') || 'null'); const l = a && a.last; return l && Date.now() - (l.ts || 0) < 2592e6 ? l : null; } catch (e) { return null; }
+  }
   function organicThisVisit() {
     try {
       if (sessionStorage.getItem(K_ORGANIC) === '1') return true;
       if (sessionStorage.getItem(K_ORGANIC) === '0') return false;
       let host = '';
       try { host = document.referrer ? new URL(document.referrer).hostname : ''; } catch (e) {}
-      const organic = !!host && SEARCH.test(host) && !AD_PARAMS.test(location.search);
+      // An ad click is not organic. The ad tags may already be tidied out of the address bar, so the saved
+      // visit source counts too (a Google Ads click is saved with clk 'google').
+      const lt = lastTouch();
+      const adClick = AD_PARAMS.test(location.search) || !!(lt && (lt.clk || lt.gc || lt.gb || lt.wb || lt.src));
+      const organic = !!host && SEARCH.test(host) && !adClick;
       // Only the landing page decides: moving around our own site keeps the first answer.
       const internal = /(^|\.)maison-jaber\.com$|netlify\.app$/i.test(host);
       if (!internal) sessionStorage.setItem(K_ORGANIC, organic ? '1' : '0');
       return organic;
     } catch (e) { return false; }
+  }
+  /* Social visitor (Instagram/Facebook/TikTok/Snapchat ad or link, or their in-app browser), on ANY page this
+     file runs on: the homepage decides it in its <head>, but many ads land straight on a story page. Same signals
+     as the homepage; remembered in hikaya_hero_v so the homepage, GA4 and Clarity treat the visit the same way. */
+  function socialVisit() {
+    try {
+      const hv = window.hkHero || JSON.parse(localStorage.getItem('hikaya_hero_v') || 'null');
+      if (hv && hv.ch === 'social' && (!hv.t || Date.now() - hv.t < 2592e6)) return true;
+      const q = location.search, ref = document.referrer || '', ua = navigator.userAgent || '';
+      /* analytics.js tidies the ad tags out of the address bar before this runs, so also read the visit
+         source it saved (hikaya_attr_v1, last touch). */
+      const lt = lastTouch();
+      const social = (lt && (/^(ig|instagram|fb|facebook|meta|tiktok|snapchat|snap)$/i.test(lt.src || '') || /^(paid_?social|social)$/i.test(lt.med || '')
+          || lt.clk === 'meta' || lt.clk === 'tiktok' || /(instagram|facebook|tiktok|snapchat)\.com$/i.test(lt.rh || '')))
+        || /[?&](fbclid|ttclid|igshid|sccid)=/.test(q) || /[?&]utm_source=(ig|instagram|fb|facebook|meta|tiktok|snapchat|snap)(&|$)/i.test(q)
+        || /[?&]utm_medium=(paid_?social|social)(&|$)/i.test(q) || /(instagram|facebook|tiktok|snapchat)\.com/i.test(ref)
+        || /Instagram|FBAN|FBAV|musical_ly|TikTok|Snapchat/.test(ua);
+      if (social && !window.hkHero) localStorage.setItem('hikaya_hero_v', JSON.stringify({ ch: 'social', v: 'value', t: Date.now() }));
+      return social;
+    } catch (e) { return false; }
+  }
+  function consentBannerUp() {
+    const b = document.getElementById('hikaya-consent-banner');
+    return !!(b && !b.hidden && b.getClientRects().length && getComputedStyle(b).visibility !== 'hidden' && getComputedStyle(b).display !== 'none');
   }
   function isBot() {
     return navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|preview/i.test(navigator.userAgent || '');
@@ -237,8 +271,7 @@
     if (store.get(K_CODE)) return; // already has the code from an earlier sign-up
     let start = 0;
     try { start = Number(sessionStorage.getItem(K_START)) || 0; if (!start) { start = Date.now(); sessionStorage.setItem(K_START, String(start)); } } catch (e) { start = Date.now(); }
-    let social = false;
-    try { const hv = window.hkHero || JSON.parse(localStorage.getItem('hikaya_hero_v') || 'null'); social = !!(hv && hv.ch === 'social'); } catch (e) {}
+    const social = socialVisit();
     const wait = Math.max(1500, (social ? DELAY_SOCIAL : DELAY_OTHER) - (Date.now() - start));
     // Desktop: leaving towards the tab bar after 8 seconds opens it a little earlier.
     if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -249,6 +282,9 @@
       if (root || blockedByState()) return;
       if (document.visibilityState === 'hidden') { document.addEventListener('visibilitychange', tryOpen, { once: true }); return; }
       if (otherDialogOpen()) { setTimeout(tryOpen, 5000); return; }
+      // Never on top of the cookie banner: it covered "No thanks", so a tap there accepted cookies instead.
+      // Wait until the visitor has answered it, then give them a moment before the pop-up comes in.
+      if (consentBannerUp()) { setTimeout(tryOpen, 3000); return; }
       open();
     };
     setTimeout(tryOpen, wait);

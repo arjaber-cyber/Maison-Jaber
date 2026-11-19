@@ -407,6 +407,8 @@
     follow_ig: { en: 'Hikaya on Instagram (opens in a new tab)', ar: 'حكاية على إنستغرام (تفتح في نافذة جديدة)' },
     follow_tt: { en: 'Hikaya on TikTok (opens in a new tab)', ar: 'حكاية على تيك توك (تفتح في نافذة جديدة)' },
     cover_alt: { en: 'Cover of {title}', ar: 'غلاف قصة {title}' },
+    photo_alt: { en: '{title}, photo {n} of {total}', ar: 'قصة {title}، الصورة {n} من {total}' },
+    photo_show: { en: 'Show photo {n}', ar: 'اعرض الصورة {n}' },
     cover: { en: 'Cover', ar: 'الغلاف' },
     sample_n: { en: 'Sample page {n}', ar: 'صفحة نموذجية {n}' },
     open_sample: { en: 'Open sample page {n}', ar: 'افتح الصفحة النموذجية {n}' },
