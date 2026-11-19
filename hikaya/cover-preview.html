@@ -348,7 +348,10 @@
     state.stories.forEach(s => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'cp-story'; b.setAttribute('aria-pressed', String(s.slug === state.slug));
-      const img = document.createElement('img'); img.loading = 'lazy'; img.alt = ''; img.src = storyCover(s);
+      /* Speed (Nov 2026): the picker shows small tiles, so it uses 300px WebP covers (~15 KB each instead of ~250 KB; 600px JPG, then full size, if one is missing),
+         with fixed dimensions so nothing jumps while they load. Falls back to the full cover if a small one is missing. */
+      const img = document.createElement('img'); img.loading = 'lazy'; img.decoding = 'async'; img.alt = ''; img.width = 600; img.height = 600;
+      const full = storyCover(s); img.src = full.replace(/\.jpg$/, '-300.webp'); img.onerror = () => { img.onerror = () => { img.onerror = null; img.src = full; }; img.src = full.replace(/\.jpg$/, '-600.jpg'); };
       const sp = document.createElement('span'); sp.textContent = storyTitle(s);
       b.append(img, sp);
       b.addEventListener('click', () => { state.slug = s.slug; try { localStorage.setItem('hk_cp_story', s.slug); } catch (e) {} renderStories(); syncAdult(); });

@@ -14,6 +14,9 @@
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const ARR = '<span class="arr" aria-hidden="true">→</span>';
   const IMGSRC = f => (window.PREVIEW_IMAGES && window.PREVIEW_IMAGES[f]) || 'images/' + f;
+  /* Speed (Nov 2026): logos come in a 180px file for the small header; the full file stays for sharp, larger spots.
+     Skipped when the admin has replaced the logo with its own photo. */
+  const LOGOSET = (base, sizes) => (window.PREVIEW_IMAGES && window.PREVIEW_IMAGES[base + '.webp']) ? '' : ` srcset="images/${base}-180.webp 180w, images/${base}.webp 309w" sizes="${sizes}"`;
 
   /* ---------------- Header / footer markup ---------------- */
   const ICON = {
@@ -49,7 +52,7 @@
   </div>
 </div></div>
 <header class="site-header"><div class="wrap">
-  <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
+  <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya.webp')}"${LOGOSET('logo-hikaya', '(max-width: 767px) 54px, 86px')} width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
   <nav class="main-nav" aria-label="Main" data-i18n-aria="a11y.main_nav"><ul>${li}</ul></nav>
   <div class="header-actions">
     <a class="icon-btn hide-tab" href="search.html" aria-label="Search stories" data-i18n-aria="a11y.search">${ICON.search}</a>
@@ -74,7 +77,7 @@
 <footer class="site-footer"><div class="wrap">
   <div class="foot-grid">
     <div>
-      <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
+      <a class="wordmark logo" href="index.html" aria-label="Hikaya by Maison Jaber, home" data-i18n-aria="a11y.home"><img src="${IMGSRC('logo-hikaya-cream.webp')}"${LOGOSET('logo-hikaya-cream', '(max-width: 767px) 124px, 145px')} loading="lazy" width="309" height="240" alt="Hikaya by Maison Jaber" /></a>
       <p class="about" data-i18n="home6.foot_about">Personalised hardcover storybooks, made for one child at a time and delivered gift-boxed across the UAE and GCC.</p>
       <p class="about foot-contact"><a href="mailto:hello@maison-jaber.com" dir="ltr">hello@maison-jaber.com</a><br><span id="hk-wa-foot" hidden><span class="wl"></span>: <a href="#" target="_blank" rel="noopener" dir="ltr"></a><br></span><span data-i18n="lx.foot_team">A real team, based in the UAE</span></p>
       <div class="foot-social">
