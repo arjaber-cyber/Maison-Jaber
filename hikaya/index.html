@@ -155,6 +155,10 @@ localStorage.setItem(K,JSON.stringify(s));window.hkHero={ch:s.ch,v:v};if(v==="va
   </div>
 </section>
 
+<!-- 01c' CUSTOMER REVIEWS (Nov 2026): text-only, filled by reviews.js. "Verified order" only for reviews from the
+     site's feedback form; real reviews from other channels say "Customer review". Hidden if the list is empty. -->
+<section class="rv" id="hk-reviews" aria-labelledby="rv-title" hidden></section>
+
 <!-- 01c REAL HIKAYA MOMENTS (Nov 2026): hidden until real, approved content is added in moments.js -->
 <!-- 01d HIKAYA MOMENTS (Nov 2026): latest Instagram videos, read from Instagram (instagram-reels function).
      Hidden until at least 2 videos load; nothing loads until the visitor scrolls near it. -->
@@ -367,5 +371,6 @@ localStorage.setItem(K,JSON.stringify(s));window.hkHero={ch:s.ch,v:v};if(v==="va
 <script src="reels.js" defer></script>
 <script src="home6.js" defer></script>
 <script src="moments.js" defer></script>
+<script src="reviews.js" defer></script>
 </body>
 </html>
