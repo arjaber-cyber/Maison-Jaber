@@ -283,4 +283,13 @@
     sib_link: { en: '2 books 10% off + free delivery', ar: 'كتابان بخصم 10% مع توصيل مجاني' },
     or_cover: { en: 'or try their cover free first', ar: 'أو جرّب غلاف طفلك مجانًا أولًا' },
   };
+  T.reels = {
+    kick: { en: 'Seen on Instagram', ar: 'من إنستغرام' },
+    title: { en: 'Hikaya moments', ar: 'لحظات حكاية' },
+    play: { en: 'Play video', ar: 'تشغيل الفيديو' },
+    view: { en: 'View on Instagram', ar: 'شاهد على إنستغرام' },
+    close: { en: 'Close', ar: 'إغلاق' },
+    prev: { en: 'Previous video', ar: 'الفيديو السابق' },
+    next: { en: 'Next video', ar: 'الفيديو التالي' },
+  };
 })();

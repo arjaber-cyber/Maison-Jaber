@@ -714,6 +714,8 @@ async function seoPage(request, context, state) {
     html = html.replace(/<head>/i, `<head>\n<script>try{localStorage.setItem("hikaya_lang","${lang}")}catch(e){}</script>`);
   }
   if (lang === "ar") html = html.replace(/<html lang="en"( dir="ltr")?/i, '<html lang="ar" dir="rtl"');
+  // Homepage hero: the Arabic page shows the photo with the Arabic cover (Nov 2026).
+  if (lang === "ar") html = html.replace(/images\/hom-hero-01(?=[.-])(?!-ar)/g, "images/hom-hero-01-ar");
 
   if (meta) {
     html = setTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${esc(meta.title)}</title>`, true);
