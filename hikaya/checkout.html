@@ -34,6 +34,34 @@
     .signin-buttons { flex-direction: column; width: 100%; }
     .signin-buttons button { width: 100%; }
   }
+  /* Guest checkout step (Nov 2026): email OR mobile number, country picked from a list */
+  .signin-buttons .btn-guest { background: var(--coral-deep); color: #fff; border-color: var(--coral-deep); }
+  .signin-buttons .btn-guest:hover { background: var(--ink); border-color: var(--ink); }
+  .guest-box { background: #fff; border: 1px solid var(--line-soft); border-radius: var(--radius-lg); padding: 18px 22px 20px; max-width: 460px; display: flex; flex-direction: column; gap: 12px; }
+  .guest-box[hidden], #guest-bar[hidden] { display: none; }
+  .guest-back { align-self: flex-start; background: none; border: 0; padding: 4px 0; font: 600 13px 'Inter', sans-serif; color: var(--text-on-light-soft); cursor: pointer; }
+  .guest-title { font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+  .guest-sub { margin: -4px 0 0; font-size: 13px; color: var(--text-on-light-soft); line-height: 1.5; }
+  .guest-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--bg-soft); border-radius: 12px; padding: 4px; }
+  .guest-toggle button { height: 40px; border: 0; border-radius: 9px; background: transparent; color: var(--text-on-light-soft); font: 600 13.5px 'Inter', sans-serif; cursor: pointer; }
+  .guest-toggle button[aria-selected="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(46,32,24,.12); }
+  .guest-field { display: flex; flex-direction: column; gap: 6px; }
+  .guest-field[hidden] { display: none; }
+  .guest-field label { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+  .g-inp { box-sizing: border-box; width: 100%; height: 48px; padding: 0 14px; font: 500 15px 'Inter', sans-serif; border: 1px solid rgba(184,149,75,0.35); border-radius: 12px; background: #fff; color: var(--text-on-light); }
+  .g-inp:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,149,77,.18); }
+  .guest-err { margin: 0; font-size: 12.5px; color: #A1361F; font-weight: 600; }
+  .guest-err[hidden] { display: none; }
+  .guest-go { min-height: 50px; }
+  .cc-row { display: flex; gap: 8px; direction: ltr; }
+  .cc-row .g-inp, .cc-row input[type="tel"] { flex: 1 1 auto; min-width: 0; width: auto; }
+  .cc-pick { position: relative; flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; height: 48px; padding: 0 10px 0 12px; border: 1px solid rgba(184,149,75,0.35); border-radius: 12px; background: #fff; font: 600 14px 'Inter', sans-serif; color: var(--ink); box-sizing: border-box; }
+  .cc-pick.small { height: auto; min-height: 46px; border-radius: 10px; background: #FFFCF7; border-color: #D8C5B3; }
+  .cc-pick .cc-flag { font-size: 18px; line-height: 1; }
+  .cc-pick svg { width: 12px; height: 12px; flex: none; }
+  .cc-pick select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: 0; padding: 0; font-size: 16px; }
+  .cc-pick:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,149,77,.18); }
+  .prefilled { background: #F4FAF5 !important; border-color: #9CC9AC !important; }
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
   .btn-primary {
     display: inline-flex; align-items: center; gap: 8px; background: var(--coral); color: #fff;
@@ -306,6 +334,7 @@
 <script src="/cart.js" defer></script>
 <script src="/recovery.js" defer></script>
 <script src="family.js" defer></script>
+<script src="phone-cc.js" defer></script>
 <link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
 <link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
@@ -332,14 +361,42 @@
 <div class="wrap" id="account-step" style="max-width: 1080px; margin: 0 auto; padding-top: 20px;">
   <div class="signin-box">
     <div>
-      <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.signin_title">Sign in for faster checkout</span>
-      <span style="font-size: 12.5px; color: var(--text-on-light-soft); margin-left: 8px;" data-i18n="checkout.signin_sub">Track this order and save your details for next time &mdash; or continue without an account.</span>
+      <span style="font-size: 13.5px; font-weight: 700;" data-i18n="checkout.choose_title">How would you like to continue?</span>
+      <span style="display: block; margin-top: 2px; font-size: 12.5px; line-height: 1.5; color: var(--text-on-light-soft);" data-i18n="checkout.choose_sub">Sign in to save your details for next time, or check out as a guest in seconds.</span>
     </div>
     <div class="signin-buttons">
       <button class="btn-secondary" id="google-signin" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.google">Continue with Google</button>
-      <a class="btn-secondary" id="email-signin" href="login.html?redirect=checkout.html" style="padding: 9px 16px; font-size: 12.5px; text-decoration: none;" data-i18n="checkout.email_signin">Continue with email</a>
-      <button class="btn-secondary" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as Guest</button>
+      <button class="btn-secondary btn-guest" id="guest-continue" style="padding: 9px 16px; font-size: 12.5px;" data-i18n="checkout.guest">Continue as guest</button>
     </div>
+  </div>
+  <div class="guest-box" id="guest-box" hidden>
+    <button type="button" class="guest-back" id="guest-back" data-i18n="checkout.guest_back">&larr; Back</button>
+    <h2 class="guest-title" data-i18n="checkout.guest">Continue as guest</h2>
+    <p class="guest-sub" data-i18n="checkout.guest_sub">Your email or mobile number, so we can send your order updates.</p>
+    <div class="guest-toggle" role="tablist">
+      <button type="button" role="tab" id="gt-email" aria-selected="true" aria-controls="gf-email" data-i18n="checkout.email">Email</button>
+      <button type="button" role="tab" id="gt-phone" aria-selected="false" aria-controls="gf-phone" data-i18n="checkout.mobile">Mobile number</button>
+    </div>
+    <div class="guest-field" id="gf-email">
+      <label for="guest-email" data-i18n="checkout.email">Email</label>
+      <input class="g-inp" type="email" id="guest-email" autocomplete="email" inputmode="email" dir="ltr" placeholder="you@example.com" />
+    </div>
+    <div class="guest-field" id="gf-phone" hidden>
+      <label for="guest-phone" data-i18n="checkout.mobile">Mobile number</label>
+      <div class="cc-row">
+        <div class="cc-pick" id="guest-cc-pick"><span class="cc-flag" aria-hidden="true"></span><span class="cc-code"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><select id="guest-cc" aria-label="Country code" data-i18n-aria="checkout.country_code"></select></div>
+        <input class="g-inp" type="tel" id="guest-phone" autocomplete="tel-national" inputmode="tel" dir="ltr" placeholder="50 123 4567" />
+      </div>
+    </div>
+    <p class="guest-err" id="guest-err" role="alert" hidden></p>
+    <button type="button" class="btn-primary guest-go" id="guest-go" data-i18n="checkout.guest_go">Continue to delivery</button>
+  </div>
+</div>
+
+<div id="guest-bar" class="wrap" style="max-width: 1080px; margin: 0 auto; padding-top: 16px;" hidden>
+  <div style="background: var(--parchment); border-radius: 12px; padding: 14px 20px; font-size: 13px; display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+    <span><span data-i18n="checkout.guest_bar">Guest checkout</span> &middot; <strong id="guest-bar-contact" dir="ltr"></strong></span>
+    <button id="guest-change" style="background: none; border: none; text-decoration: underline; cursor: pointer; font-size: 13px; color: var(--text-on-light-soft); font-family: 'Inter', sans-serif;" data-i18n="checkout.guest_change">Change</button>
   </div>
 </div>
 
@@ -398,7 +455,7 @@
           </div>
           <div class="map-hint" id="map-hint" data-i18n="checkout.map_hint">Pick your address from the list, or tap the map / drag the pin to your building — the address fills in automatically.</div>
         </div>
-        <div class="field"><label class="field-label" for="phone"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><input type="tel" id="phone" required aria-required="true" placeholder="e.g. +971 50 123 4567" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-placeholder="qa.phone_ph" /></div>
+        <div class="field"><label class="field-label" for="phone-local"><span data-i18n="checkout.phone">Phone</span><span class="req-mark">*</span></label><div class="cc-row"><div class="cc-pick small" id="phone-cc-pick"><span class="cc-flag" aria-hidden="true"></span><span class="cc-code"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><select id="phone-cc" aria-label="Country code" data-i18n-aria="checkout.country_code"></select></div><input type="tel" id="phone-local" required aria-required="true" placeholder="50 123 4567" autocomplete="tel-national" inputmode="tel" dir="ltr" /></div><input type="hidden" id="phone" /></div>
       </div>
     </div>
 
@@ -508,8 +565,16 @@
   const signedInEmail = document.getElementById('signed-in-email');
   const checkoutLayout = document.getElementById('checkout-layout');
   const checkoutLockedNote = document.getElementById('checkout-locked-note');
-  // ?guest=1 = arrived from the sign-in page's "Continue as guest"
-  let continuedAsGuest = new URLSearchParams(location.search).get('guest') === '1';
+  // Guest checkout (Nov 2026): the guest gives an email OR a mobile number first; it is remembered for
+  // this tab (sessionStorage) and filled into the delivery form. ?guest=1 (from the sign-in page) opens it.
+  const guestBox = document.getElementById('guest-box');
+  const guestBar = document.getElementById('guest-bar');
+  const signinBox = accountStep.querySelector('.signin-box');
+  const GUEST_KEY = 'hk_guest_contact';
+  const readGuest = () => { try { const g = JSON.parse(sessionStorage.getItem(GUEST_KEY) || 'null'); return g && g.value ? g : null; } catch { return null; } };
+  let guestContact = readGuest();
+  let continuedAsGuest = !!guestContact;
+  const openGuestOnLoad = !guestContact && new URLSearchParams(location.search).get('guest') === '1';
 
   /* QA-03: an empty cart never reaches the delivery/payment form. Returning from Ziina is left alone. */
   const coEmpty = document.getElementById('co-empty');
@@ -600,6 +665,7 @@
     if (empty) {
       accountStep.style.display = 'none';
       signedInBar.style.display = 'none';
+      guestBar.hidden = true;
       checkoutLayout.classList.remove('unlocked');
       checkoutLockedNote.style.display = 'none';
     }
@@ -619,6 +685,7 @@
     if (applyEmptyGuard()) return;
     if (session) {
       accountStep.style.display = 'none';
+      guestBar.hidden = true;
       signedInBar.style.display = 'block';
       signedInEmail.textContent = session.user.email;
       maybeSendWelcome(session);
@@ -627,18 +694,20 @@
       if (fullName) document.getElementById('full-name').value = fullName;
       document.getElementById('email').value = session.user.email;
       unlockCheckoutLayout();
-    } else if (continuedAsGuest) {
+    } else if (continuedAsGuest && guestContact) {
       accountStep.style.display = 'none';
       signedInBar.style.display = 'none';
+      showGuestBar();
+      prefillGuest(false);
       unlockCheckoutLayout();
     } else {
       accountStep.style.display = 'block';
       signedInBar.style.display = 'none';
+      guestBar.hidden = true;
       checkoutLayout.classList.remove('unlocked');
       checkoutLockedNote.style.display = 'block';
     }
   }
-  refreshAuthUI();
 
   mountGoogleSignIn(supabase, document.getElementById('google-signin'), {
     redirectTo: window.location.href,
@@ -652,13 +721,7 @@
     style: 'padding:9px 16px;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;gap:8px;',
     onError: (msg) => alert(msg)
   });
-  document.getElementById('guest-continue').addEventListener('click', () => {
-    if (applyEmptyGuard()) return;
-    continuedAsGuest = true;
-    accountStep.style.display = 'none';
-    unlockCheckoutLayout();
-    checkoutLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  document.getElementById('guest-continue').addEventListener('click', openGuestBox);
   document.getElementById('sign-out-checkout').addEventListener('click', async () => {
     await supabase.auth.signOut();
     continuedAsGuest = false;
@@ -689,6 +752,124 @@
   const countrySelect = document.getElementById('country');
   const locationNote = document.getElementById('location-note');
   let currentRegionKey = 'UAE';
+
+  /* ---------- Guest step: email or mobile number ---------- */
+  const HP = window.HikayaPhone;
+  const regionIso = () => ((REGIONS && REGIONS[currentRegionKey] && REGIONS[currentRegionKey].countryCodes) || ['AE'])[0];
+  const guestCC = HP.mount(document.getElementById('guest-cc-pick'), { defaultIso: regionIso() });
+  const phoneCC = HP.mount(document.getElementById('phone-cc-pick'), { defaultIso: regionIso() });
+  const phoneLocal = document.getElementById('phone-local');
+  const phoneHidden = document.getElementById('phone');
+  let phoneCCTouched = false;
+  // Follow the delivery country until the customer picks a code themselves.
+  window.hkSyncPhoneCC = () => {
+    if (phoneCCTouched || phoneLocal.value.trim()) return;
+    phoneCC.set(regionIso()); syncPhone(false);
+    if (guestBox.hidden) guestCC.set(regionIso());
+  };
+  // The hidden #phone keeps the full international number (+971 501234567) that the rest of checkout reads.
+  function syncPhone(fire) {
+    phoneHidden.value = HP.compose(phoneCC.iso, phoneLocal.value);
+    if (fire) phoneHidden.dispatchEvent(new Event('change'));
+  }
+  phoneLocal.addEventListener('input', () => { phoneLocal.classList.remove('prefilled'); syncPhone(false); });
+  phoneLocal.addEventListener('change', () => syncPhone(true));
+  phoneCC.select.addEventListener('change', () => { phoneCCTouched = true; document.getElementById('phone-cc-pick').classList.remove('prefilled'); syncPhone(true); });
+  document.getElementById('email').addEventListener('input', e => e.target.classList.remove('prefilled'));
+
+  let guestMode = 'email';
+  function setGuestMode(mode) {
+    guestMode = mode;
+    document.getElementById('gt-email').setAttribute('aria-selected', String(mode === 'email'));
+    document.getElementById('gt-phone').setAttribute('aria-selected', String(mode === 'phone'));
+    document.getElementById('gf-email').hidden = mode !== 'email';
+    document.getElementById('gf-phone').hidden = mode !== 'phone';
+    document.getElementById('guest-err').hidden = true;
+  }
+  document.getElementById('gt-email').addEventListener('click', () => { setGuestMode('email'); document.getElementById('guest-email').focus(); });
+  document.getElementById('gt-phone').addEventListener('click', () => { setGuestMode('phone'); document.getElementById('guest-phone').focus(); });
+
+  function openGuestBox() {
+    if (applyEmptyGuard()) return;
+    accountStep.style.display = 'block';
+    signinBox.style.display = 'none';
+    guestBox.hidden = false;
+    guestBar.hidden = true;
+    checkoutLayout.classList.remove('unlocked');
+    checkoutLockedNote.style.display = 'none';
+    if (guestContact) {
+      setGuestMode(guestContact.type);
+      if (guestContact.type === 'email') document.getElementById('guest-email').value = guestContact.value;
+      else { guestCC.set(guestContact.iso); document.getElementById('guest-phone').value = guestContact.local || ''; }
+    } else if (!phoneCCTouched) guestCC.set(regionIso());
+    accountStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => document.getElementById(guestMode === 'email' ? 'guest-email' : 'guest-phone').focus({ preventScroll: true }), 50);
+  }
+  function closeGuestBox() {
+    guestBox.hidden = true;
+    signinBox.style.display = '';
+    checkoutLockedNote.style.display = 'block';
+  }
+  function showGuestBar() {
+    if (!guestContact) return;
+    document.getElementById('guest-bar-contact').textContent = guestContact.type === 'email' ? guestContact.value : HP.compose(guestContact.iso, guestContact.local);
+    guestBar.hidden = false;
+  }
+  // Fill the delivery form from what the guest gave (only into an empty field, or one we filled before).
+  function prefillGuest(mark) {
+    if (!guestContact) return;
+    if (guestContact.type === 'email') {
+      const el = document.getElementById('email');
+      if (!el.value.trim() || el.dataset.guestFilled === '1') {
+        el.value = guestContact.value; el.dataset.guestFilled = '1';
+        if (mark) el.classList.add('prefilled');
+        el.dispatchEvent(new Event('change'));
+      }
+    } else {
+      if (!phoneLocal.value.trim() || phoneLocal.dataset.guestFilled === '1') {
+        phoneCC.set(guestContact.iso); phoneCCTouched = true;
+        phoneLocal.value = guestContact.local; phoneLocal.dataset.guestFilled = '1';
+        if (mark) { phoneLocal.classList.add('prefilled'); document.getElementById('phone-cc-pick').classList.add('prefilled'); }
+        syncPhone(true);
+      }
+    }
+  }
+  function guestError(key, fb) {
+    const el = document.getElementById('guest-err');
+    el.textContent = t(key, fb); el.hidden = false;
+  }
+  function submitGuest() {
+    let g;
+    if (guestMode === 'email') {
+      const v = document.getElementById('guest-email').value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { guestError('checkout.guest_err_email', 'Please enter a valid email address.'); document.getElementById('guest-email').focus(); return; }
+      g = { type: 'email', value: v };
+    } else {
+      const raw = document.getElementById('guest-phone').value.trim();
+      if (!HP.validLocal(raw)) { guestError('checkout.guest_err_phone', 'Please enter a valid mobile number.'); document.getElementById('guest-phone').focus(); return; }
+      let iso = guestCC.iso, local = raw.replace(/\D/g, '').replace(/^0+/, '');
+      if (/^(\+|00)/.test(raw)) { const sp = HP.split(raw); if (sp.iso) { iso = sp.iso; local = sp.local; } }
+      g = { type: 'phone', iso, local, value: HP.compose(iso, local) };
+    }
+    guestContact = g;
+    try { sessionStorage.setItem(GUEST_KEY, JSON.stringify(g)); } catch {}
+    continuedAsGuest = true;
+    guestBox.hidden = true;
+    signinBox.style.display = '';
+    accountStep.style.display = 'none';
+    showGuestBar();
+    prefillGuest(true);
+    unlockCheckoutLayout();
+    checkoutLayout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.getElementById('guest-go').addEventListener('click', submitGuest);
+  ['guest-email', 'guest-phone'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitGuest(); } }));
+  document.getElementById('guest-back').addEventListener('click', closeGuestBox);
+  document.getElementById('guest-change').addEventListener('click', () => { continuedAsGuest = false; openGuestBox(); });
+
+  refreshAuthUI();
+  if (openGuestOnLoad) openGuestBox();
+
 
   async function detectLocation() {
     // If the visitor already picked a region elsewhere on the site (the
@@ -968,6 +1149,7 @@
 
   function renderPaymentSection() {
     currentRegionKey = countrySelect.value;
+    if (window.hkSyncPhoneCC) { try { window.hkSyncPhoneCC(); } catch (e) {} }
     const region = REGIONS[currentRegionKey];
     const methods = methodsFor(currentRegionKey, region);
     const fpAll = (window.hikayaCart && window.hikayaCart.getCart().length) ? computeFinalPricing(region) : { total: -1 };
@@ -1464,7 +1646,7 @@
   // ---------- Validation messages (QA-04 / QA-07) ----------
   /* Errors are remembered by translation key so they re-translate when the language changes,
      and invalid fields are flagged for assistive technology and focused. */
-  const REQ_IDS = ['full-name', 'email', 'phone', 'address', 'unit', 'city'];
+  const REQ_IDS = ['full-name', 'email', 'phone-local', 'address', 'unit', 'city'];
   let lastErr = null;
   function showErr(key, fb, fieldIds) {
     const box = document.getElementById('payment-error');
