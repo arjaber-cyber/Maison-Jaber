@@ -56,6 +56,7 @@ seo = {}
 for G in GUIDES:
     key, file = G['key'], G['file']
     k(key + '_title', *G['title']); k(key + '_intro', *G['intro']); k(key + '_desc', *G['desc'])
+    if G.get('date'): k(key + '_date', G['date'][1], G['date'][2])  # optional per-guide publish date (iso, en, ar)
     for i, (he, ha, be, ba) in enumerate(G['sections']):
         k(f'{key}_s{i}_h', he, ha); k(f'{key}_s{i}_b', be, ba)
     t_en = G.get('seo_title_en') or (G['title'][0] + ' | Hikaya')  # keep under ~60 characters
@@ -66,8 +67,10 @@ for G in GUIDES:
 for G in GUIDES:
     key, file, img = G['key'], G['file'], G['img']
     url = SITE + file
+    gdate = G['date'][0] if G.get('date') else DATE
+    dkey, dlabel = (key + '_date', G['date'][1]) if G.get('date') else ('date', '1 November 2026')
     art = {"@context": "https://schema.org", "@type": "Article", "headline": G['title'][0], "description": G['desc'][0],
-           "image": SITE + 'images/' + img + '.webp', "datePublished": DATE, "dateModified": DATE, "inLanguage": "en",
+           "image": SITE + 'images/' + img + '.webp', "datePublished": gdate, "dateModified": gdate, "inLanguage": "en",
            "author": {"@type": "Organization", "name": "Hikaya by Maison Jaber", "url": SITE},
            "publisher": {"@type": "Organization", "name": "Hikaya by Maison Jaber", "logo": {"@type": "ImageObject", "url": SITE + 'images/logo-hikaya.png'}},
            "mainEntityOfPage": url}
@@ -86,7 +89,7 @@ for G in GUIDES:
   <div class="guide-wrap">
     <nav class="crumbs" aria-label="Breadcrumb" data-i18n-aria="a11y.breadcrumb"><ol><li><a href="index.html" data-i18n="gdg.crumb_home">Home</a></li><li><a href="guides.html" data-i18n="gdg.crumb">Gift guides</a></li></ol></nav>
     <h1 data-i18n="gdg.{key}_title">{e(G['title'][0])}</h1>
-    <p class="guide-meta"><time datetime="{DATE}" data-i18n="gdg.date">1 November 2026</time> · <span data-gdg-mins="{G['mins']}">{G['mins']} min read</span></p>
+    <p class="guide-meta"><time datetime="{gdate}" data-i18n="gdg.{dkey}">{dlabel}</time> · <span data-gdg-mins="{G['mins']}">{G['mins']} min read</span></p>
     <p class="lede" data-i18n="gdg.{key}_intro">{e(G['intro'][0])}</p>
     <div class="guide-body">{secs}</div>
     <aside class="guide-cta">

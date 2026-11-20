@@ -212,6 +212,14 @@ export const PAGES = {
     en: { title: "Free Personalised Book Cover Preview UAE | Hikaya", desc: "See your child as the hero of a personalised Hikaya storybook. Create a free book-cover preview in minutes—no payment needed. UAE and GCC delivery." },
     ar: { title: "معاينة غلاف قصة مخصصة لطفلك مجاناً | حكاية", desc: "شاهد طفلك بطلًا لقصة مخصصة من حكاية، أنشئ معاينة مجانية لغلاف الكتاب خلال دقائق ودون أي دفع، مع التوصيل في الإمارات ودول الخليج" },
   },
+  "guide-arabic-stories-for-kids.html": {
+    en: { title: "Arabic Stories for Kids: 8 Ways to Love Reading | Hikaya", desc: "Simple, practical ways to help children aged 2 to 8 enjoy Arabic stories at home, from bedtime reading to books where they are the hero." },
+    ar: { title: "قصص أطفال بالعربية: 8 طرق لتحبيب طفلك في القراءة بالعربية | حكاية", desc: "طرق بسيطة وعملية تساعد الأطفال من 2 إلى 8 سنوات على الاستمتاع بالقصص العربية في البيت، من قراءة ما قبل النوم إلى كتب يكون الطفل بطلها" },
+  },
+  "guide-personalised-gifts-for-kids.html": {
+    en: { title: "Personalised Gifts for Kids: 10 Keepsake Ideas | Hikaya", desc: "Looking for a personalised gift for a child aged 2 to 8? Ten thoughtful keepsake ideas with their name on them, plus how to choose one that lasts." },
+    ar: { title: "هدايا مخصصة للأطفال: 10 أفكار يحتفظون بها لسنوات | حكاية", desc: "تبحث عن هدية مخصصة لطفل من 2 إلى 8 سنوات؟ عشر أفكار لتذكارات مميزة تحمل اسمه، مع نصائح لاختيار هدية تدوم" },
+  },
   // END PAGES (tools/seo/register_pages.py adds new pages above this line)
 };
 
@@ -825,6 +833,8 @@ export const config = {
   cache: "manual",
   path: [
     // PATHS (tools/seo/register_pages.py adds new pages below this line)
+    "/hikaya/guide-personalised-gifts-for-kids.html",
+    "/hikaya/guide-arabic-stories-for-kids.html",
     "/hikaya/free-cover-preview.html",
     "/hikaya/guide-uae-national-day-gift-ideas.html",
     "/hikaya/",

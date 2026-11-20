@@ -609,6 +609,198 @@
  "natday_s10_b": {
   "en": "<p>Personalised books are made to order, and Hikaya delivery takes about 5 working days in the UAE, so ordering by around 24 November keeps things relaxed before 2 December. Delivery is free across the UAE.</p>",
   "ar": "<p>الكتب المخصصة تُصنع حسب الطلب، ويستغرق توصيل حكاية نحو 5 أيام عمل في الإمارات، لذلك فالطلب قبل 24 نوفمبر تقريبًا يريحك قبل 2 ديسمبر، والتوصيل مجاني داخل الإمارات</p>"
+ },
+ "arabic_title": {
+  "en": "Arabic stories for kids: 8 ways to help your child love reading in Arabic",
+  "ar": "قصص أطفال بالعربية: 8 طرق لتحبيب طفلك في القراءة بالعربية"
+ },
+ "arabic_intro": {
+  "en": "Many families in the UAE and the Gulf speak Arabic at home, yet children often reach for English books first. The good news is that a love of Arabic reading grows from small, warm habits rather than lessons. Here are eight ideas that work at home, even on busy days.",
+  "ar": "كثير من العائلات في الإمارات والخليج تتحدث العربية في البيت، ومع ذلك يميل الأطفال غالبًا إلى الكتب الإنجليزية أولًا، والخبر الجميل أن حب القراءة بالعربية ينمو من عادات صغيرة دافئة وليس من الدروس، وهذه ثماني أفكار تنجح في البيت حتى في الأيام المزدحمة"
+ },
+ "arabic_desc": {
+  "en": "Simple, practical ways to help children aged 2 to 8 enjoy Arabic stories at home, from bedtime reading to books where they are the hero.",
+  "ar": "طرق بسيطة وعملية تساعد الأطفال من 2 إلى 8 سنوات على الاستمتاع بالقصص العربية في البيت، من قراءة ما قبل النوم إلى كتب يكون الطفل بطلها"
+ },
+ "arabic_date": {
+  "en": "20 November 2026",
+  "ar": "20 نوفمبر 2026"
+ },
+ "arabic_s0_h": {
+  "en": "1. Read aloud together every day",
+  "ar": "1- اقرأ معه بصوت عالٍ كل يوم"
+ },
+ "arabic_s0_b": {
+  "en": "<p>Ten minutes is enough. Hearing Arabic read with expression, with voices for each character, builds vocabulary and makes the language feel alive. Let them turn the pages and point at the pictures.</p>",
+  "ar": "<p>عشر دقائق تكفي، فسماع العربية تُقرأ بتعبير وبصوت مختلف لكل شخصية يبني المفردات ويجعل اللغة حيّة، ودعه يقلّب الصفحات ويشير إلى الصور</p>"
+ },
+ "arabic_s1_h": {
+  "en": "2. Choose stories where they are the hero",
+  "ar": "2- اختر قصصًا يكون هو بطلها"
+ },
+ "arabic_s1_b": {
+  "en": "<p>Children pay closer attention when the story is about them. A personalised Arabic book with their name written in Arabic and their illustrated face on every page turns reading into something they ask for. Every Hikaya story comes in an Arabic edition with its own cover, and it opens from right to left like any Arabic book. <a href=\"stories.html\">Browse the stories</a>.</p>",
+  "ar": "<p>ينتبه الأطفال أكثر عندما تكون القصة عنهم، والكتاب العربي المخصص الذي يحمل اسمه مكتوبًا بالعربية وملامحه المرسومة في كل صفحة يجعل القراءة شيئًا يطلبه بنفسه، وكل قصة من حكاية متوفرة بنسخة عربية لها غلافها الخاص وتُفتح من اليمين إلى اليسار مثل أي كتاب عربي <a href=\"stories.html\">تصفّح القصص</a></p>"
+ },
+ "arabic_s2_h": {
+  "en": "3. Mix Fusha and your home dialect",
+  "ar": "3- امزج بين الفصحى ولهجة البيت"
+ },
+ "arabic_s2_b": {
+  "en": "<p>Most children&#x27;s books are written in Fusha (Modern Standard Arabic), while children speak a dialect at home. That is fine. Read the text as written, then chat about the pictures in your own dialect. Children quickly learn that both belong to them.</p>",
+  "ar": "<p>معظم كتب الأطفال مكتوبة بالفصحى بينما يتحدث الطفل اللهجة في البيت، ولا مشكلة في ذلك، اقرأ النص كما هو مكتوب ثم تحدّث معه عن الصور بلهجتك، وسيتعلم سريعًا أن الاثنتين له</p>"
+ },
+ "arabic_s3_h": {
+  "en": "4. Make Arabic the bedtime language",
+  "ar": "4- اجعل العربية لغة ما قبل النوم"
+ },
+ "arabic_s3_b": {
+  "en": "<p>A short Arabic story at bedtime becomes a ritual they look forward to. Calm stories work best, like <a href=\"story.html?s=teddys-night-adventure\">Teddy&#x27;s Night Adventure</a> (ages 2–6), a cosy tale about feeling brave in the dark.</p>",
+  "ar": "<p>قصة عربية قصيرة قبل النوم تصبح عادة ينتظرها كل ليلة، والقصص الهادئة هي الأنسب، مثل <a href=\"story.html?s=teddys-night-adventure\">مغامرة تيدي الليلية</a> (من 2 إلى 6 سنوات)، وهي حكاية دافئة عن الشجاعة في الظلام</p>"
+ },
+ "arabic_s4_h": {
+  "en": "5. Let them see you read in Arabic",
+  "ar": "5- دعه يراك تقرأ بالعربية"
+ },
+ "arabic_s4_b": {
+  "en": "<p>Children copy what they see. A newspaper, a novel or Quran reading in front of them shows that Arabic reading is part of everyday life, not just homework.</p>",
+  "ar": "<p>الأطفال يقلّدون ما يرونه، فقراءة صحيفة أو رواية أو القرآن أمامهم تُظهر أن القراءة بالعربية جزء من الحياة اليومية وليست واجبًا مدرسيًا فقط</p>"
+ },
+ "arabic_s5_h": {
+  "en": "6. Play with letters, starting with their name",
+  "ar": "6- العب بالحروف وابدأ باسمه"
+ },
+ "arabic_s5_b": {
+  "en": "<p>Magnetic letters, letter cards or tracing in sand make Arabic letters feel like a game. Start with the letters of their own name. Seeing that name printed on the cover of their own book makes it even more exciting.</p>",
+  "ar": "<p>الحروف المغناطيسية أو بطاقات الحروف أو الكتابة على الرمل تجعل الحروف العربية لعبة ممتعة، ابدأ بحروف اسمه، ورؤية اسمه مطبوعًا على غلاف كتابه الخاص تجعل الأمر أكثر حماسًا</p>"
+ },
+ "arabic_s6_h": {
+  "en": "7. Keep Arabic and English books side by side",
+  "ar": "7- ضع الكتب العربية والإنجليزية جنبًا إلى جنب"
+ },
+ "arabic_s6_b": {
+  "en": "<p>Bilingual children do not need to choose. Keep both on the same shelf at their eye level, so Arabic books are never hidden away. Some families even choose the same story in both languages so children can compare.</p>",
+  "ar": "<p>الطفل ثنائي اللغة لا يحتاج إلى الاختيار، ضع الكتب باللغتين على الرف نفسه بمستوى نظره حتى لا تختفي الكتب العربية، وبعض العائلات تختار القصة نفسها باللغتين ليقارن الطفل بينهما</p>"
+ },
+ "arabic_s7_h": {
+  "en": "8. Visit libraries and book fairs",
+  "ar": "8- زر المكتبات ومعارض الكتب"
+ },
+ "arabic_s7_b": {
+  "en": "<p>Public libraries and book fairs, such as the Sharjah International Book Fair, are full of Arabic picture books. Let your child pick one book on their own. Choosing makes reading feel like theirs.</p>",
+  "ar": "<p>المكتبات العامة ومعارض الكتب مثل معرض الشارقة الدولي للكتاب مليئة بكتب الأطفال المصورة بالعربية، دع طفلك يختار كتابًا بنفسه، فالاختيار يجعله يشعر أن القراءة له</p>"
+ },
+ "arabic_s8_h": {
+  "en": "Tip: ordering an Arabic Hikaya book",
+  "ar": "نصيحة: عند طلب كتاب حكاية بالعربية"
+ },
+ "arabic_s8_b": {
+  "en": "<p>Choose Arabic as the book language when you personalise. The child&#x27;s name and your first-page message are then written in Arabic too, so the whole book reads naturally. Each book is made to order and delivered in about 5 working days in the UAE (free) and about 7 in the rest of the GCC.</p>",
+  "ar": "<p>اختر العربية لغةً للكتاب عند التخصيص، وعندها يُكتب اسم الطفل ورسالتك في الصفحة الأولى بالعربية أيضًا ليُقرأ الكتاب كله بشكل طبيعي، وكل كتاب يُصنع حسب الطلب ويصل خلال نحو 5 أيام عمل في الإمارات مع توصيل مجاني ونحو 7 أيام في باقي دول الخليج</p>"
+ },
+ "personal_title": {
+  "en": "Personalised gifts for kids: 10 ideas they'll keep for years",
+  "ar": "هدايا مخصصة للأطفال: 10 أفكار يحتفظون بها لسنوات"
+ },
+ "personal_intro": {
+  "en": "A gift with a child's name on it says “this was made for you”, and children feel that. The best personalised gifts are the ones still on the shelf years later. Here are ten ideas for children aged 2 to 8, for birthdays, Eid or just because.",
+  "ar": "الهدية التي تحمل اسم الطفل تقول له إنها صُنعت من أجله، والأطفال يشعرون بذلك، وأجمل الهدايا المخصصة هي التي تبقى على الرف بعد سنوات، وهذه عشر أفكار للأطفال من 2 إلى 8 سنوات لعيد الميلاد أو العيد أو من دون مناسبة"
+ },
+ "personal_desc": {
+  "en": "Looking for a personalised gift for a child aged 2 to 8? Ten thoughtful keepsake ideas with their name on them, plus how to choose one that lasts.",
+  "ar": "تبحث عن هدية مخصصة لطفل من 2 إلى 8 سنوات؟ عشر أفكار لتذكارات مميزة تحمل اسمه، مع نصائح لاختيار هدية تدوم"
+ },
+ "personal_date": {
+  "en": "20 November 2026",
+  "ar": "20 نوفمبر 2026"
+ },
+ "personal_s0_h": {
+  "en": "1. A storybook where they are the hero",
+  "ar": "1- قصة يكون الطفل بطلها"
+ },
+ "personal_s0_b": {
+  "en": "<p>A personalised book puts their name and illustrated face on every page, in Arabic or English, with your own message on the first page. Hikaya books are 21×21 cm hardcovers, made to order and delivered in a gift box. Not sure yet? <a href=\"free-cover-preview.html\">Try their cover free</a> first.</p>",
+  "ar": "<p>الكتاب المخصص يضع اسم الطفل وملامحه المرسومة في كل صفحة، بالعربية أو الإنجليزية، مع رسالتك الخاصة في الصفحة الأولى، وكتب حكاية بغلاف مقوّى بمقاس 21×21 سم تُصنع حسب الطلب وتصل في علبة هدية، وإن لم تكن متأكدًا <a href=\"free-cover-preview.html\">جرّب غلافه مجانًا</a> أولًا</p>"
+ },
+ "personal_s1_h": {
+  "en": "2. A wooden name puzzle",
+  "ar": "2- لعبة تركيب خشبية باسمه"
+ },
+ "personal_s1_b": {
+  "en": "<p>Perfect for ages 2 to 4. Each letter of their name is a puzzle piece, so playing becomes a first lesson in spelling.</p>",
+  "ar": "<p>مناسبة جدًا من 2 إلى 4 سنوات، كل حرف من اسمه قطعة في اللعبة، فيصبح اللعب أول درس في التهجئة</p>"
+ },
+ "personal_s2_h": {
+  "en": "3. A school bag or lunch box with their name",
+  "ar": "3- حقيبة مدرسية أو علبة طعام باسمه"
+ },
+ "personal_s2_b": {
+  "en": "<p>Useful and personal at the same time, and it never gets mixed up with a classmate&#x27;s. A great choice before nursery or the first day of school.</p>",
+  "ar": "<p>هدية مفيدة وشخصية في الوقت نفسه، ولا تختلط أبدًا بأغراض زملائه، وهي اختيار رائع قبل الحضانة أو أول يوم في المدرسة</p>"
+ },
+ "personal_s3_h": {
+  "en": "4. A growth chart",
+  "ar": "4- مسطرة لقياس الطول"
+ },
+ "personal_s3_b": {
+  "en": "<p>A wall chart with their name to mark their height on every birthday. Years later, it tells the story of how they grew.</p>",
+  "ar": "<p>لوحة على الحائط تحمل اسمه لتسجيل طوله في كل عيد ميلاد، وبعد سنوات تحكي قصة كيف كبر</p>"
+ },
+ "personal_s4_h": {
+  "en": "5. An embroidered bathrobe or towel",
+  "ar": "5- رداء حمام أو منشفة مطرزة"
+ },
+ "personal_s4_b": {
+  "en": "<p>A soft, everyday luxury with their name or initial stitched on. It makes bath time feel a little special.</p>",
+  "ar": "<p>رفاهية يومية ناعمة مطرز عليها اسمه أو الحرف الأول منه، تجعل وقت الاستحمام مميزًا قليلًا</p>"
+ },
+ "personal_s5_h": {
+  "en": "6. A night light with their name",
+  "ar": "6- ضوء ليلي باسمه"
+ },
+ "personal_s5_b": {
+  "en": "<p>A gentle glow by the bed helps little ones who are nervous about the dark, and seeing their own name makes it feel like theirs.</p>",
+  "ar": "<p>ضوء خافت بجانب السرير يساعد الصغار الذين يخافون الظلام، ورؤية اسمهم عليه يجعلهم يشعرون أنه لهم</p>"
+ },
+ "personal_s6_h": {
+  "en": "7. A print of the sky on the day they were born",
+  "ar": "7- لوحة للسماء يوم ولادته"
+ },
+ "personal_s6_b": {
+  "en": "<p>A star map of the night they were born, with their name and birth date, is a lovely piece for their room that they will keep as they grow.</p>",
+  "ar": "<p>خريطة للنجوم في ليلة ولادته مع اسمه وتاريخ ميلاده، قطعة جميلة لغرفته يحتفظ بها وهو يكبر</p>"
+ },
+ "personal_s7_h": {
+  "en": "8. A keepsake box for their treasures",
+  "ar": "8- صندوق تذكارات لكنوزه"
+ },
+ "personal_s7_b": {
+  "en": "<p>A wooden box with their name for drawings, first teeth, notes and tickets. Children love having a place for the things that matter to them.</p>",
+  "ar": "<p>صندوق خشبي يحمل اسمه للرسومات والأسنان الأولى والرسائل والتذاكر، فالأطفال يحبون أن يكون لهم مكان للأشياء المهمة بالنسبة لهم</p>"
+ },
+ "personal_s8_h": {
+  "en": "9. Their own drawing turned into a keepsake",
+  "ar": "9- رسمته الخاصة تتحول إلى تذكار"
+ },
+ "personal_s8_b": {
+  "en": "<p>Turn a favourite drawing into a cushion, a mug or a framed print. It tells them their art is worth keeping.</p>",
+  "ar": "<p>حوّل رسمته المفضلة إلى وسادة أو كوب أو لوحة في إطار، فهذا يخبره أن فنه يستحق الاحتفاظ به</p>"
+ },
+ "personal_s9_h": {
+  "en": "10. A letter for them to open when they are older",
+  "ar": "10- رسالة يفتحها عندما يكبر"
+ },
+ "personal_s9_b": {
+  "en": "<p>Write about who they are today: what they love, what makes them laugh, what you hope for them. Seal it and add the age they should open it. It costs nothing and means everything.</p>",
+  "ar": "<p>اكتب عمّن هو اليوم: ماذا يحب وما الذي يضحكه وما الذي تتمناه له، ثم أغلقها واكتب عليها العمر الذي يفتحها فيه، فهي لا تكلّف شيئًا لكنها تعني الكثير</p>"
+ },
+ "personal_s10_h": {
+  "en": "Tip: choose a gift that will still matter in five years",
+  "ar": "نصيحة: اختر هدية تبقى لها قيمة بعد خمس سنوات"
+ },
+ "personal_s10_b": {
+  "en": "<p>Ask yourself whether it will still be kept, not just used. Personalised gifts are made to order, so allow time: Hikaya delivers in about 5 working days in the UAE (free) and about 7 in the rest of the GCC. You can also send the book straight to the child&#x27;s home. <a href=\"gifts.html\">See gift ideas by occasion</a>.</p>",
+  "ar": "<p>اسأل نفسك هل سيُحتفظ بها وليس فقط هل ستُستخدم، والهدايا المخصصة تُصنع حسب الطلب لذلك امنح نفسك وقتًا كافيًا، فحكاية توصل خلال نحو 5 أيام عمل في الإمارات مع توصيل مجاني ونحو 7 أيام في باقي دول الخليج، ويمكنك إرسال الكتاب مباشرة إلى بيت الطفل <a href=\"gifts.html\">شاهد أفكار الهدايا حسب المناسبة</a></p>"
  }
 };
   /* reading-time label follows the page language */
