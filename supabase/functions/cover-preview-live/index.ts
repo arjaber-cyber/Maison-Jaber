@@ -64,7 +64,7 @@ async function openai(path: string, init: RequestInit) {
 }
 
 // ---------- per-cover facts (who to replace, old name, who must stay) ----------
-const COVERS: Record<string, { en: string; ar: string; who: string; keep?: string; titleEn: string; titleAr: string; titleArGirl?: string; arVerb?: [string, string]; adult?: { role: string; who: string; outfit: string; female?: boolean } }> = {
+const COVERS: Record<string, { en: string; ar: string; who: string; keep?: string; titleEn: string; titleAr: string; titleArGirl?: string; arVerb?: [string, string]; headpiece?: string; adult?: { role: string; who: string; outfit: string; female?: boolean } }> = {
   "christmas-star": { en: "Leen", ar: "لين", who: "the child kneeling in the snow holding the glowing star", titleEn: "{N} and the Christmas Star That Went Missing", titleAr: "{N} و نجمة الميلاد التي ضاعت" },
   "christmas-tree-door": { en: "Diana", ar: "ديانا", who: "the child in red pyjamas standing at the round door", keep: "the small white dragon and the little elf in the green coat", titleEn: "{N} and the Christmas Tree Door", titleAr: "{N} وباب شجرة عيد الميلاد" },
   "door-of-a-thousand-stars": { en: "Hadi", ar: "هادي", who: "the child in the starry blue cape sitting on the rock", keep: "the smiling yellow star character", titleEn: "{N} and the Door of a Thousand Stars", titleAr: "{N} وباب الألف نجمة" },
@@ -81,6 +81,7 @@ const COVERS: Record<string, { en: string; ar: string; who: string; keep?: strin
   "uae-national-day": { en: "Jack", ar: "جاك", who: "the young boy sitting on the man's lap, smiling up at him and holding a small UAE flag", keep: "the father (the adult man with the beard, grey polo shirt and UAE-flag scarf) exactly as he is: same face, beard, hair, skin and pose", titleEn: "{N} Celebrates UAE National Day", titleAr: "{N} يحتفل باليوم الوطني الإماراتي", titleArGirl: "{N} تحتفل باليوم الوطني الإماراتي", arVerb: ["يحتفل", "تحتفل"], adult: { role: "father", who: "the father (the adult man with the beard sitting behind the child, holding the child on his lap)", outfit: "the same grey polo shirt and red, green, white and black UAE-flag scarf" } },
   "leave-it-to-me": { en: "Mariam", ar: "مريم", who: "the little girl on the left in the pink long-sleeved top and beige linen apron, holding out the plate of toast and smiling up at the woman", keep: "the mother (the woman with long dark curly hair and the sage-green cardigan) exactly as she is: same face, hair, skin and pose", titleEn: "Leave It to {N}!", titleAr: "الفطور على {N}", adult: { role: "mother", female: true, who: "the mother (the woman with long dark curly hair in the sage-green cardigan, sitting beside the child and smiling at her)", outfit: "the same sage-green knitted cardigan over the cream top" } },
   "my-dad-my-hero": { en: "Maya", ar: "مايا", who: "the little girl on the left in the mustard-yellow cardigan and light-blue dress, standing on the cobblestones and holding the superhero's hand", keep: "the father (the tall man with short dark hair in the dark navy superhero suit with the gold star and the red cape) exactly as he is: same face, hair, skin and pose", titleEn: "My Dad, My Hero", titleAr: "أبي بطلي", adult: { role: "father", who: "the father (the tall man in the dark navy superhero suit with the gold star and the long red cape, standing beside the child and holding her hand)", outfit: "the same dark navy superhero suit with the gold star on the chest, the long red cape and the dark boots" } },
+  "royal-garden-gathering": { en: "Lara", ar: "لارا", who: "the little girl kneeling on the lilac gingham picnic blanket in the pink and lilac princess dress with puffed sleeves and the small gold crown", keep: "the picnic basket, teacups, flowers, roses and the garden wall, unchanged", titleEn: "{N}'s Royal Garden Gathering", titleAr: "{N} والوليمة الملكية في الحديقة", headpiece: "the small gold crown" },
   "why-is-baby-looking-at-me": { en: "Eva", ar: "ايفا", who: "the older child lying on the rug in the red top", keep: "the baby, unchanged", titleEn: "{N} Why Is Baby Looking at Me?", titleAr: "{N} لماذا ينظر إليّ المولود الصغير؟" },
 };
 
@@ -102,10 +103,13 @@ const ORIG: Record<string, { g: "girl" | "boy"; boyOutfit?: string; girlOutfit?:
   "uae-national-day": { g: "boy", girlOutfit: "the same light-blue short-sleeved T-shirt in a girl's cut and the same khaki shorts, the same backpack straps; neat and simple, nothing boyish about the styling" },
   "leave-it-to-me": { g: "girl", boyOutfit: "a plain sage-green long-sleeved crew-neck top and plain trousers (nothing pink) under the same beige linen apron" },
   "my-dad-my-hero": { g: "girl", boyOutfit: "a plain mustard-yellow zip-up jacket in a boy's cut over a plain light-blue T-shirt, with straight light-grey trousers and the same white trainers (no dress, no skirt)" },
+  "royal-garden-gathering": { g: "girl", boyOutfit: "a smart prince outfit in a boy's cut: a pink-and-lilac tunic jacket with gold trim and puffed shoulders, plain light trousers, and nothing on his head: no crown (no dress, no skirt)" },
   "why-is-baby-looking-at-me": { g: "girl", boyOutfit: "a plain red crew-neck T-shirt in the same red (no ruffles, no dress), with trousers where visible" },
 };
 
 // Does the title carry the child's name? ("My Dad, My Hero" does not.)
+// Costume headpiece painted on the cover (e.g. a princess crown): a girl keeps it, a boy never wears anything on his head.
+const crownRule = (c: any, girl: boolean) => !c?.headpiece ? "" : girl ? ` Keep ${c.headpiece} from image 1 on her head exactly as it is: it is part of the cover's costume, not headwear from the photo.` : ` Remove ${c.headpiece} from the cover: the boy wears nothing on his head.`;
 const hasName = (c: any) => !!c && (c.titleEn.includes("{N}") || c.titleAr.includes("{N}"));
 // The full title for this child (Arabic titles with a verb use the feminine form for a girl, e.g. "تحتفل").
 const isGirl = (job: any) => /girl|female/i.test(job?.child_gender ?? job?.gender ?? "");
@@ -210,7 +214,7 @@ LIKENESS (most important): a parent must instantly recognise their child. Match 
 
 ${outfitRule(job)}
 
-HEAD: ${headRule}${adultBlock}
+HEAD: ${headRule}${crownRule(c, girl)}${adultBlock}
 
 ${titleBlock ?? `TITLE TEXT: The title currently contains the name "${oldName}". Erase "${oldName}" completely and write "${job.child_name}" in its place, in exactly the same lettering style, colour, size, effect and position. ${ar ? `Arabic letters, right-to-left, spelled exactly: ${job.child_name} (letter by letter: ${[...job.child_name].join(" ")}).` : `Spelled exactly: ${job.child_name}, in plain letters with no accents, dots, umlauts, stars or decorative marks on or above any letter.`} After the change the full title must read: "${title}".${verbRule} The name "${oldName}" must not appear anywhere. Do not change, move or misspell any other word, the Hikaya logo or any small text.`}
 
@@ -292,7 +296,7 @@ Likeness: keep the child's face shape, eyes, eyebrows, nose, mouth, skin tone, h
 
 Clothing: keep the original character's outfit from image 1 exactly. Do not use the clothes from the photo.
 
-Head: ${headRule}
+Head: ${headRule}${crownRule(COVERS[job.story_slug], girl)}
 
 ${nameLine}
 
@@ -342,7 +346,7 @@ Check image C and reply with JSON only:
  "likeness": <1-5, would a parent instantly recognise the child in B as the character in C: face shape, eyes, nose, mouth, skin tone, hair>,
  "head_natural": <1-5, does the head look hand-painted and naturally attached, with correct size, angle and lighting; 1 = looks pasted on>,
  "pose_kept": <true if the character's pose and head angle follow image A>,
- "headwear_ok": <true if ${boy ? "the boy wears nothing on his head (no cap, hat, ghutra, hood)" : "the girl wears no headwear except possibly a hijab"}>,
+ "headwear_ok": <true if ${boy ? `the boy wears nothing on his head (no cap, hat, ghutra, hood${c?.headpiece ? `, no ${c.headpiece.replace(/^the /, "")}` : ""})` : `the girl wears no headwear except possibly a hijab${c?.headpiece ? ` (${c.headpiece} from image A is part of the costume and is fine)` : ""}`}>,
  "outfit_ok": <true if the outfit matches image A's outfit and ${boy ? "looks like a boy's outfit (no dress, ruffles, bows, frills, pink girly details)" : "is appropriate"}>,
  "others_ok": <true if every other person${adult ? ` (apart from the ${role}, who was meant to change)` : ""}, baby, animal and object looks the same as in image A; false if any of them took the child's face, hair, glasses or features, or changed>,${adult ? `
  "adult_likeness": <1-5, would the family instantly recognise the ${fem ? "woman" : "man"} in D as the ${role} in C: face shape, eyes, nose, skin tone, ${fem ? "hair (or hijab)" : "hair, beard"}>,

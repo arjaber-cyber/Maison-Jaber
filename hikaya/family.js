@@ -20,6 +20,7 @@
     'uae-national-day': ['father'],
     'leave-it-to-me': ['mother'],
     'my-dad-my-hero': ['father'],
+    'royal-garden-gathering': ['teacher', 'friend'],
   };
 
   const ROLES = {
@@ -27,6 +28,9 @@
     father: { en: 'Dad', ar: 'الأب', admin: 'Father', fem: false },
     grandfather: { en: 'Grandpa', ar: 'الجد', admin: 'Grandfather', fem: false },
     grandmother: { en: 'Grandma', ar: 'الجدة', admin: 'Grandmother', fem: true },
+    // Not family (Nov 2026): the step is then titled "special people" instead of "family".
+    teacher: { en: 'Teacher', ar: 'المعلّمة', admin: 'Teacher', fem: true, notFamily: true },
+    friend: { en: 'Friend', ar: 'الصديقة', admin: 'Friend', fem: true, notFamily: true },
   };
 
   const lang = () => { try { return window.hikayaLang && window.hikayaLang() === 'ar' ? 'ar' : 'en'; } catch (_) { return 'en'; } };

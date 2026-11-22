@@ -98,7 +98,7 @@
   const items = o => { if (Array.isArray(o.items)) return o.items; try { return JSON.parse(o.items || '[]'); } catch (_) { return []; } };
   /* Family members who appear in the story (Mum, Dad, Grandpa, Grandma): a customer photo or an AI-illustrated character. */
   const famOf = it => (Array.isArray(it.supportingCharacters) ? it.supportingCharacters : []);
-  const famRole = r => ({ mother: 'Mother', father: 'Father', grandfather: 'Grandfather', grandmother: 'Grandmother' }[r] || r);
+  const famRole = r => ({ mother: 'Mother', father: 'Father', grandfather: 'Grandfather', grandmother: 'Grandmother', teacher: 'Teacher', friend: 'Friend' }[r] || r);
   const famHas = c => Array.isArray(c.photoPaths) && c.photoPaths.length > 0;
   function famBadge(o) {
     const all = items(o).flatMap(famOf); if (!all.length) return '';

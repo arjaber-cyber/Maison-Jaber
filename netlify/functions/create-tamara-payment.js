@@ -73,7 +73,7 @@ exports.handler = async (event) => {
     photoLater: i.photoLater === true && !paths(i.photoPaths).length,
     supportingChoice: ['photos', 'avatar'].includes(i.supportingChoice) ? i.supportingChoice : null,
     supportingCharacters: (Array.isArray(i.supportingCharacters) ? i.supportingCharacters : [])
-      .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother'].includes(c.role)).slice(0, 4)
+      .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother', 'teacher', 'friend'].includes(c.role)).slice(0, 4)
       .map(c => ({ role: c.role, photoPaths: paths(c.photoPaths).slice(0, 2) })),
     supportingPhotoConsent: i.supportingPhotoConsent === true,
   }));

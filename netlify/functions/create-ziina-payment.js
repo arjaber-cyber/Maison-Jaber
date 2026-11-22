@@ -71,7 +71,7 @@ exports.handler = async (event) => {
     // Family members who appear in the story: a free photo each, or an AI-illustrated character.
     supportingChoice: ['photos', 'avatar'].includes(i.supportingChoice) ? i.supportingChoice : null,
     supportingCharacters: (Array.isArray(i.supportingCharacters) ? i.supportingCharacters : [])
-      .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother'].includes(c.role)).slice(0, 4)
+      .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother', 'teacher', 'friend'].includes(c.role)).slice(0, 4)
       .map(c => ({ role: c.role, photoPaths: paths(c.photoPaths).slice(0, 2) })),
     supportingPhotoConsent: i.supportingPhotoConsent === true,
   }));

@@ -5,6 +5,20 @@
    dashboard, update or remove its entry here: text is only used when the image file names match.
    Transcribed from the sample pages (the sample child's name appears as printed). */
 window.HIKAYA_PREVIEW_TEXT = {
+ "royal-garden-gathering": {
+  "en": [
+   "Swish, swish, went Lara's dress along the garden path. In her imagination, the climbing frame became a castle. The flowers bowed as she passed.",
+   "Lara looked at the crowded blanket. She shuffled over and patted the space beside her. “There's room in my kingdom! Sit with me, Emma.”",
+   "Just then— WHOOSH! A gust lifted the corner of the blanket. Napkins fluttered like butterflies. Two empty cups rolled across the grass.",
+   "Emma laughed and leaned close. “I'm glad you made room for me.” Lara felt a warm, sunny feeling that had nothing to do with her sparkly crown."
+  ],
+  "ar": [
+   "تمايل فستان لارا وهي تسير على ممرّ الحديقة. في خيالها، صار هيكل التسلّق قلعة، وانحنت الأزهار تحيّيها.",
+   "نظرت لارا إلى البطانية المزدحمة. تزحزحت قليلًا وربّتت على المكان بجانبها. «في مملكتي متّسع لكِ! اجلسي بجانبي يا إيما».",
+   "وفجأة... هوووو! رفعت الريح طرف البطانية. تطايرت المناديل كالفراشات، وتدحرج كوبان فارغان على العشب.",
+   "ضحكت إيما واقتربت منها. «فرحتُ حين أفسحتِ لي مكانًا». شعرت لارا بدفء كأشعة الشمس، ولم يكن لتاجها البرّاق أي دخل في ذلك."
+  ]
+ },
  "my-dad-my-hero": {
   "en": [
    "In Maya's imagination, his ordinary shirt became a superhero suit. A red cape streamed behind him as he flew above the rooftops. Whoooosh!",

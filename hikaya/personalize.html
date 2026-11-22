@@ -1348,6 +1348,7 @@
     const story = storyDisplayName(document.getElementById('story-input').value);
     const two = roles.length > 1;
     const who = F.joinWho(roles, l);
+    const notFam = roles.some(r => F.ROLES && F.ROLES[r] && F.ROLES[r].notFamily);
     if (l === 'ar') {
       const R = F.ROLES || {};
       const fem = roles.every(r => R[r] && R[r].fem);
@@ -1360,7 +1361,7 @@
         : (fem ? { acc: 'فهي ترافق', app: 'وتظهر', pic: 'صورتها', draw: 'سنرسمها', yes: 'نعم، أضيفوا صورة ' + who }
                : { acc: 'فهو يرافق', app: 'ويظهر', pic: 'صورته', draw: 'سنرسمه', yes: 'نعم، أضيفوا صورة ' + who });
       return {
-        stepLabel: 'العائلة', stepTitle: 'العائلة في القصة', stepSub: 'لهم مكان في الكتاب أيضاً، أضيفوا صورهم مجاناً أو دعونا نرسمهم لكم',
+        stepLabel: notFam ? 'الشخصيات' : 'العائلة', stepTitle: notFam ? 'شخصيات مميزة في القصة' : 'العائلة في القصة', stepSub: 'لهم مكان في الكتاب أيضاً، أضيفوا صورهم مجاناً أو دعونا نرسمهم لكم',
         title: two ? 'في هذه القصة شخصان مميزان أيضاً' : 'في هذه القصة شخص مميز آخر',
         body: `في «${story}» لا تكتمل المغامرة من دون ${who}، ${g.acc} ${name} ${g.app} في رسمة أو أكثر من رسومات الكتاب`,
         offer: `تخيّلوا فرحة ${name} بلقاء ${who} ${real} بين صفحات القصة، أضيفوا ${g.pic} و${g.draw} في القصة <span class="fam-free">مجاناً</span> 💛`,
@@ -1381,7 +1382,7 @@
     const R = F.ROLES || {};
     const obj = two ? 'them' : (R[roles[0]] && R[roles[0]].fem ? 'her' : 'him');
     return {
-      stepLabel: 'Family', stepTitle: 'Family in the story', stepSub: 'They have a place in the book too. Add their photo for free, or we will illustrate them for you.',
+      stepLabel: notFam ? 'Characters' : 'Family', stepTitle: notFam ? 'Special people in the story' : 'Family in the story', stepSub: 'They have a place in the book too. Add their photo for free, or we will illustrate them for you.',
       title: two ? 'Some special people are in this story too' : 'Someone special is in this story too',
       body: two
         ? `In “${story}”, ${name} shares the adventure with ${who}, who appear in one or more of the book's illustrations.`
@@ -2221,7 +2222,7 @@
 (function(){try{
   var H=window.hikayaCpHandoff, c=H&&(H.fromLegacyUrl()||H.read()); if(c&&/^(preview|legacy-url)$/.test(c.from||''))return;
   var q=new URLSearchParams(location.search);
-  var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","uae-national-day","leave-it-to-me","my-dad-my-hero","why-is-baby-looking-at-me"];
+  var ok=["christmas-star","christmas-tree-door","door-of-a-thousand-stars","grandpas-wild-safari","house-of-missing-things","just-one-more","silver-wing-mission","storm-above-the-city","teddys-night-adventure","the-christmas-list","the-cracked-blue-vase","the-last-box","to-the-rescue","uae-national-day","leave-it-to-me","my-dad-my-hero","royal-garden-gathering","why-is-baby-looking-at-me"];
   var box=document.getElementById('cp-nudge'),a=document.getElementById('cp-nudge-link'); if(!box||!a)return; box.hidden=false;
   a.addEventListener('click',function(ev){try{
     var slug=q.get('story')||''; var cat=window.STORY_CATALOG||{}; var si=document.getElementById('story-input'); var info=si&&cat[si.value]; if(info&&info.slug)slug=info.slug;
