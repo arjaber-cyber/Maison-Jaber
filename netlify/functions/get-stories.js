@@ -42,10 +42,10 @@ const BUILT_IN_STORIES = [
       "eid",
       "justbecause"
     ],
-    "description": "Today is dress-up day! Our little one has a crown, a picnic blanket and a royal garden gathering planned with the teacher. But the blanket is crowded, a new friend is waiting at the edge, and then, WHOOSH, the wind arrives! A warm, funny story about kindness, friendship and making room for others, the most royal thing of all.",
+    "description": "Today is dress-up day, and our little princess has a crown, a picnic blanket and a royal garden gathering planned with the teacher. But the blanket is crowded, a new friend is waiting at the edge, and then, WHOOSH, the wind arrives! A warm, funny story about kindness, friendship and making room for others, the most royal thing of all.",
     "premise": {
-      "en": "Today is dress-up day! Our little one has a crown, a picnic blanket and a royal garden gathering planned with the teacher. But the blanket is crowded, a new friend is waiting at the edge, and then, WHOOSH, the wind arrives! A warm, funny story about kindness, friendship and making room for others, the most royal thing of all.",
-      "ar": "اليوم يوم التنكّر! لصغيرنا تاج وبطانية للنزهة ووليمة ملكية في الحديقة مع المعلّمة، لكن البطانية مزدحمة، وصديقة جديدة تنتظر عند الطرف، ثم هبّت الريح فجأة! قصة دافئة ومضحكة عن اللطف والصداقة وإفساح المكان للآخرين، وهو أجمل ما يفعله الملوك"
+      "en": "Today is dress-up day, and our little princess has a crown, a picnic blanket and a royal garden gathering planned with the teacher. But the blanket is crowded, a new friend is waiting at the edge, and then, WHOOSH, the wind arrives! A warm, funny story about kindness, friendship and making room for others, the most royal thing of all.",
+      "ar": "اليوم يوم التنكّر، ولأميرتنا الصغيرة تاج وبطانية للنزهة ووليمة ملكية في الحديقة مع المعلّمة، لكن البطانية مزدحمة، وصديقة جديدة تنتظر عند الطرف، ثم هبّت الريح فجأة! قصة دافئة ومضحكة عن اللطف والصداقة وإفساح المكان للآخرين، وهو أجمل ما يفعله الملوك"
     },
     "card_note": {
       "en": "A story about kindness and friendship",
