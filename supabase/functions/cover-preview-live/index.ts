@@ -376,10 +376,10 @@ Check image C and reply with JSON only:
     const norm = (s: string) => (s ?? "").normalize("NFKC").replace(/[ً-ْٰـ]/g, "").replace(/[إأآٱ]/g, "ا").replace(/[^\p{L}\p{N}]/gu, "").toLowerCase();
     q.title_match = norm(q.title_read).includes(norm(expected));
     q.old_name_in_title = oldName ? norm(q.title_read).replace(norm(job.child_name), "").includes(norm(oldName)) : false;
-    // The name must stand as its own word (e.g. "يوسف و" not "يوسفو").
+    // The name must stand as its own word (e.g. "يوسف و" not "يوسفو"); a possessive "Joy's" counts as separate.
     const raw = (q.title_read ?? "").normalize("NFKC").replace(/[ً-ْٰـ]/g, "");
     const nm = String(job.child_name ?? "").normalize("NFKC");
-    q.name_separate = new RegExp(`(^|[\\s\\n])${nm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([\\s\\n!?,.:؟]|$)`, "u").test(raw);
+    q.name_separate = new RegExp(`(^|[\\s\\n])${nm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(['’][sS]?|[\\s\\n!?,.:؟]|$)`, "u").test(raw);
     if (!hasName(c)) { q.name_separate = true; q.old_name_in_title = false; q.old_name_visible = false; q.name_correct = true; }
     q.tone_diff = (q.skin_tone_photo != null && q.skin_tone_cover != null) ? Math.abs(q.skin_tone_photo - q.skin_tone_cover) : null;
     q.pass = !!(q.title_match && q.name_separate && !q.old_name_in_title && !q.old_name_visible && q.likeness >= 4 && q.head_natural >= 4 && q.headwear_ok && q.outfit_ok && q.others_ok && q.gender_ok !== false && !q.artifacts
