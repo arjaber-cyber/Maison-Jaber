@@ -252,9 +252,12 @@
 
     // Upsell messaging -- classic ecommerce nudge toward the next bundle tier.
     let upsellHtml = '';
-    if (cart.length === 1) {
+    const rc = pricing.regularCount != null ? pricing.regularCount : cart.length; // fixed-price books don't count towards bundles
+    if (rc === 0) {
+      upsellHtml = '';
+    } else if (rc === 1) {
       upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${region.deliveryFee ? t('cart.upsell_1', 'Add one more book and save 10% + free delivery.') : t('qa.upsell_1_free', 'Add one more book and save 10% on each.')}</span></div>`;
-    } else if (cart.length === 2) {
+    } else if (rc === 2) {
       upsellHtml = `<div class="upsell-banner"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M12 2l2.4 7.4H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg><span>${t('cart.upsell_2', '10% off applied! Add one more to unlock 15% off.')}</span></div>`;
     } else {
       upsellHtml = `<div class="upsell-banner maxed"><svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M4 12l5 5L20 6"/></svg><span>${t('cart.upsell_max', '15% off + free delivery applied — our best price!')}</span></div>`;
@@ -271,9 +274,10 @@
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           ${item.photoLater ? `<div class="meta">📷 ${t('ph.cart_meta', "Photo: you'll add it after ordering")}</div>` : ''}
           ${window.HikayaFamily && window.HikayaFamily.summary(item) ? `<div class="meta">👪 ${window.HikayaFamily.summary(item)}</div>` : ''}
+          ${item.storyBrief ? `<div class="meta">✎ ${escH(t('cs.cart_brief', 'Your story brief added'))}${(item.customCharacters || []).length ? ' · ' + escH(t('cs.cart_chars', '{n} extra characters').replace('{n}', item.customCharacters.length)) : ''}</div>` : ''}
           <div class="item-actions"><a class="edit-btn" href="${editHref(item)}">${escH(t('ce.edit', 'Edit details'))}</a><button type="button" class="remove-btn" data-id="${item.id}">${t('cart.remove', 'Remove')}</button></div>
         </div>
-        <div class="price">${region.bookWas > pricing.perBookDiscounted ? `<s class="hk-was">${fmt(region.bookWas, region)}</s>` : ''}${fmt(pricing.perBookDiscounted, region)}</div>
+        <div class="price">${window.hikayaCart.fixedPriceOf(item, region) ? fmt(window.hikayaCart.fixedPriceOf(item, region), region) : `${region.bookWas > pricing.perBookDiscounted ? `<s class="hk-was">${fmt(region.bookWas, region)}</s>` : ''}${fmt(pricing.perBookDiscounted, region)}`}</div>
       </div>
     `).join('');
 
@@ -292,7 +296,7 @@
     summarySlot.innerHTML = `
       <div class="summary-box">
         <h3>${t('cart.order_summary', 'Order Summary')}</h3>
-        <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.perBookFull * pricing.itemCount, region)}</span></div>
+        <div class="summary-row"><span>${t('cart.subtotal', 'Subtotal')}</span><span>${fmt(pricing.fullSubtotal != null ? pricing.fullSubtotal : pricing.perBookFull * pricing.itemCount, region)}</span></div>
         ${pricing.tier.discountPct > 0 ? `<div class="summary-row"><span>${t('checkout.bundle_discount', 'Bundle discount')}</span><span>-${pricing.tier.discountPct}%</span></div>` : ''}
         ${pricing.extraCharacterFee > 0 ? `<div class="summary-row"><span>${t('cart.extra_character_fee', 'Extra character photo')}</span><span>${fmt(pricing.extraCharacterFee, region)}</span></div>` : ''}
         <div class="summary-row"><span>${t('checkout.delivery', 'Delivery')}</span><span>${(pricing.tier.freeDelivery || !pricing.deliveryFee) ? t('checkout.free', 'Free') : fmt(pricing.deliveryFee, region)}</span></div>

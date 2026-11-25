@@ -76,6 +76,13 @@ exports.handler = async (event) => {
       .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother', 'teacher', 'friend'].includes(c.role)).slice(0, 4)
       .map(c => ({ role: c.role, photoPaths: paths(c.photoPaths).slice(0, 2) })),
     supportingPhotoConsent: i.supportingPhotoConsent === true,
+    // Completely Customised Story (Nov 2026): the parent's story brief and any characters they added
+    // (name, who they are, an optional photo each). Empty for every other story.
+    storyBrief: i.storyBrief ? String(i.storyBrief).slice(0, 2000) : null,
+    customCharacters: (Array.isArray(i.customCharacters) ? i.customCharacters : []).slice(0, 12)
+      .map(c => ({ name: String((c && c.name) || '').trim().slice(0, 40), relation: String((c && c.relation) || '').trim().slice(0, 60), photoPaths: paths(c && c.photoPaths).slice(0, 1) }))
+      .filter(c => c.name || c.relation || c.photoPaths.length),
+    customPhotoConsent: i.customPhotoConsent === true,
   }));
   const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
 
@@ -142,7 +149,7 @@ exports.handler = async (event) => {
     name: `${i.story} (personalised for ${i.childName})`.slice(0, 255),
     sku: (i.slug || 'hikaya-book').slice(0, 128),
     quantity: 1,
-    unit_price: aed(bookPrice), discount_amount: aed(0), tax_amount: aed(0), total_amount: aed(bookPrice),
+    unit_price: aed((price.unitListAed && price.unitListAed[n]) || bookPrice), discount_amount: aed(0), tax_amount: aed(0), total_amount: aed((price.unitListAed && price.unitListAed[n]) || bookPrice),
     ...(i.slug ? { item_url: `https://${host}/hikaya/story.html?s=${encodeURIComponent(i.slug)}` } : {}),
   }));
   if (price.breakdown.extraFee > 0) {

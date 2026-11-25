@@ -110,6 +110,16 @@
     const declined = it.supportingChoice === 'avatar';
     return `<div class="op-fam"><small>Family in the story${declined ? ' · customer chose AI avatars' : ''}</small>${list.map(c => `<div>${esc(famRole(c.role))}: ${famHas(c) ? '<b>customer photo</b> <span class="op-muted">(below)</span>' : 'AI avatar' + (declined ? '' : ' <span class="op-muted">(no photo added)</span>')}</div>`).join('')}</div>`;
   }
+  /* Completely Customised Story (Nov 2026): the customer's story brief and the characters they added. */
+  const csOf = it => (Array.isArray(it.customCharacters) ? it.customCharacters : []);
+  const csHas = c => Array.isArray(c.photoPaths) && c.photoPaths.length > 0;
+  function customBox(it) {
+    if (!it.storyBrief && !csOf(it).length) return '';
+    return `<div class="op-fam" style="border-color:#C8643C;"><small>Completely Customised Story · write and illustrate from this brief</small>`
+      + (it.storyBrief ? `<div class="op-quote" style="white-space:pre-wrap;">“${esc(it.storyBrief)}”</div>` : '')
+      + (csOf(it).length ? `<div><b>Characters (${csOf(it).length}):</b></div>` + csOf(it).map(c => `<div>${esc(c.name || '—')}${c.relation ? ' · ' + esc(c.relation) : ''}: ${csHas(c) ? '<b>customer photo</b> <span class="op-muted">(below)</span>' : 'AI-illustrated <span class="op-muted">(no photo)</span>'}</div>`).join('') : '<div class="op-muted">No extra characters, just the child.</div>')
+      + `</div>`;
+  }
   const kidsLine = o => items(o).map(i => `${esc(i.childName || '—')} · ${esc(i.story || '')}`).join(' + ') || 'Order';
   const svg = (p, c) => `<svg class="${c || 'ic'}" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 
@@ -355,8 +365,9 @@
               <div class="op-item-m">${esc(it.childName || '—')}${it.childNameTyped && it.childNameTyped !== it.childName ? ' <span class="op-muted">(typed as ' + esc(it.childNameTyped) + ')</span>' : ''}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
               ${it.dedication ? `<div class="op-quote"><small style="display:block; font-style:normal; font-weight:700; opacity:.7;">First-page message (print this instead of the standard one)</small>“${esc(it.dedication)}”</div>` : ''}
               ${famBox(it)}
+              ${customBox(it)}
               ${it.photoLater ? (it.photoPaths || []).length ? `<div class="op-photo-later ok">Photo added by the customer after ordering${it.photoAddedAt ? ' · ' + esc(fmtDate(it.photoAddedAt)) : ''}</div>` : `<div class="op-photo-later">⏳ Waiting for the customer's photo (they chose to add it after ordering; the upload link is in their confirmation email). Don't start production yet.</div>` : ''}
-              <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length + famOf(it).filter(famHas).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
+              <div class="op-photos" data-photos="${n}">${((it.photos || []).length + (it.photoPaths || []).length + famOf(it).filter(famHas).length + csOf(it).filter(csHas).length) ? '<span class="op-muted">Loading photos…</span>' : '<span class="op-muted">No photos</span>'}</div>
             </div>`).join('')}</section>
           <section class="op-box"><h4>Customer &amp; delivery</h4><dl class="op-kv">
             <dt>Name</dt><dd>${esc(o.full_name || '—')}</dd>
@@ -530,7 +541,7 @@
   }
 
   async function photos(o, el) {
-    const needs = o._items.some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length || famOf(i).some(famHas));
+    const needs = o._items.some(i => (i.photos || []).length || (i.extraCharacterPhotos || []).length || (i.photoPaths || []).length || (i.extraCharacterPhotoPaths || []).length || famOf(i).some(famHas) || csOf(i).some(csHas));
     if (!needs) return;
     let its = full.get(o.id);
     if (!its) {
@@ -540,6 +551,7 @@
     its.forEach((it, n) => {
       const box = el.querySelector(`[data-photos="${n}"]`); if (!box) return;
       const famPics = famOf(it).flatMap(c => (c.photos || []).map(p => ({ ...p, who: famRole(c.role) })));
+      famPics.push(...csOf(it).flatMap(c => (c.photos || []).map(p => ({ ...p, who: c.name || 'Character' }))));
       const famGone = famPics.filter(p => !p.dataUrl).map(p => p.who);
       const pics = [...(it.photos || []).map(p => ({ ...p, who: it.childName || 'Child' })), ...(it.extraCharacterPhotos || []).map(p => ({ ...p, who: it.extraCharacterName || 'Extra' })), ...famPics]
         .filter(p => p.dataUrl && (/^data:image\//.test(p.dataUrl) || p.dataUrl.indexOf('https://zxzlarlpoctpnnnvzced.supabase.co/storage/v1/object/sign/') === 0));
@@ -552,7 +564,7 @@
     const cell = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
     const head = ['order_number', 'placed', 'order_type', 'counts_as_revenue', 'step', 'step_since', 'payment_status', 'payment_method', 'total_aed', 'list_value_aed', 'code_discount_aed', 'paid_currency', 'paid_amount', 'full_name', 'email', 'phone', 'address', 'city', 'country', 'courier', 'tracking_number', 'is_gift', 'gift_message', 'promo_code', 'bundle_discount_pct', 'books', 'admin_notes', 'came_from', 'came_from_detail', 'first_found_us'];
     const rows = orders.filter(o => match(o)).map(o => [o.order_number, o.created_at, TYPES[typeOf(o)].label, earned(o) ? 'yes' : 'no', stageOf(o) === 'cancelled' ? 'Cancelled' : S(stageOf(o)).label, sinceStage(o), o.payment_status, o.payment_method, aed(o) == null ? '' : aed(o).toFixed(2), o.list_value_aed ?? '', o.promo_discount_aed ?? '', o.currency, o.amount, o.full_name, o.email, o.phone, o.address, o.city, o.country, o.courier, o.tracking_number, o.is_gift, o.gift_message, o.promo_code, o.bundle_discount_pct,
-      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}${famOf(i).length ? ' [family: ' + famOf(i).map(c => famRole(c.role) + ' ' + (famHas(c) ? 'photo' : 'AI avatar')).join(', ') + ']' : ''}`).join('; '), o.admin_notes, (o.attribution && o.attribution.source) || '', (o.attribution && o.attribution.detail) || '', (o.attribution && o.attribution.first_source) || ''].map(cell).join(','));
+      o._items.map(i => `${i.story} for ${i.childName}${i.bookLanguage ? ' (' + i.bookLanguage + ')' : ''}${famOf(i).length ? ' [family: ' + famOf(i).map(c => famRole(c.role) + ' ' + (famHas(c) ? 'photo' : 'AI avatar')).join(', ') + ']' : ''}${i.storyBrief ? ' [brief: ' + i.storyBrief + ']' : ''}${csOf(i).length ? ' [characters: ' + csOf(i).map(c => (c.name || '') + (c.relation ? ' (' + c.relation + ')' : '') + (csHas(c) ? ' photo' : '')).join(', ') + ']' : ''}`).join('; '), o.admin_notes, (o.attribution && o.attribution.source) || '', (o.attribution && o.attribution.detail) || '', (o.attribution && o.attribution.first_source) || ''].map(cell).join(','));
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob(['﻿' + [head.join(','), ...rows].join('\n')], { type: 'text/csv' }));
     a.download = `hikaya-orders-${new Date().toISOString().slice(0, 10)}.csv`; a.click();

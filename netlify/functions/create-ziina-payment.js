@@ -74,6 +74,13 @@ exports.handler = async (event) => {
       .filter(c => c && ['mother', 'father', 'grandfather', 'grandmother', 'teacher', 'friend'].includes(c.role)).slice(0, 4)
       .map(c => ({ role: c.role, photoPaths: paths(c.photoPaths).slice(0, 2) })),
     supportingPhotoConsent: i.supportingPhotoConsent === true,
+    // Completely Customised Story (Nov 2026): the parent's story brief and any characters they added
+    // (name, who they are, an optional photo each). Empty for every other story.
+    storyBrief: i.storyBrief ? String(i.storyBrief).slice(0, 2000) : null,
+    customCharacters: (Array.isArray(i.customCharacters) ? i.customCharacters : []).slice(0, 12)
+      .map(c => ({ name: String((c && c.name) || '').trim().slice(0, 40), relation: String((c && c.relation) || '').trim().slice(0, 60), photoPaths: paths(c && c.photoPaths).slice(0, 1) }))
+      .filter(c => c.name || c.relation || c.photoPaths.length),
+    customPhotoConsent: i.customPhotoConsent === true,
   }));
   const orderNumber = `HK-${Date.now().toString().slice(-8)}`;
 

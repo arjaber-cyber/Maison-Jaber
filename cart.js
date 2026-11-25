@@ -89,12 +89,24 @@ window.HIKAYA_BUNDLE_TIERS = [
 
   // Computes per-item and total pricing for the current cart, given a
   // region object from region.js (window.hikayaRegion()).
+  // Fixed-price books (Nov 2026, e.g. the Completely Customised Story): their own price in the
+  // shopper's currency, never discounted, and not counted towards the bundle tiers. Mirrors _pricing.js.
+  function fixedPriceOf(item, region) {
+    const aed = Number(item && item.fixedPriceAed) || 0;
+    if (!aed) return 0;
+    return window.hikayaCodeAmount ? window.hikayaCodeAmount(aed, region) : aed;
+  }
+
+  // Computes per-item and total pricing for the current cart, given a
+  // region object from region.js (window.hikayaRegion()).
   function computeCartPricing(region) {
     const items = getCart();
-    const tier = bundleTierFor(items.length);
+    const regularCount = items.filter(i => !fixedPriceOf(i, region)).length;
+    const fixedTotal = items.reduce((sum, i) => sum + fixedPriceOf(i, region), 0);
+    const tier = bundleTierFor(regularCount);
     const perBookFull = region.bookNow;
     const perBookDiscounted = perBookFull * (1 - tier.discountPct / 100);
-    const booksTotal = perBookDiscounted * items.length;
+    const booksTotal = perBookDiscounted * regularCount + fixedTotal;
     const deliveryFee = tier.freeDelivery ? 0 : (region.deliveryFee || 0);
     // Extra-character fees (e.g. a real photo of a story's optional parent
     // character) are a separate customization charge, not part of the base
@@ -105,7 +117,8 @@ window.HIKAYA_BUNDLE_TIERS = [
     return {
       items, tier, perBookFull, perBookDiscounted,
       booksTotal, deliveryFee, extraCharacterFee, total,
-      itemCount: items.length,
+      itemCount: items.length, regularCount, fixedTotal,
+      fullSubtotal: perBookFull * regularCount + fixedTotal,
     };
   }
 
@@ -159,7 +172,7 @@ window.HIKAYA_BUNDLE_TIERS = [
 
   window.hikayaCart = {
     getCart, addToCart, removeFromCart, clearCart, updateItem,
-    bundleTierFor, bundleTotalFor, computeCartPricing, updateCartBadges,
+    bundleTierFor, bundleTotalFor, computeCartPricing, fixedPriceOf, updateCartBadges,
     loadStories, storyFor, coverFor, paintCover, paintCovers,
   };
 

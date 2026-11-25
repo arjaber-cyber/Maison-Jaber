@@ -372,6 +372,25 @@
   body[data-flow] .gender-toggle { gap: 8px; }
   body[data-flow] .gender-toggle .gender-btn { flex-direction: row; justify-content: center; gap: 8px; padding: 11px 12px; border-radius: 999px; font-size: 14px; }
   body[data-flow] .gender-toggle .gender-btn svg { width: 18px; height: 18px; }
+  /* Completely Customised Story (Nov 2026) */
+  .cs-card { background:#fff; border:1px solid rgba(184,149,75,.28); border-radius:16px; padding:18px; margin-bottom:16px; }
+  .cs-card h4 { margin:0 0 4px; font-size:16px; }
+  .cs-card > p { margin:0 0 12px; font-size:13.5px; color:var(--text-on-light-soft,#6B5A4E); }
+  .cs-card textarea { width:100%; box-sizing:border-box; min-height:130px; border:1px solid rgba(184,149,75,.35); border-radius:12px; padding:12px; font:inherit; font-size:15px; resize:vertical; }
+  .cs-count { font-size:12px; color:var(--text-on-light-soft,#6B5A4E); text-align:end; margin-top:4px; }
+  .cs-char { border:1px dashed rgba(184,149,75,.45); border-radius:14px; padding:12px; margin-bottom:10px; display:grid; gap:8px; }
+  .cs-char-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .cs-char input[type=text] { width:100%; box-sizing:border-box; height:44px; border:1px solid rgba(184,149,75,.35); border-radius:10px; padding:0 10px; font:inherit; font-size:15px; }
+  .cs-char-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .cs-photo-btn { position:relative; display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--ink,#3b2a20); border:1px solid rgba(184,149,75,.45); border-radius:999px; padding:7px 12px; background:#FBF6EE; cursor:pointer; }
+  .cs-photo-btn input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .cs-photo-state { font-size:12.5px; color:var(--text-on-light-soft,#6B5A4E); }
+  .cs-photo-state.bad { color:#B3261E; }
+  .cs-remove { background:none; border:0; color:#8a6d5a; text-decoration:underline; font-size:13px; cursor:pointer; padding:4px; }
+  .cs-add { display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(184,149,75,.55); background:#fff; border-radius:999px; padding:9px 16px; font-weight:700; font-size:14px; cursor:pointer; }
+  .cs-need { color:#B3261E; font-size:13px; margin:8px 0 0; }
+  .cs-req-note { font-size:13px; font-weight:700; color:var(--coral,#C8643C); margin:6px 0 0; }
+  @media (max-width:520px){ .cs-char-row { grid-template-columns:1fr; } }
 </style>
 <script src="/i18n.js" defer></script>
 <script src="/site-photos.js" defer></script>
@@ -592,6 +611,31 @@
         </div>
       </div>
 
+      <!-- Step: Completely Customised Story (Nov 2026): story brief + optional characters -->
+      <div class="wizard-step" data-step="custom" id="wizard-step-custom">
+        <div class="cs-card">
+          <label class="field-label" for="cs-brief"><span data-i18n="cs.brief_t">Brief of the story</span><span class="req-mark">*</span></label>
+          <p data-i18n="cs.brief_d">Tell us what the story should be about: the idea, the places, a special moment or a lesson. A few sentences is enough, we write and illustrate the full book from it.</p>
+          <textarea id="cs-brief" maxlength="2000" dir="auto" placeholder="e.g. Adam goes camping in the desert with his grandpa, they get lost looking for a shooting star, and find their way home by following the camel tracks." data-i18n-placeholder="cs.brief_ph"></textarea>
+          <div class="cs-count" id="cs-brief-count">0/2000</div>
+        </div>
+        <div class="cs-card">
+          <h4 data-i18n="cs.chars_t">Characters in the story (optional)</h4>
+          <p data-i18n="cs.chars_d">Add anyone you want in the book: family, friends, a teacher, even a pet. Add as many as you like. A photo is optional, without one we illustrate them for you.</p>
+          <div id="cs-chars"></div>
+          <button type="button" class="cs-add" id="cs-add"><span aria-hidden="true">+</span> <span data-i18n="cs.add">Add a character</span></button>
+          <label class="consent-box" id="cs-consent-box" hidden style="margin-top:12px;">
+            <input type="checkbox" id="cs-consent" />
+            <span data-i18n="cs.consent">I confirm I have permission to use these photos, to create this book only. They are deleted automatically within 15 days.</span>
+          </label>
+          <p class="cs-need" id="cs-need" hidden></p>
+        </div>
+        <div class="wizard-nav">
+          <button type="button" class="btn-back" data-step-back="custom">&larr; <span data-i18n="personalize.wizard_back">Back</span></button>
+          <button type="button" class="btn-primary btn-next" data-step-btn="custom" id="custom-next-btn" disabled data-i18n="pg.next">Continue →</button>
+        </div>
+      </div>
+
       <!-- Step: Dedication -->
 
       <!-- Step: Review -->
@@ -618,6 +662,7 @@
             <label class="field-label" for="dedication" data-i18n="qa.msg_label">Your message</label>
             <textarea id="dedication" name="dedication" maxlength="300" rows="4" dir="auto" placeholder="e.g. To our brave Sara, may every page remind you how loved you are. Mama and Baba" data-i18n-placeholder="qa.msg_ph"></textarea>
             <div class="msg-row"><span class="msg-count" id="msg-count">0/300</span><button type="button" class="msg-inspire" id="msg-inspire"><span aria-hidden="true">✦</span> <span data-i18n="qa.msg_inspire">Inspire me</span></button></div>
+            <p class="cs-req-note" id="cs-msg-req" hidden data-i18n="cs.msg_req">A welcome note is required for a customised story.</p>
             <p class="msg-note" data-i18n="qa.msg_note">We print it on the first page exactly as you write it, so please check names and spelling.</p>
             <button type="button" class="msg-cancel" id="msg-cancel" data-i18n="qa.msg_cancel">Keep the story's own message instead</button>
           </div>
@@ -674,6 +719,9 @@
   let photoFiles = [];
   let photoLater = false; // parent chose to add the photo after ordering (Nov 2026)
   let extraPhotoFiles = [];
+  // Completely Customised Story (Nov 2026): characters the parent adds. { key, name, relation, entry: photo check entry | null, kept: [saved paths] }
+  let customChars = [];
+  let customKey = 0;
   /* ---------- Editing a book that is already in the cart (Nov 2026) ----------
      cart.html links here with ?edit=<cart item id>. The page opens with everything filled in.
      Photos already saved for that book are kept (we only hold their private storage paths),
@@ -1593,7 +1641,7 @@
   document.getElementById('photo-consent').addEventListener('change', e => { document.getElementById('photo-consent-box').classList.remove('need'); checkDetailsComplete(); });
   function checkDetailsComplete() {
     const hasVerifiedPhoto = photoFiles.some(p => p.status === 'verified');
-    const stillChecking = (!photoLater && photoFiles.some(p => p.status === 'checking')) || extraPhotoFiles.some(p => p.status === 'checking') || famChecking();
+    const stillChecking = (!photoLater && photoFiles.some(p => p.status === 'checking')) || extraPhotoFiles.some(p => p.status === 'checking') || famChecking() || customChars.some(c => c.entry && c.entry.status === 'checking');
 
     const storyChosen = document.getElementById('story-input').value;
     const storyInfo = STORY_CATALOG[storyChosen];
@@ -1619,6 +1667,9 @@
     if (photoNextBtn) photoNextBtn.disabled = !photoOk;
     const extraNextBtn = document.getElementById('extra-next-btn');
     if (extraNextBtn) extraNextBtn.disabled = !extraCharOk;
+    const customNextBtn = document.getElementById('custom-next-btn');
+    if (customNextBtn) customNextBtn.disabled = !customOk();
+    paintCustomNeeds();
     const familyNextBtn = document.getElementById('family-next-btn');
     if (familyNextBtn) familyNextBtn.disabled = !famOk();
     const famConsentBox = document.getElementById('fam-consent-box');
@@ -1635,6 +1686,7 @@
       && photoOk
       && extraCharOk
       && famOk()
+      && (!isCustomStory() || (customOk() && document.getElementById('dedication').value.trim().length > 0))
       && langState().ok;
     continueBtn.disabled = !ready;
     if (accReady) renderWizardProgress();
@@ -1642,9 +1694,9 @@
       continueBtn.textContent = t('personalize.photo_checking_btn', 'Checking photo…');
     } else {
       if (ready && window.Hikaya && window.Hikaya.priceHtml) {
-        continueBtn.innerHTML = t('lx.add_cart', 'Add to cart · {price}').split('{price}').map(window.Hikaya.esc).join(window.Hikaya.priceHtml());
+        continueBtn.innerHTML = t('lx.add_cart', 'Add to cart · {price}').split('{price}').map(window.Hikaya.esc).join(window.Hikaya.priceHtml(STORY_CATALOG[storyChosen]));
       } else {
-        const price = window.Hikaya ? window.Hikaya.priceNow() : 'AED 169';
+        const price = window.Hikaya ? window.Hikaya.priceNow(STORY_CATALOG[storyChosen]) : 'AED 169';
         continueBtn.textContent = ready
           ? t('lx.add_cart', 'Add to cart · {price}').replace('{price}', price)
           : t('personalize.continue_btn', 'Fill in the details above to continue');
@@ -1660,6 +1712,7 @@
   function activeSteps() {
     const storyInfo = STORY_CATALOG[document.getElementById('story-input').value];
     const steps = storyLocked ? ['details', 'photo'] : ['story', 'details', 'photo'];
+    if (isCustomStory()) steps.push('custom');
     if (famRoles().length) steps.push('family');
     if (storyInfo && storyInfo.has_extra_character) steps.push('extra');
     steps.push('review');
@@ -1673,6 +1726,7 @@
     details: () => t('lx.st_child', 'Child'),
     photo: () => t('lx.st_photo', 'Photo'),
     extra: () => t('lx.st_extra', 'Extra character'),
+    custom: () => t('cs.st', 'Your story'),
     family: () => famText().stepLabel,
     review: () => t('lx.st_review', 'Review'),
   };
@@ -1687,6 +1741,7 @@
       case 'details': return nameOk() && ageState().ok;
       case 'photo': return photoLater || keptPhotoActive() || (photoFiles.some(p => p.status === 'verified') && document.getElementById('photo-consent').checked);
       case 'family': return famOk();
+      case 'custom': return customOk();
       case 'extra': return !(info && info.has_extra_character) || (extraCharChoice === 'no' || (extraCharChoice === 'yes' && (keptExtraActive() || extraPhotoFiles.some(p => p.status === 'verified'))));
       default: return false;
     }
@@ -1707,6 +1762,7 @@
     if (step === 'photo' && photoLater) return '✓ ' + t('ph.later_sum', 'Photo after ordering');
     if (step === 'photo' && keptPhotoActive()) return '✓ ' + L2('Saved photo', 'الصورة محفوظة');
     if (step === 'photo') { const n = photoFiles.filter(p => p.status === 'verified').length; return n ? '✓ ' + t('personalize.summary_photos', 'Photos') + ': ' + n : ''; }
+    if (step === 'custom') { if (!customOk()) return ''; const n = customNamed().length; return '✓ ' + t('cs.sum_brief', 'Brief added') + (n ? ' · ' + t('cs.sum_chars', '{n} characters').replace('{n}', n) : ''); }
     if (step === 'family') { if (!famChoice) return ''; const tx = famText(); return famChoice === 'photos' ? tx.rowPhoto : tx.rowAvatar; }
     if (step === 'extra' && info && extraCharChoice) return extraCharChoice === 'yes' ? t('personalize.summary_extra_yes', 'Real photo (+fee)') : t('personalize.summary_extra_no', 'Generated for you');
     return '';
@@ -1753,6 +1809,7 @@
     details: ['pg.wz_details_t', 'Tell us about them', 'pg.wz_details_s', 'Their first name, age, and how the story should talk about them.'],
     photo: ['pg.wz_photo_t', 'Add a photo of them', 'pg.wz_photo_s', 'A clear, front-facing photo so we can illustrate them as the hero.'],
     extra: ['pg.wz_extra_t', 'One more character', 'pg.wz_extra_s', 'This story has a special character you can add.'],
+    custom: ['cs.wz_t', 'Your story idea', 'cs.wz_s', 'Write a short brief and add any characters you want in it.'],
     review: ['pg.wz_review_t', 'Check and add to cart', 'pg.wz_review_s', 'Make sure everything looks right. You can also write your own message for the first page.'],
   };
   function renderStepHeading(stepName) {
@@ -1798,7 +1855,8 @@
     const target = document.getElementById('wizard-step-' + stepName);
     if (target) target.classList.add('active');
     if (stepName === 'family') renderFam();
-    if (stepName === 'review') { renderReviewSummary(); langCheck(); ensureBookName(); }
+    if (stepName === 'review') { applyCustomMsgMode(); renderReviewSummary(); langCheck(); ensureBookName(); }
+    if (stepName === 'custom') renderCustomChars();
     renderWizardProgress();
     if (target) requestAnimationFrame(() => {
       const header = document.querySelector('header, .site-header, #hk-head');
@@ -1842,6 +1900,7 @@
   function reviewMsgValue() {
     const d = document.getElementById('dedication').value.trim();
     if (d) return '“' + (d.length > 60 ? d.slice(0, 60) + '…' : d) + '”';
+    if (isCustomStory()) return document.documentElement.lang === 'ar' ? 'مطلوبة، اكتبوها في الأسفل' : 'Required, please write it below';
     return document.documentElement.lang === 'ar' ? 'تكتبها حكاية' : 'Written by Hikaya';
   }
   function msgEditLabel() {
@@ -1849,6 +1908,7 @@
     if (document.getElementById('dedication').value.trim()) return t('personalize.wizard_edit', 'Edit');
     return ar ? 'اكتبوا رسالتكم' : 'Write your own';
   }
+  document.getElementById('dedication').addEventListener('input', () => checkDetailsComplete());
   document.getElementById('dedication').addEventListener('input', () => {
     const b = document.querySelector('#review-summary .review-edit[data-goto="msg"]');
     if (b && b.previousSibling) b.previousSibling.textContent = reviewMsgValue();
@@ -1886,7 +1946,13 @@
       });
     }
 
-    rows.push({ label: t('qa.msg_row', 'First-page message'), value: reviewMsgValue(), step: 'msg' });
+    if (isCustomStory()) {
+      const br = document.getElementById('cs-brief').value.trim();
+      rows.push({ label: t('cs.row_brief', 'Story brief'), value: br ? '“' + (br.length > 60 ? br.slice(0, 60) + '…' : br) + '”' : '—', step: 'custom' });
+      const named = customNamed();
+      rows.push({ label: t('cs.row_chars', 'Characters'), value: named.length ? named.map(c => c.name.trim()).join(', ') : t('cs.row_none', 'Just your child'), step: 'custom' });
+    }
+    rows.push({ label: isCustomStory() ? t('cs.row_note', 'Welcome note') : t('qa.msg_row', 'First-page message'), value: reviewMsgValue(), step: 'msg' });
 
     document.getElementById('nx2').textContent = t('lx.nx2', 'We create and print: our team illustrates {name} into the story and prints the hardcover.').replace('{name}', name || t('lx.st_child', 'your child'));
     const eta = window.Hikaya ? window.Hikaya.etaShort() : 'About 5 working days';
@@ -2013,6 +2079,12 @@
     (function whenStoryReady() {
       if (storyPending || !document.getElementById('story-input').value || (EDIT.slug && !(STORY_CATALOG[document.getElementById('story-input').value] || {}).slug)) { if (++tries < 60) setTimeout(whenStoryReady, 200); return; }
       if (editSameStory()) {
+        if (isCustomStory()) {
+          const br = document.getElementById('cs-brief'); if (br && c.storyBrief) { br.value = c.storyBrief; fire(br, 'input'); }
+          customChars = (Array.isArray(c.customCharacters) ? c.customCharacters : []).map(cc => ({ key: ++customKey, name: cc.name || '', relation: cc.relation || '', entry: null, kept: Array.isArray(cc.photoPaths) ? cc.photoPaths.slice() : [] }));
+          if (c.customPhotoConsent) document.getElementById('cs-consent').checked = true;
+          renderCustomChars();
+        }
         if (famRoles().length && c.supportingChoice) setFamChoice(c.supportingChoice === 'photos' && Object.keys(EDIT.fam).length ? 'photos' : 'avatar');
         const info = STORY_CATALOG[document.getElementById('story-input').value];
         if (info && info.has_extra_character) {
@@ -2026,6 +2098,101 @@
       showWizardStep(firstOpen || 'review');
     })();
   })();
+
+  // ---------- Completely Customised Story (Nov 2026) ----------
+  // A story written from scratch: the parent gives a brief (required), any characters they want
+  // (optional, as many as they like, each with an optional photo) and a welcome note (required).
+  function isCustomStory() {
+    const r = STORY_CATALOG[document.getElementById('story-input').value];
+    return !!(r && r.custom_story);
+  }
+  function customNamed() { return customChars.filter(c => (c.name || '').trim()); }
+  function customProblem() {
+    if (document.getElementById('cs-brief').value.trim().length < 20) return 'brief';
+    if (customChars.some(c => !(c.name || '').trim() && ((c.relation || '').trim() || c.entry || (c.kept && c.kept.length)))) return 'name';
+    if (customChars.some(c => c.entry && c.entry.status === 'checking')) return 'checking';
+    if (customChars.some(c => c.entry && c.entry.status !== 'verified')) return 'photo';
+    if (customChars.some(c => c.entry && c.entry.status === 'verified') && !document.getElementById('cs-consent').checked) return 'consent';
+    return '';
+  }
+  function customOk() { return !isCustomStory() || !customProblem(); }
+  function paintCustomNeeds() {
+    const need = document.getElementById('cs-need'), box = document.getElementById('cs-consent-box');
+    if (!need || !box) return;
+    box.hidden = !customChars.some(c => c.entry);
+    const p = isCustomStory() ? customProblem() : '';
+    const msg = { name: t('cs.need_name', 'Please add a name for each character, or remove the empty row.'), photo: t('cs.need_photo', "One of the photos didn't pass our check. Please choose another photo, or remove it."), consent: t('cs.need_consent', 'Please tick the photo permission box above.') }[p] || '';
+    need.hidden = !msg; need.textContent = msg;
+  }
+  function renderCustomChars() {
+    const wrap = document.getElementById('cs-chars'); if (!wrap) return;
+    wrap.innerHTML = '';
+    customChars.forEach(c => {
+      const row = document.createElement('div'); row.className = 'cs-char';
+      row.innerHTML = `<div class="cs-char-row">
+          <input type="text" class="cs-name" maxlength="40" dir="auto" autocomplete="off">
+          <input type="text" class="cs-rel" maxlength="60" dir="auto" autocomplete="off">
+        </div>
+        <div class="cs-char-foot">
+          <label class="cs-photo-btn"><input type="file" accept="image/*"><span aria-hidden="true">📷</span> <span class="cs-photo-lbl"></span></label>
+          <span class="cs-photo-state"></span>
+          <button type="button" class="cs-remove"></button>
+        </div>`;
+      const nm = row.querySelector('.cs-name'), rl = row.querySelector('.cs-rel');
+      nm.placeholder = t('cs.name_ph', 'Name (e.g. Layla)'); nm.setAttribute('aria-label', t('cs.name_aria', 'Character name'));
+      rl.placeholder = t('cs.rel_ph', 'Who are they? (e.g. big sister, our cat)'); rl.setAttribute('aria-label', t('cs.rel_aria', 'Who they are'));
+      nm.value = c.name; rl.value = c.relation;
+      nm.addEventListener('input', () => { c.name = nm.value; checkDetailsComplete(); });
+      rl.addEventListener('input', () => { c.relation = rl.value; checkDetailsComplete(); });
+      const st = row.querySelector('.cs-photo-state');
+      const paintState = () => {
+        st.classList.remove('bad');
+        if (c.entry && c.entry.status === 'checking') st.textContent = t('cs.ph_checking', 'Checking photo…');
+        else if (c.entry && c.entry.status === 'verified') st.textContent = t('cs.ph_ok', 'Photo added ✓');
+        else if (c.entry) { st.textContent = c.entry.reason || t('cs.ph_bad', "This photo didn't pass our check. Try another one."); st.classList.add('bad'); }
+        else if (c.kept && c.kept.length) st.textContent = t('cs.ph_kept', 'Photo saved ✓');
+        else st.textContent = t('cs.ph_none', 'No photo: we illustrate them for you');
+        row.querySelector('.cs-photo-lbl').textContent = (c.entry || (c.kept && c.kept.length)) ? t('cs.ph_change', 'Change photo') : t('cs.ph_add', 'Add a photo (optional)');
+      };
+      const inp = row.querySelector('input[type=file]');
+      inp.setAttribute('aria-label', t('cs.ph_add', 'Add a photo (optional)'));
+      inp.addEventListener('change', () => {
+        const file = inp.files && inp.files[0]; inp.value = '';
+        if (!file) return;
+        const entry = { file, status: 'checking', reason: null };
+        c.entry = entry; paintState(); checkDetailsComplete();
+        // Characters can be pets or toys, so only the content check runs here (no face check).
+        passesContentCheck(file).then(ok => { entry.status = ok ? 'verified' : 'failed'; if (!ok) entry.reason = t('personalize.photo_fail_content', "This photo can't be used — please try a different one."); })
+          .catch(() => { entry.status = 'verified'; })
+          .then(() => { if (c.entry === entry) { paintState(); checkDetailsComplete(); } });
+      });
+      const rm = row.querySelector('.cs-remove'); rm.textContent = t('cs.remove', 'Remove');
+      rm.addEventListener('click', () => { customChars = customChars.filter(x => x !== c); renderCustomChars(); checkDetailsComplete(); });
+      paintState();
+      wrap.appendChild(row);
+    });
+    paintCustomNeeds();
+  }
+  document.getElementById('cs-add').addEventListener('click', () => {
+    if (customChars.length >= 12) return;
+    customChars.push({ key: ++customKey, name: '', relation: '', entry: null, kept: [] });
+    renderCustomChars();
+    const rows = document.querySelectorAll('#cs-chars .cs-name'); if (rows.length) rows[rows.length - 1].focus();
+    checkDetailsComplete();
+  });
+  document.getElementById('cs-consent').addEventListener('change', () => checkDetailsComplete());
+  (function () {
+    const br = document.getElementById('cs-brief'), cnt = document.getElementById('cs-brief-count');
+    br.addEventListener('input', () => { cnt.textContent = br.value.length + '/2000'; checkDetailsComplete(); });
+  })();
+  // The welcome note is required for this story: keep the message box open and drop "keep the story's own message".
+  function applyCustomMsgMode() {
+    const on = isCustomStory();
+    const cancel = document.getElementById('msg-cancel'), req = document.getElementById('cs-msg-req');
+    if (cancel) cancel.hidden = on;
+    if (req) req.hidden = !on;
+    if (on) { const tg = document.getElementById('msg-toggle'); if (tg && !tg.hidden) tg.click(); }
+  }
 
   // ---------- Cart flow ----------
   function buildCartItemFromForm() {
@@ -2055,6 +2222,13 @@
       supportingChoice: famRoles().length ? (famChoice || 'avatar') : null,
       supportingCharacters: famRoles().map(role => ({ role, photoPaths: [] })),
       supportingPhotoConsent: famChoice === 'photos' && famVerified() ? document.getElementById('fam-consent').checked : false,
+      // Completely Customised Story (Nov 2026). fixedPriceAed is for display only: the server always reprices.
+      ...(storyInfo && storyInfo.custom_story ? {
+        storyBrief: document.getElementById('cs-brief').value.trim(),
+        customCharacters: customNamed().map(c => ({ name: c.name.trim(), relation: (c.relation || '').trim(), photoPaths: [] })),
+        customPhotoConsent: customChars.some(c => c.entry && c.entry.status === 'verified') ? document.getElementById('cs-consent').checked : false,
+      } : {}),
+      ...(storyInfo && Number(storyInfo.fixed_price_aed) > 0 ? { fixedPriceAed: Number(storyInfo.fixed_price_aed), noDiscount: !!storyInfo.no_discount } : {}),
     };
   }
 
@@ -2085,6 +2259,7 @@
     extraPhotoFiles = [];
     extraCharChoice = null;
     resetFam();
+    customChars = []; document.getElementById('cs-brief').value = ''; document.getElementById('cs-consent').checked = false;
     document.getElementById('extra-char-upload-wrap').style.display = 'none';
     document.querySelectorAll('.extra-char-btn').forEach(b => b.classList.remove('selected'));
     checkDetailsComplete();
@@ -2140,7 +2315,9 @@
     const verifiedExtraPhotos = item.extraCharacterName ? extraPhotoFiles.filter(p => p.status === 'verified') : [];
     // Family photos, tagged with whose they are, go up with the child's.
     const famUploads = famChoice === 'photos' ? famRoles().flatMap(role => (famFiles[role] || []).filter(p => p.status === 'verified').map(p => ({ role, entry: p }))) : [];
-    const all = verifiedPhotos.concat(verifiedExtraPhotos, famUploads.map(x => x.entry));
+    const named = isCustomStory() ? customNamed() : [];
+    const csUploads = named.map((c, k) => ({ k, c })).filter(x => x.c.entry && x.c.entry.status === 'verified');
+    const all = verifiedPhotos.concat(verifiedExtraPhotos, famUploads.map(x => x.entry), csUploads.map(x => x.c.entry));
     try {
       const blobs = await Promise.all(all.map(e => resizePhoto(e.file, 2400, 0.9)));
       const done = new Array(blobs.length).fill(0);
@@ -2149,7 +2326,14 @@
       if (blobs.length) showUpload(1);
       item.photoPaths = paths.slice(0, verifiedPhotos.length);
       item.extraCharacterPhotoPaths = paths.slice(verifiedPhotos.length, verifiedPhotos.length + verifiedExtraPhotos.length);
-      const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length);
+      const famPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length, verifiedPhotos.length + verifiedExtraPhotos.length + famUploads.length);
+      const csPaths = paths.slice(verifiedPhotos.length + verifiedExtraPhotos.length + famUploads.length);
+      if (item.customCharacters) {
+        csUploads.forEach((x, j) => { if (csPaths[j] && item.customCharacters[x.k]) item.customCharacters[x.k].photoPaths = [csPaths[j]]; });
+        // Photos already saved for a character (editing from the cart) stay unless replaced.
+        named.forEach((c, k) => { const cc = item.customCharacters[k]; if (cc && !cc.photoPaths.length && !c.entry && c.kept && c.kept.length) cc.photoPaths = c.kept.slice(0, 1); });
+        if (item.customCharacters.some(cc => cc.photoPaths.length) && !csUploads.length && EDIT) item.customPhotoConsent = !!EDIT.item.customPhotoConsent;
+      }
       famUploads.forEach((x, k) => { const c = item.supportingCharacters.find(sc => sc.role === x.role); if (c && famPaths[k]) c.photoPaths.push(famPaths[k]); });
       if (EDIT) {
         // Keep the photos already saved for this book where nothing new replaced them.

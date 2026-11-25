@@ -166,7 +166,7 @@
     document.querySelectorAll('[data-hk-delivery]').forEach(el => { el.textContent = deliveryText(k); });
     document.querySelectorAll('[data-hk-eta]').forEach(el => { el.textContent = etaText(k); });
     document.querySelectorAll('[data-hk-eta-short]').forEach(el => { el.textContent = etaShort(k); });
-    document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(); });
+    document.querySelectorAll('[data-hk-price-now]').forEach(el => { el.innerHTML = priceHtml(el.dataset.hkFixed ? { fixed_price_aed: Number(el.dataset.hkFixed) } : null); });
     /* Ad landing-page offer facts (Nov 2026): <ul class="hk-offer" data-hk-offer="price box delivery eta privacy">.
        Region-aware (price, delivery, timing follow the chosen GCC country) and in the page language. */
     document.querySelectorAll('[data-hk-offer]').forEach(el => {
@@ -489,7 +489,7 @@
       <div class="body"><h3><a href="${esc(storyHref(s))}">${titleHtml(s)}</a></h3>
       <div class="meta">${age ? `<span class="age">${esc(age)}</span>` : ''}${th ? `<span class="theme">${esc(th)}</span>` : ''}${familyCopy(s.slug) ? `<span class="hk-special">${esc(familyCopy(s.slug).badge)}</span>` : ''}</div>
       ${line ? `<p class="line">${esc(line)}</p>` : ''}
-      <p class="card-price" data-hk-price-now>${priceHtml()}</p>
+      <p class="card-price" data-hk-price-now${fixedAed(s) ? ` data-hk-fixed="${fixedAed(s)}"` : ''}>${priceHtml(s)}</p>
       <div class="card-ctas"><a class="btn btn-primary btn-sm" href="${esc(personaliseHref(s))}">${esc(t('lx.personalise', 'Personalise this story'))}</a><a class="card-link" href="${esc(storyHref(s))}#inside">${esc(t('lx.see_inside', 'See inside'))}</a></div>
       </div></${tag}>`;
   }
@@ -525,11 +525,15 @@
   window.addEventListener('resize', () => document.querySelectorAll('.track').forEach(updateArrows));
 
   /* ---------------- Price helpers ---------------- */
-  function priceNow() { const r = regionObj(); return r ? fmt(r.bookNow, r) : 'AED 169'; }
-  function priceWas() { const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
+  /* Fixed-price stories (Nov 2026, e.g. the Completely Customised Story, AED 199): their own price in the
+     shopper's currency, no "was" price and no discounts. Pass the story record (or { fixed_price_aed }). */
+  const fixedAed = s => (s && Number(s.fixed_price_aed) > 0) ? Number(s.fixed_price_aed) : 0;
+  function storyPriceValue(s) { const r = regionObj(); if (!r) return fixedAed(s) || 169; return fixedAed(s) ? (window.hikayaCodeAmount ? window.hikayaCodeAmount(fixedAed(s), r) : fixedAed(s)) : r.bookNow; }
+  function priceNow(s) { const r = regionObj(); return r ? fmt(storyPriceValue(s), r) : 'AED ' + (fixedAed(s) || 169); }
+  function priceWas(s) { if (fixedAed(s)) return ''; const r = regionObj(); return r && r.bookWas > r.bookNow ? fmt(r.bookWas, r) : ''; }
   /* "Was X, now Y" markup used everywhere a book price is shown (struck-through was + bold now). */
-  function priceHtml() {
-    const was = priceWas(), now = priceNow();
+  function priceHtml(s) {
+    const was = priceWas(s), now = priceNow(s);
     return was ? `<s class="hk-was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span><bdi>${esc(was)}</bdi></s> <span class="hk-now"><span class="sr-only">${esc(t('lx.now', 'now'))} </span><bdi>${esc(now)}</bdi></span>` : `<span class="hk-now"><bdi>${esc(now)}</bdi></span>`;
   }
 
@@ -644,7 +648,7 @@
     if (lang() === 'ar' && SEO_LANG) { const p = new URLSearchParams(q); p.set('lang', 'ar'); q = '?' + p.toString(); }
     if (window.__PREVIEW_QS != null) { window.__PREVIEW_QS = q; return; } try { history.replaceState(null, '', location.pathname + q); } catch (_) {}
   }
-  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occasionRank, occIcon };
+  window.Hikaya = { setCanonical, seoLang: () => SEO_LANG, refreshWhatsApp: () => renderWhatsApp(), priceHtml, arPunct, tpl, oneLiner, personaliseHref, skeletonHtml, etaText, etaShort, etaDays, openPhotoPrivacy: () => openPrivacy(), tIn, arTitle, rangeText, title, THEMES, groupOf, groupLabel, qs: () => new URLSearchParams(qsStr()), setQS, t, lang, esc, isRTL, loadCatalog, localizeStory, cardHtml, coverHtml, ageText, themeLabel, familyCopy, titleHtml, titlePlain, premise, localized, storyHref, inBand, initCarousels, deliveryText, priceNow, priceWas, storyPriceValue, regionKey, ARR, OCCASIONS, occasion, occasionLabel, inOccasion, occasionRank, occIcon };
 
   /* ---------------- Production namespace (QA 19 Oct 2026) ----------------
      The /hikaya/ shop is served from the /test5/ files. Relative links already stay inside

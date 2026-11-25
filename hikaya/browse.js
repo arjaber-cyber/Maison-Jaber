@@ -227,6 +227,10 @@
       const rows = [['name', 'p_name'], ['photo', 'p_photo'], ['pronouns', 'p_pronouns'], ['dedication', 'p_dedication']];
       let html = rows.map(([i, k]) => `<li>${ico(i)}<div><b>${esc(t('pg.' + k))}</b><span>${esc(t('pg.' + k + '_d'))}</span></div></li>`).join('');
       if (s.has_extra_character && s.extra_character_name) html += `<li>${ico('extra')}<div><b>${esc(t('pg.p_extra'))}</b><span>${esc(tpl(t('pg.p_extra_d'), { who: s.extra_character_name }))}</span></div></li>`;
+      if (s.custom_story) {
+        html += `<li>${ico('dedication')}<div><b>${esc(t('cs.pdp_brief', 'Your story idea'))}</b><span>${esc(t('cs.pdp_brief_d', 'Write a short brief and we write the whole story from it.'))}</span></div></li>`;
+        html += `<li>${ico('extra')}<div><b>${esc(t('cs.pdp_chars', 'Any characters you like'))}</b><span>${esc(t('cs.pdp_chars_d', 'Add as many people (or pets) as you want, with or without a photo.'))}</span></div></li>`;
+      }
       document.getElementById('st-personal').innerHTML = html;
       // Every story opens with a message to the child; invite parents to write their own.
       const plist = document.getElementById('st-personal');
@@ -253,7 +257,7 @@
       const inside = document.getElementById('st-inside');
       const insideCol = document.getElementById('inside-col');
       const ob = s.open_book_image_url || null;
-      if (canLook) {
+      if (canLook || s.custom_story) { // Completely Customised Story: written from scratch, so no sample spread
         inside.innerHTML = '';
         insideCol.hidden = true;
       } else if (ob) {
@@ -272,7 +276,7 @@
         const r = (window.HIKAYA_REGIONS || {})[H.regionKey()] || { currency: 'AED', bookNow: 169 };
         let ld = document.getElementById('ld-product'); if (!ld) { ld = document.createElement('script'); ld.type = 'application/ld+json'; ld.id = 'ld-product'; document.head.appendChild(ld); }
         ld.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'Product', name: plain, description: H.premise(s), image: s.cover || undefined, brand: { '@type': 'Brand', name: 'Hikaya by Maison Jaber' },
-          offers: { '@type': 'Offer', price: r.bookNow, priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: 'https://maison-jaber.com/hikaya/story.html?s=' + encodeURIComponent(s.slug) } });
+          offers: { '@type': 'Offer', price: H.storyPriceValue(s), priceCurrency: r.currency, availability: 'https://schema.org/InStock', url: 'https://maison-jaber.com/hikaya/story.html?s=' + encodeURIComponent(s.slug) } });
       } catch (_) {}
       // they may also love
       const band = (s.age_bands || [])[0];
@@ -281,13 +285,13 @@
       H.initCarousels();
     }
     function renderPrice() {
-      const was = H.priceWas();
-      document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow())}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
-      document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(); });
+      const was = H.priceWas(s);
+      document.getElementById('st-price').innerHTML = `<span class="now">${esc(H.priceNow(s))}</span>${was ? `<span class="was"><span class="sr-only">${esc(t('lx.was', 'Was'))} </span>${esc(was)}</span>` : ''}`;
+      document.querySelectorAll('[data-st-price]').forEach(el => { el.innerHTML = H.priceHtml(s); });
       // Tabby promo snippet under the price (UAE / AED only; hidden until Tabby is switched on, see region.js).
-      if (window.hikayaTabbyWidget && window.hikayaRegion) window.hikayaTabbyWidget('promo', '#tabby-promo-product', window.hikayaRegion().bookNow, 'product');
+      if (window.hikayaTabbyWidget && window.hikayaRegion) window.hikayaTabbyWidget('promo', '#tabby-promo-product', H.storyPriceValue(s), 'product');
       // Tamara promo widget under the price too (UAE only; hidden until Tamara is switched on, see region.js).
-      if (window.hikayaTamaraWidget && window.hikayaRegion) window.hikayaTamaraWidget('#tamara-promo-product', window.hikayaRegion().bookNow);
+      if (window.hikayaTamaraWidget && window.hikayaRegion) window.hikayaTamaraWidget('#tamara-promo-product', H.storyPriceValue(s));
     }
     document.getElementById('pdp-root').addEventListener('click', e => { if (e.target.closest('[data-look-inside]') && openLook) { e.preventDefault(); openLook(); } });
     document.getElementById('st-inside').addEventListener('click', e => {

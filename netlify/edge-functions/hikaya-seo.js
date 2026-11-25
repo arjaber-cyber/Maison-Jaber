@@ -655,7 +655,8 @@ async function seoPage(request, context, state) {
         offers: {
           "@type": "Offer",
           url: offerUrl,
-          price: off.price,
+          // Fixed-price stories (e.g. the Completely Customised Story, AED 199): same ratio rounding as _pricing.js.
+          price: Number(s.fixed_price_aed) > 0 ? Math.round(Number(s.fixed_price_aed) * (OFFERS[cc].price / OFFERS.AE.price) / (OFFERS[cc].price >= 50 ? 1 : 0.25)) * (OFFERS[cc].price >= 50 ? 1 : 0.25) : off.price,
           priceCurrency: off.cur,
           availability: "https://schema.org/InStock",
           itemCondition: "https://schema.org/NewCondition",

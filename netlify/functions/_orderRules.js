@@ -20,6 +20,11 @@ function checkOrderRules(o) {
     if (i.photoConsent !== true && i.photoLater !== true) {
       return { error: 'Please give permission to use the photo for each book. Remove the book from your cart and add it again.', reason: 'photo_consent' };
     }
+    // Completely Customised Story: the story brief and the first-page welcome note are both required.
+    if (i.slug === 'completely-customised-story') {
+      if (String(i.storyBrief || '').trim().length < 20) return { error: 'Please write a short brief of the story you would like (a few sentences).', reason: 'brief_missing' };
+      if (!String(i.dedication || '').trim()) return { error: 'Please write the welcome note for the first page of the customised story.', reason: 'note_missing' };
+    }
     const name = String(i.childName || '');
     const msg = String(i.dedication || '');
     if (i.bookLanguage === 'ar') {

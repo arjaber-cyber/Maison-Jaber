@@ -219,7 +219,7 @@ window.HIKAYA_ANALYTICS_CONFIG = {
       item_name: String(item.story || item.slug || 'Story').slice(0, 100),
       item_category: 'Personalised storybook',
       item_variant: [item.bookLanguage, item.ageEdition].filter(Boolean).join(' / ') || undefined,
-      price: r.bookNow, quantity: 1,
+      price: (item.fixedPriceAed && window.hikayaCodeAmount) ? window.hikayaCodeAmount(item.fixedPriceAed, r) : r.bookNow, quantity: 1,
     };
   }
   function cartPayload() {

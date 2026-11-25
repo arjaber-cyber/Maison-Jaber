@@ -74,7 +74,7 @@ async function loadStories(titles) {
   let rows = [];
   try {
     const list = unique.map(t => `"${t.replace(/"/g, '\\"')}"`).join(',');
-    rows = await sb(`stories?select=title,has_extra_character,extra_character_fee_aed,active&title=in.(${encodeURIComponent(list)})`);
+    rows = await sb(`stories?select=title,has_extra_character,extra_character_fee_aed,active,fixed_price_aed,no_discount,custom_story&title=in.(${encodeURIComponent(list)})`);
   } catch (e) {
     console.warn('story lookup failed', e.message);
   }
@@ -109,6 +109,7 @@ const PROMO_MESSAGES = {
   wrong_area_uae: 'This code is for deliveries in the UAE only.',
   min_order: 'Your order is below the minimum for this code.',
   unavailable: "We couldn't check that code right now. Please try again.",
+  no_discount_item: "Discount codes can't be used on the Completely Customised Story.",
   need_account: 'Discount codes are for Hikaya members. Sign in or create a free account to use this code.',
   need_phone: 'One quick step: verify your WhatsApp number to use discount codes.',
 };
@@ -171,8 +172,13 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
 
   const stories = await loadStories(items.map(i => String(i.story || '')));
   const toAed = n => round2(n * AED_PER_UNIT[region.currency]);
-  const tier = tierFor(items.length);
-  const fullBooks = region.bookNow * items.length;
+  // Fixed-price books (Nov 2026, e.g. the Completely Customised Story, AED 199): always charged at their
+  // own price, never discounted, and not counted towards bundle tiers or discount codes.
+  const fixedAedOf = i => { const s = stories[i.story]; return s && Number(s.fixed_price_aed) > 0 ? Number(s.fixed_price_aed) : 0; };
+  const regular = items.filter(i => !fixedAedOf(i));
+  const fixedTotal = round2(items.reduce((sum, i) => sum + (fixedAedOf(i) ? codeAmountLocal(fixedAedOf(i), region) : 0), 0));
+  const tier = tierFor(regular.length);
+  const fullBooks = region.bookNow * regular.length;
 
   // Extra-character fee: only when the story really has one, at the database price (AED -> local).
   const rate = region.bookNow / REGIONS.UAE.bookNow;
@@ -205,12 +211,13 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
   }
   const promo = await loadPromo(promoCode, { email });
   checkPromoRegion(promo, regionKey);
+  if (promo && !regular.length) throw promoError('no_discount_item');
   if (promo) {
     if (promo.minOrderAed != null && toAed(fullBooks) < promo.minOrderAed) {
       throw promoError('min_order', { message: `This code needs an order of at least AED ${promo.minOrderAed} (before discounts).` });
     }
     let b = fullBooks, d = region.deliveryFee, x = extraFee;
-    if (promo.type === 'free_order') { b = region.bookNow * (items.length - 1); d = 0; x = Math.max(0, extraFee - maxItemExtra); }
+    if (promo.type === 'free_order') { b = region.bookNow * (regular.length - 1); d = 0; x = Math.max(0, extraFee - maxItemExtra); }
     else if (promo.type === 'free_shipping') d = 0;
     else if (promo.type === 'percent') b = fullBooks * (1 - Math.min(100, promo.value) / 100);
     else if (promo.type === 'fixed') b = Math.max(0, fullBooks - codeAmountLocal(promo.value, region));
@@ -223,15 +230,18 @@ async function priceOrder({ regionKey, items, promoCode, email, auth }) {
     }
   }
 
-  const listValue = fullBooks + region.deliveryFee + extraFee;
+  booksTotal += fixedTotal; // fixed-price books are added after every discount
+  const listValue = fullBooks + fixedTotal + region.deliveryFee + extraFee;
   const total = round2(booksTotal + deliveryFee + extra);
+  // List price of each book in AED, in cart order (Tabby / Tamara order lines).
+  const unitListAed = items.map(i => fixedAedOf(i) ? toAed(codeAmountLocal(fixedAedOf(i), region)) : toAed(region.bookNow));
   const chargedAed = toAed(total);
   return {
     currency: region.currency, total, chargedAed,
     listValueAed: toAed(listValue),
     promoDiscountAed: applied ? round2(toAed(listValue) - chargedAed) : 0,
-    promo: applied, promoNotBetter, memberPhone: applied && member ? member.phone : null,
-    breakdown: { perBook: round2(booksTotal / items.length), booksTotal: round2(booksTotal), deliveryFee: round2(deliveryFee), extraFee: round2(extra), bundleDiscountPct, promo: applied ? applied.code : null },
+    promo: applied, promoNotBetter, memberPhone: applied && member ? member.phone : null, unitListAed,
+    breakdown: { fixedTotal, perBook: round2(booksTotal / items.length), booksTotal: round2(booksTotal), deliveryFee: round2(deliveryFee), extraFee: round2(extra), bundleDiscountPct, promo: applied ? applied.code : null },
   };
 }
 
