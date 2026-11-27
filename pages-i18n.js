@@ -158,7 +158,7 @@
     fq15: { en: "Who can upload a child's photo?", ar: "من يمكنه رفع صورة الطفل؟" },
     fa15: { en: "Only a parent or legal guardian, using a photo they have the right to use.", ar: "الوالدان أو الوصي القانوني فقط، بصورة يحق لهم استخدامها" },
     fq16: { en: "Which languages are available?", ar: "ما اللغات المتاحة؟" },
-    fa16: { en: "Hikaya is available in English and Arabic, with a right-to-left layout for Arabic.", ar: "حكاية متاحة بالإنجليزية والعربية، مع تصميم من اليمين إلى اليسار للعربية" },
+    fa16: { en: "Hikaya is available in English, Arabic, German, Mandarin Chinese and Russian, with a right-to-left layout for Arabic.", ar: "حكاية متاحة بالعربية والإنجليزية والألمانية والصينية (الماندرين) والروسية، مع تصميم من اليمين إلى اليسار للعربية" },
     ct_title: { en: "Get in touch", ar: "تواصل معنا" },
     ct_sub: { en: "Questions about an order, a photo or delivery? We're here to help.", ar: "لديك سؤال عن طلب أو صورة أو توصيل؟ نحن هنا للمساعدة" },
     ct_name: { en: "Name", ar: "الاسم" },
@@ -565,8 +565,8 @@
   "ar": "ما اللغات المتاحة؟"
  },
  "a7": {
-  "en": "Hikaya books are available in English and Arabic. You choose the book language when you review your order, and this website works in both languages.",
-  "ar": "كتب حكاية متاحة بالإنجليزية والعربية، وتختار لغة الكتاب عند مراجعة طلبك، والموقع متاح باللغتين أيضًا"
+  "en": "Hikaya books are available in English, Arabic, German, Mandarin Chinese and Russian. You choose the book language when you review your order, and the website itself is in English and Arabic.",
+  "ar": "كتب حكاية متاحة بالعربية والإنجليزية والألمانية والصينية (الماندرين) والروسية، وتختار لغة الكتاب عند مراجعة طلبك، والموقع نفسه متاح بالعربية والإنجليزية"
  },
  "g_book": {
   "en": "The book and price",
@@ -876,8 +876,8 @@
   const T = window.HIKAYA_TRANSLATIONS = window.HIKAYA_TRANSLATIONS || {};
   T.seo = {
     col_h: { en: 'Personalised storybooks, made for one child', ar: 'قصص مخصصة تُصنع لطفل واحد' },
-    col_p1: { en: 'Every Hikaya book turns your child into the hero of a real story. Choose a story for their age (2–4, 4–6 or 6–8), add their first name and one photo, and we illustrate them on every page, print a square hardcover book and deliver it gift-boxed across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain and Oman. Each story comes in Arabic or English.',
-              ar: 'كل كتاب من حكاية يجعل طفلك بطل قصة حقيقية، اختر قصة تناسب عمره من 2 إلى 4 أو من 4 إلى 6 أو من 6 إلى 8 سنوات، وأضف اسمه الأول وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا مربعًا بغلاف مقوّى ونوصله في علبة هدية إلى الإمارات والسعودية وقطر والكويت والبحرين وعُمان، وكل قصة متوفرة بالعربية أو الإنجليزية' },
+    col_p1: { en: 'Every Hikaya book turns your child into the hero of a real story. Choose a story for their age (2–4, 4–6 or 6–8), add their first name and one photo, and we illustrate them on every page, print a square hardcover book and deliver it gift-boxed across the UAE, Saudi Arabia, Qatar, Kuwait, Bahrain and Oman. Each story comes in Arabic, English, German, Mandarin Chinese or Russian.',
+              ar: 'كل كتاب من حكاية يجعل طفلك بطل قصة حقيقية، اختر قصة تناسب عمره من 2 إلى 4 أو من 4 إلى 6 أو من 6 إلى 8 سنوات، وأضف اسمه الأول وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا مربعًا بغلاف مقوّى ونوصله في علبة هدية إلى الإمارات والسعودية وقطر والكويت والبحرين وعُمان، وكل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية' },
     col_p2: { en: 'Looking for a gift? See <a href="gifts.html">personalised gift ideas</a> for birthdays, Eid and new siblings, or read our <a href="guides.html">gift guides</a>.',
               ar: 'تبحث عن هدية؟ اكتشف <a href="gifts.html">أفكار الهدايا المخصصة</a> لأعياد الميلاد والعيد والمولود الجديد، أو اقرأ <a href="guides.html">أدلة الهدايا</a>' },
   };
