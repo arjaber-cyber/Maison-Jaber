@@ -57,7 +57,7 @@ exports.handler = async (event) => {
       if (!isOpen(o)) return json(200, Object.assign({ status: 'closed' }, base));
       return json(200, Object.assign({ status: 'ok' }, base, {
         books: items.map((it, i) => ({
-          i, childName: it.childName || '', story: it.story || '', slug: it.slug || '', bookLanguage: it.bookLanguage === 'ar' ? 'ar' : 'en',
+          i, childName: it.childName || '', story: it.story || '', slug: it.slug || '', bookLanguage: require('./_bookLangs').normBookLang(it.bookLanguage),
           hasPhoto: photoCount(it) > 0, needsPhoto: it.photoLater === true && photoCount(it) === 0, full: photoCount(it) >= MAX_PER_BOOK,
         })),
       }));

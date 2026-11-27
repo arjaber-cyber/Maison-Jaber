@@ -331,6 +331,7 @@
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/book-langs.js"></script>
 <script src="/cart.js" defer></script>
 <script src="/recovery.js" defer></script>
 <script src="family.js" defer></script>
@@ -1074,7 +1075,7 @@
         <div class="cover-mini ${item.theme}" data-item-id="${item.id}"></div>
         <div>
           <h3>${item.story}</h3>
-          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + (item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book'))}</p>
+          <p>${item.childName ? item.childName + ' &middot; ' : ''}${item.ageEdition ? t('a11y.age_range', 'Ages {a}–{b}').replace('{a}', String(item.ageEdition).split('-')[0]).replace('{b}', String(item.ageEdition).split('-')[1] || '') : ''}${' &middot; ' + t('qa.book_' + window.HikayaBookLangs.norm(item.bookLanguage), window.HikayaBookLangs.bookLabel(item.bookLanguage))}</p>
           <p class="co-msg">✉ ${item.dedication ? t('qa.msg_yours', 'Your message') : t('qa.msg_ours_short', "We'll write one for {name}").replace('{name}', String(item.childName || t('lx.st_child', 'your child')).replace(/[&<>"]/g, '') )} <a href="cart.html?msg=${encodeURIComponent(item.id)}">${item.dedication ? t('qa.msg_edit', 'Edit message') : t('qa.msg_add', 'Add your own message')}</a></p>
           ${item.extraCharacterName ? `<p style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</p>` : ''}
           ${window.HikayaFamily && window.HikayaFamily.summary(item) ? `<p>👪 ${window.HikayaFamily.summary(item)}</p>` : ''}
@@ -1745,13 +1746,13 @@
     }
 
     // Every book must have photo permission, and its name and message must be in the book's language.
-    const AR_RE = /[\u0600-\u06FF]/, LATIN_RE = /[A-Za-z]/;
+    // Same rules as the server (/book-langs.js and netlify/functions/_bookLangs.js), for all five book languages.
+    const BL = window.HikayaBookLangs;
     const badItem = order.items.find(i => {
       if (!i.photoConsent && !i.photoLater) return true;
-      const n = String(i.childName || '');
-      return i.bookLanguage === 'ar' ? (!AR_RE.test(n) || LATIN_RE.test(n)) : (!LATIN_RE.test(n) || AR_RE.test(n));
+      return !BL.nameOk(i.bookLanguage, String(i.childName || ''));
     });
-    const badMsgIdx = order.items.findIndex(i => { const d = String(i.dedication || ''); return i.bookLanguage === 'ar' ? LATIN_RE.test(d) : AR_RE.test(d); });
+    const badMsgIdx = order.items.findIndex(i => !BL.msgScriptOk(i.bookLanguage, String(i.dedication || '')));
     if (!badItem && badMsgIdx >= 0) {
       showErr('qa.msg_fix_cart', "The first-page message on one of your books isn't in the book's language. Please edit it in your cart, it only takes a moment.");
       const box = document.getElementById('payment-error'), a = document.createElement('a');

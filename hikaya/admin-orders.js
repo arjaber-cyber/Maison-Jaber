@@ -335,6 +335,8 @@
     </div>`;
   }
 
+  // Nov 2026: books can be English, Arabic, German, Mandarin Chinese or Russian.
+  const BOOK_LANG_NAME = l => ({ en: 'English', ar: 'Arabic', de: 'German', zh: 'Mandarin', ru: 'Russian' }[l] || 'English');
   function card(o) {
     const st = stageOf(o); const its = o._items;
     const [payL, payC] = PAY[o.payment_status] || [o.payment_status || '—', ''];
@@ -347,7 +349,7 @@
         <div class="op-head-main">
           <div class="op-title">${kidsLine(o)}</div>
           <div class="op-sub"><span class="no">${esc(o.order_number || '')}</span> · ${esc(o.full_name || o.email || '')}${o.city ? ' · ' + esc(o.city) : ''}${o.country ? ', ' + esc(o.country) : ''}</div>
-          <div class="op-badges">${stBadge}<span class="op-badge ${payC}">${payL}</span>${its.length > 1 ? `<span class="op-badge">${its.length} books</span>` : ''}${lang.length ? `<span class="op-badge">${lang.map(l => l === 'ar' ? 'Arabic' : 'English').filter((v, i, a) => a.indexOf(v) === i).join(' + ')} book</span>` : ''}${famBadge(o)}${its.some(i => i && i.photoLater && !(i.photoPaths || []).length) ? '<span class="op-badge warn">Photo to come</span>' : ''}${isSale(o) ? '' : `<span class="op-badge type">${esc(TYPES[typeOf(o)].label)}</span>`}${o.is_gift ? '<span class="op-badge info">Sent as a gift</span>' : ''}${o.promo_code ? `<span class="op-badge">Code ${esc(o.promo_code)}</span>` : ''}${isLate(o) ? `<span class="op-badge warn">${esc(ago(sinceStage(o)))} in this step</span>` : ''}</div>
+          <div class="op-badges">${stBadge}<span class="op-badge ${payC}">${payL}</span>${its.length > 1 ? `<span class="op-badge">${its.length} books</span>` : ''}${lang.length ? `<span class="op-badge">${lang.map(l => BOOK_LANG_NAME(l)).filter((v, i, a) => a.indexOf(v) === i).join(' + ')} book</span>` : ''}${famBadge(o)}${its.some(i => i && i.photoLater && !(i.photoPaths || []).length) ? '<span class="op-badge warn">Photo to come</span>' : ''}${isSale(o) ? '' : `<span class="op-badge type">${esc(TYPES[typeOf(o)].label)}</span>`}${o.is_gift ? '<span class="op-badge info">Sent as a gift</span>' : ''}${o.promo_code ? `<span class="op-badge">Code ${esc(o.promo_code)}</span>` : ''}${isLate(o) ? `<span class="op-badge warn">${esc(ago(sinceStage(o)))} in this step</span>` : ''}</div>
         </div>
         <div class="op-head-side">
           <div class="op-amt">${isSale(o) ? fmtAED(aed(o)) : `<span class="op-free">Free</span>`}</div>${isSale(o) ? '' : `<div class="op-date">value ${fmtAED(Math.round(retail(o)))}</div>`}
@@ -362,7 +364,7 @@
         <div class="op-grid">
           <section class="op-box"><h4>Books (${its.length})</h4>${its.map((it, n) => `
             <div class="op-item"><strong>${esc(it.story || '—')}</strong>
-              <div class="op-item-m">${esc(it.childName || '—')}${it.childNameTyped && it.childNameTyped !== it.childName ? ' <span class="op-muted">(typed as ' + esc(it.childNameTyped) + ')</span>' : ''}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + (it.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book</b>' : ''}</div>
+              <div class="op-item-m">${esc(it.childName || '—')}${it.childNameTyped && it.childNameTyped !== it.childName ? ' <span class="op-muted">(typed as ' + esc(it.childNameTyped) + ')</span>' : ''}${it.childAge ? ' · age ' + esc(it.childAge) : ''}${it.ageEdition ? ' · ' + esc(it.ageEdition) + ' edition' : ''}${it.gender ? ' · ' + esc(it.gender) : ''}${it.extraCharacterName ? ' · + ' + esc(it.extraCharacterName) : ''}${it.bookLanguage ? ' · <b>' + BOOK_LANG_NAME(it.bookLanguage) + ' book</b>' : ''}</div>
               ${it.dedication ? `<div class="op-quote"><small style="display:block; font-style:normal; font-weight:700; opacity:.7;">First-page message (print this instead of the standard one)</small>“${esc(it.dedication)}”</div>` : ''}
               ${famBox(it)}
               ${customBox(it)}

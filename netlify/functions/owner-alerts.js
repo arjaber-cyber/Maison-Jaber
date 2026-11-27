@@ -68,7 +68,7 @@ function books(o, titles) {
   let items = [];
   try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
   if (!Array.isArray(items) || !items.length) return '';
-  return items.map(i => `${titles[i.slug] || i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage === 'ar' ? ' (AR)' : ''}`).join(', ');
+  return items.map(i => `${titles[i.slug] || i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage && i.bookLanguage !== 'en' ? ' (' + String(i.bookLanguage).toUpperCase() + ')' : ''}`).join(', ');
 }
 const waLink = (phone) => { const d = String(phone || '').replace(/[^\d]/g, ''); return d.length >= 8 ? `wa.me/${d}` : ''; };
 

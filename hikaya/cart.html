@@ -108,6 +108,7 @@
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
 <script src="/region.js" defer></script>
+<script src="/book-langs.js"></script>
 <script src="/cart.js" defer></script>
 <script src="/recovery.js" defer></script>
 <script src="family.js" defer></script>
@@ -169,9 +170,9 @@
   /* ---- First-page message: shown on every book, and editable right here in the cart ---- */
   // The open editor survives re-renders (language/region changes), along with what was typed.
   let msgOpenId = null, msgDraft = null;
-  const MSG_MAX = 300, MSG_AR = /[؀-ۿ]/, MSG_LATIN = /[A-Za-z]/;
+  const MSG_MAX = 300, BL = window.HikayaBookLangs;
   const escH = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  function msgLangOk(item, text) { return item.bookLanguage === 'ar' ? !MSG_LATIN.test(text) : !MSG_AR.test(text); }
+  function msgLangOk(item, text) { return BL.msgOk(item.bookLanguage, text); }
   function msgHtml(item) {
     const name = escH(item.childName || t('lx.st_child', 'your child'));
     const state = item.dedication
@@ -184,9 +185,10 @@
     const box = document.querySelector(`.cart-msg[data-msg-for="${CSS.escape(id)}"]`); if (!box) return;
     if (msgOpenId !== id) msgDraft = null;
     msgOpenId = id;
-    const ph = item.bookLanguage === 'ar' ? 'مثال: إلى ' + (item.childName || 'بطلنا') + '، لتذكّرك كل صفحة بكم نحبك، ماما وبابا' : 'e.g. To ' + (item.childName || 'our little hero') + ', may every page remind you how loved you are. Mama and Baba';
+    const ph = BL.placeholder(item.bookLanguage, item.childName, item.gender);
     box.innerHTML = `<div class="cart-msg-edit">
-        <textarea maxlength="${MSG_MAX}" dir="${item.bookLanguage === 'ar' ? 'rtl' : 'ltr'}" lang="${item.bookLanguage === 'ar' ? 'ar' : 'en'}" aria-label="${escH(t('qa.msg_label', 'Your message'))}" placeholder="${escH(ph)}">${escH(msgDraft != null ? msgDraft : (item.dedication || ''))}</textarea>
+        <textarea maxlength="${MSG_MAX}" dir="${BL.dir(item.bookLanguage)}" lang="${BL.norm(item.bookLanguage)}" aria-label="${escH(t('qa.msg_label', 'Your message'))}" placeholder="${escH(ph)}">${escH(msgDraft != null ? msgDraft : (item.dedication || ''))}</textarea>
+        <p class="msg-state" style="margin:4px 0 0; font-size:12px; font-weight:700;">${escH(BL.msgRule(item.bookLanguage))}</p>
         <div class="err" role="alert" hidden></div>
         <div class="row">
           <button type="button" class="save">${escH(t('qa.msg_save', 'Save message'))}</button>
@@ -203,7 +205,7 @@
     box.querySelector('.save').addEventListener('click', () => {
       const v = ta.value.trim();
       if (v && !msgLangOk(item, v)) {
-        err.textContent = item.bookLanguage === 'ar' ? t('qa.msg_err_ar', 'This book is in Arabic, so the message must be written in Arabic too') : t('qa.msg_err_en', 'This book is in English, so the message must be written in English too');
+        err.textContent = BL.msgError(item.bookLanguage, null, true);
         err.hidden = false; ta.focus(); return;
       }
       window.hikayaCart.updateItem(id, { dedication: v });
@@ -269,7 +271,7 @@
         <a class="cover ${item.theme}" data-item-id="${item.id}" href="${editHref(item)}" aria-label="${escH(t('ce.edit_aria', 'Edit this book'))}"></a>
         <div class="info">
           <h3><a class="item-edit-title" href="${editHref(item)}">${item.story}</a></h3>
-          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${item.bookLanguage === 'ar' ? t('qa.book_ar', 'Arabic book') : t('qa.book_en', 'English book')}</div>
+          <div class="meta">${item.childName ? item.childName + ' · ' : ''}${item.ageEdition ? ageLabel(item.ageEdition) + ' · ' : ''}${t('qa.book_' + BL.norm(item.bookLanguage), BL.bookLabel(item.bookLanguage))}</div>
           ${msgHtml(item)}
           ${item.extraCharacterName ? `<div class="meta" style="color:var(--coral);">+ ${item.extraCharacterName} (real photo)</div>` : ''}
           ${item.photoLater ? `<div class="meta">📷 ${t('ph.cart_meta', "Photo: you'll add it after ordering")}</div>` : ''}

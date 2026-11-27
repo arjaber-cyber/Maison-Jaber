@@ -67,7 +67,7 @@ async function sendOrderAlert(order, items) {
     const template = process.env.WHATSAPP_ORDER_TEMPLATE || 'hikaya_new_order';
     const clean = v => String(v == null ? '' : v).replace(/[\n\t]+/g, ' ').replace(/ {4,}/g, '   ').trim().slice(0, 200) || '-';
     const waived = order.payment_status === 'waived';
-    const books = (items || []).map(i => `${i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ')' : ''}`).join(', ') || `${(items || []).length} book(s)`;
+    const books = (items || []).map(i => `${i.story || 'Book'}${i.childName ? ' for ' + i.childName : ''}${i.bookLanguage ? ' (' + require('./_bookLangs').bookLangName(i.bookLanguage, 'en') + ')' : ''}`).join(', ') || `${(items || []).length} book(s)`;
     const via = METHOD[order.payment_method] || order.payment_method || '';
     const amount = waived ? `FREE (code ${order.promo_code || ''})` : `AED ${Number(order.charged_aed || 0).toFixed(2)}${via ? ' via ' + via : ''}${order.promo_code ? ', code ' + order.promo_code : ''}`;
     const who = `${order.full_name || ''}${order.city ? ', ' + order.city : ''}${order.country ? ', ' + order.country : ''}`;
