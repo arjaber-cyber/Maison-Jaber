@@ -719,8 +719,8 @@
   "ar": "1- قصة يكون الطفل بطلها"
  },
  "personal_s0_b": {
-  "en": "<p>A personalised book puts their name and illustrated face on every page, in Arabic or English, with your own message on the first page. Hikaya books are 21×21 cm hardcovers, made to order and delivered in a gift box. Not sure yet? <a href=\"free-cover-preview.html\">Try their cover free</a> first.</p>",
-  "ar": "<p>الكتاب المخصص يضع اسم الطفل وملامحه المرسومة في كل صفحة، بالعربية أو الإنجليزية، مع رسالتك الخاصة في الصفحة الأولى، وكتب حكاية بغلاف مقوّى بمقاس 21×21 سم تُصنع حسب الطلب وتصل في علبة هدية، وإن لم تكن متأكدًا <a href=\"free-cover-preview.html\">جرّب غلافه مجانًا</a> أولًا</p>"
+  "en": "<p>A personalised book puts their name and illustrated face on every page, in Arabic, English, German, Mandarin Chinese or Russian, with your own message on the first page. Hikaya books are 21×21 cm hardcovers, made to order and delivered in a gift box. Not sure yet? <a href=\"free-cover-preview.html\">Try their cover free</a> first.</p>",
+  "ar": "<p>الكتاب المخصص يضع اسم الطفل وملامحه المرسومة في كل صفحة، بالعربية أو الإنجليزية أو الألمانية أو الصينية أو الروسية، مع رسالتك الخاصة في الصفحة الأولى، وكتب حكاية بغلاف مقوّى بمقاس 21×21 سم تُصنع حسب الطلب وتصل في علبة هدية، وإن لم تكن متأكدًا <a href=\"free-cover-preview.html\">جرّب غلافه مجانًا</a> أولًا</p>"
  },
  "personal_s1_h": {
   "en": "2. A wooden name puzzle",

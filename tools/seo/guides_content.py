@@ -284,8 +284,8 @@ dict(key='personal', seo_title_en='Personalised Gifts for Kids: 10 Keepsake Idea
         'الهدية التي تحمل اسم الطفل تقول له إنها صُنعت من أجله، والأطفال يشعرون بذلك، وأجمل الهدايا المخصصة هي التي تبقى على الرف بعد سنوات، وهذه عشر أفكار للأطفال من 2 إلى 8 سنوات لعيد الميلاد أو العيد أو من دون مناسبة'),
  sections=[
   ('1. A storybook where they are the hero', '1- قصة يكون الطفل بطلها',
-   '<p>A personalised book puts their name and illustrated face on every page, in Arabic or English, with your own message on the first page. Hikaya books are 21×21 cm hardcovers, made to order and delivered in a gift box. Not sure yet? <a href="free-cover-preview.html">Try their cover free</a> first.</p>',
-   '<p>الكتاب المخصص يضع اسم الطفل وملامحه المرسومة في كل صفحة، بالعربية أو الإنجليزية، مع رسالتك الخاصة في الصفحة الأولى، وكتب حكاية بغلاف مقوّى بمقاس 21×21 سم تُصنع حسب الطلب وتصل في علبة هدية، وإن لم تكن متأكدًا <a href="free-cover-preview.html">جرّب غلافه مجانًا</a> أولًا</p>'),
+   '<p>A personalised book puts their name and illustrated face on every page, in Arabic, English, German, Mandarin Chinese or Russian, with your own message on the first page. Hikaya books are 21×21 cm hardcovers, made to order and delivered in a gift box. Not sure yet? <a href="free-cover-preview.html">Try their cover free</a> first.</p>',
+   '<p>الكتاب المخصص يضع اسم الطفل وملامحه المرسومة في كل صفحة، بالعربية أو الإنجليزية أو الألمانية أو الصينية أو الروسية، مع رسالتك الخاصة في الصفحة الأولى، وكتب حكاية بغلاف مقوّى بمقاس 21×21 سم تُصنع حسب الطلب وتصل في علبة هدية، وإن لم تكن متأكدًا <a href="free-cover-preview.html">جرّب غلافه مجانًا</a> أولًا</p>'),
   ('2. A wooden name puzzle', '2- لعبة تركيب خشبية باسمه',
    '<p>Perfect for ages 2 to 4. Each letter of their name is a puzzle piece, so playing becomes a first lesson in spelling.</p>',
    '<p>مناسبة جدًا من 2 إلى 4 سنوات، كل حرف من اسمه قطعة في اللعبة، فيصبح اللعب أول درس في التهجئة</p>'),
