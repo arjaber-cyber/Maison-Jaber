@@ -16,6 +16,7 @@
 
 const { priceOrder, reserveDiscount, settleDiscount, PROMO_MESSAGES, REGIONS, SUPABASE_URL, SUPABASE_KEY, SUPABASE_ANON_KEY } = require('./_pricing');
 const { checkOrderRules } = require('./_orderRules');
+const { normBookLang, bookLangName } = require('./_bookLangs');
 const { saveAttribution } = require('./_attribution');
 const { tabby, secretKey, merchantCode, isTestKey, money, uaePhone, rejectMessage, rejectionReason, buyerHistory } = require('./_tabby');
 
@@ -65,7 +66,7 @@ exports.handler = async (event) => {
   const paths = list => (Array.isArray(list) ? list : []).map(String).filter(p => PHOTO_PATH.test(p)).slice(0, 5);
   const cleanItems = o.items.map(i => ({
     story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childNameTyped: String(i.childNameTyped || i.childName || '').slice(0, 60), photoConsent: i.photoConsent === true, photoConsentAt: i.photoConsentAt ? String(i.photoConsentAt).slice(0, 40) : null, childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
-    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
+    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: normBookLang(i.bookLanguage), siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
     photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
     // Photo to be added after ordering (add-photo.html); only when no child photo came with the book.
     photoLater: i.photoLater === true && !paths(i.photoPaths).length,
@@ -144,7 +145,7 @@ exports.handler = async (event) => {
   const host = event.headers['x-forwarded-host'] || event.headers.host;
   const items = cleanItems.map((i, n) => ({
     title: `${i.story} (personalised for ${i.childName})`.slice(0, 200),
-    description: `Personalised Hikaya storybook, ${i.bookLanguage === 'ar' ? 'Arabic' : 'English'} edition${i.ageEdition ? ', ages ' + i.ageEdition : ''}`,
+    description: `Personalised Hikaya storybook, ${bookLangName(i.bookLanguage, 'en')} edition${i.ageEdition ? ', ages ' + i.ageEdition : ''}`,
     quantity: 1, unit_price: money((price.unitListAed && price.unitListAed[n]) || bookPrice), discount_amount: '0.00',
     reference_id: `${orderNumber}-${n + 1}`, category: 'Books',
     ...(i.slug ? { product_url: `https://${host}/hikaya/story.html?s=${encodeURIComponent(i.slug)}` } : {}),

@@ -164,6 +164,7 @@
   </div>
 </div>
 
+<script src="/book-langs.js"></script>
 <script src="/cart.js" defer></script>
 <script src="/site-photos.js" defer></script>
 <script defer>
@@ -183,7 +184,7 @@
     const setMeta = () => {
       const band = last.ageEdition ? String(last.ageEdition).split('-') : null;
       const ageTxt = band ? tt('a11y.age_range', 'Ages {a}–{b}').replace('{a}', band[0]).replace('{b}', band[1] || band[0]) : null;
-      const langTxt = last.bookLanguage === 'ar' ? tt('qa.book_ar', 'Arabic book') : tt('qa.book_en', 'English book');
+      const BL = window.HikayaBookLangs, langTxt = tt('qa.book_' + BL.norm(last.bookLanguage), BL.bookLabel(last.bookLanguage));
       document.getElementById('item-meta').textContent = [last.childName, ageTxt, langTxt].filter(Boolean).join(' · ');
     };
     setMeta();

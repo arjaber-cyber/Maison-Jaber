@@ -35,7 +35,7 @@ function ageText(band, lang) {
   const [a, b] = String(band).split('-');
   return lang === 'ar' ? `من ${a} إلى ${b || a} سنوات` : `Ages ${a}–${b || a}`;
 }
-const bookLangText = (l, lang) => (l === 'ar' ? tr(lang, 'Arabic book', 'كتاب بالعربية') : tr(lang, 'English book', 'كتاب بالإنجليزية'));
+const bookLangText = (l, lang) => require('./_bookLangs').bookLangText(l, lang);
 /* Private per-order links (orders.tracking_token): open the order or its invoice with no code needed.
    The token is long and random, so only someone who received the email has it. */
 const invoiceUrl = o => o && o.tracking_token ? `${SITE_URL}invoice.html?t=${encodeURIComponent(o.tracking_token)}` : `${SITE_URL}track-order.html`;
@@ -224,7 +224,7 @@ function cartReminder(cart, links) {
   const link = o.resumeUrl || `${SITE_URL}cart.html`;
   const cards = items.slice(0, 4).map(i => {
     const title = esc(String((i && i.story) || '').replace(/\[NAME\]/g, (i && i.childName) || ''));
-    const meta = [i && i.childName ? esc(i.childName) : '', i && i.ageEdition ? tr(lang, `Ages ${esc(i.ageEdition)}`, `للأعمار ${esc(i.ageEdition)}`) : '', i && i.bookLanguage ? (i.bookLanguage === 'ar' ? tr(lang, 'Arabic edition', 'النسخة العربية') : tr(lang, 'English edition', 'النسخة الإنجليزية')) : '']
+    const meta = [i && i.childName ? esc(i.childName) : '', i && i.ageEdition ? tr(lang, `Ages ${esc(i.ageEdition)}`, `للأعمار ${esc(i.ageEdition)}`) : '', i && i.bookLanguage ? bookLangText(i.bookLanguage, lang) : '']
       .filter(Boolean).join(' &middot; ');
     return title ? ui.storyCard(title, meta, i && i.coverUrl, lang) : '';
   }).join('');

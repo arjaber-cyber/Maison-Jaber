@@ -309,6 +309,8 @@
   .book-lang { margin: 16px 0 14px; }
   .book-name-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: var(--bg-soft); font-size: 13px; font-weight: 600; }
   .book-name-line bdi { font-weight: 800; color: var(--coral-deep); }
+  .book-lang-note { font-size: 12.5px; color: var(--ink-soft); margin: 6px 0 0; line-height: 1.5; }
+  .msg-lang-rule { font-size: 12.5px; font-weight: 700; color: var(--coral-deep); margin: 0 0 6px; }
   .consent-box { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 4px 0 12px; font-size: 12.5px; font-weight: 600; line-height: 1.5; cursor: pointer; }
   .consent-box input { width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0; accent-color: var(--coral); }
   .consent-box.need { border-color: #9b2c1f; }
@@ -396,6 +398,7 @@
 <script src="/site-photos.js" defer></script>
 <script src="/consent.js" defer></script>
 <script src="/analytics.js" defer></script>
+<script src="/book-langs.js"></script>
 <script src="/cart.js" defer></script>
 <script src="/recovery.js" defer></script>
 <script src="/region.js" defer></script>
@@ -643,7 +646,8 @@
         <div id="review-summary"></div>
         <div class="field full book-lang">
           <label class="field-label" for="book-language" data-i18n="lx.book_lang">Book language</label>
-          <select id="book-language" name="book_language"><option value="en" data-i18n="lx.lang_en">English</option><option value="ar" data-i18n="lx.lang_ar">Arabic</option></select>
+          <select id="book-language" name="book_language"><option value="en" lang="en" data-i18n="lx.lang_en">English</option><option value="ar" lang="ar" data-i18n="lx.lang_ar">Arabic</option><option value="de" lang="de" data-i18n="lx.lang_de">German · Deutsch</option><option value="zh" lang="zh" data-i18n="lx.lang_zh">Mandarin Chinese · 中文</option><option value="ru" lang="ru" data-i18n="lx.lang_ru">Russian · Русский</option></select>
+          <p class="book-lang-note" id="book-lang-note"></p>
           <div class="book-name-line" id="book-name-line" hidden>
             <span><span data-i18n="bl.name_in_book">Name printed in the book:</span> <bdi id="book-name-shown" data-i18n-skip></bdi></span>
             <button type="button" class="review-edit" id="book-name-change" data-i18n="bl.change">Change</button>
@@ -660,6 +664,7 @@
           <button type="button" class="btn btn-secondary msg-toggle" id="msg-toggle" aria-expanded="false" aria-controls="msg-body"><span data-i18n="qa.msg_btn">Personalise the message</span> <span aria-hidden="true">✎</span></button>
           <div class="msg-body" id="msg-body" hidden>
             <label class="field-label" for="dedication" data-i18n="qa.msg_label">Your message</label>
+            <p class="msg-lang-rule" id="msg-lang-rule"></p>
             <textarea id="dedication" name="dedication" maxlength="300" rows="4" dir="auto" placeholder="e.g. To our brave Sara, may every page remind you how loved you are. Mama and Baba" data-i18n-placeholder="qa.msg_ph"></textarea>
             <div class="msg-row"><span class="msg-count" id="msg-count">0/300</span><button type="button" class="msg-inspire" id="msg-inspire"><span aria-hidden="true">✦</span> <span data-i18n="qa.msg_inspire">Inspire me</span></button></div>
             <p class="cs-req-note" id="cs-msg-req" hidden data-i18n="cs.msg_req">A welcome note is required for a customised story.</p>
@@ -1076,22 +1081,23 @@
      The parent types the name once (any script). If the book is in the other language, a pop-up
      suggests the name in that language and the parent confirms or corrects it. That confirmed
      name is the one saved on the order and printed in the book. */
-  const AR_RE = /[؀-ۿ]/, LATIN_RE = /[A-Za-z]/;
-  const scriptOf = s => { const a = AR_RE.test(s), l = LATIN_RE.test(s); return a && !l ? 'ar' : l && !a ? 'en' : (a && l ? 'mixed' : ''); };
+  /* Nov 2026: five book languages (English, Arabic, German, Mandarin Chinese, Russian). The rules live in
+     /book-langs.js: the name and the message must use the book language's own letters. */
+  const BL = window.HikayaBookLangs;
   const bookLangSel = document.getElementById('book-language');
-  const bookLang = () => bookLangSel.value === 'ar' ? 'ar' : 'en';
+  const bookLang = () => BL.norm(bookLangSel.value);
   const typedName = () => (document.getElementById('child-name').value || '').trim();
   let bookNameConfirmed = null; // { typed, lang, name }
   function bookName() {
     const typed = typedName(); if (!typed) return '';
-    if (scriptOf(typed) === bookLang()) return typed;
+    if (BL.nameOk(bookLang(), typed)) return typed;
     const c = bookNameConfirmed;
     return c && c.typed === typed && c.lang === bookLang() ? c.name : '';
   }
   window.hkBookName = bookName;
   function dedicationLangOk() {
     const d = document.getElementById('dedication').value;
-    return bookLang() === 'ar' ? !LATIN_RE.test(d) : !AR_RE.test(d);
+    return BL.msgOk(bookLang(), d);
   }
   function langState() {
     if (!bookName()) return { ok: false, why: 'name' };
@@ -1104,6 +1110,20 @@
     line.hidden = !n || n === typedName();
     document.getElementById('book-name-shown').textContent = n;
     paintMsgTitle(n || typedName());
+    paintLangRules();
+  }
+  // Tell the parent up front that the name and message are printed in the book language, and switch
+  // the message box (direction, example text) to that language.
+  function paintLangRules() {
+    const l = bookLang(), ui = document.documentElement.lang === 'ar' ? 'ar' : 'en', n = BL.label(l, ui);
+    const note = document.getElementById('book-lang-note');
+    if (note) note.textContent = ui === 'ar'
+      ? 'يُطبع اسم الطفل ورسالة الصفحة الأولى باللغة ' + n + '، لذا يجب كتابتهما باللغة ' + n + ' فقط'
+      : "The child's name and the first-page message are printed in " + n + ', so both must be written in ' + n + ' only.';
+    const rule = document.getElementById('msg-lang-rule');
+    if (rule) rule.textContent = BL.msgRule(l, ui);
+    const ta = document.getElementById('dedication');
+    if (ta) { ta.dir = BL.dir(l); ta.lang = l; ta.placeholder = BL.placeholder(l, bookName(), document.getElementById('child-gender').value); }
   }
   function langCheck() {
     paintBookName();
@@ -1112,9 +1132,7 @@
     err.hidden = !show;
     if (show) err.textContent = st.why === 'name'
       ? t('bl.err_name', 'Please confirm how the name should be written in the book language.')
-      : (bookLang() === 'ar'
-        ? t('bl.err_msg_ar', 'The book is in Arabic, so the first-page message must be written in Arabic too. Please rewrite it in Arabic, or use "Inspire me".')
-        : t('bl.err_msg_en', 'The book is in English, so the first-page message must be written in English too. Please rewrite it in English, or use "Inspire me".'));
+      : BL.msgError(bookLang());
     checkDetailsComplete();
   }
   window.hkLangCheck = langCheck;
@@ -1126,14 +1144,14 @@
     ok: document.getElementById('name-modal-ok'), cancel: document.getElementById('name-modal-cancel'),
   };
   let nmReq = 0, nmReturnFocus = null;
-  const langName = l => l === 'ar' ? t('lx.lang_ar', 'Arabic') : t('lx.lang_en', 'English');
+  const langName = l => BL.label(l);
   async function openNameModal() {
     const typed = typedName(); if (!typed) return;
-    const to = bookLang(), from = scriptOf(typed) === 'ar' ? 'ar' : 'en';
+    const to = bookLang(), from = BL.langOfText(typed) || 'en';
     nmReturnFocus = document.activeElement;
     nm.sub.textContent = t('bl.nm_sub', 'The book is in {lang}, so the name has to be written in {lang} too. We suggested a spelling below. Please check it carefully: it is printed exactly like this on every page.').replace(/\{lang\}/g, langName(to));
     nm.label.textContent = t('bl.nm_label', '{name} in {lang}').replace('{name}', typed).replace('{lang}', langName(to));
-    nm.input.dir = to === 'ar' ? 'rtl' : 'ltr'; nm.input.lang = to;
+    nm.input.dir = BL.dir(to); nm.input.lang = to;
     nm.cancel.textContent = t('bl.nm_cancel_to', 'Keep the book in {lang}').replace('{lang}', langName(from));
     nm.input.value = (bookNameConfirmed && bookNameConfirmed.typed === typed && bookNameConfirmed.lang === to) ? bookNameConfirmed.name : '';
     nm.err.hidden = true; nm.wrap.hidden = false;
@@ -1154,7 +1172,7 @@
   function closeNameModal() { nmReq++; nm.wrap.hidden = true; nm.hint.textContent = ''; if (nmReturnFocus && nmReturnFocus.focus) nmReturnFocus.focus(); }
   nm.ok.addEventListener('click', () => {
     const v = nm.input.value.trim(), to = bookLang();
-    const valid = /^[\p{L}\p{M}][\p{L}\p{M}' \-]{0,19}$/u.test(v) && scriptOf(v) === to;
+    const valid = /^[\p{L}\p{M}][\p{L}\p{M}' \-]{0,19}$/u.test(v) && BL.nameOk(to, v);
     if (!valid) {
       nm.err.hidden = false;
       nm.err.textContent = t('bl.nm_err', 'Please write the name using {lang} letters only.').replace('{lang}', langName(to));
@@ -1168,8 +1186,8 @@
   nm.input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); nm.ok.click(); } });
   nm.cancel.addEventListener('click', () => {
     // Switch the book back to the language the name was typed in.
-    const typed = typedName(); const s = scriptOf(typed);
-    if (s === 'ar' || s === 'en') bookLangSel.value = s;
+    const s = BL.langOfText(typedName());
+    if (s) bookLangSel.value = s;
     closeNameModal(); langCheck();
     if (currentStepName === 'review') renderReviewSummary();
   });
@@ -1177,6 +1195,8 @@
   function ensureBookName() { if (currentStepName === 'review' && typedName() && !bookName()) openNameModal(); }
   document.getElementById('book-name-change').addEventListener('click', () => { openNameModal(); });
   bookLangSel.addEventListener('change', e => { e.target.dataset.touched = '1'; langCheck(); if (currentStepName === 'review') renderReviewSummary(); ensureBookName(); });
+  document.addEventListener('hikaya:langchange', () => paintLangRules());
+  document.querySelectorAll('.gender-btn').forEach(b => b.addEventListener('click', () => setTimeout(paintLangRules, 0)));
 
   /* ---- Personal message for the first page (saved as the item's dedication) ---- */
   (function () {
@@ -1184,15 +1204,12 @@
     const count = document.getElementById('msg-count'), card = document.getElementById('msg-card');
     if (!toggle || !body || !ta) return;
     const MAX = 300;
-    const IDEAS = {
-      en: ['To our brave {name}, may every page remind you how loved you are. Love, Mama and Baba', 'Dear {name}, this story is yours, just like our hearts. Keep shining, little star.', 'For {name}: dream big, be kind, and never stop asking questions. We are so proud of you.', 'Happy reading, {name}! Wherever your adventures take you, home is always here.'],
-      ar: ['إلى {name} الشجاع، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزنا {name}، هذه القصة لك، تمامًا مثل قلوبنا، ابقَ نجمًا لامعًا', 'إلى {name}: احلم كثيرًا، وكن لطيفًا، ولا تتوقف عن السؤال، نحن فخورون بك', 'قراءة ممتعة يا {name}! أينما أخذتك مغامراتك، يبقى البيت هنا دائمًا'],
-      ar_girl: ['إلى {name} الشجاعة، لتذكّرك كل صفحة بكم نحبك، مع حب ماما وبابا', 'عزيزتنا {name}، هذه القصة لكِ، تمامًا مثل قلوبنا، ابقي نجمة لامعة', 'إلى {name}: احلمي كثيرًا، وكوني لطيفة، ولا تتوقفي عن السؤال، نحن فخورون بكِ', 'قراءة ممتعة يا {name}! أينما أخذتكِ مغامراتك، يبقى البيت هنا دائمًا'],
-    };
+    // Ideas live in /book-langs.js, one set per book language (with girl forms where the language needs them).
     // The message is printed in the BOOK's language, so ideas follow the book language, not the site language.
     const childName = () => (window.hkBookName && window.hkBookName()) || '';
-    const lang = () => document.getElementById('book-language').value === 'ar' ? 'ar' : 'en';
-    const ideaList = () => lang() === 'ar' && document.getElementById('child-gender').value === 'girl' ? IDEAS.ar_girl : IDEAS[lang()];
+    const lang = () => bookLang();
+    const gender = () => document.getElementById('child-gender').value;
+    const ideaList = () => BL.ideas(lang(), gender());
     const setOpen = open => {
       body.hidden = !open; toggle.hidden = open; toggle.setAttribute('aria-expanded', String(open));
       card.classList.toggle('open', open);
@@ -1200,14 +1217,14 @@
     };
     const update = () => { count.textContent = `${ta.value.length}/${MAX}`; count.classList.toggle('over', ta.value.length >= MAX); };
     // Confirmed book name first; otherwise the typed name, but only when it is already in the book's script.
-    const paintName = () => { const tn = typedName(); paintMsgTitle(childName() || (tn && (bookLang() === 'ar' ? !LATIN_RE.test(tn) : !AR_RE.test(tn)) ? tn : '')); };
+    const paintName = () => { const tn = typedName(); paintMsgTitle(childName() || (tn && BL.nameOk(bookLang(), tn) ? tn : '')); };
     toggle.addEventListener('click', () => setOpen(true));
     document.getElementById('msg-cancel').addEventListener('click', () => { ta.value = ''; update(); setOpen(false); toggle.focus(); });
     document.getElementById('msg-inspire').addEventListener('click', () => {
       const list = ideaList(); let pick = list[Math.floor(Math.random() * list.length)];
       if (list.length > 1) while (pick.replace('{name}', '') === ta.dataset.lastIdea) pick = list[Math.floor(Math.random() * list.length)];
       ta.dataset.lastIdea = pick.replace('{name}', '');
-      ta.value = pick.replace('{name}', childName() || (lang() === 'ar' ? 'بطلنا' : 'our little hero')); update(); ta.focus();
+      ta.value = pick.replace('{name}', childName() || BL.hero(lang(), gender())); update(); ta.focus();
       if (window.hkLangCheck) window.hkLangCheck();
     });
     ta.addEventListener('input', update);

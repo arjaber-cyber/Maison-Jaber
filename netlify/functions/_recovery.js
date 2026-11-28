@@ -58,7 +58,7 @@ function sanitizeItem(i) {
     childAge: str(i.childAge, 10),
     gender: str(i.gender, 20),
     dedication: str(i.dedication, 800),
-    bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en',
+    bookLanguage: require('./_bookLangs').normBookLang(i.bookLanguage),
     photoCount: Number(i.photoCount) || 0,
     photoPaths: paths(i.photoPaths),
     extraCharacterName: str(i.extraCharacterName, 60),

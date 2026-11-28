@@ -150,7 +150,7 @@
   };
 
   // --- v2 (matches approved mockup) ---
-  T.home6.hero_sub = { en: "Personalised children’s storybooks starring your child, in Arabic or English. Hardcover, gift-boxed and delivered across the UAE & GCC.", ar: "قصص أطفال مخصّصة بطلها طفلك، بالعربية أو الإنجليزية، بغلاف مقوّى في علبة هدية، ونوصلها إلى جميع أنحاء الإمارات ودول الخليج" };
+  T.home6.hero_sub = { en: "Personalised children’s storybooks starring your child, in Arabic, English, German, Mandarin Chinese or Russian. Hardcover, gift-boxed and delivered across the UAE & GCC.", ar: "قصص أطفال مخصّصة بطلها طفلك، بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، بغلاف مقوّى في علبة هدية، ونوصلها إلى جميع أنحاء الإمارات ودول الخليج" };
   T.home6.hero_hand = { en: "Little stories. Big memories.", ar: "قصص صغيرة، ذكريات كبيرة" };
   T.home6.how_title = { en: "From a story to their story.", ar: "من قصة… إلى قصتهم" };
   T.home6.s1_alt = { en: "Hikaya storybooks on a shelf, ready to choose from", ar: "كتب حكاية على الرف جاهزة للاختيار" };
@@ -272,7 +272,7 @@
     l2_t: { en: 'Your own message to them', ar: 'رسالتك الخاصة له' },
     l2_d: { en: 'The story opens with your words on the first page, or we write it for you', ar: 'تبدأ القصة بكلماتك في الصفحة الأولى، أو نكتبها نحن لك' },
     l3_t: { en: 'Premium square hardcover', ar: 'غلاف مقوّى مربّع فاخر' },
-    l3_d: { en: '21×21 cm, in Arabic or English, made to be read again and again', ar: 'بمقاس 21×21 سم، بالعربية أو الإنجليزية، ليُقرأ مرة بعد مرة' },
+    l3_d: { en: '21×21 cm, in Arabic, English, German, Mandarin Chinese or Russian, made to be read again and again', ar: 'بمقاس 21×21 سم، بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، ليُقرأ مرة بعد مرة' },
     l4_t: { en: 'Luxury Hikaya gift box', ar: 'علبة هدية حكاية الفاخرة' },
     l4_d: { en: 'Tissue-wrapped and sealed, ready to give', ar: 'مغلّفة بورق ناعم ومختومة، جاهزة للإهداء' },
     all_for: { en: 'All of this, for', ar: 'كل هذا مقابل' },

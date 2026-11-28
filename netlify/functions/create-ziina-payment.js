@@ -22,6 +22,7 @@ const { priceOrder, orderTypeForTag, reserveDiscount, settleDiscount, PROMO_MESS
 const { sendConfirmation } = require('./_ziina');
 
 const { checkOrderRules } = require('./_orderRules');
+const { normBookLang } = require('./_bookLangs');
 const { saveAttribution } = require('./_attribution');
 const { gaSummary } = require('./_gaSummary');
 const json = (code, body) => ({ statusCode: code, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify(body) });
@@ -64,7 +65,7 @@ exports.handler = async (event) => {
   const paths = list => (Array.isArray(list) ? list : []).map(String).filter(p => PHOTO_PATH.test(p)).slice(0, 5);
   const cleanItems = o.items.map(i => ({
     story: String(i.story || ''), slug: i.slug ? String(i.slug).slice(0, 80) : null, childName: String(i.childName || '').slice(0, 60), childNameTyped: String(i.childNameTyped || i.childName || '').slice(0, 60), photoConsent: i.photoConsent === true, photoConsentAt: i.photoConsentAt ? String(i.photoConsentAt).slice(0, 40) : null, childAge: i.childAge ? String(i.childAge).slice(0, 3) : null, ageEdition: String(i.ageEdition || ''),
-    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: i.bookLanguage === 'ar' ? 'ar' : 'en', siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
+    gender: String(i.gender || ''), dedication: String(i.dedication || '').slice(0, 600), bookLanguage: normBookLang(i.bookLanguage), siteLang: i.siteLang === 'ar' ? 'ar' : 'en', extraCharacterName: i.extraCharacterName ? String(i.extraCharacterName) : null,
     photoPaths: paths(i.photoPaths), extraCharacterPhotoPaths: paths(i.extraCharacterPhotoPaths),
     // Photo to be added after ordering (add-photo.html); only when no child photo came with the book.
     photoLater: i.photoLater === true && !paths(i.photoPaths).length,

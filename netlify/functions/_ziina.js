@@ -101,7 +101,7 @@ async function sendConfirmation(order) {
   /* New-order alert on WhatsApp (best effort, never blocks). */
   await sendOrderAlert(order, items);
   /* New-order alert for the team (info@). */
-  const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.ageEdition ? ' · ages ' + esc(i.ageEdition) : ''}${i.bookLanguage ? ' (' + (i.bookLanguage === 'ar' ? 'Arabic' : 'English') + ' book)' : ''}${i.dedication ? '<br><em>Dedication:</em> ' + esc(i.dedication) : ''}</li>`).join('');
+  const books = items.map(i => `<li>${esc(i.story)}${i.childName ? ' for ' + esc(i.childName) : ''}${i.ageEdition ? ' · ages ' + esc(i.ageEdition) : ''}${i.bookLanguage ? ' (' + require('./_bookLangs').bookLangName(i.bookLanguage, 'en') + ' book)' : ''}${i.dedication ? '<br><em>Dedication:</em> ' + esc(i.dedication) : ''}</li>`).join('');
   await sendEmail({
     to: OWNER_INBOX,
     replyTo: order.email,

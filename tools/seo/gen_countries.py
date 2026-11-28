@@ -9,43 +9,43 @@ C = [
       img='gft-child-reading-closeup', w=1254, h=1254,
       intro=("Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to {cities}. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby or Tamara.",
              'حكاية من ميزون جابر مشروع عائلي إماراتي يصنع قصصًا مخصصة يكون طفلك بطلها، اختر قصة وأضف اسمه وعمره وصورة واحدة، ونحن نرسمه في كل صفحة ونطبع كتابًا بغلاف مقوّى ونوصله في علبة هدية إلى {cities}، والتوصيل مجاني في جميع الإمارات ويمكنك الدفع بالبطاقة أو تقسيم المبلغ على أربع دفعات مع تابي أو تمارا'),
-      seo=dict(en=("Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card, Tabby or Tamara."),
-               ar=("قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا"))),
+      seo=dict(en=("Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. AED 169 with free UAE delivery in about 5 working days. Gift-boxed; pay by card, Tabby or Tamara."),
+               ar=("قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا"))),
  dict(key='Saudi', file='personalised-books-saudi-arabia.html', cc='SA', cur='SAR', cur_ar='ريال سعودي', now='169', was='199', fee='30', eta=7,
       name=('Saudi Arabia', 'السعودية'), short=('Saudi Arabia', 'السعودية'), cities=('Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah', 'الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة'),
       img='hom-sty-01', w=2000, h=1125,
-      intro=("Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic or English, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in {cities}, usually in about 7 working days.",
-             'قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في {cities} خلال نحو 7 أيام عمل عادةً'),
-      seo=dict(en=("Personalised Children's Books in Saudi Arabia | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia in about 7 working days, gift-boxed."),
-               ar=("قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 7 أيام عمل في علبة هدية"))),
+      intro=("Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic, English, German, Mandarin Chinese or Russian, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in {cities}, usually in about 7 working days.",
+             'قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في {cities} خلال نحو 7 أيام عمل عادةً'),
+      seo=dict(en=("Personalised Children's Books in Saudi Arabia | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. SAR 169, delivered across Saudi Arabia in about 7 working days, gift-boxed."),
+               ar=("قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 7 أيام عمل في علبة هدية"))),
  dict(key='Qatar', file='personalised-books-qatar.html', cc='QA', cur='QAR', cur_ar='ريال قطري', now='169', was='199', fee='30', eta=7,
       name=('Qatar', 'قطر'), short=('Qatar', 'قطر'), cities=('Doha, Al Wakrah, Al Rayyan and Lusail', 'الدوحة والوكرة والريان ولوسيل'),
       img='gft-bookshelf-scene', w=1060, h=1024,
-      intro=("Looking for a gift that a child in Qatar will keep for years? Hikaya turns any of our stories into a book about them, in Arabic or English: their name, their age and an illustrated version of their face, with your message on the first page. Each hardcover book is printed to order and delivered gift-boxed to {cities} in about 7 working days.",
-             'تبحث عن هدية يحتفظ بها طفل في قطر لسنوات؟ حكاية تحوّل أي قصة من قصصنا إلى كتاب عنه بالعربية أو الإنجليزية، باسمه وعمره وملامحه المرسومة مع رسالتك في الصفحة الأولى، يُطبع كل كتاب بغلاف مقوّى حسب الطلب ويصل في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
-      seo=dict(en=("Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed."),
-               ar=("قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية"))),
+      intro=("Looking for a gift that a child in Qatar will keep for years? Hikaya turns any of our stories into a book about them, in Arabic, English, German, Mandarin Chinese or Russian: their name, their age and an illustrated version of their face, with your message on the first page. Each hardcover book is printed to order and delivered gift-boxed to {cities} in about 7 working days.",
+             'تبحث عن هدية يحتفظ بها طفل في قطر لسنوات؟ حكاية تحوّل أي قصة من قصصنا إلى كتاب عنه بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، باسمه وعمره وملامحه المرسومة مع رسالتك في الصفحة الأولى، يُطبع كل كتاب بغلاف مقوّى حسب الطلب ويصل في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
+      seo=dict(en=("Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed."),
+               ar=("قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية"))),
  dict(key='Kuwait', file='personalised-books-kuwait.html', cc='KW', cur='KWD', cur_ar='دينار كويتي', now='14.25', was='16.75', fee='2.5', eta=7,
       name=('Kuwait', 'الكويت'), short=('Kuwait', 'الكويت'), cities=('Kuwait City, Hawalli, Salmiya and Ahmadi', 'مدينة الكويت وحولي والسالمية والأحمدي'),
       img='gft-eid', w=930, h=941,
-      intro=("Hikaya makes storybooks where a child in Kuwait is the hero. Pick a story for their age, add their name and one photo, and choose an Arabic or English edition. We illustrate them on every page, print the book in hardcover and send it gift-boxed to {cities}, usually in about 7 working days. A thoughtful gift for birthdays, Eid or no reason at all.",
-             'حكاية تصنع قصصًا يكون فيها طفل في الكويت هو البطل، اختر قصة تناسب عمره وأضف اسمه وصورة واحدة واختر النسخة العربية أو الإنجليزية، ونحن نرسمه في كل صفحة ونطبع الكتاب بغلاف مقوّى ونرسله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل عادةً، هدية مميزة لأعياد الميلاد والعيد أو بلا مناسبة'),
-      seo=dict(en=("Personalised Children's Books in Kuwait | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. KWD 14.25, delivered across Kuwait in about 7 working days. Gift-boxed."),
-               ar=("قصص أطفال مخصصة باسم طفلك في الكويت | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 14.25 دينار كويتي مع التوصيل في جميع أنحاء الكويت خلال نحو 7 أيام عمل في علبة هدية"))),
+      intro=("Hikaya makes storybooks where a child in Kuwait is the hero. Pick a story for their age, add their name and one photo, and choose an Arabic, English, German, Mandarin Chinese or Russian edition. We illustrate them on every page, print the book in hardcover and send it gift-boxed to {cities}, usually in about 7 working days. A thoughtful gift for birthdays, Eid or no reason at all.",
+             'حكاية تصنع قصصًا يكون فيها طفل في الكويت هو البطل، اختر قصة تناسب عمره وأضف اسمه وصورة واحدة واختر النسخة العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، ونحن نرسمه في كل صفحة ونطبع الكتاب بغلاف مقوّى ونرسله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل عادةً، هدية مميزة لأعياد الميلاد والعيد أو بلا مناسبة'),
+      seo=dict(en=("Personalised Children's Books in Kuwait | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. KWD 14.25, delivered across Kuwait in about 7 working days. Gift-boxed."),
+               ar=("قصص أطفال مخصصة باسم طفلك في الكويت | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 14.25 دينار كويتي مع التوصيل في جميع أنحاء الكويت خلال نحو 7 أيام عمل في علبة هدية"))),
  dict(key='Bahrain', file='personalised-books-bahrain.html', cc='BH', cur='BHD', cur_ar='دينار بحريني', now='17.25', was='20.5', fee='3', eta=7,
       name=('Bahrain', 'البحرين'), short=('Bahrain', 'البحرين'), cities=('Manama, Muharraq, Riffa and Isa Town', 'المنامة والمحرق والرفاع ومدينة عيسى'),
       img='gft-fantasy-night-scene', w=1536, h=1024,
-      intro=("Make a child in Bahrain the hero of their own story. Every Hikaya book is personalised with the child's name and illustrated face, comes in Arabic or English, and opens with a message you write. We print each one in hardcover and deliver it gift-boxed to {cities} in about 7 working days.",
-             'اجعل طفلًا في البحرين بطل قصته، فكل كتاب من حكاية مخصص باسم الطفل وملامحه المرسومة، ومتوفر بالعربية أو الإنجليزية، ويبدأ برسالة تكتبها أنت، نطبع كل كتاب بغلاف مقوّى ونوصله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
-      seo=dict(en=("Personalised Children's Books in Bahrain | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. BHD 17.25, delivered across Bahrain in about 7 working days. Gift-boxed."),
-               ar=("قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية"))),
+      intro=("Make a child in Bahrain the hero of their own story. Every Hikaya book is personalised with the child's name and illustrated face, comes in Arabic, English, German, Mandarin Chinese or Russian, and opens with a message you write. We print each one in hardcover and deliver it gift-boxed to {cities} in about 7 working days.",
+             'اجعل طفلًا في البحرين بطل قصته، فكل كتاب من حكاية مخصص باسم الطفل وملامحه المرسومة، ومتوفر بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، ويبدأ برسالة تكتبها أنت، نطبع كل كتاب بغلاف مقوّى ونوصله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
+      seo=dict(en=("Personalised Children's Books in Bahrain | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. BHD 17.25, delivered across Bahrain in about 7 working days. Gift-boxed."),
+               ar=("قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية"))),
  dict(key='Oman', file='personalised-books-oman.html', cc='OM', cur='OMR', cur_ar='ريال عماني', now='17.75', was='21', fee='3', eta=7,
       name=('Oman', 'عُمان'), short=('Oman', 'عُمان'), cities=('Muscat, Salalah, Sohar and Nizwa', 'مسقط وصلالة وصحار ونزوى'),
       img='age-hero-03', w=2000, h=1333,
-      intro=("Hikaya personalised storybooks put a child in Oman at the centre of the story, with their name and illustrated likeness on every page. Choose an Arabic or English edition, add your own message on the first page, and we print the book in hardcover and deliver it gift-boxed to {cities} in about 7 working days.",
-             'قصص حكاية المخصصة تضع الطفل في عُمان في قلب القصة، باسمه وملامحه المرسومة في كل صفحة، اختر النسخة العربية أو الإنجليزية وأضف رسالتك في الصفحة الأولى، ونحن نطبع الكتاب بغلاف مقوّى ونوصله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
-      seo=dict(en=("Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed."),
-               ar=("قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية"))),
+      intro=("Hikaya personalised storybooks put a child in Oman at the centre of the story, with their name and illustrated likeness on every page. Choose an Arabic, English, German, Mandarin Chinese or Russian edition, add your own message on the first page, and we print the book in hardcover and deliver it gift-boxed to {cities} in about 7 working days.",
+             'قصص حكاية المخصصة تضع الطفل في عُمان في قلب القصة، باسمه وملامحه المرسومة في كل صفحة، اختر النسخة العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية وأضف رسالتك في الصفحة الأولى، ونحن نطبع الكتاب بغلاف مقوّى ونوصله في علبة هدية إلى {cities} خلال نحو 7 أيام عمل'),
+      seo=dict(en=("Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", "Personalised storybooks with your child as the hero, in 5 languages. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed."),
+               ar=("قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", "قصص مخصصة يكون طفلك بطلها بخمس لغات، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية"))),
 ]
 
 T = {}
@@ -53,7 +53,7 @@ def k(name, en, ar):
     T[name] = {'en': en, 'ar': ar}
 COMMON = dict(crumb_home=('Home', 'الرئيسية'), crumb=('Delivery', 'التوصيل'),
   facts=('At a glance', 'باختصار'), f_price=('Price per book', 'سعر الكتاب'), f_del=('Delivery', 'التوصيل'), f_time=('Delivery time', 'مدة التوصيل'),
-  f_lang=('Book language', 'لغة الكتاب'), f_lang_v=('Arabic or English', 'العربية أو الإنجليزية'), f_pack=('Packaging', 'التغليف'), f_pack_v=('Gift-boxed, ready to give', 'في علبة هدية جاهزة للإهداء'),
+  f_lang=('Book language', 'لغة الكتاب'), f_lang_v=('Arabic, English, German, Mandarin Chinese or Russian', 'العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية'), f_pack=('Packaging', 'التغليف'), f_pack_v=('Gift-boxed, ready to give', 'في علبة هدية جاهزة للإهداء'),
   f_free=('Free', 'مجاني'), f_days=('About {n} working days', 'نحو {n} أيام عمل'), f_bundle=('Free on 2 or more books', 'مجاني عند طلب كتابين أو أكثر'),
   bundles=('2 books save 10% and 3 or more save 15%, with free delivery.', 'وفّر 10% على كتابين و15% على ثلاثة كتب أو أكثر، مع توصيل مجاني'),
   shelf=('Stories you can personalise', 'قصص يمكنك تخصيصها'), browse=('Browse all stories', 'تصفّح جميع القصص'),
@@ -80,8 +80,8 @@ def faqs(c):
        "ادفع بأمان بالبطاقة، أو قسّم المبلغ على 4 دفعات بدون فوائد مع تابي أو تمارا" if uae else
        f"الأسعار معروضة بعملة {c['cur_ar']}، وتتم معالجة الدفع بالبطاقة بالدرهم الإماراتي بالمبلغ المعادل، لذلك قد يظهر المبلغ في كشف حسابك بالدرهم"),
       ("Can I order the book in Arabic?", "هل يمكن طلب الكتاب بالعربية؟",
-       "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-       "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"),
+       "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+       "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"),
       (f"Can I send a book as a gift to someone in {n_en}?", f"هل يمكنني إرسال كتاب هدية لشخص في {n_ar}؟",
        "Yes. Enter their address at checkout and the book arrives gift-boxed, ready to give.",
        "نعم، أدخل عنوانه عند إتمام الطلب وسيصل الكتاب في علبة هدية جاهزة للإهداء"),
@@ -107,8 +107,8 @@ for c in C:
     n_en, n_ar = c['name']
     intro_en = c['intro'][0].replace('{cities}', c['cities'][0]); intro_ar = c['intro'][1].replace('{cities}', c['cities'][1])
     h1 = (f"Personalised children's books in {n_en}", f"قصص أطفال مخصصة باسم طفلك في {n_ar}")
-    lede = (f"Your child as the hero of a hardcover storybook, in Arabic or English. {c['cur']} {c['now']} per book, gift-boxed and delivered in about {c['eta']} working days.",
-            f"طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، {c['now']} {c['cur_ar']} للكتاب، في علبة هدية مع التوصيل خلال نحو {c['eta']} أيام عمل")
+    lede = (f"Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. {c['cur']} {c['now']} per book, gift-boxed and delivered in about {c['eta']} working days.",
+            f"طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، {c['now']} {c['cur_ar']} للكتاب، في علبة هدية مع التوصيل خلال نحو {c['eta']} أيام عمل")
     k(kk + '_h1', *h1); k(kk + '_lede', *lede); k(kk + '_intro', intro_en, intro_ar); k(kk + '_name', n_en[4:] if n_en.startswith('the ') else n_en, n_ar)
     fq = faqs(c)
     for i, (qe, qa, ae, aa) in enumerate(fq): k(f'{kk}_q{i}', qe, qa); k(f'{kk}_a{i}', ae, aa)
@@ -117,7 +117,7 @@ for c in C:
     fee_en = 'Free' if c['fee'] == 0 else f"{c['cur']} {c['fee']}"
     # structured data
     product = {"@context": "https://schema.org", "@type": "Product", "name": "Hikaya personalised children's storybook", "brand": {"@type": "Brand", "name": "Hikaya by Maison Jaber"},
-               "description": f"A personalised hardcover storybook with the child as the hero, in Arabic or English, delivered gift-boxed in {n_en}.",
+               "description": f"A personalised hardcover storybook with the child as the hero, in Arabic, English, German, Mandarin Chinese or Russian, delivered gift-boxed in {n_en}.",
                "image": SITE + 'images/' + c['img'] + '.webp', "category": "Personalised children's books",
                "offers": {"@type": "Offer", "url": url, "price": c['now'], "priceCurrency": c['cur'], "availability": "https://schema.org/InStock", "itemCondition": "https://schema.org/NewCondition",
                           "eligibleRegion": {"@type": "Country", "name": c['cc']},
@@ -147,7 +147,7 @@ for c in C:
       <div><dt data-i18n="ctry.f_price">Price per book</dt><dd><s><bdi dir="ltr">{c['cur']} {c['was']}</bdi></s> <strong><bdi dir="ltr">{c['cur']} {c['now']}</bdi></strong></dd></div>
       <div><dt data-i18n="ctry.f_del">Delivery</dt><dd>{fee_html}</dd></div>
       <div><dt data-i18n="ctry.f_time">Delivery time</dt><dd data-ctry-days="{c['eta']}">About {c['eta']} working days</dd></div>
-      <div><dt data-i18n="ctry.f_lang">Book language</dt><dd data-i18n="ctry.f_lang_v">Arabic or English</dd></div>
+      <div><dt data-i18n="ctry.f_lang">Book language</dt><dd data-i18n="ctry.f_lang_v">Arabic, English, German, Mandarin Chinese or Russian</dd></div>
       <div><dt data-i18n="ctry.f_pack">Packaging</dt><dd data-i18n="ctry.f_pack_v">Gift-boxed, ready to give</dd></div>
     </dl>
     <p class="ctry-note" data-i18n="ctry.bundles">2 books save 10% and 3 or more save 15%, with free delivery.</p>'''

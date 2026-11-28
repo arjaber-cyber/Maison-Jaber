@@ -108,11 +108,11 @@ export const PAGES = {
   "help.html": {
     en: {
       title: "FAQs: Personalisation, Delivery & Gifting | Hikaya",
-      desc: "How Hikaya personalised books work: photos and privacy, Arabic or English editions, gift packaging, and delivery times and prices across the UAE and GCC.",
+      desc: "How Hikaya personalised books work: photos and privacy, 5 book languages, gift packaging, and delivery times and prices across the UAE and GCC.",
     },
     ar: {
       title: "الأسئلة الشائعة: التخصيص والتوصيل والهدايا | حكاية",
-      desc: "كيف تعمل قصص حكاية المخصصة: الصور والخصوصية، النسخة العربية أو الإنجليزية، تغليف الهدايا، ومدة وأسعار التوصيل في الإمارات والسعودية ودول الخليج",
+      desc: "كيف تعمل قصص حكاية المخصصة: الصور والخصوصية، خمس لغات للكتاب، تغليف الهدايا، ومدة وأسعار التوصيل في الإمارات والسعودية ودول الخليج",
     },
   },
   "contact.html": {
@@ -127,24 +127,24 @@ export const PAGES = {
   },
   // Gift landing pages (phase 2, Nov 2026)
   "gifts.html": {
-    en: { title: "Personalised Gifts for Kids UAE | Storybooks | Hikaya", desc: "Personalised gifts for kids in the UAE and GCC: a hardcover storybook with your child as the hero, their name, age and photo. Gift-boxed, in English or Arabic." },
-    ar: { title: "هدايا مخصصة للأطفال في الإمارات | قصص باسم طفلك | حكاية", desc: "هدايا مخصصة للأطفال في الإمارات ودول الخليج: كتاب قصة بغلاف مقوّى يكون طفلك بطله باسمه وعمره وصورته، في علبة هدية وبالعربية أو الإنجليزية" },
+    en: { title: "Personalised Gifts for Kids UAE | Storybooks | Hikaya", desc: "Personalised gifts for kids in the UAE and GCC: a hardcover storybook with your child as the hero, their name, age and photo. Gift-boxed, in 5 languages." },
+    ar: { title: "هدايا مخصصة للأطفال في الإمارات | قصص باسم طفلك | حكاية", desc: "هدايا مخصصة للأطفال في الإمارات ودول الخليج: كتاب قصة بغلاف مقوّى يكون طفلك بطله باسمه وعمره وصورته، في علبة هدية وبخمس لغات" },
   },
   "gift-birthday.html": {
     en: { title: "Personalised Birthday Gifts for Kids UAE | Hikaya", desc: "A birthday gift they'll keep: a personalised storybook with your child as the hero and your message on the first page. Gift-boxed across the UAE & GCC." },
     ar: { title: "هدايا عيد ميلاد مخصصة للأطفال | قصة باسم طفلك | حكاية", desc: "هدية عيد ميلاد يحتفظ بها: كتاب قصة مخصص يكون طفلك بطله باسمه وصورته ورسالتك في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-eid-ramadan.html": {
-    en: { title: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", desc: "An Eidiya they'll keep: a personalised storybook in Arabic or English with your child as the hero and your Eid message inside. Gift-boxed across the UAE & GCC." },
-    ar: { title: "هدايا العيد ورمضان للأطفال | عيدية مخصصة باسم طفلك | حكاية", desc: "عيدية تبقى معهم سنوات: كتاب قصة مخصص بالعربية أو الإنجليزية يكون طفلك بطله، مع تهنئة العيد في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
+    en: { title: "Personalised Eid & Ramadan Gifts for Kids | Hikaya", desc: "An Eidiya they'll keep: a personalised storybook in 5 languages with your child as the hero and your Eid message inside. Gift-boxed across the UAE & GCC." },
+    ar: { title: "هدايا العيد ورمضان للأطفال | عيدية مخصصة باسم طفلك | حكاية", desc: "عيدية تبقى معهم سنوات: كتاب قصة مخصص بخمس لغات يكون طفلك بطله، مع تهنئة العيد في الصفحة الأولى، في علبة هدية مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-christmas.html": {
     en: { title: "Personalised Christmas Gifts for Kids UAE | Hikaya", desc: "A Christmas story starring your child: personalised with their name and photo, printed in hardcover and gift-boxed. Delivered across the UAE and GCC." },
     ar: { title: "هدايا الكريسماس المخصصة للأطفال | حكاية", desc: "قصة كريسماس يكون طفلك بطلها، مخصصة باسمه وصورته ومطبوعة بغلاف مقوّى في علبة هدية، مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-new-sibling.html": {
-    en: { title: "New Sibling Gift: Personalised Big Sibling Book | Hikaya", desc: "A gift for the older child when a new baby arrives: a personalised storybook where they're the hero. Gift-boxed, in English or Arabic, across the UAE & GCC." },
-    ar: { title: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية", desc: "هدية للطفل الأكبر عند قدوم مولود جديد: كتاب قصة مخصص يكون هو بطله، في علبة هدية وبالعربية أو الإنجليزية مع التوصيل في الإمارات ودول الخليج" },
+    en: { title: "New Sibling Gift: Personalised Big Sibling Book | Hikaya", desc: "A gift for the older child when a new baby arrives: a personalised storybook where they're the hero. Gift-boxed, in 5 languages, across the UAE & GCC." },
+    ar: { title: "هدية الأخ الأكبر بقدوم مولود جديد | قصة مخصصة | حكاية", desc: "هدية للطفل الأكبر عند قدوم مولود جديد: كتاب قصة مخصص يكون هو بطله، في علبة هدية وبخمس لغات مع التوصيل في الإمارات ودول الخليج" },
   },
   "gift-first-day-of-school.html": {
     en: { title: "First Day of School Gift: Personalised Storybook | Hikaya", desc: "Help them feel brave for a big first day: a personalised storybook about courage and new beginnings, with your child as the hero. UAE & GCC delivery." },
@@ -181,28 +181,28 @@ export const PAGES = {
   },
   // Country delivery pages (Nov 2026)
   "personalised-books-uae.html": {
-    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks starring your child, in Arabic or English. AED 169, free UAE delivery in about 5 working days, gift-boxed. Pay by card, Tabby or Tamara." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا" },
+    en: { title: "Personalised Children's Books UAE | Dubai & Abu Dhabi | Hikaya", desc: "Personalised storybooks starring your child, in 5 languages. AED 169, free UAE delivery in about 5 working days, gift-boxed. Pay by card, Tabby or Tamara." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في الإمارات | دبي وأبوظبي | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 درهمًا مع توصيل مجاني في جميع الإمارات خلال نحو 5 أيام عمل، في علبة هدية والدفع بالبطاقة أو تابي أو تمارا" },
   },
   "personalised-books-saudi-arabia.html": {
-    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. SAR 169, delivered across Saudi Arabia in about 7 working days, gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 7 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Children's Books in Saudi Arabia | Hikaya", desc: "Personalised storybooks with your child as the hero, in 5 languages. SAR 169, delivered across Saudi Arabia in about 7 working days, gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في السعودية | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 ريالًا مع التوصيل في السعودية، الرياض وجدة والدمام، خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-qatar.html": {
-    en: { title: "Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Kids' Books in Qatar | Doha Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in 5 languages. QAR 169, delivered to Doha and across Qatar in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في قطر | التوصيل للدوحة | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 169 ريالًا قطريًا مع التوصيل إلى الدوحة وجميع أنحاء قطر خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-kuwait.html": {
-    en: { title: "Personalised Children's Books in Kuwait | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. KWD 14.25, delivered across Kuwait in about 7 working days. Gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في الكويت | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 14.25 دينار كويتي مع التوصيل في جميع أنحاء الكويت خلال نحو 7 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Children's Books in Kuwait | Hikaya", desc: "Personalised storybooks with your child as the hero, in 5 languages. KWD 14.25, delivered across Kuwait in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في الكويت | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 14.25 دينار كويتي مع التوصيل في جميع أنحاء الكويت خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-bahrain.html": {
-    en: { title: "Personalised Children's Books in Bahrain | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. BHD 17.25, delivered across Bahrain in about 7 working days. Gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Children's Books in Bahrain | Hikaya", desc: "Personalised storybooks with your child as the hero, in 5 languages. BHD 17.25, delivered across Bahrain in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في البحرين | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 17.25 دينار بحريني مع التوصيل في جميع أنحاء البحرين خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "personalised-books-oman.html": {
-    en: { title: "Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in Arabic or English. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
-    ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بالعربية أو الإنجليزية، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
+    en: { title: "Personalised Kids' Books in Oman | Muscat Delivery | Hikaya", desc: "Personalised storybooks with your child as the hero, in 5 languages. OMR 17.75, delivered to Muscat and across Oman in about 7 working days. Gift-boxed." },
+    ar: { title: "قصص أطفال مخصصة باسم طفلك في عُمان | التوصيل لمسقط | حكاية", desc: "قصص مخصصة يكون طفلك بطلها بخمس لغات، 17.75 ريال عماني مع التوصيل إلى مسقط وجميع أنحاء عُمان خلال نحو 7 أيام عمل في علبة هدية" },
   },
   "guide-uae-national-day-gift-ideas.html": {
     en: { title: "UAE National Day Gift Ideas for Kids | Hikaya", desc: "Gift and activity ideas for children for UAE National Day (Eid Al Etihad) on 2 December, from a personalised storybook to heritage visits, plus ordering tips." },

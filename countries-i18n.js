@@ -31,8 +31,8 @@
   "ar": "لغة الكتاب"
  },
  "f_lang_v": {
-  "en": "Arabic or English",
-  "ar": "العربية أو الإنجليزية"
+  "en": "Arabic, English, German, Mandarin Chinese or Russian",
+  "ar": "العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية"
  },
  "f_pack": {
   "en": "Packaging",
@@ -111,8 +111,8 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في الإمارات"
  },
  "uae_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. AED 169 per book, gift-boxed and delivered in about 5 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 درهم للكتاب، في علبة هدية مع التوصيل خلال نحو 5 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. AED 169 per book, gift-boxed and delivered in about 5 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 169 درهم للكتاب، في علبة هدية مع التوصيل خلال نحو 5 أيام عمل"
  },
  "uae_intro": {
   "en": "Hikaya by Maison Jaber is a UAE family business making personalised storybooks where your child is the hero. Choose a story, add their name, age and one photo, and we illustrate them on every page, print a hardcover book and deliver it gift-boxed to Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah, Umm Al Quwain and Al Ain. Delivery is free anywhere in the Emirates, and you can pay by card or split the price into four payments with Tabby or Tamara.",
@@ -151,8 +151,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "uae_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "uae_q4": {
   "en": "Can I send a book as a gift to someone in the UAE?",
@@ -167,12 +167,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في السعودية"
  },
  "saudi_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. SAR 169 per book, gift-boxed and delivered in about 7 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 ريال سعودي للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. SAR 169 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 169 ريال سعودي للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "saudi_intro": {
-  "en": "Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic or English, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah, usually in about 7 working days.",
-  "ar": "قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة خلال نحو 7 أيام عمل عادةً"
+  "en": "Give a child in Saudi Arabia a book where they are the hero. Every Hikaya story is available in Arabic, English, German, Mandarin Chinese or Russian, with your child's name and illustrated likeness on every page and your own message on the first. We print each hardcover book to order and deliver it gift-boxed to homes in Riyadh, Jeddah, Dammam, Khobar, Makkah and Madinah, usually in about 7 working days.",
+  "ar": "قدّم لطفل في السعودية كتابًا يكون هو بطله، فكل قصة من حكاية متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، باسم طفلك وملامحه المرسومة في كل صفحة ورسالتك في الصفحة الأولى، نطبع كل كتاب بغلاف مقوّى حسب الطلب ونوصله في علبة هدية إلى المنازل في الرياض وجدة والدمام والخبر ومكة المكرمة والمدينة المنورة خلال نحو 7 أيام عمل عادةً"
  },
  "saudi_name": {
   "en": "Saudi Arabia",
@@ -207,8 +207,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "saudi_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "saudi_q4": {
   "en": "Can I send a book as a gift to someone in Saudi Arabia?",
@@ -223,12 +223,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في قطر"
  },
  "qatar_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. QAR 169 per book, gift-boxed and delivered in about 7 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 169 ريال قطري للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. QAR 169 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 169 ريال قطري للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "qatar_intro": {
-  "en": "Looking for a gift that a child in Qatar will keep for years? Hikaya turns any of our stories into a book about them, in Arabic or English: their name, their age and an illustrated version of their face, with your message on the first page. Each hardcover book is printed to order and delivered gift-boxed to Doha, Al Wakrah, Al Rayyan and Lusail in about 7 working days.",
-  "ar": "تبحث عن هدية يحتفظ بها طفل في قطر لسنوات؟ حكاية تحوّل أي قصة من قصصنا إلى كتاب عنه بالعربية أو الإنجليزية، باسمه وعمره وملامحه المرسومة مع رسالتك في الصفحة الأولى، يُطبع كل كتاب بغلاف مقوّى حسب الطلب ويصل في علبة هدية إلى الدوحة والوكرة والريان ولوسيل خلال نحو 7 أيام عمل"
+  "en": "Looking for a gift that a child in Qatar will keep for years? Hikaya turns any of our stories into a book about them, in Arabic, English, German, Mandarin Chinese or Russian: their name, their age and an illustrated version of their face, with your message on the first page. Each hardcover book is printed to order and delivered gift-boxed to Doha, Al Wakrah, Al Rayyan and Lusail in about 7 working days.",
+  "ar": "تبحث عن هدية يحتفظ بها طفل في قطر لسنوات؟ حكاية تحوّل أي قصة من قصصنا إلى كتاب عنه بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، باسمه وعمره وملامحه المرسومة مع رسالتك في الصفحة الأولى، يُطبع كل كتاب بغلاف مقوّى حسب الطلب ويصل في علبة هدية إلى الدوحة والوكرة والريان ولوسيل خلال نحو 7 أيام عمل"
  },
  "qatar_name": {
   "en": "Qatar",
@@ -263,8 +263,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "qatar_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "qatar_q4": {
   "en": "Can I send a book as a gift to someone in Qatar?",
@@ -279,12 +279,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في الكويت"
  },
  "kuwait_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. KWD 14.25 per book, gift-boxed and delivered in about 7 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 14.25 دينار كويتي للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. KWD 14.25 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 14.25 دينار كويتي للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "kuwait_intro": {
-  "en": "Hikaya makes storybooks where a child in Kuwait is the hero. Pick a story for their age, add their name and one photo, and choose an Arabic or English edition. We illustrate them on every page, print the book in hardcover and send it gift-boxed to Kuwait City, Hawalli, Salmiya and Ahmadi, usually in about 7 working days. A thoughtful gift for birthdays, Eid or no reason at all.",
-  "ar": "حكاية تصنع قصصًا يكون فيها طفل في الكويت هو البطل، اختر قصة تناسب عمره وأضف اسمه وصورة واحدة واختر النسخة العربية أو الإنجليزية، ونحن نرسمه في كل صفحة ونطبع الكتاب بغلاف مقوّى ونرسله في علبة هدية إلى مدينة الكويت وحولي والسالمية والأحمدي خلال نحو 7 أيام عمل عادةً، هدية مميزة لأعياد الميلاد والعيد أو بلا مناسبة"
+  "en": "Hikaya makes storybooks where a child in Kuwait is the hero. Pick a story for their age, add their name and one photo, and choose an Arabic, English, German, Mandarin Chinese or Russian edition. We illustrate them on every page, print the book in hardcover and send it gift-boxed to Kuwait City, Hawalli, Salmiya and Ahmadi, usually in about 7 working days. A thoughtful gift for birthdays, Eid or no reason at all.",
+  "ar": "حكاية تصنع قصصًا يكون فيها طفل في الكويت هو البطل، اختر قصة تناسب عمره وأضف اسمه وصورة واحدة واختر النسخة العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، ونحن نرسمه في كل صفحة ونطبع الكتاب بغلاف مقوّى ونرسله في علبة هدية إلى مدينة الكويت وحولي والسالمية والأحمدي خلال نحو 7 أيام عمل عادةً، هدية مميزة لأعياد الميلاد والعيد أو بلا مناسبة"
  },
  "kuwait_name": {
   "en": "Kuwait",
@@ -319,8 +319,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "kuwait_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "kuwait_q4": {
   "en": "Can I send a book as a gift to someone in Kuwait?",
@@ -335,12 +335,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في البحرين"
  },
  "bahrain_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. BHD 17.25 per book, gift-boxed and delivered in about 7 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 17.25 دينار بحريني للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. BHD 17.25 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 17.25 دينار بحريني للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "bahrain_intro": {
-  "en": "Make a child in Bahrain the hero of their own story. Every Hikaya book is personalised with the child's name and illustrated face, comes in Arabic or English, and opens with a message you write. We print each one in hardcover and deliver it gift-boxed to Manama, Muharraq, Riffa and Isa Town in about 7 working days.",
-  "ar": "اجعل طفلًا في البحرين بطل قصته، فكل كتاب من حكاية مخصص باسم الطفل وملامحه المرسومة، ومتوفر بالعربية أو الإنجليزية، ويبدأ برسالة تكتبها أنت، نطبع كل كتاب بغلاف مقوّى ونوصله في علبة هدية إلى المنامة والمحرق والرفاع ومدينة عيسى خلال نحو 7 أيام عمل"
+  "en": "Make a child in Bahrain the hero of their own story. Every Hikaya book is personalised with the child's name and illustrated face, comes in Arabic, English, German, Mandarin Chinese or Russian, and opens with a message you write. We print each one in hardcover and deliver it gift-boxed to Manama, Muharraq, Riffa and Isa Town in about 7 working days.",
+  "ar": "اجعل طفلًا في البحرين بطل قصته، فكل كتاب من حكاية مخصص باسم الطفل وملامحه المرسومة، ومتوفر بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، ويبدأ برسالة تكتبها أنت، نطبع كل كتاب بغلاف مقوّى ونوصله في علبة هدية إلى المنامة والمحرق والرفاع ومدينة عيسى خلال نحو 7 أيام عمل"
  },
  "bahrain_name": {
   "en": "Bahrain",
@@ -375,8 +375,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "bahrain_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "bahrain_q4": {
   "en": "Can I send a book as a gift to someone in Bahrain?",
@@ -391,12 +391,12 @@
   "ar": "قصص أطفال مخصصة باسم طفلك في عُمان"
  },
  "oman_lede": {
-  "en": "Your child as the hero of a hardcover storybook, in Arabic or English. OMR 17.75 per book, gift-boxed and delivered in about 7 working days.",
-  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية، 17.75 ريال عماني للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
+  "en": "Your child as the hero of a hardcover storybook, in Arabic, English, German, Mandarin Chinese or Russian. OMR 17.75 per book, gift-boxed and delivered in about 7 working days.",
+  "ar": "طفلك بطل كتاب قصة بغلاف مقوّى بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، 17.75 ريال عماني للكتاب، في علبة هدية مع التوصيل خلال نحو 7 أيام عمل"
  },
  "oman_intro": {
-  "en": "Hikaya personalised storybooks put a child in Oman at the centre of the story, with their name and illustrated likeness on every page. Choose an Arabic or English edition, add your own message on the first page, and we print the book in hardcover and deliver it gift-boxed to Muscat, Salalah, Sohar and Nizwa in about 7 working days.",
-  "ar": "قصص حكاية المخصصة تضع الطفل في عُمان في قلب القصة، باسمه وملامحه المرسومة في كل صفحة، اختر النسخة العربية أو الإنجليزية وأضف رسالتك في الصفحة الأولى، ونحن نطبع الكتاب بغلاف مقوّى ونوصله في علبة هدية إلى مسقط وصلالة وصحار ونزوى خلال نحو 7 أيام عمل"
+  "en": "Hikaya personalised storybooks put a child in Oman at the centre of the story, with their name and illustrated likeness on every page. Choose an Arabic, English, German, Mandarin Chinese or Russian edition, add your own message on the first page, and we print the book in hardcover and deliver it gift-boxed to Muscat, Salalah, Sohar and Nizwa in about 7 working days.",
+  "ar": "قصص حكاية المخصصة تضع الطفل في عُمان في قلب القصة، باسمه وملامحه المرسومة في كل صفحة، اختر النسخة العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية وأضف رسالتك في الصفحة الأولى، ونحن نطبع الكتاب بغلاف مقوّى ونوصله في علبة هدية إلى مسقط وصلالة وصحار ونزوى خلال نحو 7 أيام عمل"
  },
  "oman_name": {
   "en": "Oman",
@@ -431,8 +431,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "oman_a3": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار"
  },
  "oman_q4": {
   "en": "Can I send a book as a gift to someone in Oman?",

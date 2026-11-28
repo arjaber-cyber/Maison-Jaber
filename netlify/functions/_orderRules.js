@@ -6,10 +6,10 @@
 //  - every book has photo permission (use for this book only, deleted within 15 days), unless the
 //    parent chose to add the photo after ordering (photoLater): permission is then asked on upload
 //  - the name printed in the book and the first-page message are in the book's language:
-//    an Arabic book is never accepted with an English name or an English message, and vice versa
+//    an Arabic book is never accepted with an English name or an English message, and vice versa.
+//    Since Nov 2026 the same goes for German, Mandarin Chinese and Russian books (see _bookLangs.js).
 
-const AR = /[؀-ۿ]/;
-const LATIN = /[A-Za-z]/;
+const { normBookLang, bookLangName, nameInBookLang, msgInBookLang } = require('./_bookLangs');
 
 function checkOrderRules(o) {
   if (!o || o.infoConfirmed !== true) {
@@ -27,13 +27,9 @@ function checkOrderRules(o) {
     }
     const name = String(i.childName || '');
     const msg = String(i.dedication || '');
-    if (i.bookLanguage === 'ar') {
-      if (!AR.test(name) || LATIN.test(name)) return { error: 'This book is in Arabic, so the child\'s name must be written in Arabic.', reason: 'name_lang' };
-      if (LATIN.test(msg)) return { error: 'This book is in Arabic, so the first-page message must be written in Arabic.', reason: 'msg_lang' };
-    } else {
-      if (!LATIN.test(name) || AR.test(name)) return { error: 'This book is in English, so the child\'s name must be written in English.', reason: 'name_lang' };
-      if (AR.test(msg)) return { error: 'This book is in English, so the first-page message must be written in English.', reason: 'msg_lang' };
-    }
+    const lang = normBookLang(i.bookLanguage), ln = bookLangName(lang, 'en');
+    if (!nameInBookLang(lang, name)) return { error: `This book is in ${ln}, so the child's name must be written in ${ln}.`, reason: 'name_lang' };
+    if (!msgInBookLang(lang, msg)) return { error: `This book is in ${ln}, so the first-page message must be written in ${ln}.`, reason: 'msg_lang' };
   }
   return null;
 }

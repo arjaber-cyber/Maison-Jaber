@@ -59,8 +59,8 @@
   "ar": "هل يمكن طلب الكتاب بالعربية؟"
  },
  "a_lang": {
-  "en": "Yes. Every story comes in Arabic or English. Arabic editions have their own covers and read right to left, and the child's name and message are written in the book's language.",
-  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار، ويُكتب اسم الطفل والرسالة بلغة الكتاب"
+  "en": "Yes. Every story comes in Arabic, English, German, Mandarin Chinese or Russian. Arabic editions have their own covers and read right to left, and the child's name and message are written in the book's language.",
+  "ar": "نعم، كل قصة متوفرة بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، وللنسخة العربية أغلفتها الخاصة وتُقرأ من اليمين إلى اليسار، ويُكتب اسم الطفل والرسالة بلغة الكتاب"
  },
  "q_time": {
   "en": "How early should I order?",
@@ -115,8 +115,8 @@
   "ar": "هل لديكم قصص للكريسماس؟"
  },
  "a_xmas": {
-  "en": "Yes. Our Christmas stories, shown above, can be personalised in English or Arabic with your child as the hero.",
-  "ar": "نعم، قصص الكريسماس المعروضة أعلاه يمكن تخصيصها بالإنجليزية أو العربية وطفلك بطلها"
+  "en": "Yes. Our Christmas stories, shown above, can be personalised in Arabic, English, German, Mandarin Chinese or Russian with your child as the hero.",
+  "ar": "نعم، قصص الكريسماس المعروضة أعلاه يمكن تخصيصها بالعربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية وطفلك بطلها"
  },
  "q_baby": {
   "en": "Who is the hero of the new sibling story?",
@@ -195,8 +195,8 @@
   "ar": "عيدية تبقى معهم سنوات: كتاب قصة يكون طفلك بطله"
  },
  "eid_intro": {
-  "en": "Eid is about family, generosity and the little ones at the centre of it all. A Hikaya book makes a child feel exactly that: chosen and celebrated. Pick a story, add their name and photo, write an Eid message on the first page, and choose an Arabic or English edition. Order early in Ramadan so it arrives in time for Eid.",
-  "ar": "العيد فرحة العائلة والكرم، والأطفال في قلبها، وكتاب حكاية يجعل الطفل يشعر بذلك تمامًا، مختارًا ومحتفى به، اختر قصة وأضف اسمه وصورته واكتب تهنئة العيد في الصفحة الأولى، واختر النسخة العربية أو الإنجليزية، واطلب مبكرًا في رمضان ليصل الكتاب قبل العيد"
+  "en": "Eid is about family, generosity and the little ones at the centre of it all. A Hikaya book makes a child feel exactly that: chosen and celebrated. Pick a story, add their name and photo, write an Eid message on the first page, and choose an Arabic, English, German, Mandarin Chinese or Russian edition. Order early in Ramadan so it arrives in time for Eid.",
+  "ar": "العيد فرحة العائلة والكرم، والأطفال في قلبها، وكتاب حكاية يجعل الطفل يشعر بذلك تمامًا، مختارًا ومحتفى به، اختر قصة وأضف اسمه وصورته واكتب تهنئة العيد في الصفحة الأولى، واختر النسخة العربية أو الإنجليزية أو الألمانية أو الصينية (الماندرين) أو الروسية، واطلب مبكرًا في رمضان ليصل الكتاب قبل العيد"
  },
  "eid_shelf": {
   "en": "Stories for Eid and Ramadan",

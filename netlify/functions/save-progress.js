@@ -15,6 +15,7 @@
 //  - The owner gets an anonymous WhatsApp note (story and age only, never the email or name).
 
 const R = require('./_recovery');
+const { LANGS: BOOK_LANGS } = require('./_bookLangs');
 const { sendEmail, SITE_URL } = require('./_email');
 const { savedProgress } = require('./_templates');
 const { sendOwnerAlert } = require('./_whatsapp');
@@ -35,7 +36,7 @@ function cleanDraft(d) {
     childName: str(x.childName, 60),
     childAge: /^\d{1,2}$/.test(String(x.childAge || '')) ? String(x.childAge) : '',
     gender: ['boy', 'girl'].includes(x.gender) ? x.gender : '',
-    bookLanguage: x.bookLanguage === 'ar' ? 'ar' : x.bookLanguage === 'en' ? 'en' : '',
+    bookLanguage: BOOK_LANGS[x.bookLanguage] ? x.bookLanguage : '',
     dedication: str(x.dedication, 600),
   };
 }
