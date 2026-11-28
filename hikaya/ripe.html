@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quick order — Hikaya by Maison Jaber</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="192x192" href="/hikaya/images/favicon-192.png" />
+<link rel="apple-touch-icon" href="/hikaya/images/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Manrope:wght@400;500;600;700&family=Amiri:wght@700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="/hikaya/phone-cc.js" defer></script>
+<style>
+  :root { --page:#F3EADF; --card:#FFFCF7; --line:#EEE4D6; --ink:#261C17; --soft:#5E4A3D; --mute:#8E7A68; --btn:#573624; --gold:#C7A56C; --ok:#3d5a26; --err:#B5563B; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--page); color:var(--ink); font-family:Manrope, 'Helvetica Neue', Arial, sans-serif; font-size:15px; line-height:1.6; }
+  html[dir=rtl] body { font-family:Cairo, Tahoma, Arial, sans-serif; }
+  .wrap { max-width:460px; margin:0 auto; padding:28px 16px 40px; }
+  .lang { display:block; margin:0 0 12px auto; background:none; border:0; color:var(--soft); font:600 13px inherit; cursor:pointer; text-decoration:underline; }
+  html[dir=rtl] .lang { margin:0 auto 12px 0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px 20px; }
+  .logo { display:block; margin:0 auto 10px; width:110px; height:auto; }
+  h1 { font-family:'Cormorant Garamond', Georgia, serif; font-weight:600; font-size:27px; line-height:1.2; margin:0 0 6px; text-align:center; }
+  html[dir=rtl] h1 { font-family:Amiri, serif; font-weight:700; font-size:25px; }
+  .lede { text-align:center; color:var(--soft); font-size:14px; margin:0 0 20px; }
+  label { display:block; font-weight:700; font-size:13.5px; margin:0 0 6px; }
+  .field { margin:0 0 16px; }
+  .cc-row { display:flex; gap:8px; direction:ltr; }
+  .cc-pick { position:relative; flex:0 0 auto; display:inline-flex; align-items:center; gap:6px; min-height:48px; padding:0 10px 0 12px; border:1px solid #D8C5B3; border-radius:10px; background:#fff; font:600 14px Manrope, sans-serif; color:var(--ink); }
+  .cc-pick .cc-flag { font-size:18px; line-height:1; }
+  .cc-pick svg { width:12px; height:12px; flex:none; }
+  .cc-pick select { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:0; padding:0; font-size:16px; }
+  input[type=tel], select.story { width:100%; min-height:48px; padding:10px 12px; border:1px solid #D8C5B3; border-radius:10px; background:#fff; font:500 16px inherit; color:var(--ink); }
+  input[type=tel] { flex:1 1 auto; min-width:0; }
+  select.story { appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23573624' stroke-width='2.4'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-size:14px; background-position:right 12px center; padding-inline-end:36px; }
+  html[dir=rtl] select.story { background-position:left 12px center; }
+  input:focus, select:focus, .cc-pick:focus-within { outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(199,165,108,.2); }
+  .btn { display:block; width:100%; min-height:52px; border:0; border-radius:28px; background:var(--btn); color:#fff; font:700 16px inherit; cursor:pointer; margin-top:6px; }
+  .btn[disabled] { opacity:.6; cursor:default; }
+  .err { color:var(--err); font-size:13.5px; margin:10px 0 0; text-align:center; min-height:1px; }
+  .done { text-align:center; }
+  .done .tick { width:54px; height:54px; border-radius:50%; background:#EAF1E2; color:var(--ok); display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; margin:0 auto 12px; }
+  .num { display:inline-block; font:700 26px Manrope, sans-serif; letter-spacing:.04em; background:#F6EFE4; border:1px dashed var(--gold); border-radius:12px; padding:10px 18px; margin:8px 0 14px; direction:ltr; }
+  .small { font-size:13px; color:var(--mute); }
+  .copy { background:none; border:1px solid #D8C5B3; border-radius:20px; padding:6px 14px; font:600 13px inherit; color:var(--soft); cursor:pointer; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <button class="lang" id="lang" type="button">العربية</button>
+  <div class="card">
+    <img class="logo" src="/hikaya/images/logo-hikaya.webp" alt="Hikaya by Maison Jaber" onerror="this.style.display='none'" />
+
+    <form id="form" novalidate>
+      <h1 data-t="title">Order your story</h1>
+      <p class="lede" data-t="lede">Just your WhatsApp number and the story. We'll message you to take care of the rest.</p>
+
+      <div class="field">
+        <label for="phone-local" data-t="phone">WhatsApp number</label>
+        <div class="cc-row">
+          <div class="cc-pick" id="cc-pick"><span class="cc-flag" aria-hidden="true"></span><span class="cc-code"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg><select id="cc" aria-label="Country code"></select></div>
+          <input type="tel" id="phone-local" placeholder="50 123 4567" autocomplete="tel-national" inputmode="tel" dir="ltr" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="story" data-t="story">Story</label>
+        <select class="story" id="story" required><option value="" data-t="pick">Choose a story</option></select>
+      </div>
+
+      <button class="btn" id="go" type="submit" data-t="order">Place order</button>
+      <p class="err" id="err" role="alert"></p>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <div class="tick">✓</div>
+      <h1 data-t="thanks">Order received</h1>
+      <p class="lede" id="done-story"></p>
+      <div class="small" data-t="yournum">Your order number</div>
+      <div class="num" id="num"></div><br />
+      <button class="copy" id="copy" type="button" data-t="copy">Copy number</button>
+      <p class="lede" style="margin-top:16px" data-t="next">We'll contact you on WhatsApp shortly to complete your order.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+  var T = {
+    en: { title: 'Order your story', lede: "Just your WhatsApp number and the story. We'll message you to take care of the rest.", phone: 'WhatsApp number', story: 'Story', pick: 'Choose a story', order: 'Place order', sending: 'Placing order…', thanks: 'Order received', yournum: 'Your order number', copy: 'Copy number', copied: 'Copied', next: "We'll contact you on WhatsApp shortly to complete your order.", badPhone: 'Please enter a valid WhatsApp number.', noStory: 'Please choose a story.', fail: 'Something went wrong. Please try again.', other: 'العربية' },
+    ar: { title: 'اطلب قصتك', lede: 'فقط رقم الواتساب والقصة، وسنتواصل معك لإكمال الباقي', phone: 'رقم الواتساب', story: 'القصة', pick: 'اختر القصة', order: 'إرسال الطلب', sending: 'جارٍ إرسال الطلب…', thanks: 'تم استلام طلبك', yournum: 'رقم طلبك', copy: 'نسخ الرقم', copied: 'تم النسخ', next: 'سنتواصل معك عبر واتساب قريباً لإكمال طلبك', badPhone: 'يرجى إدخال رقم واتساب صحيح', noStory: 'يرجى اختيار القصة', fail: 'حدث خطأ، يرجى المحاولة مرة أخرى', other: 'English' }
+  };
+  var qs = new URLSearchParams(location.search);
+  var lang = qs.get('lang') === 'ar' ? 'ar' : 'en';
+  var stories = [];
+  var $ = function (id) { return document.getElementById(id); };
+
+  function apply() {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = T[lang][el.getAttribute('data-t')]; });
+    $('lang').textContent = T[lang].other;
+    fillStories();
+    try { document.dispatchEvent(new Event('hikaya:langchange')); } catch (e) {}
+  }
+  function fillStories() {
+    var sel = $('story'), keep = sel.value;
+    sel.querySelectorAll('option[value]:not([value=""])').forEach(function (o) { o.remove(); });
+    stories.forEach(function (s) {
+      var o = document.createElement('option');
+      o.value = s.slug; o.textContent = (lang === 'ar' && s.title_ar) ? s.title_ar : s.title;
+      sel.appendChild(o);
+    });
+    sel.value = keep;
+  }
+
+  $('lang').addEventListener('click', function () {
+    lang = lang === 'ar' ? 'en' : 'ar';
+    var u = new URL(location.href); if (lang === 'ar') u.searchParams.set('lang', 'ar'); else u.searchParams.delete('lang');
+    history.replaceState(null, '', u);
+    apply();
+  });
+
+  fetch('/.netlify/functions/get-stories', { headers: { Accept: 'application/json' } })
+    .then(function (r) { return r.json(); })
+    .then(function (j) { stories = (j.stories || []).filter(function (s) { return s.active !== false; }); fillStories(); })
+    .catch(function () {});
+
+  var cc = null;
+  window.addEventListener('DOMContentLoaded', function () {
+    if (window.HikayaPhone) cc = window.HikayaPhone.mount($('cc-pick'), { defaultIso: 'AE' });
+  });
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('err'); err.textContent = '';
+    var local = $('phone-local').value.trim();
+    var iso = cc && cc.select ? cc.select.value : 'AE';
+    var phone = window.HikayaPhone ? window.HikayaPhone.compose(iso, local) : local;
+    if (!/^\+?\d{8,15}$/.test(phone.replace(/\s/g, '')) || (window.HikayaPhone && !/^(\+|00)/.test(local) && !window.HikayaPhone.validLocal(local))) { err.textContent = T[lang].badPhone; return; }
+    var slug = $('story').value;
+    if (!slug) { err.textContent = T[lang].noStory; return; }
+    var btn = $('go'); btn.disabled = true; btn.textContent = T[lang].sending;
+    fetch('/.netlify/functions/ripe-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone: phone, slug: slug, lang: lang }) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (!res.ok || !res.j.orderNumber) throw new Error(res.j.error || T[lang].fail);
+        $('num').textContent = res.j.orderNumber;
+        $('done-story').textContent = res.j.story || '';
+        $('form').hidden = true; $('done').hidden = false;
+      })
+      .catch(function (e2) { err.textContent = e2.message || T[lang].fail; btn.disabled = false; btn.textContent = T[lang].order; });
+  });
+
+  $('copy').addEventListener('click', function () {
+    var n = $('num').textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(n) : Promise.reject()).then(function () { $('copy').textContent = T[lang].copied; }).catch(function () {});
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>

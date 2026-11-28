@@ -153,6 +153,21 @@
 # Printed QR codes on the Hikaya gift boxes (Nov 2026) point to maison-jaber.com/contact.
 # Send them permanently to the shop. Applies to www and non-www (both serve this site);
 # the real contact page at /hikaya/contact.html is unaffected. Do not remove.
+# "Ripe" quick order (Nov 2026): WhatsApp number + story only -> order number. Private, never indexed.
+[[redirects]]
+  from = "/hikaya/ripe"
+  to = "/hikaya/ripe.html"
+  status = 200
+  force = true
+[[redirects]]
+  from = "/hikaya/ripe/"
+  to = "/hikaya/ripe.html"
+  status = 200
+  force = true
+[[headers]]
+  for = "/hikaya/ripe*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
 [[redirects]]
   from = "/contact"
   to = "/hikaya/"

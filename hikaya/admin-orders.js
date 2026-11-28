@@ -42,7 +42,7 @@
   };
   const typeOf = o => (TYPES[o.order_type] ? o.order_type : 'sale');
   const isSale = o => typeOf(o) === 'sale';
-  const METHOD = { free: 'No payment (covered by a code)', ziina: 'Ziina (card / Apple Pay)', cod: 'Cash on delivery', card: 'Card', applepay: 'Apple Pay', googlepay: 'Google Pay', tabby: 'Tabby', tamara: 'Tamara', shamcash: 'Sham Cash', paytabs: 'PayTabs' };
+  const METHOD = { free: 'No payment (covered by a code)', ziina: 'Ziina (card / Apple Pay)', cod: 'Cash on delivery', card: 'Card', applepay: 'Apple Pay', googlepay: 'Google Pay', tabby: 'Tabby', tamara: 'Tamara', shamcash: 'Sham Cash', paytabs: 'PayTabs', whatsapp: 'WhatsApp quick order (Ripe page)' };
 
   /* ---------- Money: everything in AED ---------- */
   /* AED per 1 unit of each currency (GCC pegs; USD peg 3.6725). Keep in sync with region.js. */
@@ -346,7 +346,7 @@
       <div class="op-head" data-toggle role="button" tabindex="0" aria-expanded="${open.has(o.id)}">
         <div class="op-head-main">
           <div class="op-title">${kidsLine(o)}</div>
-          <div class="op-sub"><span class="no">${esc(o.order_number || '')}</span> · ${esc(o.full_name || o.email || '')}${o.city ? ' · ' + esc(o.city) : ''}${o.country ? ', ' + esc(o.country) : ''}</div>
+          <div class="op-sub"><span class="no">${esc(o.order_number || '')}</span> · ${esc(o.full_name || o.email || o.phone || '')}${o.city ? ' · ' + esc(o.city) : ''}${o.country ? ', ' + esc(o.country) : ''}</div>
           <div class="op-badges">${stBadge}<span class="op-badge ${payC}">${payL}</span>${its.length > 1 ? `<span class="op-badge">${its.length} books</span>` : ''}${lang.length ? `<span class="op-badge">${lang.map(l => l === 'ar' ? 'Arabic' : 'English').filter((v, i, a) => a.indexOf(v) === i).join(' + ')} book</span>` : ''}${famBadge(o)}${its.some(i => i && i.photoLater && !(i.photoPaths || []).length) ? '<span class="op-badge warn">Photo to come</span>' : ''}${isSale(o) ? '' : `<span class="op-badge type">${esc(TYPES[typeOf(o)].label)}</span>`}${o.is_gift ? '<span class="op-badge info">Sent as a gift</span>' : ''}${o.promo_code ? `<span class="op-badge">Code ${esc(o.promo_code)}</span>` : ''}${isLate(o) ? `<span class="op-badge warn">${esc(ago(sinceStage(o)))} in this step</span>` : ''}</div>
         </div>
         <div class="op-head-side">
